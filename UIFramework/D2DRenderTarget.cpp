@@ -1,0 +1,146 @@
+#include "D2DRenderTarget.h"
+#include "D2DSolidColorBrush.h"
+#include "ErrorChecking.h"
+#include "DirectWriteTextLayout.h"
+
+CD2DRenderTarget::CD2DRenderTarget() : m_RenderTarget(NULL)
+{
+}
+
+CD2DRenderTarget::~CD2DRenderTarget()
+{
+    ReleaseObject(m_RenderTarget);
+}
+
+HRESULT CD2DRenderTarget::Initialize(ID2D1RenderTarget* pRenderTarget)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pRenderTarget);
+
+    m_RenderTarget = pRenderTarget;
+    AddRefObject(m_RenderTarget);
+
+Cleanup:
+    return hr;
+}
+
+SizeF CD2DRenderTarget::GetSize()
+{
+    return m_RenderTarget->GetSize();
+}
+
+HRESULT CD2DRenderTarget::BeginRendering()
+{
+    HRESULT hr = S_OK;
+
+    m_RenderTarget->BeginDraw();
+
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::EndRendering()
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_RenderTarget->EndDraw());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::SetTransform( const Matrix3X2& Transform )
+{
+    HRESULT hr = S_OK;
+
+    m_RenderTarget->SetTransform(Transform);
+
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::Clear(ColorF Color)
+{
+    HRESULT hr = S_OK;
+
+    m_RenderTarget->Clear(Color);
+
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::CreateSolidBrush(ColorF Color, CBrush** ppBrush)
+{
+    HRESULT hr = S_OK;
+    ID2D1SolidColorBrush* pD2DSolidColorBrush = NULL;
+    CD2DSolidColorBrush* pSolidBrush = NULL;
+
+    IFCPTR(ppBrush);
+
+    IFC(m_RenderTarget->CreateSolidColorBrush(Color, &pD2DSolidColorBrush));
+
+    IFC(CD2DSolidColorBrush::Create(pD2DSolidColorBrush, &pSolidBrush));
+
+    *ppBrush = pSolidBrush;
+    pSolidBrush = NULL;
+
+Cleanup:
+    ReleaseObject(pD2DSolidColorBrush);
+    ReleaseObject(pSolidBrush);
+
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::DrawRectangle(const RectF& Size, CBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+    CD2DBrush* pD2DBrush = NULL;
+
+    IFCPTR(pBrush);
+
+    pD2DBrush = (CD2DBrush*)pBrush;
+
+    m_RenderTarget->DrawRectangle(Size, pD2DBrush->GetD2DBrush(), 0, NULL);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::FillRectangle(const RectF& Size, CBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+    CD2DBrush* pD2DBrush = NULL;
+
+    IFCPTR(pBrush);
+
+    pD2DBrush = (CD2DBrush*)pBrush;
+
+    m_RenderTarget->FillRectangle(Size, pD2DBrush->GetD2DBrush());
+
+Cleanup:
+    return hr;
+}
+
+//HRESULT CD2DRenderTarget::CreateCompatibleRenderTarget()
+//{
+    //HRESULT hr = S_OK;
+
+//Cleanup:
+    //return hr;
+//}
+
+HRESULT CD2DRenderTarget::RenderTextLayout(const Point2F& Origin, CTextLayout* pTextLayout, CBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+    CD2DBrush* pD2DBrush = NULL;
+    CDirectWriteTextLayout* pDirectWriteTextLayout = NULL;
+
+    IFCPTR(pTextLayout);
+    IFCPTR(pBrush);
+
+    pD2DBrush = (CD2DBrush*)pBrush;
+    pDirectWriteTextLayout = (CDirectWriteTextLayout*)pTextLayout;
+
+    m_RenderTarget->DrawTextLayout(Origin, pDirectWriteTextLayout->GetDirectWriteTextLayout(), pD2DBrush->GetD2DBrush());
+
+Cleanup:
+    return hr;
+}
