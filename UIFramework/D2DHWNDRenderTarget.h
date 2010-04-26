@@ -12,7 +12,7 @@ class CD2DHWNDRenderTarget : public CD2DRenderTarget
         CD2DHWNDRenderTarget();
         virtual ~CD2DHWNDRenderTarget();
 
-        virtual HRESULT Initialize( ID2D1HwndRenderTarget* pRenderTarget );
+        HRESULT Initialize( ID2D1HwndRenderTarget* pRenderTarget );
 
         ID2D1HwndRenderTarget* m_HWNDRenderTarget;
 };

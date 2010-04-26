@@ -20,7 +20,7 @@ class CD2DGraphicsDevice : public CGraphicsDevice
         CD2DGraphicsDevice();
         virtual ~CD2DGraphicsDevice();
 
-        virtual HRESULT Initialize( );
+        HRESULT Initialize( );
 
         virtual HRESULT CreateTextProvider( CTextProvider** ppTextProvider );
 

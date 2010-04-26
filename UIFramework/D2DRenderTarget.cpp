@@ -89,6 +89,31 @@ Cleanup:
     return hr;
 }
 
+HRESULT CD2DRenderTarget::GetDefaultBrush(DefaultBrush::Value Type, CBrush** ppBrush)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppBrush);
+
+    //TODO: Move lookup to a common class and precreate brushes.
+    switch(Type)
+    {
+        case DefaultBrush::TextForeground:
+            {
+                IFC(CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::Black), ppBrush));
+                break;
+            }
+
+        default:
+            {
+                IFC(E_FAIL);
+            }
+    }
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CD2DRenderTarget::DrawRectangle(const RectF& Size, CBrush* pBrush)
 {
     HRESULT hr = S_OK;

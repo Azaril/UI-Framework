@@ -112,7 +112,7 @@ HRESULT CTextBlock::RenderTransformed(CRenderContext& Context)
 
         if(m_TextBrush == NULL)
         {
-            IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::Black), &pTextBrush));
+            IFC(pRenderTarget->GetDefaultBrush(DefaultBrush::TextForeground, &pTextBrush));
         }
         else
         {

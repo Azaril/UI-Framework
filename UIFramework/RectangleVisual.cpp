@@ -1,12 +1,18 @@
 #include "RectangleVisual.h"
 
-CRectangleVisual::CRectangleVisual() : m_Brush(NULL)
+CRectangleVisual::CRectangleVisual() : m_Brush(NULL),
+                                       m_OutlineBrush(NULL)
 {
     m_Position.x = 0;
     m_Position.y = 0;
 
     m_Size.width = 0;
     m_Size.height = 0;
+
+    m_BorderThickness.left = 0;
+    m_BorderThickness.top = 0;
+    m_BorderThickness.right = 0;
+    m_BorderThickness.bottom = 0;
 }
 
 CRectangleVisual::~CRectangleVisual()
@@ -37,6 +43,19 @@ HRESULT CRectangleVisual::SetBrush(CBrush* pBrush)
     return hr;
 }
 
+HRESULT CRectangleVisual::SetOutlineBrush(CBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+
+    ReleaseObject(m_OutlineBrush);
+
+    m_OutlineBrush = pBrush;
+
+    AddRefObject(m_OutlineBrush);
+
+    return hr;
+}
+
 HRESULT CRectangleVisual::SetSize(SizeF Size)
 {
     HRESULT hr = S_OK;
@@ -55,20 +74,33 @@ HRESULT CRectangleVisual::SetPosition(Point2F Position)
     return hr;
 }
 
+HRESULT CRectangleVisual::SetBorderThickness(RectF Thickness)
+{
+    HRESULT hr = S_OK;
+
+    m_BorderThickness = Thickness;
+
+    return hr;
+}
+
 HRESULT CRectangleVisual::RenderTransformed(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
 
+    RectF Rect = { m_Position.x, m_Position.y, m_Position.x + m_Size.width, m_Position.y + m_Size.height };
+
     pRenderTarget = Context.GetRenderTarget();
-    IFCPTR(pRenderTarget);
+    IFCPTR(pRenderTarget);    
 
     if(m_Brush != NULL)
     {
-        RectF Rect = { m_Position.x, m_Position.y, m_Position.x + m_Size.width, m_Position.y + m_Size.height };
-
-        //TODO: Add stroke behavior.
         IFC(pRenderTarget->FillRectangle(Rect, m_Brush));
+    }
+
+    if(m_OutlineBrush != NULL)
+    {
+        IFC(pRenderTarget->DrawRectangle(Rect, m_OutlineBrush));
     }
 
     IFC(CVisual::RenderTransformed(Context));

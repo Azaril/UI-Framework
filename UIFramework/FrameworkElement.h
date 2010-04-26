@@ -14,6 +14,8 @@ class CFrameworkElement : public CUIElement
         CFrameworkElement();
         virtual ~CFrameworkElement();
 
+        HRESULT Finalize();
+
         virtual HRESULT AddLogicalChild( CUIElement* pElement );
         virtual HRESULT RemoveLogicalChild( CUIElement* pElement );
 

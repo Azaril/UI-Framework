@@ -24,4 +24,5 @@ class CTextBlock : public CFrameworkElement
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;
         CBrush* m_TextBrush;
+        CBrush* m_DefaultTextBrush;
 };

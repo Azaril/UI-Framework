@@ -16,7 +16,7 @@ class CDirectWriteLayoutMetrics : public CTextLayoutMetrics
         CDirectWriteLayoutMetrics();
         virtual ~CDirectWriteLayoutMetrics();
 
-        virtual HRESULT Initialize( const DWRITE_TEXT_METRICS& Metrics );
+        HRESULT Initialize( const DWRITE_TEXT_METRICS& Metrics );
 
         DWRITE_TEXT_METRICS m_Metrics;
 };

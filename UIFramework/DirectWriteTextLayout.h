@@ -19,7 +19,7 @@ class CDirectWriteTextLayout : public CTextLayout
         CDirectWriteTextLayout();
         virtual ~CDirectWriteTextLayout();
 
-        virtual HRESULT Initialize( IDWriteTextLayout* pLayout );
+        HRESULT Initialize( IDWriteTextLayout* pLayout );
 
         IDWriteTextLayout* m_Layout;
 };

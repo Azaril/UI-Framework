@@ -18,7 +18,7 @@ class CUIHost : public CRefCountedObject
         CUIHost();
         virtual ~CUIHost();
 
-        virtual HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget );
+        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget );
 
         HRESULT EnsureLayout();
 

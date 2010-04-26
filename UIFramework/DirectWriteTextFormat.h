@@ -15,7 +15,7 @@ class CDirectWriteTextFormat : public CTextFormat
         CDirectWriteTextFormat();
         virtual ~CDirectWriteTextFormat();
 
-        virtual HRESULT Initialize( IDWriteTextFormat* pLayout );
+        HRESULT Initialize( IDWriteTextFormat* pLayout );
 
         IDWriteTextFormat* m_Format;
 };

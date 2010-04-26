@@ -1,7 +1,6 @@
 #include "UIElement.h"
 
-CUIElement::CUIElement() : m_Attached(FALSE),
-                           m_Background(NULL)
+CUIElement::CUIElement() : m_Attached(FALSE)
 {
     m_Size.width = 0;
     m_Size.height = 0;
@@ -67,37 +66,6 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::SetBackground(CBrush *pBrush)
-{
-    HRESULT hr = S_OK;
-
-    if(pBrush != NULL)
-    {
-        if(m_Background == NULL)
-        {
-            IFC(CRectangleVisual::Create(&m_Background));
-
-            IFC(AddChildVisual(m_Background));
-
-            IFC(MoveToBack(m_Background));
-        }
-
-        IFC(m_Background->SetBrush(pBrush));
-    }
-    else
-    {
-        if(m_Background != NULL)
-        {
-            IFC(RemoveChildVisual(m_Background));
-
-            ReleaseObject(m_Background);
-        }
-    }
-
-Cleanup:
-    return hr;
-}
-
 HRESULT CUIElement::Measure(SizeF AvailableSize)
 {
     HRESULT hr = S_OK;
@@ -135,11 +103,6 @@ HRESULT CUIElement::Arrange(SizeF Size)
     IFCEXPECT(Size.height >= 0);
 
     m_FinalSize = Size;
-
-    if(m_Background)
-    {
-        IFC(m_Background->SetSize(Size));
-    }
 
 Cleanup:
     return hr;

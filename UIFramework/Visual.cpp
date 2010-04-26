@@ -7,12 +7,27 @@ CVisual::CVisual() : m_VisualAttached(FALSE)
 
 CVisual::~CVisual()
 {
+    Finalize();
 }
 
 HRESULT CVisual::Initialize()
 {
     HRESULT hr = S_OK;
     
+    return hr;
+}
+
+HRESULT CVisual::Finalize()
+{
+    HRESULT hr = S_OK;
+
+    for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
+    {
+        (*It)->Release();
+    }
+
+    m_VisualChildren.clear();
+
     return hr;
 }
 

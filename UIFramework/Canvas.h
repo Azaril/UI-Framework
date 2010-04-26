@@ -40,7 +40,7 @@ class CCanvas : public CPanel
         CCanvas();
         virtual ~CCanvas();
 
-        virtual HRESULT Initialize();
+        HRESULT Initialize();
 
         virtual HRESULT GetChildLayout( CUIElement* pElement, CCanvasLayoutInformation** ppLayoutInfo );
 

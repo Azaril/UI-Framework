@@ -12,7 +12,7 @@ class CD2DSolidColorBrush : public CD2DBrush
         CD2DSolidColorBrush();
         virtual ~CD2DSolidColorBrush();
 
-        virtual HRESULT Initialize( ID2D1SolidColorBrush* pBrush );
+        HRESULT Initialize( ID2D1SolidColorBrush* pBrush );
 
         ID2D1SolidColorBrush* m_SolidBrush;
 };

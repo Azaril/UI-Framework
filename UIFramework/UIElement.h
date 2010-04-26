@@ -49,14 +49,10 @@ class CUIDetachContext
 class CUIElement : public CVisual
 {
     public:
-        DECLARE_VISITABLE();
-
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
         BOOL IsAttached();
-
-        virtual HRESULT SetBackground( CBrush* pBrush );
 
         HRESULT SetSize( SizeF Size );
 
@@ -75,7 +71,7 @@ class CUIElement : public CVisual
    
         BOOL m_Attached;
         CUIAttachContext m_Context;
-        CRectangleVisual* m_Background;
+        /*CRectangleVisual* m_Background;*/
 
         SizeF m_Size;
 

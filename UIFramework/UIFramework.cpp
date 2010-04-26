@@ -9,6 +9,8 @@
 #include "UIHost.h"
 #include "Canvas.h"
 #include "TextBlock.h"
+#include "StackPanel.h"
+#include "Border.h"
 
 #include <d2d1helper.h>
 
@@ -35,6 +37,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CUIHost* pUIHost = NULL;
     CRootUIElement* pRootElement = NULL;
     CCanvas* pCanvas = NULL;
+    CStackPanel* pStackPanel = NULL;
     CBrush* pBlueSolidBrush = NULL;
     CBrush* pRedSolidBrush = NULL;
 
@@ -64,32 +67,47 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     IFC(CCanvas::Create(&pCanvas));
 
-    IFC(pRootElement->SetContent(pCanvas));
+    IFC(CStackPanel::Create(&pStackPanel));
+    IFC(pStackPanel->SetOrientation(Orientation::Horizontal));
+
+    IFC(pRootElement->SetContent(pStackPanel));
 
     IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::AliceBlue), &pBlueSolidBrush));
     IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::Red), &pRedSolidBrush));
 
-    IFC(pRootElement->SetBackground(pBlueSolidBrush));
+    //IFC(pRootElement->SetBackground(pBlueSolidBrush));
 
     for(unsigned int i = 0; i < 10; i++)
     {
         CTextBlock* pTextBlock = NULL;
+        CBorder* pBorder = NULL;
 
         SizeF Size = { 20, 20 };
         Point2F Position = { 20.0f * i, 20.0f * i };
+        RectF Border = { 4, 4, 4, 4 };
 
+        IFC(CBorder::Create(&pBorder));
         IFC(CTextBlock::Create(&pTextBlock));
 
-        IFC(pTextBlock->SetSize(Size));
-        IFC(pTextBlock->SetBackground(pRedSolidBrush));
+        IFC(pBorder->SetSize(Size));
+        IFC(pBorder->SetBackgroundBrush(pBlueSolidBrush));
+        
+        IFC(pBorder->SetBorderThickness(Border));
+        IFC(pBorder->SetBorderBrush(pRedSolidBrush));
 
-        IFC(pCanvas->AddChild(pTextBlock));
+        //IFC(pTextBlock->SetSize(Size));
+        //IFC(pTextBlock->SetBackground(pRedSolidBrush));
 
-        IFC(pCanvas->SetChildPosition(pTextBlock, Position));
+        IFC(pBorder->SetChild(pTextBlock));
+
+        IFC(pStackPanel->AddChild(pBorder));
+
+        //IFC(pCanvas->SetChildPosition(pTextBlock, Position));
 
         IFC(pTextBlock->SetText(L"Testing!"));
 
         ReleaseObject(pTextBlock);
+        ReleaseObject(pBorder);
     }
 
     //
@@ -149,7 +167,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_UIFRAMEWORK));
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_UIFRAMEWORK);
+	wcex.lpszMenuName	= NULL;
 	wcex.lpszClassName	= szWindowClass;
 	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -209,14 +227,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		wmId    = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
 		// Parse the menu selections:
-		switch (wmId)
-		{
-		case IDM_EXIT:
-			DestroyWindow(hWnd);
-			break;
-		default:
+		//switch (wmId)
+		//{
+		//default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
+		//}
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);

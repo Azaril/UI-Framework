@@ -20,7 +20,7 @@ class CDirectWriteTextProvider : public CTextProvider
         CDirectWriteTextProvider();
         virtual ~CDirectWriteTextProvider();
 
-        virtual HRESULT Initialize( CD2DGraphicsDevice* pDevice );
+        HRESULT Initialize( CD2DGraphicsDevice* pDevice );
 
         HMODULE m_DWriteModule;
         IDWriteFactory* m_Factory;

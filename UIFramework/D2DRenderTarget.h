@@ -18,6 +18,7 @@ class CD2DRenderTarget : public CRenderTarget
         virtual HRESULT Clear( ColorF Color );
 
         virtual HRESULT CreateSolidBrush( ColorF Color, CBrush** ppBrush );
+        virtual HRESULT GetDefaultBrush( DefaultBrush::Value Type, CBrush** ppBrush );
 
         virtual HRESULT DrawRectangle( const RectF& Size, CBrush* pBrush );
         virtual HRESULT FillRectangle( const RectF& Size, CBrush* pBrush );
@@ -28,7 +29,7 @@ class CD2DRenderTarget : public CRenderTarget
         CD2DRenderTarget();
         virtual ~CD2DRenderTarget();
 
-        virtual HRESULT Initialize( ID2D1RenderTarget* pRenderTarget );
+        HRESULT Initialize( ID2D1RenderTarget* pRenderTarget );
 
         ID2D1RenderTarget* m_RenderTarget;
 };

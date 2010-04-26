@@ -20,8 +20,8 @@ class CRootUIElement : public CFrameworkElement,
         CRootUIElement();
         virtual ~CRootUIElement();
 
-        virtual HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget );
-        virtual HRESULT Finalize();
+        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget );
+        HRESULT Finalize();
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
 

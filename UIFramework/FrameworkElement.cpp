@@ -6,6 +6,21 @@ CFrameworkElement::CFrameworkElement()
 
 CFrameworkElement::~CFrameworkElement()
 {
+    Finalize();
+}
+
+HRESULT CFrameworkElement::Finalize()
+{
+    HRESULT hr = S_OK;
+
+    for(ChildCollection::iterator It = m_Children.begin(); It != m_Children.end(); ++It)
+    {
+        (*It)->Release();
+    }
+
+    m_Children.clear();
+
+    return hr;
 }
 
 HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
@@ -66,6 +81,7 @@ HRESULT CFrameworkElement::AddLogicalChild(CUIElement* pElement)
 
     AddRefObject(pElement);
 
+    if(IsAttached())
     {
         CUIAttachContext ChildContext(this);
 
@@ -86,9 +102,12 @@ HRESULT CFrameworkElement::RemoveLogicalChild(CUIElement* pElement)
     {
         if(*It == pElement)
         {
-            CUIDetachContext ChildContext(this);
+            if(IsAttached())
+            {
+                CUIDetachContext ChildContext(this);
 
-            IFC(pElement->OnDetach(ChildContext));
+                IFC(pElement->OnDetach(ChildContext));
+            }
 
             (*It)->Release();
 

@@ -217,14 +217,6 @@
 					RelativePath=".\Types.h"
 					>
 				</File>
-				<File
-					RelativePath=".\Visitor.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Visitor.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Graphics"
@@ -348,11 +340,27 @@
 						Name="Elements"
 						>
 						<File
+							RelativePath=".\Border.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Border.h"
+							>
+						</File>
+						<File
 							RelativePath=".\Canvas.cpp"
 							>
 						</File>
 						<File
 							RelativePath=".\Canvas.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Decorator.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Decorator.h"
 							>
 						</File>
 						<File
@@ -377,6 +385,14 @@
 						</File>
 						<File
 							RelativePath=".\RootUIElement.h"
+							>
+						</File>
+						<File
+							RelativePath=".\StackPanel.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\StackPanel.h"
 							>
 						</File>
 						<File

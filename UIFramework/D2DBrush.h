@@ -11,7 +11,7 @@ class CD2DBrush : public CBrush
         CD2DBrush();
         virtual ~CD2DBrush();
 
-        virtual HRESULT Initialize( ID2D1Brush* pBrush );
+        HRESULT Initialize( ID2D1Brush* pBrush );
 
         ID2D1Brush* m_Brush;
 };

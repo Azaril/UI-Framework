@@ -5,6 +5,14 @@
 #include "Brush.h"
 #include "TextLayout.h"
 
+namespace DefaultBrush
+{
+    enum Value
+    {
+        TextForeground
+    };
+}
+
 class CRenderTarget : public CRefCountedObject
 {
     public:
@@ -18,6 +26,7 @@ class CRenderTarget : public CRefCountedObject
         virtual HRESULT Clear( ColorF Color ) = 0;
 
         virtual HRESULT CreateSolidBrush( ColorF Color, CBrush** ppBrush ) = 0;
+        virtual HRESULT GetDefaultBrush( DefaultBrush::Value Type, CBrush** ppBrush ) = 0;
 
         //TODO: Support border/stroke.
         virtual HRESULT DrawRectangle( const RectF& Size, CBrush* pBrush ) = 0;

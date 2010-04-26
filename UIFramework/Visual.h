@@ -2,7 +2,6 @@
 
 #include "Factory.h"
 #include "RefCounted.h"
-#include "Visitor.h"
 #include "Collections.h"
 #include "RenderTarget.h"
 #include "MatrixStack.h"
@@ -117,8 +116,6 @@ class CVisual : public CRefCountedObject
     typedef std::vector< CVisual* > VisualChildCollection;
 
     public:
-        DECLARE_VISITABLE();
-
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );
 
@@ -130,6 +127,7 @@ class CVisual : public CRefCountedObject
         virtual ~CVisual();
     
         HRESULT Initialize();
+        HRESULT Finalize();
     
         virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
         virtual HRESULT OnVisualDetach( CVisualDetachContext& Context );
