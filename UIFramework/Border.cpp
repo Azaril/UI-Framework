@@ -34,6 +34,8 @@ HRESULT CBorder::Finalize()
     if(m_BorderVisual)
     {
         IFC(RemoveChildVisual(m_BorderVisual));
+
+        ReleaseObject(m_BorderVisual);
     }
 
 Cleanup:

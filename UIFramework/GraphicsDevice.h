@@ -3,6 +3,7 @@
 #include "RefCounted.h"
 #include "RenderTarget.h"
 #include "TextProvider.h"
+#include "ImagingProvider.h"
 
 class CGraphicsDevice : public CRefCountedObject
 {
@@ -11,6 +12,8 @@ class CGraphicsDevice : public CRefCountedObject
         //virtual HRESULT CreateRenderTarget( const SizeF& Size, CRenderTarget** ppRenderTarget ) = 0;
 
         virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider ) = 0;
+
+        virtual HRESULT GetImagingProvider( CImagingProvider** ppImagingProvider ) = 0;
 };
 
 HRESULT CreateGraphicsDevice( CGraphicsDevice** ppGraphicsDevice );

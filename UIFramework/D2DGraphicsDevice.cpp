@@ -2,12 +2,14 @@
 #include "D2DHWNDRenderTarget.h"
 #include "D2DBitmapRenderTarget.h"
 #include "DirectWriteTextProvider.h"
+#include "WICImagingProvider.h"
 
 typedef HRESULT (WINAPI *D2D1CreateFactoryFunc)( __in D2D1_FACTORY_TYPE factoryType, __in REFIID riid, __in_opt CONST D2D1_FACTORY_OPTIONS *pFactoryOptions, __out void **ppIFactory );
 
 CD2DGraphicsDevice::CD2DGraphicsDevice() : m_D2DModule(NULL),
                                            m_Factory(NULL),
-                                           m_TextProvider(NULL)
+                                           m_TextProvider(NULL),
+                                           m_ImagingProvider(NULL)
 {
 }
 
@@ -36,6 +38,8 @@ HRESULT CD2DGraphicsDevice::Initialize()
     IFC(CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), NULL, (void**)&m_Factory));
 
     IFC(CreateTextProvider(&m_TextProvider));
+
+    IFC(CreateImagingProvider(&m_ImagingProvider));
 
 Cleanup:
     return hr;
@@ -95,6 +99,19 @@ Cleanup:
     return hr;
 }
 
+HRESULT CD2DGraphicsDevice::GetImagingProvider(CImagingProvider** ppImagingProvider)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppImagingProvider);
+
+    *ppImagingProvider = m_ImagingProvider;
+    AddRefObject(m_ImagingProvider);
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CD2DGraphicsDevice::CreateTextProvider(CTextProvider** ppTextProvider)
 {
     HRESULT hr = S_OK;
@@ -102,7 +119,7 @@ HRESULT CD2DGraphicsDevice::CreateTextProvider(CTextProvider** ppTextProvider)
 
     IFCPTR(ppTextProvider);
 
-    if(SUCCEEDED(CDirectWriteTextProvider::Create(this, &pDirectWriteTextProvider)))
+    if(SUCCEEDED(CDirectWriteTextProvider::Create(&pDirectWriteTextProvider)))
     {
         *ppTextProvider = pDirectWriteTextProvider;
         pDirectWriteTextProvider = NULL;
@@ -111,6 +128,25 @@ HRESULT CD2DGraphicsDevice::CreateTextProvider(CTextProvider** ppTextProvider)
 
 Cleanup:
     ReleaseObject(pDirectWriteTextProvider);
+
+    return hr;
+}
+
+HRESULT CD2DGraphicsDevice::CreateImagingProvider(CImagingProvider** ppImagingProvider)
+{
+    HRESULT hr = S_OK;
+    CWICImagingProvider* pWICImagingProvider = NULL;
+
+    IFCPTR(ppImagingProvider);
+
+    if(SUCCEEDED(CWICImagingProvider::Create(&pWICImagingProvider)))
+    {
+        *ppImagingProvider = pWICImagingProvider;
+        pWICImagingProvider = NULL;
+    }
+
+Cleanup:
+    ReleaseObject(pWICImagingProvider);
 
     return hr;
 }

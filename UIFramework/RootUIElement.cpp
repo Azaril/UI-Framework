@@ -7,8 +7,6 @@ CRootUIElement::CRootUIElement() : m_Content(NULL)
 CRootUIElement::~CRootUIElement()
 {
     Finalize();
-
-    ReleaseObject(m_Content);
 }
 
 HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget)
@@ -51,6 +49,8 @@ HRESULT CRootUIElement::Finalize()
 
         IFC(OnVisualDetach(VisualContext));
     }
+
+    ReleaseObject(m_Content);
 
 Cleanup:
     return hr;

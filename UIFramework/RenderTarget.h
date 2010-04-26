@@ -4,6 +4,8 @@
 #include "Types.h"
 #include "Brush.h"
 #include "TextLayout.h"
+#include "BitmapSource.h"
+#include "Bitmap.h"
 
 namespace DefaultBrush
 {
@@ -35,4 +37,8 @@ class CRenderTarget : public CRefCountedObject
         //virtual HRESULT CreateCompatibleRenderTarget() = 0;
 
         virtual HRESULT RenderTextLayout( const Point2F& Origin, CTextLayout* pTextLayout, CBrush* pBrush ) = 0;
+
+        virtual HRESULT LoadBitmap( CBitmapSource* pSource, CBitmap** ppBitmap ) = 0;
+
+        virtual HRESULT CreateBitmapBrush( CBitmap* pBitmap, CBrush** pBrush ) = 0;
 };

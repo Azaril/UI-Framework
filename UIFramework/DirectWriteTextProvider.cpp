@@ -21,11 +21,10 @@ CDirectWriteTextProvider::~CDirectWriteTextProvider()
     }
 }
 
-HRESULT CDirectWriteTextProvider::Initialize(CD2DGraphicsDevice* pDevice)
+HRESULT CDirectWriteTextProvider::Initialize()
 {
     HRESULT hr = S_OK;
     DWriteCreateFactoryFunc CreateFactory = NULL;
-    IFCPTR(pDevice);
 
     m_DWriteModule = LoadLibrary(L"dwrite.dll");
     IFCEXPECT(m_DWriteModule != NULL);

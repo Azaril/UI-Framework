@@ -11,6 +11,7 @@
 #include "TextBlock.h"
 #include "StackPanel.h"
 #include "Border.h"
+#include "Image.h"
 
 #include <d2d1helper.h>
 
@@ -33,6 +34,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     MSG msg = { 0 };
 	HACCEL hAccelTable = NULL;
     CGraphicsDevice* pGraphicsDevice = NULL;
+    CImagingProvider* pImagingProvider = NULL;
     CRenderTarget* pRenderTarget = NULL;
     CUIHost* pUIHost = NULL;
     CRootUIElement* pRootElement = NULL;
@@ -40,6 +42,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CStackPanel* pStackPanel = NULL;
     CBrush* pBlueSolidBrush = NULL;
     CBrush* pRedSolidBrush = NULL;
+    CBitmapSource* pBitmapSource = NULL;
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -68,12 +71,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     IFC(CCanvas::Create(&pCanvas));
 
     IFC(CStackPanel::Create(&pStackPanel));
-    IFC(pStackPanel->SetOrientation(Orientation::Horizontal));
+    IFC(pStackPanel->SetOrientation(Orientation::Vertical));
 
     IFC(pRootElement->SetContent(pStackPanel));
 
     IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::AliceBlue), &pBlueSolidBrush));
     IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::Red), &pRedSolidBrush));
+
+    IFC(pGraphicsDevice->GetImagingProvider(&pImagingProvider));
+
+    IFC(pImagingProvider->LoadBitmapFromFile(L"C:\\3.png", &pBitmapSource));
 
     //IFC(pRootElement->SetBackground(pBlueSolidBrush));
 
@@ -81,6 +88,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     {
         CTextBlock* pTextBlock = NULL;
         CBorder* pBorder = NULL;
+        CImage* pImage = NULL;
 
         SizeF Size = { 20, 20 };
         Point2F Position = { 20.0f * i, 20.0f * i };
@@ -88,6 +96,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
         IFC(CBorder::Create(&pBorder));
         IFC(CTextBlock::Create(&pTextBlock));
+        IFC(CImage::Create(&pImage));
 
         IFC(pBorder->SetSize(Size));
         IFC(pBorder->SetBackgroundBrush(pBlueSolidBrush));
@@ -100,11 +109,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
         IFC(pBorder->SetChild(pTextBlock));
 
-        IFC(pStackPanel->AddChild(pBorder));
-
         //IFC(pCanvas->SetChildPosition(pTextBlock, Position));
 
         IFC(pTextBlock->SetText(L"Testing!"));
+
+        IFC(pImage->SetSource(pBitmapSource));
+
+        IFC(pStackPanel->AddChild(pBorder));
+        IFC(pStackPanel->AddChild(pImage));
 
         ReleaseObject(pTextBlock);
         ReleaseObject(pBorder);
@@ -133,7 +145,9 @@ Cleanup:
     ReleaseObject(pRootElement);
     ReleaseObject(pUIHost);
     ReleaseObject(pRenderTarget);
+    ReleaseObject(pImagingProvider);
     ReleaseObject(pGraphicsDevice);
+    ReleaseObject(pBitmapSource);
 
 	return (int) msg.wParam;
 }

@@ -22,6 +22,8 @@ HRESULT CTextBlock::SetText(const WCHAR* pText)
 
     m_Text = pText;
 
+    ReleaseObject(m_TextLayout);
+
 Cleanup:
     return hr;
 }

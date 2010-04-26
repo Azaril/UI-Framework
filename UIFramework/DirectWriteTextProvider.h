@@ -9,7 +9,7 @@
 class CDirectWriteTextProvider : public CTextProvider
 {
     public:
-        DECLARE_FACTORY1( CDirectWriteTextProvider, CD2DGraphicsDevice* );
+        DECLARE_FACTORY( CDirectWriteTextProvider );
 
         virtual HRESULT CreateFormat( const WCHAR* pFontName, FLOAT FontSize, const WCHAR* pLocaleName, CTextFormat** ppTextFormat );
         virtual HRESULT GetDefaultFormat( CTextFormat** ppTextFormat );
@@ -20,7 +20,7 @@ class CDirectWriteTextProvider : public CTextProvider
         CDirectWriteTextProvider();
         virtual ~CDirectWriteTextProvider();
 
-        HRESULT Initialize( CD2DGraphicsDevice* pDevice );
+        HRESULT Initialize();
 
         HMODULE m_DWriteModule;
         IDWriteFactory* m_Factory;

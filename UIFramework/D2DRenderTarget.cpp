@@ -1,7 +1,10 @@
 #include "D2DRenderTarget.h"
 #include "D2DSolidColorBrush.h"
+#include "D2DBitmap.h"
+#include "D2DBitmapBrush.h"
 #include "ErrorChecking.h"
 #include "DirectWriteTextLayout.h"
+#include "WICBitmapSource.h"
 
 CD2DRenderTarget::CD2DRenderTarget() : m_RenderTarget(NULL)
 {
@@ -167,5 +170,57 @@ HRESULT CD2DRenderTarget::RenderTextLayout(const Point2F& Origin, CTextLayout* p
     m_RenderTarget->DrawTextLayout(Origin, pDirectWriteTextLayout->GetDirectWriteTextLayout(), pD2DBrush->GetD2DBrush());
 
 Cleanup:
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::LoadBitmap(CBitmapSource* pSource, CBitmap** ppBitmap)
+{
+    HRESULT hr = S_OK;
+    CWICBitmapSource* pWICBitmapSource = NULL;
+    ID2D1Bitmap* pD2DBitmap = NULL;
+    CD2DBitmap* pBitmap = NULL;
+
+    IFCPTR(pSource);
+    IFCPTR(ppBitmap);
+
+    pWICBitmapSource = (CWICBitmapSource*)pSource;
+
+    IFC(m_RenderTarget->CreateBitmapFromWicBitmap(pWICBitmapSource->GetWICBitmapSource(), &pD2DBitmap));
+
+    IFC(CD2DBitmap::Create(pD2DBitmap, &pBitmap));
+
+    *ppBitmap = pBitmap;
+    pBitmap = NULL;
+
+Cleanup:
+    ReleaseObject(pD2DBitmap);
+    ReleaseObject(pBitmap);
+
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::CreateBitmapBrush(CBitmap* pBitmap, CBrush** pBrush)
+{
+    HRESULT hr = S_OK;
+    CD2DBitmap* pD2DBitmap = NULL;
+    CD2DBitmapBrush* pD2DBrush = NULL;
+    ID2D1BitmapBrush* pD2DBitmapBrush = NULL;
+
+    IFCPTR(pBitmap);
+    IFCPTR(pBrush);
+
+    pD2DBitmap = (CD2DBitmap*)pBitmap;
+
+    IFC(m_RenderTarget->CreateBitmapBrush(pD2DBitmap->GetD2DBitmap(), &pD2DBitmapBrush));
+
+    IFC(CD2DBitmapBrush::Create(pD2DBitmapBrush, &pD2DBrush));
+
+    *pBrush = pD2DBrush;
+    pD2DBrush = NULL;
+
+Cleanup:
+    ReleaseObject(pD2DBitmapBrush);
+    ReleaseObject(pD2DBrush);
+
     return hr;
 }

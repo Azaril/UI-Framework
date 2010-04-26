@@ -25,6 +25,10 @@ class CD2DRenderTarget : public CRenderTarget
 
         virtual HRESULT RenderTextLayout( const Point2F& Origin, CTextLayout* pTextLayout, CBrush* pBrush );
 
+        virtual HRESULT LoadBitmap( CBitmapSource* pSource, CBitmap** ppBitmap );
+
+        virtual HRESULT CreateBitmapBrush( CBitmap* pBitmap, CBrush** pBrush );
+
     protected:
         CD2DRenderTarget();
         virtual ~CD2DRenderTarget();

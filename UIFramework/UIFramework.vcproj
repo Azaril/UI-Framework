@@ -222,6 +222,14 @@
 				Name="Graphics"
 				>
 				<File
+					RelativePath=".\Bitmap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Bitmap.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Brush.cpp"
 					>
 				</File>
@@ -256,6 +264,22 @@
 				<Filter
 					Name="D2D"
 					>
+					<File
+						RelativePath=".\D2DBitmap.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DBitmap.h"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DBitmapBrush.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DBitmapBrush.h"
+						>
+					</File>
 					<File
 						RelativePath=".\D2DBitmapRenderTarget.cpp"
 						>
@@ -304,6 +328,46 @@
 						RelativePath=".\D2DSolidColorBrush.h"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="Imaging"
+					>
+					<File
+						RelativePath=".\BitmapSource.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\BitmapSource.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ImagingProvider.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ImagingProvider.h"
+						>
+					</File>
+					<Filter
+						Name="WIC"
+						>
+						<File
+							RelativePath=".\WICBitmapSource.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\WICBitmapSource.h"
+							>
+						</File>
+						<File
+							RelativePath=".\WICImagingProvider.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\WICImagingProvider.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -369,6 +433,14 @@
 						</File>
 						<File
 							RelativePath=".\FrameworkElement.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Image.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Image.h"
 							>
 						</File>
 						<File

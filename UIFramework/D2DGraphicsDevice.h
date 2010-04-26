@@ -16,6 +16,8 @@ class CD2DGraphicsDevice : public CGraphicsDevice
 
         virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider );
 
+        virtual HRESULT GetImagingProvider( CImagingProvider** ppImagingProvider );
+
     protected:
         CD2DGraphicsDevice();
         virtual ~CD2DGraphicsDevice();
@@ -23,8 +25,10 @@ class CD2DGraphicsDevice : public CGraphicsDevice
         HRESULT Initialize( );
 
         virtual HRESULT CreateTextProvider( CTextProvider** ppTextProvider );
+        virtual HRESULT CreateImagingProvider( CImagingProvider** ppImagingProvider );
 
         HMODULE m_D2DModule;
         ID2D1Factory* m_Factory;
         CTextProvider* m_TextProvider;
+        CImagingProvider* m_ImagingProvider;
 };
