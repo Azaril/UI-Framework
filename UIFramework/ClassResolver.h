@@ -1,10 +1,11 @@
 #pragma once
 
 #include "RefCounted.h"
+#include "PropertyObject.h"
 
 class CUIElement;
 
-typedef HRESULT (*CreateTypeFunc)( CUIElement** ppElement );
+typedef HRESULT (*CreateTypeFunc)( CPropertyObject** ppObject );
 
 struct ClassType
 {

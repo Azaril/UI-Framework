@@ -4,7 +4,7 @@
 
 StaticClassProperty ImageProperties[] =
 {
-    { L"Source", FALSE, TypeIndex::ImageSource }
+    { L"Source", FALSE, TypeIndex::Object }
 };
 
 StaticClassProperties ImagePropertyInformation =
@@ -14,8 +14,8 @@ StaticClassProperties ImagePropertyInformation =
 };
 
 CImage::CImage() : m_Source(NULL),
-                   m_Bitmap(NULL),
-                   m_ImageRect(NULL)
+                   m_ImageRect(NULL),
+                   m_ImageBrush(NULL)
 {
 }
 
@@ -34,6 +34,8 @@ HRESULT CImage::Initialize()
 
     IFC(AddChildVisual(m_ImageRect));
 
+    IFC(CImageBrush::Create(&m_ImageBrush));
+
 Cleanup:
     return hr;
 }
@@ -51,24 +53,26 @@ HRESULT CImage::Finalize()
 
     ReleaseObject(m_Source);
 
+    ReleaseObject(m_ImageBrush);
+
 Cleanup:
     return hr;
 }
 
-HRESULT CImage::SetSource( CBitmapSource* pBitmapSource )
-{
-    HRESULT hr = S_OK;
-
-    ReleaseObject(m_Source);
-
-    m_Source = pBitmapSource;
-
-    AddRefObject(m_Source);
-
-    ReleaseObject(m_Bitmap);
-
-    return hr;
-}
+//HRESULT CImage::SetSource(CBitmapSource* pBitmapSource)
+//{
+//    HRESULT hr = S_OK;
+//
+//    ReleaseObject(m_Source);
+//
+//    m_Source = pBitmapSource;
+//    AddRefObject(m_Source);
+//
+//    IFC(m_ImageBrush->SetSource(m_Source));
+//
+//Cleanup:
+//    return hr;
+//}
 
 HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
@@ -78,9 +82,13 @@ HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
     IFC(CFrameworkElement::MeasureInternal(AvailableSize, BaseSize));
 
-    if(m_Source != NULL)
+    if(m_ImageBrush != NULL)
     {
-        IFC(m_Source->GetSize(&ImageSize));
+        //TODO: Fix this!
+        
+        __debugbreak();
+
+        //IFC(m_ImageBrush->GetSize(&ImageSize));
     }
 
     DesiredSize.width = max((FLOAT)ImageSize.width, BaseSize.width);
@@ -99,28 +107,6 @@ HRESULT CImage::Arrange(SizeF Size)
     IFC(CFrameworkElement::Arrange(Size));
 
 Cleanup:
-    return hr;
-}
-
-HRESULT CImage::PreRender(CPreRenderContext& Context)
-{
-    HRESULT hr = S_OK;
-    CBrush* pBrush = NULL;
-
-    if(m_Bitmap == NULL)
-    {
-        IFC(Context.GetRenderTarget()->LoadBitmapW(m_Source, &m_Bitmap));
-
-        IFC(Context.GetRenderTarget()->CreateBitmapBrush(m_Bitmap, &pBrush));
-
-        IFC(m_ImageRect->SetBrush(pBrush));
-    }
-
-    IFC(CFrameworkElement::PreRender(Context));
-
-Cleanup:
-    ReleaseObject(pBrush);
-
     return hr;
 }
 

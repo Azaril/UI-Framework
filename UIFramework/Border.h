@@ -11,12 +11,14 @@ class CBorder : public CDecorator
         virtual TypeIndex::Value GetType() { return TypeIndex::Border; }
         virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Border || CDecorator::IsTypeOf(Type); }
 
+        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+
         virtual HRESULT SetChild( CUIElement* pChild );
 
-        HRESULT SetBackgroundBrush( CBrush* pBrush );
+        HRESULT SetBackground( CBrush* pBrush );
 
         HRESULT SetBorderThickness( const RectF& Border );
-        HRESULT SetBorderBrush( CBrush* pBrush );
+        HRESULT SetBorder( CBrush* pBrush );
 
         HRESULT SetPadding( const RectF& Padding );
 

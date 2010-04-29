@@ -10,16 +10,16 @@ template< typename T >
 class StaticClassFactory
 {
     public:
-        static HRESULT Create(CUIElement** ppElement)
+        static HRESULT Create(CPropertyObject** ppObject)
         {
             HRESULT hr = S_OK;
             T* pElement = NULL;
 
-            IFCPTR(ppElement);
+            IFCPTR(ppObject);
 
             IFC(T::Create(&pElement));
 
-            *ppElement = pElement;
+            *ppObject = pElement;
             pElement = NULL;
 
         Cleanup:
@@ -42,7 +42,8 @@ ClassInformation Info[] =
     //{ L"Grid", { &StaticClassFactory< CGrid >::Create } },
     { L"Image", { &StaticClassFactory< CImage >::Create } },
     { L"StackPanel", { &StaticClassFactory< CStackPanel >::Create } },
-    { L"TextBlock", { &StaticClassFactory< CTextBlock >::Create } }
+    { L"TextBlock", { &StaticClassFactory< CTextBlock >::Create } },
+    { L"ImageBrush", { &StaticClassFactory< CImageBrush >::Create } }
 };
 
 CStaticClassResolver::CStaticClassResolver()

@@ -94,11 +94,11 @@ HRESULT CDecorator::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 
     //TODO: Ensure this property actually belongs to this object.
 
-    IFCEXPECT(pValue->IsTypeOf(pProperty->GetType()));
-
     //TODO: Looking up other than by name would be much better.
     if(wcscmp(pProperty->GetName(), L"Child") == 0)
     {
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElement));
+
         CUIElement* pUIElement = (CUIElement*)pValue;
 
         IFC(SetChild(pUIElement));

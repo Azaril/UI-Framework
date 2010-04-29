@@ -27,13 +27,19 @@ Cleanup:
 HRESULT CParserCallback::GetRootElement(CUIElement** ppRootElement)
 {
     HRESULT hr = S_OK;
+    CPropertyObject* pObject = NULL;
 
     IFCPTR(ppRootElement);
 
     IFCEXPECT(m_ChildNode != NULL);
 
-    *ppRootElement = m_ChildNode->GetUIElement();
-    AddRefObject(*ppRootElement);
+    pObject = m_ChildNode->GetObject();
+    IFCPTR(pObject);
+
+    IFCEXPECT(pObject->IsTypeOf(TypeIndex::UIElement));
+
+    *ppRootElement = (CUIElement*)pObject;
+    AddRefObject(pObject);
 
 Cleanup:
     return hr;
@@ -131,7 +137,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT ElementStartToParserCallback(CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pStart, CElementNodeCallback** ppCallback)
+HRESULT ElementStartToParserCallback(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pStart, CElementNodeCallback** ppCallback)
 {
     HRESULT hr = S_OK;
     CElementNodeCallback* pElementCallback = NULL;
@@ -151,7 +157,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT ElementStartToParserCallback(CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pStart, CPropertyCallback** ppCallback)
+HRESULT ElementStartToParserCallback(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pStart, CPropertyCallback** ppCallback)
 {
     HRESULT hr = S_OK;
     CRichPropertyNodeCallback* pRichPropertyCallback = NULL;
@@ -187,7 +193,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT TextToParserCallback(CParseContext* pContext, CUIElement* pParent, CXMLText* pText, CPropertyCallback** ppCallback)
+HRESULT TextToParserCallback(CParseContext* pContext, CPropertyObject* pParent, CXMLText* pText, CPropertyCallback** ppCallback)
 {
     HRESULT hr = S_OK;
     CContentPropertyNodeCallback* pContentPropertyCallback = NULL;
@@ -325,7 +331,7 @@ CElementNodeCallback::~CElementNodeCallback()
     ReleaseObject(m_ChildNode);
 }
 
-HRESULT CElementNodeCallback::Initialize(CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pXMLStart)
+HRESULT CElementNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart)
 {
     HRESULT hr = S_OK;
     const WCHAR* pElementName = NULL;
@@ -349,7 +355,7 @@ Cleanup:
     return hr;
 }
 
-CUIElement* CElementNodeCallback::GetUIElement()
+CPropertyObject* CElementNodeCallback::GetObject()
 {
     return m_Element;
 }
@@ -512,7 +518,7 @@ CRichPropertyNodeCallback::~CRichPropertyNodeCallback()
     ReleaseObject(m_Property);
 }
 
-HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pXMLStart)
+HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart)
 {
     HRESULT hr = S_OK;
     const WCHAR* pElementName = NULL;
@@ -562,7 +568,7 @@ HRESULT CRichPropertyNodeCallback::OnElementStart(CXMLElementStart* pElementStar
     {
         IFCEXPECT(!m_SetTextValue);
 
-        IFC(ElementStartToParserCallback(m_Context, pElementStart, &m_ChildNode));
+        IFC(ElementStartToParserCallback(m_Context, m_Parent, pElementStart, &m_ChildNode));
 
         m_SetObjectValue = TRUE;
 
@@ -587,6 +593,8 @@ HRESULT CRichPropertyNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, BOO
 
         if(m_ChildNode->IsComplete())
         {
+            IFC(AssignProperty(m_Parent, m_Property, m_ChildNode->GetObject(), m_Context->GetTypeConverter()));
+
             ReleaseObject(m_ChildNode);
         }
     }
@@ -639,6 +647,27 @@ Cleanup:
     return hr;
 }
 
+HRESULT CRichPropertyNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consumed)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pAttribute);
+
+    if(m_ChildNode)
+    {
+        IFCEXPECT(!m_ChildNode->IsComplete());
+
+        IFC(m_ChildNode->OnAttribute(pAttribute, Consumed));
+    }
+    else
+    {
+        IFC(E_UNEXPECTED);
+    }
+
+Cleanup:
+    return hr;
+}
+
 BOOL CRichPropertyNodeCallback::IsComplete()
 {
     return m_Complete;
@@ -662,7 +691,7 @@ CContentPropertyNodeCallback::~CContentPropertyNodeCallback()
     ReleaseObject(m_Property);
 }
 
-HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CUIElement* pParent)
+HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent)
 {
     HRESULT hr = S_OK;
     CPropertyInformation* pProperties = NULL;
@@ -685,7 +714,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pXMLStart)
+HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart)
 {
     HRESULT hr = S_OK;
 
@@ -703,7 +732,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CUIElement* pParent, CXMLText* pXMLText)
+HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CXMLText* pXMLText)
 {
     HRESULT hr = S_OK;
     BOOL Consumed = FALSE;
@@ -761,7 +790,7 @@ HRESULT CContentPropertyNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, 
 
         if(m_ChildNode->IsComplete())
         {
-            IFC(AssignProperty(m_Parent, m_Property, m_ChildNode->GetUIElement(), m_Context->GetTypeConverter()));
+            IFC(AssignProperty(m_Parent, m_Property, m_ChildNode->GetObject(), m_Context->GetTypeConverter()));
 
             ReleaseObject(m_ChildNode);
         }
@@ -802,12 +831,33 @@ Cleanup:
     return hr;
 }
 
+HRESULT CContentPropertyNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consumed)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pAttribute);
+
+    if(m_ChildNode)
+    {
+        IFCEXPECT(!m_ChildNode->IsComplete());
+
+        IFC(m_ChildNode->OnAttribute(pAttribute, Consumed));
+    }
+    else
+    {
+        IFC(E_UNEXPECTED);
+    }
+
+Cleanup:
+    return hr;
+}
+
 BOOL CContentPropertyNodeCallback::IsComplete()
 {
     return m_Complete;
 }
 
-HRESULT AssignProperty(CUIElement* pElement, CProperty* pProperty, CObjectWithType* pValue, CTypeConverter* pTypeConverter)
+HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CTypeConverter* pTypeConverter)
 {
     HRESULT hr = S_OK;
     CObjectWithType* pConvertedType = NULL;

@@ -35,9 +35,26 @@ class CVisualAttachContext
 class CVisualDetachContext 
 {
     public:
-        CVisualDetachContext()
+        CVisualDetachContext() : m_GraphicsDevice(NULL)
         {
         }
+
+        CVisualDetachContext( CGraphicsDevice* pGraphicsDevice ) : m_GraphicsDevice(pGraphicsDevice)
+        {
+        }
+
+        CGraphicsDevice* GetGraphicsDevice()
+        {
+            return m_GraphicsDevice;
+        }
+
+        void Reset()
+        {
+            m_GraphicsDevice = NULL;
+        }
+
+    protected:
+        CGraphicsDevice* m_GraphicsDevice;
 };
 
 class CRenderContext
@@ -111,9 +128,20 @@ class CPreRenderContext
         RenderRootCollection m_RenderRoots;
 };
 
+class CVisualResource
+{
+    public:
+        virtual INT32 AddRef() = 0;
+        virtual INT32 Release() = 0;
+
+        virtual HRESULT OnVisualAttach( CVisualAttachContext& Context ) = 0;
+        virtual HRESULT OnVisualDetach( CVisualDetachContext& Context ) = 0;
+};
+
 class CVisual : public CRefCountedObject
 {
     typedef std::vector< CVisual* > VisualChildCollection;
+    typedef std::vector< CVisualResource* > VisualResourceCollection;
 
     public:
         virtual HRESULT PreRender( CPreRenderContext& Context );
@@ -138,10 +166,14 @@ class CVisual : public CRefCountedObject
         virtual HRESULT MoveToBack( CVisual* pVisualChild );
         virtual HRESULT MoveToFront( CVisual* pVisualChild );
 
+        virtual HRESULT AddVisualResource( CVisualResource* pVisualResource );
+        virtual HRESULT RemoveVisualResource( CVisualResource* pVisualResource );
+
         virtual HRESULT RenderTransformed( CRenderContext& Context );
 
         CVisualAttachContext m_VisualContext;
         VisualChildCollection m_VisualChildren;
+        VisualResourceCollection m_VisualResources;
         Matrix3X2 m_VisualTransform;
         BOOL m_VisualAttached;
 };

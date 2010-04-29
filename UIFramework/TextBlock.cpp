@@ -17,7 +17,8 @@ StaticClassProperties TextBlockPropertyInformation =
 
 CTextBlock::CTextBlock() : m_TextLayout(NULL),
                            m_TextFormat(NULL),
-                           m_TextBrush(NULL)
+                           m_TextBrush(NULL),
+                           m_TextGraphicsBrush(NULL)
 {
 }
 
@@ -26,6 +27,7 @@ CTextBlock::~CTextBlock()
     ReleaseObject(m_TextLayout);
     ReleaseObject(m_TextFormat);
     ReleaseObject(m_TextBrush);
+    ReleaseObject(m_TextGraphicsBrush);
 }
 
 HRESULT CTextBlock::SetText(const WCHAR* pText)
@@ -117,7 +119,7 @@ HRESULT CTextBlock::RenderTransformed(CRenderContext& Context)
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
     Point2F TextOrigin = { 0 };
-    CBrush* pTextBrush = NULL;
+    CGraphicsBrush* pTextBrush = NULL;
 
     IFC(CFrameworkElement::RenderTransformed(Context));
 
@@ -132,8 +134,13 @@ HRESULT CTextBlock::RenderTransformed(CRenderContext& Context)
         }
         else
         {
-            pTextBrush = m_TextBrush;
-            AddRefObject(m_TextBrush);
+            //TODO: Figure out brush semantics...
+            __debugbreak();
+
+            IFC(m_TextBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &pTextBrush));
+
+            //pTextBrush = m_TextBrush;
+            //AddRefObject(m_TextBrush);
         }
 
         IFC(pRenderTarget->RenderTextLayout(TextOrigin, m_TextLayout, pTextBrush));  
@@ -178,11 +185,11 @@ HRESULT CTextBlock::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 
     //TODO: Ensure this property actually belongs to this object.
 
-    IFCEXPECT(pValue->IsTypeOf(pProperty->GetType()));
-
     //TODO: Looking up other than by name would be much better.
     if(wcscmp(pProperty->GetName(), L"Text") == 0)
     {
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
+
         CStringValue* pText = (CStringValue*)pValue;
 
         IFC(SetText(pText->GetValue()));

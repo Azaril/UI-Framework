@@ -4,6 +4,7 @@
 
 StaticClassProperty BorderProperties[] =
 {
+    { L"Background", FALSE, TypeIndex::Brush },
     { L"Padding", FALSE, TypeIndex::RectF }
 };
 
@@ -72,7 +73,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBorder::SetBackgroundBrush(CBrush* pBrush)
+HRESULT CBorder::SetBackground(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
@@ -96,7 +97,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBorder::SetBorderBrush(CBrush* pBrush)
+HRESULT CBorder::SetBorder(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
@@ -192,5 +193,41 @@ Cleanup:
     ReleaseObject(pBaseInformation);
     ReleaseObject(pDelegatingProperyInformation);
 
+    return hr;
+}
+
+HRESULT CBorder::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    //TODO: Ensure this property actually belongs to this object.
+
+    //TODO: Looking up other than by name would be much better.
+    if(wcscmp(pProperty->GetName(), L"Background") == 0)
+    {
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Brush));
+
+        CBrush* pBrush = (CBrush*)pValue;
+
+        IFC(SetBackground(pBrush));
+    }
+    else if(wcscmp(pProperty->GetName(), L"Padding") == 0)
+    {
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::RectF));
+        //TODO: Implement.
+
+        __debugbreak();
+
+        IFC(E_FAIL);
+    }
+    else
+    {
+        IFC(CDecorator::SetValue(pProperty, pValue));
+    }
+
+Cleanup:
     return hr;
 }

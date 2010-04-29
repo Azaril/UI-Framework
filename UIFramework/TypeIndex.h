@@ -4,21 +4,26 @@ namespace TypeIndex
 {
     enum Value
     {
-        Float,
-        String,
-        RectF,
+        Object,
 
-        UIElement,
-            FrameworkElement,
-                Panel,
-                    StackPanel,
-                    Canvas,
-                    Grid,
-                Image,
-                Decorator,
-                    Border,
-                TextBlock,
+            Float,
+            String,
+            RectF,
 
-        ImageSource
+            UIElement,
+                FrameworkElement,
+                    Panel,
+                        StackPanel,
+                        Canvas,
+                        Grid,
+                    Image,
+                    Decorator,
+                        Border,
+                    TextBlock,
+
+            BitmapSource,
+
+            Brush,
+                ImageBrush
     };
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FrameworkElement.h"
+#include "ImageBrush.h"
 
 class CImage : public CFrameworkElement
 {
@@ -10,11 +11,9 @@ class CImage : public CFrameworkElement
         virtual TypeIndex::Value GetType() { return TypeIndex::Image; }
         virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Image || CFrameworkElement::IsTypeOf(Type); }
 
-        virtual HRESULT PreRender( CPreRenderContext& Context );
-
         virtual HRESULT Arrange( SizeF Size );
 
-        HRESULT SetSource( CBitmapSource* pBitmapSource );
+        /*HRESULT SetSource( CBitmapSource* pBitmapSource );*/
 
     protected:
         CImage();
@@ -27,7 +26,10 @@ class CImage : public CFrameworkElement
 
         virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        CBitmapSource* m_Source;
+        HRESULT InternalSetSource( CObjectWithType* pSource );
+
+        CObjectWithType* m_Source;
+        CBitmapSource* m_BitmapSource;
+        CImageBrush* m_ImageBrush;
         CRectangleVisual* m_ImageRect;
-        CBitmap* m_Bitmap;
 };

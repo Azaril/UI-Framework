@@ -47,9 +47,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CCanvas* pCanvas = NULL;
     CStackPanel* pStackPanel = NULL;
     CStackPanel* pChildStackPanel = NULL;
-    CBrush* pWhiteSolidBrush = NULL;
-    CBrush* pBlueSolidBrush = NULL;
-    CBrush* pRedSolidBrush = NULL;
+    CGraphicsBrush* pWhiteSolidBrush = NULL;
+    CGraphicsBrush* pBlueSolidBrush = NULL;
+    CGraphicsBrush* pRedSolidBrush = NULL;
     CBitmapSource* pBitmapSource = NULL;
     CBorder* pRootBorder = NULL;    
     CUIElement* pParsedRoot = NULL;

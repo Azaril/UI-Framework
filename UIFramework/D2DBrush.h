@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Brush.h"
+#include "GraphicsBrush.h"
 
-class CD2DBrush : public CBrush
+class CD2DBrush : public CGraphicsBrush
 {
     public:
         virtual ID2D1Brush* GetD2DBrush();

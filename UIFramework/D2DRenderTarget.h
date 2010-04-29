@@ -17,17 +17,17 @@ class CD2DRenderTarget : public CRenderTarget
 
         virtual HRESULT Clear( ColorF Color );
 
-        virtual HRESULT CreateSolidBrush( ColorF Color, CBrush** ppBrush );
-        virtual HRESULT GetDefaultBrush( DefaultBrush::Value Type, CBrush** ppBrush );
+        virtual HRESULT CreateSolidBrush( ColorF Color, CGraphicsBrush** ppBrush );
+        virtual HRESULT GetDefaultBrush( DefaultBrush::Value Type, CGraphicsBrush** ppBrush );
 
-        virtual HRESULT DrawRectangle( const RectF& Size, CBrush* pBrush );
-        virtual HRESULT FillRectangle( const RectF& Size, CBrush* pBrush );
+        virtual HRESULT DrawRectangle( const RectF& Size, CGraphicsBrush* pBrush );
+        virtual HRESULT FillRectangle( const RectF& Size, CGraphicsBrush* pBrush );
 
-        virtual HRESULT RenderTextLayout( const Point2F& Origin, CTextLayout* pTextLayout, CBrush* pBrush );
+        virtual HRESULT RenderTextLayout( const Point2F& Origin, CTextLayout* pTextLayout, CGraphicsBrush* pBrush );
 
         virtual HRESULT LoadBitmap( CBitmapSource* pSource, CBitmap** ppBitmap );
 
-        virtual HRESULT CreateBitmapBrush( CBitmap* pBitmap, CBrush** pBrush );
+        virtual HRESULT CreateBitmapBrush( CBitmap* pBitmap, CGraphicsBrush** CGraphicsBrush );
 
     protected:
         CD2DRenderTarget();

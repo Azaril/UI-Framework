@@ -11,7 +11,7 @@ class CFloatValue : public CRefCountedObjectBase< CObjectWithType >
         DECLARE_FACTORY1( CFloatValue, FLOAT );
 
         virtual TypeIndex::Value GetType() { return TypeIndex::Float; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Float; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Float || CObjectWithType::IsTypeOf(Type); }
 
         virtual FLOAT GetValue();
 
@@ -28,7 +28,7 @@ class CStringValue : public CRefCountedObjectBase< CObjectWithType >
         DECLARE_FACTORY2( CStringValue, const WCHAR*, UINT32 );
 
         virtual TypeIndex::Value GetType() { return TypeIndex::String; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::String; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::String || CObjectWithType::IsTypeOf(Type); }
 
         const WCHAR* GetValue();
 

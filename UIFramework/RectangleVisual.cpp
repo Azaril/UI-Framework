@@ -1,7 +1,9 @@
 #include "RectangleVisual.h"
 
 CRectangleVisual::CRectangleVisual() : m_Brush(NULL),
-                                       m_OutlineBrush(NULL)
+                                       m_GraphicsBrush(NULL),
+                                       m_OutlineBrush(NULL),
+                                       m_OutlineGraphicsBrush(NULL)
 {
     m_Position.x = 0;
     m_Position.y = 0;
@@ -18,6 +20,9 @@ CRectangleVisual::CRectangleVisual() : m_Brush(NULL),
 CRectangleVisual::~CRectangleVisual()
 {
     ReleaseObject(m_Brush);
+    ReleaseObject(m_GraphicsBrush);
+    ReleaseObject(m_OutlineBrush);
+    ReleaseObject(m_OutlineGraphicsBrush);
 }
 
 HRESULT CRectangleVisual::Initialize()
@@ -34,12 +39,27 @@ HRESULT CRectangleVisual::SetBrush(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
-    ReleaseObject(m_Brush);
+    if(m_Brush)
+    {
+        IFC(RemoveVisualResource(m_Brush));
+
+        ReleaseObject(m_Brush);
+    }
+
+    ReleaseObject(m_GraphicsBrush);
 
     m_Brush = pBrush;
 
-    AddRefObject(m_Brush);
+    if(m_Brush)
+    {
+        m_Brush = pBrush;
 
+        AddRefObject(m_Brush);
+
+        IFC(AddVisualResource(m_Brush));
+    }
+
+Cleanup:
     return hr;
 }
 
@@ -47,12 +67,27 @@ HRESULT CRectangleVisual::SetOutlineBrush(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
-    ReleaseObject(m_OutlineBrush);
+    if(m_OutlineBrush)
+    {
+        IFC(RemoveVisualResource(m_OutlineBrush));
+
+        ReleaseObject(m_OutlineBrush);
+    }
+
+    ReleaseObject(m_OutlineGraphicsBrush);
 
     m_OutlineBrush = pBrush;
 
-    AddRefObject(m_OutlineBrush);
+    if(m_OutlineBrush)
+    {
+        m_OutlineBrush = pBrush;
 
+        AddRefObject(m_OutlineBrush);
+
+        IFC(AddVisualResource(m_OutlineBrush));
+    }
+
+Cleanup:
     return hr;
 }
 
@@ -83,6 +118,34 @@ HRESULT CRectangleVisual::SetBorderThickness(RectF Thickness)
     return hr;
 }
 
+HRESULT CRectangleVisual::PreRender(CPreRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+    CRenderTarget* pRenderTarget = NULL;
+
+    pRenderTarget = Context.GetRenderTarget();
+    IFCPTR(pRenderTarget);
+
+    if(m_Brush != NULL && m_GraphicsBrush == NULL)
+    {
+        if(FAILED(m_Brush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_GraphicsBrush)))
+        {
+            m_GraphicsBrush = NULL;
+        }
+    }
+
+    if(m_OutlineBrush != NULL && m_OutlineGraphicsBrush == NULL)
+    {
+        if(FAILED(m_OutlineBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_OutlineGraphicsBrush)))
+        {
+            m_OutlineGraphicsBrush = NULL;
+        }
+    }
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CRectangleVisual::RenderTransformed(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
@@ -93,14 +156,14 @@ HRESULT CRectangleVisual::RenderTransformed(CRenderContext& Context)
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);    
 
-    if(m_Brush != NULL)
+    if(m_GraphicsBrush != NULL)
     {
-        IFC(pRenderTarget->FillRectangle(Rect, m_Brush));
+        IFC(pRenderTarget->FillRectangle(Rect, m_GraphicsBrush));
     }
 
-    if(m_OutlineBrush != NULL)
+    if(m_OutlineGraphicsBrush != NULL)
     {
-        IFC(pRenderTarget->DrawRectangle(Rect, m_OutlineBrush));
+        IFC(pRenderTarget->DrawRectangle(Rect, m_OutlineGraphicsBrush));
     }
 
     IFC(CVisual::RenderTransformed(Context));

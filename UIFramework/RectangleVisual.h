@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Visual.h"
+#include "Brush.h"
 
 class CRectangleVisual : public CVisual
 {
@@ -14,6 +15,8 @@ class CRectangleVisual : public CVisual
         HRESULT SetBrush( CBrush* pBrush );
         HRESULT SetOutlineBrush( CBrush* pBrush );
 
+        virtual HRESULT PreRender( CPreRenderContext& Context );
+
     protected:
         CRectangleVisual();
         virtual ~CRectangleVisual();
@@ -26,5 +29,7 @@ class CRectangleVisual : public CVisual
         Point2F m_Position;
         RectF m_BorderThickness;
         CBrush* m_Brush;
+        CGraphicsBrush* m_GraphicsBrush;
         CBrush* m_OutlineBrush;
+        CGraphicsBrush* m_OutlineGraphicsBrush;
 };

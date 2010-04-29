@@ -70,7 +70,7 @@ HRESULT CD2DRenderTarget::Clear(ColorF Color)
     return hr;
 }
 
-HRESULT CD2DRenderTarget::CreateSolidBrush(ColorF Color, CBrush** ppBrush)
+HRESULT CD2DRenderTarget::CreateSolidBrush(ColorF Color, CGraphicsBrush** ppBrush)
 {
     HRESULT hr = S_OK;
     ID2D1SolidColorBrush* pD2DSolidColorBrush = NULL;
@@ -92,7 +92,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::GetDefaultBrush(DefaultBrush::Value Type, CBrush** ppBrush)
+HRESULT CD2DRenderTarget::GetDefaultBrush(DefaultBrush::Value Type, CGraphicsBrush** ppBrush)
 {
     HRESULT hr = S_OK;
 
@@ -117,7 +117,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::DrawRectangle(const RectF& Size, CBrush* pBrush)
+HRESULT CD2DRenderTarget::DrawRectangle(const RectF& Size, CGraphicsBrush* pBrush)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
@@ -132,7 +132,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::FillRectangle(const RectF& Size, CBrush* pBrush)
+HRESULT CD2DRenderTarget::FillRectangle(const RectF& Size, CGraphicsBrush* pBrush)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
@@ -155,7 +155,7 @@ Cleanup:
     //return hr;
 //}
 
-HRESULT CD2DRenderTarget::RenderTextLayout(const Point2F& Origin, CTextLayout* pTextLayout, CBrush* pBrush)
+HRESULT CD2DRenderTarget::RenderTextLayout(const Point2F& Origin, CTextLayout* pTextLayout, CGraphicsBrush* pBrush)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
@@ -199,7 +199,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::CreateBitmapBrush(CBitmap* pBitmap, CBrush** pBrush)
+HRESULT CD2DRenderTarget::CreateBitmapBrush(CBitmap* pBitmap, CGraphicsBrush** pBrush)
 {
     HRESULT hr = S_OK;
     CD2DBitmap* pD2DBitmap = NULL;

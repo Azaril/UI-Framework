@@ -11,11 +11,15 @@ CWICImagingProvider::CWICImagingProvider() : m_Factory(NULL)
 CWICImagingProvider::~CWICImagingProvider()
 {
     ReleaseObject(m_Factory);
+
+    CoUninitialize();
 }
 
 HRESULT CWICImagingProvider::Initialize()
 {
     HRESULT hr = S_OK;
+
+    IFC(CoInitializeEx(NULL, COINIT_APARTMENTTHREADED));
 
     IFC(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_Factory));
 

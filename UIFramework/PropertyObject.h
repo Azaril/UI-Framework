@@ -2,6 +2,7 @@
 
 #include "Types.h"
 #include "RefCounted.h"
+#include "TypeIndex.h"
 
 namespace TypeIndex
 {
@@ -28,8 +29,8 @@ class CObjectWithType
         virtual INT32 AddRef() = 0;
         virtual INT32 Release() = 0;
 
-        virtual TypeIndex::Value GetType() = 0;
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) = 0;
+        virtual TypeIndex::Value GetType() { return TypeIndex::Object; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Object; }
 };
 
 class CPropertyObject : public CObjectWithType

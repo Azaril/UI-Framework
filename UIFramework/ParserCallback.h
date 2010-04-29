@@ -61,9 +61,9 @@ class CPropertyCallback : public CParserNodeCallback
 class CElementNodeCallback : public CParserNodeCallback
 {
     public:
-        DECLARE_FACTORY3( CElementNodeCallback, CParseContext*, CUIElement*, CXMLElementStart* );
+        DECLARE_FACTORY3( CElementNodeCallback, CParseContext*, CPropertyObject*, CXMLElementStart* );
 
-        CUIElement* GetUIElement();
+        CPropertyObject* GetObject();
 
         virtual BOOL IsComplete();
 
@@ -76,9 +76,9 @@ class CElementNodeCallback : public CParserNodeCallback
         CElementNodeCallback();
         virtual ~CElementNodeCallback();
 
-        HRESULT Initialize( CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pXMLStart );
+        HRESULT Initialize( CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart );
 
-        CUIElement* m_Element;
+        CPropertyObject* m_Element;
         CPropertyCallback* m_ChildNode;
         BOOL m_Complete;
 };
@@ -86,7 +86,7 @@ class CElementNodeCallback : public CParserNodeCallback
 class CRichPropertyNodeCallback : public CPropertyCallback
 {
     public:
-        DECLARE_FACTORY3( CRichPropertyNodeCallback, CParseContext*, CUIElement*, CXMLElementStart* );
+        DECLARE_FACTORY3( CRichPropertyNodeCallback, CParseContext*, CPropertyObject*, CXMLElementStart* );
 
         virtual BOOL IsComplete();
 
@@ -97,10 +97,11 @@ class CRichPropertyNodeCallback : public CPropertyCallback
         virtual HRESULT OnElementStart( CXMLElementStart* pElementStart, BOOL& Consumed );
         virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd, BOOL& Consumed );
         virtual HRESULT OnText( CXMLText* pText, BOOL& Consumed );
+        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute, BOOL& Consumed );
 
-        HRESULT Initialize( CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pXMLStart );
+        HRESULT Initialize( CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart );
 
-        CUIElement* m_Parent;
+        CPropertyObject* m_Parent;
         BOOL m_Complete;
         BOOL m_SetTextValue;
         BOOL m_SetObjectValue;
@@ -111,24 +112,25 @@ class CRichPropertyNodeCallback : public CPropertyCallback
 class CContentPropertyNodeCallback : public CPropertyCallback
 {
     public:
-        DECLARE_FACTORY3( CContentPropertyNodeCallback, CParseContext*, CUIElement*, CXMLElementStart* );
-        DECLARE_FACTORY3( CContentPropertyNodeCallback, CParseContext*, CUIElement*, CXMLText* );
+        DECLARE_FACTORY3( CContentPropertyNodeCallback, CParseContext*, CPropertyObject*, CXMLElementStart* );
+        DECLARE_FACTORY3( CContentPropertyNodeCallback, CParseContext*, CPropertyObject*, CXMLText* );
 
         virtual BOOL IsComplete();
 
         virtual HRESULT OnElementStart( CXMLElementStart* pElementStart, BOOL& Consumed );
         virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd, BOOL& Consumed );
         virtual HRESULT OnText( CXMLText* pText, BOOL& Consumed );
+        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute, BOOL& Consumed );
 
     protected:
         CContentPropertyNodeCallback();
         virtual ~CContentPropertyNodeCallback();
 
-        HRESULT Initialize( CParseContext* pParseContext, CUIElement* pParent );
-        HRESULT Initialize( CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pXMLStart );
-        HRESULT Initialize( CParseContext* pContext, CUIElement* pParent, CXMLText* pXMLText );
+        HRESULT Initialize( CParseContext* pParseContext, CPropertyObject* pParent );
+        HRESULT Initialize( CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart );
+        HRESULT Initialize( CParseContext* pContext, CPropertyObject* pParent, CXMLText* pXMLText );
 
-        CUIElement* m_Parent;
+        CPropertyObject* m_Parent;
         BOOL m_Complete;
         BOOL m_SetTextValue;
         BOOL m_SetObjectValue;
@@ -160,8 +162,8 @@ class CParserCallback : public CRefCountedObject,
 };
 
 HRESULT ElementStartToParserCallback( CParseContext* pContext, CXMLElementStart* pStart, CElementNodeCallback** ppCallback );
-HRESULT ElementStartToParserCallback( CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pStart, CElementNodeCallback** ppCallback );
-HRESULT ElementStartToParserCallback( CParseContext* pContext, CUIElement* pParent, CXMLElementStart* pStart, CPropertyCallback** ppCallback );
-HRESULT TextToParserCallback( CParseContext* pContext, CUIElement* pParent, CXMLText* pText, CPropertyCallback** ppCallback );
+HRESULT ElementStartToParserCallback( CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pStart, CElementNodeCallback** ppCallback );
+HRESULT ElementStartToParserCallback( CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pStart, CPropertyCallback** ppCallback );
+HRESULT TextToParserCallback( CParseContext* pContext, CPropertyObject* pParent, CXMLText* pText, CPropertyCallback** ppCallback );
 
-HRESULT AssignProperty( CUIElement* pElement, CProperty* pProperty, CObjectWithType* pValue, CTypeConverter* pTypeConverter );
+HRESULT AssignProperty( CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CTypeConverter* pTypeConverter );

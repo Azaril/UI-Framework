@@ -91,7 +91,10 @@ class CUIElement : public CVisual,
         DELEGATE_REFCOUNTING( CVisual );
 
         virtual TypeIndex::Value GetType() { return TypeIndex::UIElement; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::UIElement; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::UIElement || CPropertyObject::IsTypeOf(Type); }
+
+        virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
+        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
@@ -112,9 +115,6 @@ class CUIElement : public CVisual,
         BOOL IsArrangeDirty();
 
         virtual CUIElement* GetParent();
-
-        virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
     
     protected:
         CUIElement();

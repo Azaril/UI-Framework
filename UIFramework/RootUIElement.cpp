@@ -45,7 +45,7 @@ HRESULT CRootUIElement::Finalize()
     }
 
     {
-        CVisualDetachContext VisualContext;
+        CVisualDetachContext VisualContext(m_VisualContext.GetGraphicsDevice());
 
         IFC(OnVisualDetach(VisualContext));
     }

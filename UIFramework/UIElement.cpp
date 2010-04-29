@@ -318,20 +318,26 @@ HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 
     //TODO: Ensure this property actually belongs to this object.
 
-    IFCEXPECT(pValue->IsTypeOf(pProperty->GetType()));
-
     //TODO: Looking up other than by name would be much better.
     if(wcscmp(pProperty->GetName(), L"Height") == 0)
     {
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
         CFloatValue* pFloat = (CFloatValue*)pValue;
 
         IFC(InternalSetHeight(pFloat->GetValue()));
     }
     else if(wcscmp(pProperty->GetName(), L"Width") == 0)
     {
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
         CFloatValue* pFloat = (CFloatValue*)pValue;
 
         IFC(InternalSetWidth(pFloat->GetValue()));
+    }
+    else
+    {
+        IFC(E_FAIL);
     }
 
 Cleanup:
