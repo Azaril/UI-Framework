@@ -4,7 +4,7 @@
 
 StaticClassProperty BorderProperties[] =
 {
-    { L"Padding", TRUE, TypeIndex::RectF }
+    { L"Padding", FALSE, TypeIndex::RectF }
 };
 
 StaticClassProperties BorderPropertyInformation =

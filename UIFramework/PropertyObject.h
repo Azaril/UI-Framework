@@ -27,10 +27,12 @@ class CObjectWithType
     public:
         virtual INT32 AddRef() = 0;
         virtual INT32 Release() = 0;
+
         virtual TypeIndex::Value GetType() = 0;
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) = 0;
 };
 
-class CPropertyObject
+class CPropertyObject : public CObjectWithType
 {
     public:
         virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation ) = 0;

@@ -27,6 +27,9 @@ CUIElement::CUIElement() : m_Attached(FALSE),
 
     m_LastMeasureSize.width = 0;
     m_LastMeasureSize.height = 0;
+
+    m_FinalSize.width = 0;
+    m_FinalSize.width = 0;
 }
 
 CUIElement::~CUIElement()
@@ -314,7 +317,8 @@ HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pValue);
 
     //TODO: Ensure this property actually belongs to this object.
-    IFCEXPECT(pProperty->GetType() == pValue->GetType());
+
+    IFCEXPECT(pValue->IsTypeOf(pProperty->GetType()));
 
     //TODO: Looking up other than by name would be much better.
     if(wcscmp(pProperty->GetName(), L"Height") == 0)

@@ -5,13 +5,13 @@
 class CXMLElementStart
 {
     public:
-        virtual HRESULT GetName( WCHAR* pNameBuffer, UINT32 NameBufferLength ) = 0;
+        virtual HRESULT GetName( const WCHAR** ppNameBuffer, UINT32* pNameBufferLength ) = 0;
 };
 
 class CXMLElementEnd
 {
     public:
-        virtual HRESULT GetName( WCHAR* pNameBuffer, UINT32 NameBufferLength ) = 0;
+        virtual HRESULT GetName( const WCHAR** ppNameBuffer, UINT32* pNameBufferLength ) = 0;
 };
 
 class CXMLText
@@ -20,12 +20,20 @@ class CXMLText
         virtual HRESULT GetText( const WCHAR** ppText, UINT32* pTextLength ) = 0;
 };
 
+class CXMLAttribute
+{
+    public:
+        virtual HRESULT GetName( const WCHAR** ppNameBuffer, UINT32* pNameBufferLength ) = 0;
+        virtual HRESULT GetValue( const WCHAR** ppValueBuffer, UINT32* pValueBufferLength ) = 0;
+};
+
 class CXMLReaderCallback
 {
     public:
         virtual HRESULT OnElementStart( CXMLElementStart* pElementStart ) = 0;
         virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd ) = 0;
         virtual HRESULT OnText( CXMLText* pElementEnd ) = 0;
+        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute ) = 0;
 };
 
 class CXMLReader : public CRefCountedObject

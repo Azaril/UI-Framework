@@ -7,6 +7,9 @@ class CImage : public CFrameworkElement
     public:
         DECLARE_FACTORY( CImage );
 
+        virtual TypeIndex::Value GetType() { return TypeIndex::Image; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Image || CFrameworkElement::IsTypeOf(Type); }
+
         virtual HRESULT PreRender( CPreRenderContext& Context );
 
         virtual HRESULT Arrange( SizeF Size );

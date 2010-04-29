@@ -30,6 +30,7 @@ class CParserXMLCallback
     virtual HRESULT OnElementStart( CXMLElementStart* pElementStart, BOOL& Consumed ) = 0;
     virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd, BOOL& Consumed ) = 0;
     virtual HRESULT OnText( CXMLText* pText, BOOL& Consumed ) = 0;
+    virtual HRESULT OnAttribute( CXMLAttribute* pAttribute, BOOL& Consumed ) = 0;
 };
 
 class CParserNodeCallback : public CRefCountedObject,
@@ -41,6 +42,7 @@ class CParserNodeCallback : public CRefCountedObject,
         virtual HRESULT OnElementStart( CXMLElementStart* pElementStart, BOOL& Consumed );
         virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd, BOOL& Consumed );
         virtual HRESULT OnText( CXMLText* pText, BOOL& Consumed );
+        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute, BOOL& Consumed );
 
     protected:
         CParserNodeCallback();
@@ -68,6 +70,7 @@ class CElementNodeCallback : public CParserNodeCallback
         virtual HRESULT OnElementStart( CXMLElementStart* pElementStart, BOOL& Consumed );
         virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd, BOOL& Consumed );
         virtual HRESULT OnText( CXMLText* pText, BOOL& Consumed );
+        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute, BOOL& Consumed );
 
     protected:
         CElementNodeCallback();
@@ -77,7 +80,6 @@ class CElementNodeCallback : public CParserNodeCallback
 
         CUIElement* m_Element;
         CPropertyCallback* m_ChildNode;
-        WCHAR m_ElementName[1024];
         BOOL m_Complete;
 };
 
@@ -143,6 +145,7 @@ class CParserCallback : public CRefCountedObject,
         virtual HRESULT OnElementStart( CXMLElementStart* pElementStart );
         virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd );
         virtual HRESULT OnText( CXMLText* pText );
+        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute );
 
         virtual HRESULT GetRootElement( CUIElement** ppRootElement );
 

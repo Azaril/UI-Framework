@@ -6,14 +6,14 @@ template< typename T = Nothing >
 class CRefCountedObjectBase : public T
 {
     public:
-        INT32 AddRef()
+        virtual INT32 AddRef()
         {
             ++m_Ref;
             
             return m_Ref;
         }
         
-        INT32 Release()
+        virtual INT32 Release()
         {
             INT32 Ref = --m_Ref;
             
@@ -40,14 +40,14 @@ template< >
 class CRefCountedObjectBase< Nothing >
 {
     public:
-        INT32 AddRef()
+        virtual INT32 AddRef()
         {
             ++m_Ref;
             
             return m_Ref;
         }
         
-        INT32 Release()
+        virtual INT32 Release()
         {
             INT32 Ref = --m_Ref;
             
@@ -58,6 +58,7 @@ class CRefCountedObjectBase< Nothing >
             
             return Ref;
         }
+
     protected:
         CRefCountedObjectBase() : m_Ref(1)
         {
@@ -89,4 +90,14 @@ void ReleaseObject( T*& pObj )
         pObj->Release();
         pObj = NULL;
     }
+}
+
+#define DELEGATE_REFCOUNTING( base )    \
+virtual INT32 AddRef()  \
+{   \
+    return base::AddRef();  \
+}   \
+virtual INT32 Release() \
+{   \
+    return base::Release(); \
 }

@@ -88,7 +88,10 @@ class CUIElement : public CVisual,
                    public CPropertyObject
 {
     public:
+        DELEGATE_REFCOUNTING( CVisual );
+
         virtual TypeIndex::Value GetType() { return TypeIndex::UIElement; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::UIElement; }
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );

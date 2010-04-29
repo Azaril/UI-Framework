@@ -84,3 +84,30 @@ Cleanup:
 
     return hr;
 }
+
+HRESULT CDecorator::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    //TODO: Ensure this property actually belongs to this object.
+
+    IFCEXPECT(pValue->IsTypeOf(pProperty->GetType()));
+
+    //TODO: Looking up other than by name would be much better.
+    if(wcscmp(pProperty->GetName(), L"Child") == 0)
+    {
+        CUIElement* pUIElement = (CUIElement*)pValue;
+
+        IFC(SetChild(pUIElement));
+    }
+    else
+    {
+        IFC(CFrameworkElement::SetValue(pProperty, pValue));
+    }
+
+Cleanup:
+    return hr;
+}

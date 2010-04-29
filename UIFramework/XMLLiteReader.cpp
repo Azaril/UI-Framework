@@ -79,6 +79,7 @@ Cleanup:
 HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* pCallback)
 {
     HRESULT hr = S_OK;
+    WCHAR* pNameCopy = NULL;
 
     IFCPTR(pReader);
     IFCPTR(pCallback);
@@ -91,19 +92,50 @@ HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* p
         {
             case XmlNodeType_Element:
                 {
-                    IFC(RaiseElementStart(pReader, pCallback));
+                    const WCHAR* pName = NULL;
+                    UINT32 NameLength = 0;
+
+                    IFC(pReader->GetLocalName(&pName, &NameLength));
+
+                    pNameCopy = new WCHAR[NameLength + 1];
+                    IFCOOM(pNameCopy);
+
+                    IFC(StringCchCopyN(pNameCopy, NameLength + 1, pName, NameLength));
+
+                    IFC(RaiseElementStart(pNameCopy, NameLength, pCallback));
+
+                    while(S_OK == (hr = pReader->MoveToNextAttribute()))
+                    {
+                        IFC(RaiseAttribute(pReader, pCallback));
+                    }
 
                     if(pReader->IsEmptyElement())
                     {
-                        IFC(RaiseElementEnd(pReader, pCallback));
+                        IFC(RaiseElementEnd(pNameCopy, NameLength, pCallback));
                     }
+
+                    delete pNameCopy;
+                    pNameCopy = NULL;
 
                     break;
                 }
 
             case XmlNodeType_EndElement:
                 {
-                    IFC(RaiseElementEnd(pReader, pCallback));
+                    const WCHAR* pName = NULL;
+                    UINT32 NameLength = 0;
+
+                    IFC(pReader->GetLocalName(&pName, &NameLength));
+
+                    pNameCopy = new WCHAR[NameLength + 1];
+                    IFCOOM(pNameCopy);
+
+                    IFC(StringCchCopyN(pNameCopy, NameLength + 1, pName, NameLength));
+
+                    IFC(RaiseElementEnd(pNameCopy, NameLength, pCallback));
+
+                    delete pNameCopy;
+                    pNameCopy = NULL;
 
                     break;
                 }
@@ -118,18 +150,20 @@ HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* p
     }
 
 Cleanup:
+    delete pNameCopy;
+
     return hr;
 }
 
-HRESULT CXMLLiteReader::RaiseElementStart(IXmlReader* pReader, CXMLReaderCallback* pCallback)
+HRESULT CXMLLiteReader::RaiseElementStart(const WCHAR* pName, UINT32 NameLength, CXMLReaderCallback* pCallback)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pReader);
+    IFCPTR(pName);
     IFCPTR(pCallback);
     
     {
-        CXMLLiteXMLElementStart ElementStart(pReader);
+        CXMLLiteXMLElementStart ElementStart(pName, NameLength);
 
         IFC(pCallback->OnElementStart(&ElementStart));
     }
@@ -138,15 +172,15 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteReader::RaiseElementEnd(IXmlReader* pReader, CXMLReaderCallback* pCallback)
+HRESULT CXMLLiteReader::RaiseElementEnd(const WCHAR* pName, UINT32 NameLength, CXMLReaderCallback* pCallback)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pReader);
+    IFCPTR(pName);
     IFCPTR(pCallback);
     
     {
-        CXMLLiteXMLElementEnd ElementEnd(pReader);
+        CXMLLiteXMLElementEnd ElementEnd(pName, NameLength);
 
         IFC(pCallback->OnElementEnd(&ElementEnd));
     }
@@ -172,41 +206,60 @@ Cleanup:
     return hr;
 }
 
-CXMLLiteXMLElementStart::CXMLLiteXMLElementStart(IXmlReader* pReader) : m_Reader(pReader)
-{
-}
-
-HRESULT CXMLLiteXMLElementStart::GetName(WCHAR* pNameBuffer, UINT32 NameBufferLength)
+HRESULT CXMLLiteReader::RaiseAttribute(IXmlReader* pReader, CXMLReaderCallback* pCallback)
 {
     HRESULT hr = S_OK;
-    const WCHAR* pInternalBuffer = NULL;
-    UINT32 InternalBufferLength = 0;
 
-    IFCPTR(pNameBuffer);
+    IFCPTR(pReader);
+    IFCPTR(pCallback);
+    
+    {
+        CXMLLiteXMLAttribute Attribute(pReader);
 
-    IFC(m_Reader->GetLocalName(&pInternalBuffer, &InternalBufferLength));
-
-    IFC(StringCchCopyN(pNameBuffer, NameBufferLength, pInternalBuffer, InternalBufferLength));
+        IFC(pCallback->OnAttribute(&Attribute));
+    }
 
 Cleanup:
     return hr;
 }
 
-CXMLLiteXMLElementEnd::CXMLLiteXMLElementEnd(IXmlReader* pReader) : m_Reader(pReader)
+CXMLLiteXMLElementStart::CXMLLiteXMLElementStart(const WCHAR* pElementName, UINT32 NameLength) : m_Name(pElementName),
+                                                                                                 m_NameLength(NameLength)
 {
 }
 
-HRESULT CXMLLiteXMLElementEnd::GetName(WCHAR* pNameBuffer, UINT32 NameBufferLength)
+HRESULT CXMLLiteXMLElementStart::GetName(const WCHAR** ppNameBuffer, UINT32* pNameBufferLength)
 {
     HRESULT hr = S_OK;
     const WCHAR* pInternalBuffer = NULL;
     UINT32 InternalBufferLength = 0;
 
-    IFCPTR(pNameBuffer);
+    IFCPTR(ppNameBuffer);
+    IFCPTR(pNameBufferLength);
 
-    IFC(m_Reader->GetLocalName(&pInternalBuffer, &InternalBufferLength));
+    *ppNameBuffer = m_Name;
+    *pNameBufferLength = m_NameLength;
 
-    IFC(StringCchCopyN(pNameBuffer, NameBufferLength, pInternalBuffer, InternalBufferLength));
+Cleanup:
+    return hr;
+}
+
+CXMLLiteXMLElementEnd::CXMLLiteXMLElementEnd(const WCHAR* pElementName, UINT32 NameLength) : m_Name(pElementName),
+                                                                                             m_NameLength(NameLength)
+{
+}
+
+HRESULT CXMLLiteXMLElementEnd::GetName(const WCHAR** ppNameBuffer, UINT32* pNameBufferLength)
+{
+    HRESULT hr = S_OK;
+    const WCHAR* pInternalBuffer = NULL;
+    UINT32 InternalBufferLength = 0;
+
+    IFCPTR(ppNameBuffer);
+    IFCPTR(pNameBufferLength);
+
+    *ppNameBuffer = m_Name;
+    *pNameBufferLength = m_NameLength;
 
 Cleanup:
     return hr;
@@ -224,6 +277,36 @@ HRESULT CXMLLiteXMLText::GetText(const WCHAR** ppText, UINT32* pTextLength)
     IFCPTR(pTextLength);
 
     IFC(m_Reader->GetValue(ppText, pTextLength));
+
+Cleanup:
+    return hr;
+}
+
+CXMLLiteXMLAttribute::CXMLLiteXMLAttribute(IXmlReader* pReader) : m_Reader(pReader)
+{
+}
+
+HRESULT CXMLLiteXMLAttribute::GetName(const WCHAR** ppNameBuffer, UINT32* pNameBufferLength)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppNameBuffer);
+    IFCPTR(pNameBufferLength);
+
+    IFC(m_Reader->GetLocalName(ppNameBuffer, pNameBufferLength));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CXMLLiteXMLAttribute::GetValue(const WCHAR** ppValueBuffer, UINT32* pValueBufferLength)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppValueBuffer);
+    IFCPTR(pValueBufferLength);
+
+    IFC(m_Reader->GetValue(ppValueBuffer, pValueBufferLength));
 
 Cleanup:
     return hr;

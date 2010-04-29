@@ -29,6 +29,9 @@ class CCanvas : public CPanel
     public:
         DECLARE_FACTORY( CCanvas );
 
+        virtual TypeIndex::Value GetType() { return TypeIndex::Canvas; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Canvas || CPanel::IsTypeOf(Type); }
+
         virtual HRESULT AddChild( CUIElement* pElement );
         virtual HRESULT RemoveChild( CUIElement* pElement );
 

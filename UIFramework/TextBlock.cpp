@@ -2,6 +2,7 @@
 #include "TextProvider.h"
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
+#include "BasicTypes.h"
 
 StaticClassProperty TextBlockPanelProperties[] =
 {
@@ -165,5 +166,32 @@ Cleanup:
     ReleaseObject(pBaseInformation);
     ReleaseObject(pDelegatingProperyInformation);
 
+    return hr;
+}
+
+HRESULT CTextBlock::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    //TODO: Ensure this property actually belongs to this object.
+
+    IFCEXPECT(pValue->IsTypeOf(pProperty->GetType()));
+
+    //TODO: Looking up other than by name would be much better.
+    if(wcscmp(pProperty->GetName(), L"Text") == 0)
+    {
+        CStringValue* pText = (CStringValue*)pValue;
+
+        IFC(SetText(pText->GetValue()));
+    }
+    else
+    {
+        IFC(CFrameworkElement::SetValue(pProperty, pValue));
+    }
+
+Cleanup:
     return hr;
 }

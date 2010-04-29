@@ -8,6 +8,7 @@ class CFrameworkElement : public CUIElement
 
     public:
         virtual TypeIndex::Value GetType() { return TypeIndex::FrameworkElement; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::FrameworkElement || CUIElement::IsTypeOf(Type); }
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );

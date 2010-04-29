@@ -8,6 +8,11 @@ class CTextBlock : public CFrameworkElement
     public:
         DECLARE_FACTORY( CTextBlock );
 
+        virtual TypeIndex::Value GetType() { return TypeIndex::TextBlock; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::TextBlock || CFrameworkElement::IsTypeOf(Type); }
+
+        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+
         virtual HRESULT SetText( const WCHAR* pText );
 
         virtual HRESULT Arrange( SizeF Size );

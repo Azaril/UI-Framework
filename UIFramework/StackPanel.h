@@ -16,6 +16,9 @@ class CStackPanel : public CPanel
     public:
         DECLARE_FACTORY( CStackPanel );
 
+        virtual TypeIndex::Value GetType() { return TypeIndex::StackPanel; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Panel || CFrameworkElement::IsTypeOf(Type); }
+
         virtual HRESULT Arrange( SizeF Size );
 
         HRESULT SetOrientation( Orientation::Value Direction );

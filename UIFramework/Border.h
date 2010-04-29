@@ -8,6 +8,9 @@ class CBorder : public CDecorator
     public:
         DECLARE_FACTORY( CBorder );
 
+        virtual TypeIndex::Value GetType() { return TypeIndex::Border; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Border || CDecorator::IsTypeOf(Type); }
+
         virtual HRESULT SetChild( CUIElement* pChild );
 
         HRESULT SetBackgroundBrush( CBrush* pBrush );
