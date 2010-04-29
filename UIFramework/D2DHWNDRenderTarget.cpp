@@ -23,3 +23,8 @@ HRESULT CD2DHWNDRenderTarget::Initialize(ID2D1HwndRenderTarget* pRenderTarget)
 Cleanup:
     return hr;
 }
+
+ID2D1HwndRenderTarget* CD2DHWNDRenderTarget::GetD2DHWNDRenderTarget()
+{
+    return m_HWNDRenderTarget;
+}

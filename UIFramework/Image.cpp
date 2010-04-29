@@ -1,4 +1,17 @@
 #include "Image.h"
+#include "StaticPropertyInformation.h"
+#include "DelegatingPropertyInformation.h"
+
+StaticClassProperty ImageProperties[] =
+{
+    { L"Source", FALSE, TypeIndex::ImageSource }
+};
+
+StaticClassProperties ImagePropertyInformation =
+{
+    ImageProperties,
+    ARRAYSIZE(ImageProperties)
+};
 
 CImage::CImage() : m_Source(NULL),
                    m_Bitmap(NULL),
@@ -107,6 +120,30 @@ HRESULT CImage::PreRender(CPreRenderContext& Context)
 
 Cleanup:
     ReleaseObject(pBrush);
+
+    return hr;
+}
+
+HRESULT CImage::CreatePropertyInformation(CPropertyInformation** ppInformation)
+{
+    HRESULT hr = S_OK;
+    CStaticPropertyInformation* pStaticInformation = NULL;
+    CPropertyInformation* pBaseInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+
+    IFCPTR(ppInformation);
+
+    IFC(CStaticPropertyInformation::Create(&ImagePropertyInformation, &pStaticInformation));
+    IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+
+    *ppInformation = pDelegatingProperyInformation;
+    pDelegatingProperyInformation = NULL;
+
+Cleanup:
+    ReleaseObject(pStaticInformation);
+    ReleaseObject(pBaseInformation);
+    ReleaseObject(pDelegatingProperyInformation);
 
     return hr;
 }

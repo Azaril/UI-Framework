@@ -3,6 +3,8 @@
 #include "Visual.h"
 #include "RectangleVisual.h"
 #include "RenderTarget.h"
+#include "PropertyObject.h"
+#include "TypeIndex.h"
 
 class CUIElement;
 
@@ -46,9 +48,48 @@ class CUIDetachContext
         CUIElement* m_Parent;
 };
 
-class CUIElement : public CVisual
+namespace UINotification
+{
+    enum Value
+    {
+        ChildMeasureInvalidated,
+        ChildArrangeInvalidated
+    };
+}
+
+class CUINotification : public CRefCountedObject
 {
     public:
+        virtual UINotification::Value GetType() = 0;
+};
+
+template< UINotification::Value Val >
+class CParameterlessUINotification : public CUINotification
+{
+    public: 
+        DECLARE_FACTORY( CParameterlessUINotification< Val > );
+
+        virtual UINotification::Value GetType()
+        {
+            return Val;
+        }
+
+    protected:
+        HRESULT Initialize()
+        {
+            return S_OK;
+        }
+};
+
+typedef CParameterlessUINotification< UINotification::ChildMeasureInvalidated > CChildMeasureInvalidatedNotification;
+typedef CParameterlessUINotification< UINotification::ChildArrangeInvalidated > CChildArrangeInvalidatedNotification;
+
+class CUIElement : public CVisual,
+                   public CPropertyObject
+{
+    public:
+        virtual TypeIndex::Value GetType() { return TypeIndex::UIElement; }
+
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
@@ -60,6 +101,17 @@ class CUIElement : public CVisual
         virtual SizeF GetDesiredSize();
 
         virtual HRESULT Arrange( SizeF Size );
+
+        virtual HRESULT InvalidateMeasure();
+        virtual HRESULT InvalidateArrange();
+
+        BOOL IsMeasureDirty();
+        BOOL IsArrangeDirty();
+
+        virtual CUIElement* GetParent();
+
+        virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
+        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
     
     protected:
         CUIElement();
@@ -68,14 +120,31 @@ class CUIElement : public CVisual
         HRESULT Initialize();
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+
+        virtual HRESULT NotifyParent( CUINotification* pNotification );
+
+        virtual HRESULT OnNotification( CUINotification* pNotification );
+
+        virtual HRESULT OnChildMeasureInvalidated( CChildMeasureInvalidatedNotification* pNotification );
+        virtual HRESULT OnChildArrangeInvalidated( CChildArrangeInvalidatedNotification* pNotification );
+
+        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
+        HRESULT InternalSetWidth( FLOAT Width );
+        HRESULT InternalSetHeight( FLOAT Height );
    
         BOOL m_Attached;
         CUIAttachContext m_Context;
-        /*CRectangleVisual* m_Background;*/
 
         SizeF m_Size;
 
+        BOOL m_MeasureDirty;
+        BOOL m_ArrangeDirty;
+
+        CPropertyInformation* m_PropertyInformation;
+
     private:
+        SizeF m_LastMeasureSize;
         SizeF m_DesiredSize;
         SizeF m_FinalSize;
 };

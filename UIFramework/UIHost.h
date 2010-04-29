@@ -24,4 +24,5 @@ class CUIHost : public CRefCountedObject
 
         CRenderTarget* m_RenderTarget;
         CRootUIElement* m_RootElement;
+        SizeF m_LastLayoutSize;
 };

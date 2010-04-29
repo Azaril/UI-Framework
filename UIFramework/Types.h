@@ -32,3 +32,5 @@ inline bool IsPositiveInfinity(double Val)
 {
     return _fpclass(Val) == _FPCLASS_PINF;
 }
+
+struct Nothing;

@@ -1,4 +1,16 @@
 #include "FrameworkElement.h"
+#include "StaticPropertyInformation.h"
+#include "DelegatingPropertyInformation.h"
+
+//StaticClassProperty FrameworkElementProperties[] =
+//{
+//};
+//
+//StaticClassProperties FrameworkElementPropertyInformation =
+//{
+//    FrameworkElementProperties,
+//    ARRAYSIZE(FrameworkElementProperties)
+//};
 
 CFrameworkElement::CFrameworkElement()
 {
@@ -124,3 +136,27 @@ HRESULT CFrameworkElement::RemoveLogicalChild(CUIElement* pElement)
 Cleanup:
     return hr;
 }
+
+//HRESULT CFrameworkElement::CreatePropertyInformation(CPropertyInformation **ppInformation)
+//{
+//    HRESULT hr = S_OK;
+//    CStaticPropertyInformation* pStaticInformation = NULL;
+//    CPropertyInformation* pBaseInformation = NULL;
+//    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+//
+//    IFCPTR(ppInformation);
+//
+//    IFC(CStaticPropertyInformation::Create(&FrameworkElementPropertyInformation, &pStaticInformation));
+//    IFC(CUIElement::CreatePropertyInformation(&pBaseInformation));
+//    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+//
+//    *ppInformation = pDelegatingProperyInformation;
+//    pDelegatingProperyInformation = NULL;
+//
+//Cleanup:
+//    ReleaseObject(pStaticInformation);
+//    ReleaseObject(pBaseInformation);
+//    ReleaseObject(pDelegatingProperyInformation);
+//
+//    return hr;
+//}

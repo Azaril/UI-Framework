@@ -3,6 +3,8 @@
 CUIHost::CUIHost() : m_RenderTarget(NULL),
                      m_RootElement(NULL)
 {
+    m_LastLayoutSize.width = 0;
+    m_LastLayoutSize.height = 0;
 }
 
 CUIHost::~CUIHost()
@@ -47,17 +49,29 @@ HRESULT CUIHost::EnsureLayout()
     SizeF AvailableSize = { 0 };
     SizeF DesiredSize = { 0 };
 
-    //TODO: Needs dirty flags.
     AvailableSize = m_RenderTarget->GetSize();
 
-    IFC(m_RootElement->Measure(AvailableSize));
+    if(m_LastLayoutSize.width != AvailableSize.width || m_LastLayoutSize.height != AvailableSize.height)
+    {
+        m_RootElement->InvalidateMeasure();
 
-    DesiredSize = m_RootElement->GetDesiredSize();
+        m_LastLayoutSize = AvailableSize;
+    }
 
-    DesiredSize.width = min(DesiredSize.width, AvailableSize.width);
-    DesiredSize.height = min(DesiredSize.height, AvailableSize.height);
+    if(m_RootElement->IsMeasureDirty())
+    {
+        IFC(m_RootElement->Measure(AvailableSize));
+    }
 
-    IFC(m_RootElement->Arrange(DesiredSize));
+    if(m_RootElement->IsArrangeDirty())
+    {
+        DesiredSize = m_RootElement->GetDesiredSize();
+
+        DesiredSize.width = min(DesiredSize.width, AvailableSize.width);
+        DesiredSize.height = min(DesiredSize.height, AvailableSize.height);
+
+        IFC(m_RootElement->Arrange(DesiredSize));
+    }
 
 Cleanup:
     return hr;

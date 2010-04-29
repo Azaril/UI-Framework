@@ -12,7 +12,7 @@ class CRootUIElement : public CFrameworkElement,
 
         virtual HRESULT RenderRoot( CRenderContext& Context );
 
-        virtual HRESULT SetContent( CUIElement* pContent );
+        virtual HRESULT SetChild( CUIElement* pChild );
 
         virtual HRESULT Arrange( SizeF Size );
 
@@ -25,5 +25,5 @@ class CRootUIElement : public CFrameworkElement,
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
 
-        CUIElement* m_Content;
+        CUIElement* m_Child;
 };

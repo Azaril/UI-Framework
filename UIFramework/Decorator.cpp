@@ -1,4 +1,17 @@
 #include "Decorator.h"
+#include "StaticPropertyInformation.h"
+#include "DelegatingPropertyInformation.h"
+
+StaticClassProperty DecoratorProperties[] =
+{
+    { L"Child", TRUE, TypeIndex::UIElement }
+};
+
+StaticClassProperties DecoratorPropertyInformation =
+{
+    DecoratorProperties,
+    ARRAYSIZE(DecoratorProperties)
+};
 
 CDecorator::CDecorator() : m_Child(NULL)
 {
@@ -46,4 +59,28 @@ Cleanup:
 CUIElement* CDecorator::GetChild()
 {
     return m_Child;
+}
+
+HRESULT CDecorator::CreatePropertyInformation(CPropertyInformation **ppInformation)
+{
+    HRESULT hr = S_OK;
+    CStaticPropertyInformation* pStaticInformation = NULL;
+    CPropertyInformation* pBaseInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+
+    IFCPTR(ppInformation);
+
+    IFC(CStaticPropertyInformation::Create(&DecoratorPropertyInformation, &pStaticInformation));
+    IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+
+    *ppInformation = pDelegatingProperyInformation;
+    pDelegatingProperyInformation = NULL;
+
+Cleanup:
+    ReleaseObject(pStaticInformation);
+    ReleaseObject(pBaseInformation);
+    ReleaseObject(pDelegatingProperyInformation);
+
+    return hr;
 }

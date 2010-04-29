@@ -202,6 +202,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Logging.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Logging.h"
+					>
+				</File>
+				<File
 					RelativePath=".\RefCounted.cpp"
 					>
 				</File>
@@ -436,6 +444,14 @@
 							>
 						</File>
 						<File
+							RelativePath=".\Grid.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Grid.h"
+							>
+						</File>
+						<File
 							RelativePath=".\Image.cpp"
 							>
 						</File>
@@ -484,6 +500,70 @@
 							>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="Properties"
+					>
+					<File
+						RelativePath=".\BasicTypeConverter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\BasicTypeConverter.h"
+						>
+					</File>
+					<File
+						RelativePath=".\BasicTypes.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\BasicTypes.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DelegatingPropertyInformation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DelegatingPropertyInformation.h"
+						>
+					</File>
+					<File
+						RelativePath=".\PropertyObject.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\PropertyObject.h"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticPropertyInformation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticPropertyInformation.h"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticTypeConverter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticTypeConverter.h"
+						>
+					</File>
+					<File
+						RelativePath=".\TypeConverter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\TypeConverter.h"
+						>
+					</File>
+					<File
+						RelativePath=".\TypeIndex.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -556,6 +636,66 @@
 						RelativePath=".\DirectWriteTextProvider.h"
 						>
 					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Parser"
+				>
+				<File
+					RelativePath=".\ClassResolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ClassResolver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Parser.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Parser.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ParserCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ParserCallback.h"
+					>
+				</File>
+				<File
+					RelativePath=".\StaticClassResolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\StaticClassResolver.h"
+					>
+				</File>
+				<Filter
+					Name="XML"
+					>
+					<File
+						RelativePath=".\XMLReader.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\XMLReader.h"
+						>
+					</File>
+					<Filter
+						Name="XMLLite"
+						>
+						<File
+							RelativePath=".\XMLLiteReader.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\XMLLiteReader.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 		</Filter>

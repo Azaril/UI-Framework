@@ -51,3 +51,19 @@ Cleanup: \
     ReleaseObject(pObj); \
     return hr; \
 }
+
+#define DECLARE_FACTORY3( ThisType, Arg1Type, Arg2Type, Arg3Type ) \
+static HRESULT Create( Arg1Type Arg1, Arg2Type Arg2, Arg3Type Arg3, ThisType** ppOut ) \
+{ \
+    HRESULT hr = S_OK; \
+    ThisType* pObj = NULL; \
+    IFCPTR(ppOut); \
+    pObj = new ThisType(); \
+    IFCOOM(pObj); \
+    IFC(pObj->Initialize(Arg1, Arg2, Arg3)); \
+    *ppOut = pObj; \
+    pObj = NULL; \
+Cleanup: \
+    ReleaseObject(pObj); \
+    return hr; \
+}

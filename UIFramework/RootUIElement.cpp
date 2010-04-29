@@ -1,6 +1,6 @@
 #include "RootUIElement.h"
 
-CRootUIElement::CRootUIElement() : m_Content(NULL)
+CRootUIElement::CRootUIElement() : m_Child(NULL)
 {
 }
 
@@ -50,30 +50,30 @@ HRESULT CRootUIElement::Finalize()
         IFC(OnVisualDetach(VisualContext));
     }
 
-    ReleaseObject(m_Content);
+    ReleaseObject(m_Child);
 
 Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::SetContent(CUIElement* pContent)
+HRESULT CRootUIElement::SetChild(CUIElement* pChild)
 {
     HRESULT hr = S_OK;
 
-    if(m_Content)
+    if(m_Child)
     {
-        IFC(RemoveLogicalChild(m_Content));
+        IFC(RemoveLogicalChild(m_Child));
 
-        ReleaseObject(m_Content);
+        ReleaseObject(m_Child);
     }
 
-    m_Content = pContent;
+    m_Child = pChild;
 
-    if(m_Content)
+    if(m_Child)
     {
-        AddRefObject(m_Content);
+        AddRefObject(m_Child);
 
-        IFC(AddLogicalChild(m_Content));
+        IFC(AddLogicalChild(m_Child));
     }
 
 Cleanup:
@@ -117,9 +117,9 @@ HRESULT CRootUIElement::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
 
-    if(m_Content)
+    if(m_Child)
     {
-        IFC(m_Content->Measure(AvailableSize));
+        IFC(m_Child->Measure(AvailableSize));
     }
 
     DesiredSize = AvailableSize;
@@ -134,9 +134,9 @@ HRESULT CRootUIElement::Arrange(SizeF Size)
 
     IFC(CFrameworkElement::Arrange(Size));
 
-    if(m_Content)
+    if(m_Child)
     {
-        IFC(m_Content->Arrange(Size));
+        IFC(m_Child->Arrange(Size));
     }
 
 Cleanup:

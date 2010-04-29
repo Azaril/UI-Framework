@@ -12,6 +12,10 @@
 #include "StackPanel.h"
 #include "Border.h"
 #include "Image.h"
+#include "D2DHWNDRenderTarget.h"
+#include "Parser.h"
+#include "StaticClassResolver.h"
+#include "BasicTypeConverter.h"
 
 #include <d2d1helper.h>
 
@@ -27,6 +31,8 @@ ATOM MyRegisterClass( HINSTANCE hInstance );
 HRESULT InitInstance( HINSTANCE hInstance, int nCmdShow, HWND* pWindow );
 LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
+CD2DHWNDRenderTarget* g_RenderTarget = NULL;
+
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
     HRESULT hr = S_OK;
@@ -40,9 +46,17 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CRootUIElement* pRootElement = NULL;
     CCanvas* pCanvas = NULL;
     CStackPanel* pStackPanel = NULL;
+    CStackPanel* pChildStackPanel = NULL;
+    CBrush* pWhiteSolidBrush = NULL;
     CBrush* pBlueSolidBrush = NULL;
     CBrush* pRedSolidBrush = NULL;
     CBitmapSource* pBitmapSource = NULL;
+    CBorder* pRootBorder = NULL;    
+    CUIElement* pParsedRoot = NULL;
+
+    CParser* pParser = NULL;
+    CStaticClassResolver* pStaticClassResolver = NULL;
+    CTypeConverter* pTypeConverter = NULL;
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -58,69 +72,103 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     IFCEXPECT(hAccelTable != NULL);
 
     //
+    // Create Parser
+    // 
+    IFC(CStaticClassResolver::Create(&pStaticClassResolver));
+
+    IFC(CreateBasicTypeConverter(&pTypeConverter));
+
+    IFC(CParser::Create(pStaticClassResolver, pTypeConverter, &pParser));
+
+    IFC(pParser->LoadFromFile(L"c:\\testxml.xml", &pParsedRoot));
+
+    //
     // Create UI framework
     //
     IFC(CreateGraphicsDevice(&pGraphicsDevice));
 
     IFC(pGraphicsDevice->CreateHWNDRenderTarget(hWnd, &pRenderTarget));
 
+    IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::White), &pWhiteSolidBrush));
+    IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::AliceBlue), &pBlueSolidBrush));
+    IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::Red), &pRedSolidBrush));
+
+    g_RenderTarget = (CD2DHWNDRenderTarget*)pRenderTarget;
+
     IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, &pUIHost));
 
     IFC(pUIHost->GetRootElement(&pRootElement));
 
-    IFC(CCanvas::Create(&pCanvas));
+    IFC(pRootElement->SetChild(pParsedRoot));
 
-    IFC(CStackPanel::Create(&pStackPanel));
-    IFC(pStackPanel->SetOrientation(Orientation::Vertical));
+    //IFC(CBorder::Create(&pRootBorder));
+    //IFC(pRootBorder->SetBackgroundBrush(pWhiteSolidBrush));
+    //IFC(pRootElement->SetChild(pRootBorder));
 
-    IFC(pRootElement->SetContent(pStackPanel));
+    //IFC(CCanvas::Create(&pCanvas));
 
-    IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::AliceBlue), &pBlueSolidBrush));
-    IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::Red), &pRedSolidBrush));
+    //IFC(CStackPanel::Create(&pStackPanel));
+    //IFC(pStackPanel->SetOrientation(Orientation::Vertical));    
 
-    IFC(pGraphicsDevice->GetImagingProvider(&pImagingProvider));
+    //IFC(pRootBorder->SetChild(pStackPanel));
 
-    IFC(pImagingProvider->LoadBitmapFromFile(L"C:\\3.png", &pBitmapSource));
+    //IFC(pGraphicsDevice->GetImagingProvider(&pImagingProvider));
 
-    //IFC(pRootElement->SetBackground(pBlueSolidBrush));
+    //IFC(pImagingProvider->LoadBitmapFromFile(L"C:\\3.png", &pBitmapSource));
 
-    for(unsigned int i = 0; i < 10; i++)
-    {
-        CTextBlock* pTextBlock = NULL;
-        CBorder* pBorder = NULL;
-        CImage* pImage = NULL;
+    ////IFC(pRootElement->SetBackground(pBlueSolidBrush));
 
-        SizeF Size = { 20, 20 };
-        Point2F Position = { 20.0f * i, 20.0f * i };
-        RectF Border = { 4, 4, 4, 4 };
+    //for(unsigned int j = 0; j < 10; j++)
+    //{
+    //    IFC(CStackPanel::Create(&pChildStackPanel));
 
-        IFC(CBorder::Create(&pBorder));
-        IFC(CTextBlock::Create(&pTextBlock));
-        IFC(CImage::Create(&pImage));
+    //    IFC(pChildStackPanel->SetOrientation(Orientation::Horizontal));
 
-        IFC(pBorder->SetSize(Size));
-        IFC(pBorder->SetBackgroundBrush(pBlueSolidBrush));
-        
-        IFC(pBorder->SetBorderThickness(Border));
-        IFC(pBorder->SetBorderBrush(pRedSolidBrush));
+    //    IFC(pStackPanel->AddChild(pChildStackPanel));
 
-        //IFC(pTextBlock->SetSize(Size));
-        //IFC(pTextBlock->SetBackground(pRedSolidBrush));
+    //    for(unsigned int i = 0; i < 10; i++)
+    //    {
+    //        CTextBlock* pTextBlock = NULL;
+    //        CBorder* pBorder = NULL;
+    //        CImage* pImage = NULL;
 
-        IFC(pBorder->SetChild(pTextBlock));
+    //        SizeF Size = { 20, 20 };
+    //        Point2F Position = { 20.0f * i, 20.0f * i };
+    //        RectF Border = { 4, 4, 4, 4 };
 
-        //IFC(pCanvas->SetChildPosition(pTextBlock, Position));
+    //        IFC(CBorder::Create(&pBorder));
+    //        IFC(CTextBlock::Create(&pTextBlock));
+    //        IFC(CImage::Create(&pImage));
 
-        IFC(pTextBlock->SetText(L"Testing!"));
+    //        //IFC(pBorder->SetSize(Size));
+    //        //IFC(pBorder->SetBackgroundBrush(pBlueSolidBrush));
+    //        
+    //        IFC(pBorder->SetBorderThickness(Border));
+    //        IFC(pBorder->SetBorderBrush(pRedSolidBrush));
+    //        IFC(pBorder->SetPadding(Border));
 
-        IFC(pImage->SetSource(pBitmapSource));
+    //        //IFC(pTextBlock->SetSize(Size));
+    //        //IFC(pTextBlock->SetBackground(pRedSolidBrush));
 
-        IFC(pStackPanel->AddChild(pBorder));
-        IFC(pStackPanel->AddChild(pImage));
+    //        //IFC(pBorder->SetChild(pTextBlock));
+    //        IFC(pBorder->SetChild(pImage));
 
-        ReleaseObject(pTextBlock);
-        ReleaseObject(pBorder);
-    }
+    //        //IFC(pCanvas->SetChildPosition(pTextBlock, Position));
+
+    //        IFC(pTextBlock->SetText(L"Testing!"));
+
+    //        IFC(pImage->SetSource(pBitmapSource));
+
+    //        IFC(pChildStackPanel->AddChild(pBorder));
+    //        //IFC(pChildStackPanel->AddChild(pImage));
+    //        IFC(pChildStackPanel->AddChild(pTextBlock));
+
+    //        ReleaseObject(pTextBlock);
+    //        ReleaseObject(pBorder);
+    //    }
+
+    //    ReleaseObject(pChildStackPanel);
+    //}
 
     //
     // Message pump
@@ -140,14 +188,20 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 
 Cleanup:
+    ReleaseObject(pParsedRoot);
+    ReleaseObject(pWhiteSolidBrush);
     ReleaseObject(pBlueSolidBrush);
     ReleaseObject(pRedSolidBrush);
     ReleaseObject(pRootElement);
+    ReleaseObject(pRootBorder);
     ReleaseObject(pUIHost);
     ReleaseObject(pRenderTarget);
     ReleaseObject(pImagingProvider);
     ReleaseObject(pGraphicsDevice);
     ReleaseObject(pBitmapSource);
+    ReleaseObject(pStaticClassResolver);
+    ReleaseObject(pTypeConverter);
+    ReleaseObject(pParser);
 
 	return (int) msg.wParam;
 }
@@ -207,7 +261,7 @@ HRESULT InitInstance(HINSTANCE hInstance, int nCmdShow, HWND* pWindow)
 
     hInst = hInstance; // Store instance handle in our global variable
 
-    hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
+    hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, 640, 480, NULL, NULL, hInstance, NULL);
     IFCEXPECT(hWnd != NULL);
 
     ShowWindow(hWnd, nCmdShow);
@@ -237,6 +291,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+    case WM_SIZE:
+        {
+            if(wParam == SIZE_RESTORED)
+            {
+                ID2D1HwndRenderTarget* pRenderTarget = g_RenderTarget->GetD2DHWNDRenderTarget();
+                
+                pRenderTarget->Resize(D2D1::SizeU(LOWORD(lParam), HIWORD(lParam)));
+            }
+            break;
+        }
+
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);

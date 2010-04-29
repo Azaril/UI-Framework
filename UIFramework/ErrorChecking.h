@@ -1,6 +1,12 @@
 #pragma once
 
 #include "Types.h"
+#include "Logging.h"
+
+#define WIDEN2(x) L ## x
+#define WIDEN(x) WIDEN2(x)
+#define __WFILE__ WIDEN(__FILE__)
+
 
 #if _WINDOWS
 
@@ -18,7 +24,20 @@
 
 #endif
 
+#ifdef _DEBUG
+
+#define DEBUG_OUT_HR(expr, res) DebugOut(L"%s:%u) - %s\n", __WFILE__, __LINE__, L#expr);
+
+#define IFC(expr) do{ hr = (expr); if(FAILED(hr)) { DEBUG_OUT_HR(expr, hr); goto Cleanup; } } while(FALSE);
+#define IFCPTR(ptr) if((ptr) == NULL) { hr = E_POINTER; DEBUG_OUT_HR((ptr) == NULL, hr); goto Cleanup; };
+#define IFCOOM(ptr) if((ptr) == NULL) { hr = E_OUTOFMEMORY; DEBUG_OUT_HR((ptr) == NULL, hr); goto Cleanup; };
+#define IFCEXPECT(expr) if(!(expr)) { hr = E_UNEXPECTED; DEBUG_OUT_HR(expr, hr); goto Cleanup; };
+
+#else
+
 #define IFC(expr) do{ hr = (expr); if(FAILED(hr)) { goto Cleanup; } } while(FALSE);
 #define IFCPTR(ptr) if((ptr) == NULL) { hr = E_POINTER; goto Cleanup; };
 #define IFCOOM(ptr) if((ptr) == NULL) { hr = E_OUTOFMEMORY; goto Cleanup; };
 #define IFCEXPECT(expr) if(!(expr)) { hr = E_UNEXPECTED; goto Cleanup; };
+
+#endif

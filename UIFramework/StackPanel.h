@@ -28,5 +28,7 @@ class CStackPanel : public CPanel
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
 
+        //virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         Orientation::Value m_Orientation;
 };

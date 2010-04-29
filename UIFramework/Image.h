@@ -22,6 +22,8 @@ class CImage : public CFrameworkElement
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
 
+        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         CBitmapSource* m_Source;
         CRectangleVisual* m_ImageRect;
         CBitmap* m_Bitmap;

@@ -1,4 +1,16 @@
 #include "Canvas.h"
+#include "StaticPropertyInformation.h"
+#include "DelegatingPropertyInformation.h"
+
+//StaticClassProperty CanvasProperties[] =
+//{
+//};
+//
+//StaticClassProperties CanvasPropertyInformation =
+//{
+//    CanvasProperties,
+//    ARRAYSIZE(CanvasProperties)
+//};
 
 CCanvas::CCanvas()
 {
@@ -157,6 +169,30 @@ HRESULT CCanvas::Arrange(SizeF Size)
 Cleanup:
     return hr;
 }
+
+//HRESULT CCanvas::CreatePropertyInformation(CPropertyInformation** ppInformation)
+//{
+//    HRESULT hr = S_OK;
+//    CStaticPropertyInformation* pStaticInformation = NULL;
+//    CPropertyInformation* pBaseInformation = NULL;
+//    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+//
+//    IFCPTR(ppInformation);
+//
+//    IFC(CStaticPropertyInformation::Create(&CanvasPropertyInformation, &pStaticInformation));
+//    IFC(CPanel::CreatePropertyInformation(&pBaseInformation));
+//    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+//
+//    *ppInformation = pDelegatingProperyInformation;
+//    pDelegatingProperyInformation = NULL;
+//
+//Cleanup:
+//    ReleaseObject(pStaticInformation);
+//    ReleaseObject(pBaseInformation);
+//    ReleaseObject(pDelegatingProperyInformation);
+//
+//    return hr;
+//}
 
 CCanvasLayoutInformation::CCanvasLayoutInformation() : m_Element(NULL)
 {

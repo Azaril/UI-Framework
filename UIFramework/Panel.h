@@ -11,4 +11,6 @@ class CPanel : public CFrameworkElement
     protected:
         CPanel();
         virtual ~CPanel();
+
+        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 };

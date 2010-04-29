@@ -20,6 +20,8 @@ class CTextBlock : public CFrameworkElement
 
         virtual HRESULT RenderTransformed( CRenderContext& Context );
 
+        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         std::wstring m_Text;
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;

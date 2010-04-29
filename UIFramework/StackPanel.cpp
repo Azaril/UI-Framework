@@ -1,4 +1,16 @@
 #include "StackPanel.h"
+#include "StaticPropertyInformation.h"
+#include "DelegatingPropertyInformation.h"
+
+//StaticClassProperty StackPanelProperties[] =
+//{
+//};
+//
+//StaticClassProperties StackPanelPropertyInformation =
+//{
+//    StackPanelProperties,
+//    ARRAYSIZE(StackPanelProperties)
+//};
 
 CStackPanel::CStackPanel() : m_Orientation(Orientation::Vertical)
 {
@@ -95,3 +107,27 @@ HRESULT CStackPanel::Arrange(SizeF Size)
 Cleanup:
     return hr;
 }
+
+//HRESULT CStackPanel::CreatePropertyInformation(CPropertyInformation** ppInformation)
+//{
+//    HRESULT hr = S_OK;
+//    CStaticPropertyInformation* pStaticInformation = NULL;
+//    CPropertyInformation* pBaseInformation = NULL;
+//    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+//
+//    IFCPTR(ppInformation);
+//
+//    IFC(CStaticPropertyInformation::Create(&StackPanelPropertyInformation, &pStaticInformation));
+//    IFC(CPanel::CreatePropertyInformation(&pBaseInformation));
+//    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+//
+//    *ppInformation = pDelegatingProperyInformation;
+//    pDelegatingProperyInformation = NULL;
+//
+//Cleanup:
+//    ReleaseObject(pStaticInformation);
+//    ReleaseObject(pBaseInformation);
+//    ReleaseObject(pDelegatingProperyInformation);
+//
+//    return hr;
+//}

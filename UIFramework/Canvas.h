@@ -46,5 +46,7 @@ class CCanvas : public CPanel
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
 
+        //virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         LayoutInformationCollection m_LayoutInformation;
 };

@@ -15,6 +15,8 @@ class CBorder : public CDecorator
         HRESULT SetBorderThickness( const RectF& Border );
         HRESULT SetBorderBrush( CBrush* pBrush );
 
+        HRESULT SetPadding( const RectF& Padding );
+
         virtual HRESULT Arrange( SizeF Size );
 
     protected:
@@ -26,6 +28,10 @@ class CBorder : public CDecorator
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
 
+        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         RectF m_BorderThickness;
         CRectangleVisual* m_BorderVisual;
+
+        RectF m_Padding;
 };

@@ -1,5 +1,18 @@
 #include "TextBlock.h"
 #include "TextProvider.h"
+#include "StaticPropertyInformation.h"
+#include "DelegatingPropertyInformation.h"
+
+StaticClassProperty TextBlockPanelProperties[] =
+{
+    { L"Text", TRUE, TypeIndex::String }
+};
+
+StaticClassProperties TextBlockPropertyInformation =
+{
+    TextBlockPanelProperties,
+    ARRAYSIZE(TextBlockPanelProperties)
+};
 
 CTextBlock::CTextBlock() : m_TextLayout(NULL),
                            m_TextFormat(NULL),
@@ -127,6 +140,30 @@ HRESULT CTextBlock::RenderTransformed(CRenderContext& Context)
 
 Cleanup:
     ReleaseObject(m_TextBrush);
+
+    return hr;
+}
+
+HRESULT CTextBlock::CreatePropertyInformation(CPropertyInformation** ppInformation)
+{
+    HRESULT hr = S_OK;
+    CStaticPropertyInformation* pStaticInformation = NULL;
+    CPropertyInformation* pBaseInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+
+    IFCPTR(ppInformation);
+
+    IFC(CStaticPropertyInformation::Create(&TextBlockPropertyInformation, &pStaticInformation));
+    IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+
+    *ppInformation = pDelegatingProperyInformation;
+    pDelegatingProperyInformation = NULL;
+
+Cleanup:
+    ReleaseObject(pStaticInformation);
+    ReleaseObject(pBaseInformation);
+    ReleaseObject(pDelegatingProperyInformation);
 
     return hr;
 }
