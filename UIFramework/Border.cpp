@@ -2,17 +2,20 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 
-StaticClassProperty BorderProperties[] =
+CStaticProperty BorderProperties[] = 
 {
-    { L"Background", TypeIndex::Brush, StaticPropertyFlags::None },
-    { L"Padding", TypeIndex::RectF, StaticPropertyFlags::None }
+    CStaticProperty( L"Background", TypeIndex::Brush, StaticPropertyFlags::None ),
+    CStaticProperty( L"Padding", TypeIndex::RectF, StaticPropertyFlags::None )
 };
 
-StaticClassProperties BorderPropertyInformation =
+namespace BorderPropertyIndex
 {
-    BorderProperties,
-    ARRAYSIZE(BorderProperties)
-};
+    enum Value
+    {
+        Background,
+        Padding
+    };
+}
 
 CBorder::CBorder() : m_BorderVisual(NULL)
 {
@@ -145,7 +148,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBorder::Arrange(SizeF Size)
+HRESULT CBorder::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
 
@@ -166,7 +169,7 @@ HRESULT CBorder::Arrange(SizeF Size)
         IFC(m_Child->SetVisualTransform(Transform));
     }
 
-    IFC(CDecorator::Arrange(Size));
+    IFC(CDecorator::ArrangeInternal(Size));
       
 Cleanup:
     return hr;
@@ -181,7 +184,7 @@ HRESULT CBorder::CreatePropertyInformation(CPropertyInformation** ppInformation)
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(&BorderPropertyInformation, &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(BorderProperties, ARRAYSIZE(BorderProperties), &pStaticInformation))
     IFC(CDecorator::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -203,25 +206,42 @@ HRESULT CBorder::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Background") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= BorderProperties && pProperty < BorderProperties + ARRAYSIZE(BorderProperties))
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Brush));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        CBrush* pBrush = (CBrush*)pValue;
+        UINT32 Index = (pStaticProperty - BorderProperties);
+        
+        switch(Index)
+        {
+            case BorderPropertyIndex::Background:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Brush));
 
-        IFC(SetBackground(pBrush));
-    }
-    else if(wcscmp(pProperty->GetName(), L"Padding") == 0)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::RectF));
-        //TODO: Implement.
+                    CBrush* pBrush = (CBrush*)pValue;
 
-        __debugbreak();
+                    IFC(SetBackground(pBrush));
 
-        IFC(E_FAIL);
+                    break;
+                }
+
+            case BorderPropertyIndex::Padding:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::RectF));
+
+                    //TODO: Implement!
+
+                    __debugbreak();
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {

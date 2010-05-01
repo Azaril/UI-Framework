@@ -11,6 +11,8 @@ namespace TypeIndex
             Float,
             String,
             RectF,
+            ColorF,
+            Visibility,
 
             UIElement,
                 FrameworkElement,
@@ -26,6 +28,7 @@ namespace TypeIndex
             BitmapSource,
 
             Brush,
-                ImageBrush
+                ImageBrush,
+                SolidColorBrush
     };
 }

@@ -12,9 +12,12 @@ namespace TypeIndex
 template< typename T >
 struct ObjectTypeTraits;
 
-class CProperty : public CRefCountedObject
+class CProperty
 {
     public:
+        virtual INT32 AddRef() = 0;
+        virtual INT32 Release() = 0;
+
         virtual const WCHAR* GetName() = 0;
         virtual TypeIndex::Value GetType() = 0;
         virtual BOOL IsCollection() = 0;

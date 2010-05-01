@@ -2,16 +2,18 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-StaticClassProperty BrushProperties[] =
+CStaticProperty BrushProperties[] = 
 {
-    { L"Opacity", TypeIndex::Float, StaticPropertyFlags::None }
+    CStaticProperty( L"Opacity", TypeIndex::Float, StaticPropertyFlags::None )
 };
 
-StaticClassProperties BrushPropertyInformation =
+namespace BrushPropertyIndex
 {
-    BrushProperties,
-    ARRAYSIZE(BrushProperties)
-};
+    enum Value
+    {
+        Opacity
+    };
+}
 
 CBrush::CBrush() : m_PropertyInformation(NULL)
 {
@@ -20,6 +22,20 @@ CBrush::CBrush() : m_PropertyInformation(NULL)
 CBrush::~CBrush()
 {
     ReleaseObject(m_PropertyInformation);
+}
+
+HRESULT CBrush::OnVisualAttach(CVisualAttachContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    return hr;
+}
+
+HRESULT CBrush::OnVisualDetach(CVisualDetachContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    return hr;
 }
 
 HRESULT CBrush::GetPropertyInformation(CPropertyInformation** ppInformation)
@@ -47,7 +63,7 @@ HRESULT CBrush::CreatePropertyInformation(CPropertyInformation **ppInformation)
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(&BrushPropertyInformation, &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(BrushProperties, ARRAYSIZE(BrushProperties), &pStaticInformation));
 
     *ppInformation = pStaticInformation;
     pStaticInformation = NULL;
@@ -65,16 +81,33 @@ HRESULT CBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Opacity") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= BrushProperties && pProperty < BrushProperties + ARRAYSIZE(BrushProperties))
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        CFloatValue* pFloat = (CFloatValue*)pValue;
+        UINT32 Index = (pStaticProperty - BrushProperties);
+        
+        switch(Index)
+        {
+            case BrushPropertyIndex::Opacity:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
 
-        //TODO: Set opacity.
+                    CFloatValue* pFloat = (CFloatValue*)pValue;
+
+                    //TODO: Set opacity!
+
+                    __debugbreak();
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {

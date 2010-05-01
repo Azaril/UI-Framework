@@ -3,16 +3,18 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-StaticClassProperty ImageBrushProperties[] =
+CStaticProperty ImageBrushProperties[] = 
 {
-    { L"Source", TypeIndex::Object, StaticPropertyFlags::None }
+    CStaticProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None )
 };
 
-StaticClassProperties ImageBrushPropertyInformation =
+namespace ImageBrushPropertyIndex
 {
-    ImageBrushProperties,
-    ARRAYSIZE(ImageBrushProperties)
-};
+    enum Value
+    {
+        Source
+    };
+}
 
 CImageBrush::CImageBrush() : m_Source(NULL)
 {
@@ -39,7 +41,7 @@ HRESULT CImageBrush::CreatePropertyInformation(CPropertyInformation **ppInformat
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(&ImageBrushPropertyInformation, &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(ImageBrushProperties, ARRAYSIZE(ImageBrushProperties), &pStaticInformation));
     IFC(CBrush::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -228,12 +230,27 @@ HRESULT CImageBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    //TODO: Ensure this property actually belongs to this object.    
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Source") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= ImageBrushProperties && pProperty < ImageBrushProperties + ARRAYSIZE(ImageBrushProperties))
     {
-        IFC(InternalSetSource(pValue));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        UINT32 Index = (pStaticProperty - ImageBrushProperties);
+        
+        switch(Index)
+        {
+            case ImageBrushPropertyIndex::Source:
+                {
+                    IFC(InternalSetSource(pValue));
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {

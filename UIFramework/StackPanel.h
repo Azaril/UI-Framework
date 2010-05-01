@@ -19,8 +19,6 @@ class CStackPanel : public CPanel
         virtual TypeIndex::Value GetType() { return TypeIndex::StackPanel; }
         virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Panel || CFrameworkElement::IsTypeOf(Type); }
 
-        virtual HRESULT Arrange( SizeF Size );
-
         HRESULT SetOrientation( Orientation::Value Direction );
 
     public:
@@ -30,6 +28,7 @@ class CStackPanel : public CPanel
         HRESULT Initialize();
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+        virtual HRESULT ArrangeInternal( SizeF Size );
 
         //virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 

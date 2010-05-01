@@ -13,41 +13,29 @@ namespace StaticPropertyFlags
     };
 }
 
-struct StaticClassProperty
-{
-    WCHAR* PropertyName;
-    TypeIndex::Value PropertyType;
-    UINT32 Flags;
-};
-
-struct StaticClassProperties
-{
-    StaticClassProperty* Properties;
-    UINT32 PropertyCount;
-};
-
 class CStaticProperty : public CProperty
 {
     public:
-        DECLARE_FACTORY1( CStaticProperty, StaticClassProperty* );
+        CStaticProperty( const WCHAR* Name, const TypeIndex::Value Type, UINT32 Flags );
+
+        virtual INT32 AddRef();
+        virtual INT32 Release();
 
         virtual TypeIndex::Value GetType();
         virtual const WCHAR* GetName();
         virtual BOOL IsCollection();
+        BOOL IsContent();
 
     protected:
-        CStaticProperty();
-        virtual ~CStaticProperty();
-
-        HRESULT Initialize( StaticClassProperty* pProperty );
-
-        StaticClassProperty* m_Property;
+        const WCHAR* m_Name;
+        TypeIndex::Value m_Type;
+        UINT32 m_Flags;
 };
 
 class CStaticPropertyInformation : public CPropertyInformation
 {
     public:
-        DECLARE_FACTORY1( CStaticPropertyInformation, StaticClassProperties* );
+        DECLARE_FACTORY2( CStaticPropertyInformation, CStaticProperty*, UINT32 );
 
         virtual HRESULT GetProperty( const WCHAR* pPropertyName, CProperty** ppProperty );
         virtual HRESULT GetContentProperty( CProperty** ppProperty );
@@ -56,7 +44,8 @@ class CStaticPropertyInformation : public CPropertyInformation
         CStaticPropertyInformation();
         virtual ~CStaticPropertyInformation();
 
-        HRESULT Initialize( StaticClassProperties* pProperties );
+        HRESULT Initialize( CStaticProperty* pProperties, UINT32 PropertyCount );
 
-        StaticClassProperties* m_ClassInformation;
+        CStaticProperty* m_Properties;
+        UINT32 m_PropertyCount;
 };

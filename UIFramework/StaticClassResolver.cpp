@@ -5,6 +5,7 @@
 #include "Image.h"
 #include "StackPanel.h"
 #include "TextBlock.h"
+#include "SolidColorBrush.h"
 
 template< typename T >
 class StaticClassFactory
@@ -43,7 +44,8 @@ ClassInformation Info[] =
     { L"Image", { &StaticClassFactory< CImage >::Create } },
     { L"StackPanel", { &StaticClassFactory< CStackPanel >::Create } },
     { L"TextBlock", { &StaticClassFactory< CTextBlock >::Create } },
-    { L"ImageBrush", { &StaticClassFactory< CImageBrush >::Create } }
+    { L"ImageBrush", { &StaticClassFactory< CImageBrush >::Create } },
+    { L"SolidColorBrush", { &StaticClassFactory< CSolidColorBrush >::Create } }
 };
 
 CStaticClassResolver::CStaticClassResolver()

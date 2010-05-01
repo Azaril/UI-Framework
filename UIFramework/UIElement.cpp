@@ -2,22 +2,28 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-StaticClassProperty UIElementProperties[] =
+CStaticProperty UIElementProperties[] = 
 {
-    { L"Width", TypeIndex::Float, StaticPropertyFlags::None },
-    { L"Height", TypeIndex::Float, StaticPropertyFlags::None }
+    CStaticProperty( L"Width", TypeIndex::Float, StaticPropertyFlags::None ),
+    CStaticProperty( L"Height", TypeIndex::Float, StaticPropertyFlags::None ),
+    CStaticProperty( L"Visibility", TypeIndex::Visibility, StaticPropertyFlags::None )
 };
 
-StaticClassProperties UIElementPropertyInformation =
+namespace UIElementPropertyIndex
 {
-    UIElementProperties,
-    ARRAYSIZE(UIElementProperties)
-};
+    enum Value
+    {
+        Width,
+        Height,
+        Visibility
+    };
+}
 
 CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
                            m_ArrangeDirty(TRUE),
-                           m_PropertyInformation(NULL)
+                           m_PropertyInformation(NULL),
+                           m_Visibility(Visibility::Visible)
 {
     m_Size.width = 0;
     m_Size.height = 0;
@@ -43,6 +49,52 @@ HRESULT CUIElement::Initialize()
 
     IFC(CVisual::Initialize());
     
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::PreRender(CPreRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    if(m_Visibility == Visibility::Visible)
+    {
+        IFC(PreRenderInternal(Context));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::PreRenderInternal(CPreRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    IFC(CVisual::PreRender(Context));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::Render(CRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    if(m_Visibility == Visibility::Visible)
+    {
+        IFC(RenderInternal(Context));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::RenderInternal(CRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    IFC(CVisual::Render(Context));
+
 Cleanup:
     return hr;
 }
@@ -84,7 +136,6 @@ HRESULT CUIElement::SetSize(SizeF Size)
 {
     HRESULT hr = S_OK;
 
-    //TODO: These should probably go through the property system.
     IFC(InternalSetWidth(Size.width));
     IFC(InternalSetHeight(Size.height));
 
@@ -98,19 +149,28 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
 
     if(m_MeasureDirty || m_LastMeasureSize.height != AvailableSize.height || m_LastMeasureSize.width != AvailableSize.width)
     {
-        SizeF NewSize = { 0 };
+        if(m_Visibility == Visibility::Visible || m_Visibility == Visibility::Hidden)
+        {
+            SizeF NewSize = { 0 };
 
-        IFC(MeasureInternal(AvailableSize, NewSize));
+            IFC(MeasureInternal(AvailableSize, NewSize));
+
+            m_LastMeasureSize = AvailableSize;
+
+            if(NewSize.width != m_DesiredSize.width || NewSize.height != m_DesiredSize.width)
+            {
+                m_DesiredSize = NewSize;
+
+                IFC(InvalidateArrange());
+            }
+        }
+        else
+        {
+            m_DesiredSize.width = 0;
+            m_DesiredSize.height = 0;
+        }
 
         m_MeasureDirty = FALSE;
-        m_LastMeasureSize = AvailableSize;
-
-        if(NewSize.width != m_DesiredSize.width || NewSize.height != m_DesiredSize.width)
-        {
-            m_DesiredSize = NewSize;
-
-            IFC(InvalidateArrange());
-        }
     }
 
 Cleanup:
@@ -143,9 +203,31 @@ HRESULT CUIElement::Arrange(SizeF Size)
     IFCEXPECT(Size.width >= 0);
     IFCEXPECT(Size.height >= 0);
 
-    m_FinalSize = Size;
+    if(m_ArrangeDirty)
+    {
+        if(m_Visibility == Visibility::Visible || m_Visibility == Visibility::Hidden)
+        {
+            m_FinalSize = Size;
+
+            IFC(ArrangeInternal(Size));
+        }
+        else
+        {
+            m_FinalSize.width = 0;
+            m_FinalSize.height = 0;
+        }
+
+        m_ArrangeDirty = FALSE;
+    }
 
 Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::ArrangeInternal(SizeF Size)
+{
+    HRESULT hr = S_OK;
+
     return hr;
 }
 
@@ -249,6 +331,31 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::SetVisibility(Visibility::Value State)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InternalSetVisibility(State));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::InternalSetVisibility(Visibility::Value State)
+{
+    HRESULT hr = S_OK;
+
+    IFCEXPECT(State == Visibility::Visible || State == Visibility::Hidden || State == Visibility::Collapsed);
+
+    m_Visibility = State;
+
+    IFC(InvalidateMeasure());
+    IFC(InvalidateArrange());
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CUIElement::OnChildMeasureInvalidated(CChildMeasureInvalidatedNotification* pNotification)
 {
     HRESULT hr = S_OK;
@@ -298,7 +405,7 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(&UIElementPropertyInformation, &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(UIElementProperties, ARRAYSIZE(UIElementProperties), &pStaticInformation));
 
     *ppInformation = pStaticInformation;
     pStaticInformation = NULL;
@@ -316,24 +423,53 @@ HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Height") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= UIElementProperties && pProperty < UIElementProperties + ARRAYSIZE(UIElementProperties))
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        CFloatValue* pFloat = (CFloatValue*)pValue;
+        UINT32 Index = (pStaticProperty - UIElementProperties);
+        
+        switch(Index)
+        {
+            case UIElementPropertyIndex::Width:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
 
-        IFC(InternalSetHeight(pFloat->GetValue()));
-    }
-    else if(wcscmp(pProperty->GetName(), L"Width") == 0)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+                    CFloatValue* pFloat = (CFloatValue*)pValue;
 
-        CFloatValue* pFloat = (CFloatValue*)pValue;
+                    IFC(InternalSetHeight(pFloat->GetValue()));
 
-        IFC(InternalSetWidth(pFloat->GetValue()));
+                    break;
+                }
+
+            case UIElementPropertyIndex::Height:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
+                    CFloatValue* pFloat = (CFloatValue*)pValue;
+
+                    IFC(InternalSetWidth(pFloat->GetValue()));
+
+                    break;
+                }
+
+            case UIElementPropertyIndex::Visibility:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Visibility));
+
+                    CVisibilityValue* pVisibility = (CVisibilityValue*)pValue;
+
+                    IFC(InternalSetVisibility(pVisibility->GetValue()));
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {

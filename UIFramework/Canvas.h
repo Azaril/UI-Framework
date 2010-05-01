@@ -37,8 +37,6 @@ class CCanvas : public CPanel
 
         virtual HRESULT SetChildPosition( CUIElement* pElement, Point2F Position );
 
-        virtual HRESULT Arrange( SizeF Size );
-
     public:
         CCanvas();
         virtual ~CCanvas();
@@ -48,6 +46,7 @@ class CCanvas : public CPanel
         virtual HRESULT GetChildLayout( CUIElement* pElement, CCanvasLayoutInformation** ppLayoutInfo );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+        virtual HRESULT ArrangeInternal( SizeF Size );
 
         //virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 

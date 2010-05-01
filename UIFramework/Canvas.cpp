@@ -146,7 +146,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CCanvas::Arrange(SizeF Size)
+HRESULT CCanvas::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
 
@@ -164,7 +164,7 @@ HRESULT CCanvas::Arrange(SizeF Size)
         IFC(pElement->Arrange(ElementDesiredSize));
     }
 
-    IFC(CPanel::Arrange(Size));
+    IFC(CPanel::ArrangeInternal(Size));
 
 Cleanup:
     return hr;

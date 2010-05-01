@@ -11,8 +11,6 @@ class CImage : public CFrameworkElement
         virtual TypeIndex::Value GetType() { return TypeIndex::Image; }
         virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Image || CFrameworkElement::IsTypeOf(Type); }
 
-        virtual HRESULT Arrange( SizeF Size );
-
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
 
         HRESULT SetSource( CObjectWithType* pSource );
@@ -25,6 +23,7 @@ class CImage : public CFrameworkElement
         HRESULT Finalize();
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+        virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 

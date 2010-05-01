@@ -2,16 +2,18 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 
-StaticClassProperty DecoratorProperties[] =
+CStaticProperty DecoratorProperties[] = 
 {
-    { L"Child", TypeIndex::UIElement, StaticPropertyFlags::Content }
+    CStaticProperty( L"Child", TypeIndex::UIElement, StaticPropertyFlags::Content )
 };
 
-StaticClassProperties DecoratorPropertyInformation =
+namespace DecoratorPropertyIndex
 {
-    DecoratorProperties,
-    ARRAYSIZE(DecoratorProperties)
-};
+    enum Value
+    {
+        Child
+    };
+}
 
 CDecorator::CDecorator() : m_Child(NULL)
 {
@@ -70,7 +72,7 @@ HRESULT CDecorator::CreatePropertyInformation(CPropertyInformation **ppInformati
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(&DecoratorPropertyInformation, &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(DecoratorProperties, ARRAYSIZE(DecoratorProperties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -92,16 +94,31 @@ HRESULT CDecorator::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Child") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= DecoratorProperties && pProperty < DecoratorProperties + ARRAYSIZE(DecoratorProperties))
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElement));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        CUIElement* pUIElement = (CUIElement*)pValue;
+        UINT32 Index = (pStaticProperty - DecoratorProperties);
+        
+        switch(Index)
+        {
+            case DecoratorPropertyIndex::Child:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElement));
 
-        IFC(SetChild(pUIElement));
+                    CUIElement* pUIElement = (CUIElement*)pValue;
+
+                    IFC(SetChild(pUIElement));
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {

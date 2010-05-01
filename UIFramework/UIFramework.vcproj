@@ -390,6 +390,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Enums.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Enums.h"
+					>
+				</File>
+				<File
 					RelativePath=".\RenderContext.cpp"
 					>
 				</File>
@@ -614,6 +622,14 @@
 					</File>
 					<File
 						RelativePath=".\ImageBrush.h"
+						>
+					</File>
+					<File
+						RelativePath=".\SolidColorBrush.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SolidColorBrush.h"
 						>
 					</File>
 				</Filter>

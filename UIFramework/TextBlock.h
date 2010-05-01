@@ -15,13 +15,12 @@ class CTextBlock : public CFrameworkElement
 
         virtual HRESULT SetText( const WCHAR* pText );
 
-        virtual HRESULT Arrange( SizeF Size );
-
     protected:
         CTextBlock();
         virtual ~CTextBlock();
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+        virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT RenderTransformed( CRenderContext& Context );
 

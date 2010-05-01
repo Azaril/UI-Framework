@@ -21,6 +21,9 @@ class CBrush : public CRefCountedObject,
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
+        virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
+        virtual HRESULT OnVisualDetach( CVisualDetachContext& Context );
+
         virtual HRESULT GetGraphicsBrush( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush ) = 0;
 
     protected:

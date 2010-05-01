@@ -4,16 +4,18 @@
 #include "DelegatingPropertyInformation.h"
 #include "BasicTypes.h"
 
-StaticClassProperty TextBlockPanelProperties[] =
+CStaticProperty TextBlockProperties[] = 
 {
-    { L"Text", TypeIndex::String, StaticPropertyFlags::Content }
+    CStaticProperty( L"Text", TypeIndex::String, StaticPropertyFlags::Content )
 };
 
-StaticClassProperties TextBlockPropertyInformation =
+namespace TextBlockPropertyIndex
 {
-    TextBlockPanelProperties,
-    ARRAYSIZE(TextBlockPanelProperties)
-};
+    enum Value
+    {
+        Text
+    };
+}
 
 CTextBlock::CTextBlock() : m_TextLayout(NULL),
                            m_TextFormat(NULL),
@@ -99,7 +101,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextBlock::Arrange(SizeF Size)
+HRESULT CTextBlock::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
 
@@ -108,7 +110,7 @@ HRESULT CTextBlock::Arrange(SizeF Size)
         IFC(m_TextLayout->SetMaxSize(Size));
     }
 
-    IFC(CFrameworkElement::Arrange(Size));
+    IFC(CFrameworkElement::ArrangeInternal(Size));
 
 Cleanup:
     return hr;
@@ -161,7 +163,7 @@ HRESULT CTextBlock::CreatePropertyInformation(CPropertyInformation** ppInformati
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(&TextBlockPropertyInformation, &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(TextBlockProperties, ARRAYSIZE(TextBlockProperties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -183,16 +185,31 @@ HRESULT CTextBlock::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Text") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= TextBlockProperties && pProperty < TextBlockProperties + ARRAYSIZE(TextBlockProperties))
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        CStringValue* pText = (CStringValue*)pValue;
+        UINT32 Index = (pStaticProperty - TextBlockProperties);
+        
+        switch(Index)
+        {
+            case TextBlockPropertyIndex::Text:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
 
-        IFC(SetText(pText->GetValue()));
+                    CStringValue* pText = (CStringValue*)pValue;
+
+                    IFC(SetText(pText->GetValue()));
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {

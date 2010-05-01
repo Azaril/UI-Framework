@@ -80,13 +80,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::PreRender(CPreRenderContext& Context)
+HRESULT CRootUIElement::PreRenderInternal(CPreRenderContext& Context)
 {
     HRESULT hr = S_OK;
 
     IFC(Context.AddRenderRoot(this));
 
-    IFC(CFrameworkElement::PreRender(Context));
+    IFC(CFrameworkElement::PreRenderInternal(Context));
 
 Cleanup:
     return hr;
@@ -96,7 +96,7 @@ HRESULT CRootUIElement::RenderRoot(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
-    ColorF ClearColor = { 1, 1, 1, 1 };
+    ColorF ClearColor = { 0, 0, 0, 0 };
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
@@ -128,11 +128,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::Arrange(SizeF Size)
+HRESULT CRootUIElement::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
 
-    IFC(CFrameworkElement::Arrange(Size));
+    IFC(CFrameworkElement::ArrangeInternal(Size));
 
     if(m_Child)
     {

@@ -4,22 +4,37 @@
 #include "TypeIndex.h"
 #include "Factory.h"
 #include "PropertyObject.h"
+#include "Enums.h"
 
-class CFloatValue : public CRefCountedObjectBase< CObjectWithType >
+template< typename T, TypeIndex::Value Type >
+class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
 {
     public:
-        DECLARE_FACTORY1( CFloatValue, FLOAT );
+        DECLARE_FACTORY1( CBasicValue, T );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::Float; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Float || CObjectWithType::IsTypeOf(Type); }
+        virtual TypeIndex::Value GetType() { return Type; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == Type || CObjectWithType::IsTypeOf(Type); }
 
-        virtual FLOAT GetValue();
+        virtual T GetValue()
+        {
+            return m_Value;
+        }
 
     protected:
-        HRESULT Initialize( FLOAT Value );
+        HRESULT Initialize( T Value )
+        {
+            m_Value = Value;
 
-        FLOAT m_Value;
+            return S_OK;
+        }
+
+        T m_Value;
 };
+
+typedef CBasicValue< FLOAT, TypeIndex::Float > CFloatValue;
+typedef CBasicValue< Visibility::Value, TypeIndex::Visibility > CVisibilityValue;
+typedef CBasicValue< ColorF, TypeIndex::ColorF > CColorFValue;
+typedef CBasicValue< RectF, TypeIndex::RectF > CRectFValue;
 
 class CStringValue : public CRefCountedObjectBase< CObjectWithType >
 {

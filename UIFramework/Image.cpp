@@ -2,16 +2,18 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 
-StaticClassProperty ImageProperties[] =
+CStaticProperty ImageProperties[] = 
 {
-    { L"Source", TypeIndex::Object, StaticPropertyFlags::None }
+    CStaticProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None )
 };
 
-StaticClassProperties ImagePropertyInformation =
+namespace ImagePropertyIndex
 {
-    ImageProperties,
-    ARRAYSIZE(ImageProperties)
-};
+    enum Value
+    {
+        Source
+    };
+}
 
 CImage::CImage() : m_Source(NULL),
                    m_ImageRect(NULL),
@@ -101,13 +103,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImage::Arrange(SizeF Size)
+HRESULT CImage::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
 
     IFC(m_ImageRect->SetSize(Size));
 
-    IFC(CFrameworkElement::Arrange(Size));
+    IFC(CFrameworkElement::ArrangeInternal(Size));
 
 Cleanup:
     return hr;
@@ -122,7 +124,7 @@ HRESULT CImage::CreatePropertyInformation(CPropertyInformation** ppInformation)
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(&ImagePropertyInformation, &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(ImageProperties, ARRAYSIZE(ImageProperties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -144,21 +146,27 @@ HRESULT CImage::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Source") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= ImageProperties && pProperty < ImageProperties + ARRAYSIZE(ImageProperties))
     {
-        IFC(InternalSetSource(pValue));
-    }
-    else if(wcscmp(pProperty->GetName(), L"Padding") == 0)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::RectF));
-        //TODO: Implement.
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        __debugbreak();
+        UINT32 Index = (pStaticProperty - ImageProperties);
+        
+        switch(Index)
+        {
+            case ImagePropertyIndex::Source:
+                {
+                    IFC(InternalSetSource(pValue));
 
-        IFC(E_FAIL);
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {

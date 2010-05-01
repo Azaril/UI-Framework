@@ -1,6 +1,7 @@
 #include "StaticPropertyInformation.h"
 
-CStaticPropertyInformation::CStaticPropertyInformation() : m_ClassInformation(NULL)
+CStaticPropertyInformation::CStaticPropertyInformation() : m_Properties(NULL),
+                                                           m_PropertyCount(0)
 {
 }
 
@@ -8,13 +9,14 @@ CStaticPropertyInformation::~CStaticPropertyInformation()
 {
 }
 
-HRESULT CStaticPropertyInformation::Initialize(StaticClassProperties *pProperties)
+HRESULT CStaticPropertyInformation::Initialize(CStaticProperty* pProperties, UINT32 PropertyCount)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperties);
 
-    m_ClassInformation = pProperties;
+    m_Properties = pProperties;
+    m_PropertyCount = PropertyCount;
 
 Cleanup:
     return hr;
@@ -23,91 +25,80 @@ Cleanup:
 HRESULT CStaticPropertyInformation::GetProperty(const WCHAR* pPropertyName, CProperty** ppProperty)
 {
     HRESULT hr = S_OK;
-    CStaticProperty* pStaticProperty = NULL;
 
     IFCPTR(pPropertyName);
     IFCPTR(ppProperty);
 
-    for(UINT32 i = 0; i < m_ClassInformation->PropertyCount; i++)
+    for(UINT32 i = 0; i < m_PropertyCount; i++)
     {
-        if(wcscmp(pPropertyName, m_ClassInformation->Properties[i].PropertyName) == 0)
+        if(wcscmp(pPropertyName, m_Properties[i].GetName()) == 0)
         {
-            IFC(CStaticProperty::Create(&m_ClassInformation->Properties[i], &pStaticProperty));
+            *ppProperty = &m_Properties[i];
 
-            break;
+            goto Cleanup;
         }
     }
 
-    IFCPTR(pStaticProperty);
-
-    *ppProperty = pStaticProperty;
-    pStaticProperty = NULL;
+    IFC(E_FAIL);
 
 Cleanup:
-    ReleaseObject(pStaticProperty);
-
     return hr;
 }
 
 HRESULT CStaticPropertyInformation::GetContentProperty(CProperty** ppProperty)
 {
     HRESULT hr = S_OK;
-    CStaticProperty* pStaticProperty = NULL;
 
     IFCPTR(ppProperty);
 
-    for(UINT32 i = 0; i < m_ClassInformation->PropertyCount; i++)
+    for(UINT32 i = 0; i < m_PropertyCount; i++)
     {
-        if(m_ClassInformation->Properties[i].Flags & StaticPropertyFlags::Content)
+        if(m_Properties[i].IsContent())
         {
-            IFC(CStaticProperty::Create(&m_ClassInformation->Properties[i], &pStaticProperty));
+            *ppProperty = &m_Properties[i];
 
-            break;
+            goto Cleanup;
         }
     }
 
-    IFCPTR(pStaticProperty);
-
-    *ppProperty = pStaticProperty;
-    pStaticProperty = NULL;
-
-Cleanup:
-    ReleaseObject(pStaticProperty);
-
-    return hr;
-}
-
-CStaticProperty::CStaticProperty() : m_Property(NULL)
-{
-}
-
-CStaticProperty::~CStaticProperty()
-{
-}
-
-HRESULT CStaticProperty::Initialize(StaticClassProperty* pProperty)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-
-    m_Property = pProperty;
+    IFC(E_FAIL);
 
 Cleanup:
     return hr;
+}
+
+CStaticProperty::CStaticProperty(const WCHAR* pName, const TypeIndex::Value Type, UINT32 Flags) : m_Name(pName),
+                                                                                                  m_Type(Type),
+                                                                                                  m_Flags(Flags)
+{
+}
+
+INT32 CStaticProperty::AddRef()
+{
+    return 1;
+}
+
+INT32 CStaticProperty::Release()
+{
+    return 1;
 }
 
 TypeIndex::Value CStaticProperty::GetType()
 {
-    return m_Property->PropertyType;
+    return m_Type;
 }
 
 const WCHAR* CStaticProperty::GetName()
 {
-    return m_Property->PropertyName;
+    return m_Name;
 }
 
 BOOL CStaticProperty::IsCollection()
 {
-    return (m_Property->Flags & StaticPropertyFlags::Collection) ? TRUE : FALSE;
+    return (m_Flags & StaticPropertyFlags::Collection) ? TRUE : FALSE;
+}
+
+BOOL CStaticProperty::IsContent()
+{
+    return (m_Flags & StaticPropertyFlags::Content) ? TRUE : FALSE;
 }

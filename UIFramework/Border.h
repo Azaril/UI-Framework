@@ -22,8 +22,6 @@ class CBorder : public CDecorator
 
         HRESULT SetPadding( const RectF& Padding );
 
-        virtual HRESULT Arrange( SizeF Size );
-
     protected:
         CBorder();
         virtual ~CBorder();
@@ -32,6 +30,7 @@ class CBorder : public CDecorator
         HRESULT Finalize();
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+        virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 

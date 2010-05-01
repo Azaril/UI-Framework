@@ -75,7 +75,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStackPanel::Arrange(SizeF Size)
+HRESULT CStackPanel::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
     Point2F LayoutPoint = { 0 };
@@ -102,7 +102,7 @@ HRESULT CStackPanel::Arrange(SizeF Size)
         }
     }
 
-    IFC(CPanel::Arrange(Size));
+    IFC(CPanel::ArrangeInternal(Size));
 
 Cleanup:
     return hr;

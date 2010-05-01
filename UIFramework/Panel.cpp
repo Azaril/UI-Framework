@@ -2,16 +2,18 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 
-StaticClassProperty PanelProperties[] =
+CStaticProperty PanelProperties[] = 
 {
-    { L"Children", TypeIndex::UIElement, StaticPropertyFlags::Content | StaticPropertyFlags::Collection }
+    CStaticProperty( L"Children", TypeIndex::UIElement, StaticPropertyFlags::Content | StaticPropertyFlags::Collection )
 };
 
-StaticClassProperties PanelPropertyInformation =
+namespace PanelPropertyIndex
 {
-    PanelProperties,
-    ARRAYSIZE(PanelProperties)
-};
+    enum Value
+    {
+        Children
+    };
+}
 
 CPanel::CPanel()
 {
@@ -54,7 +56,7 @@ HRESULT CPanel::CreatePropertyInformation(CPropertyInformation** ppInformation)
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(&PanelPropertyInformation, &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(PanelProperties, ARRAYSIZE(PanelProperties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -76,18 +78,33 @@ HRESULT CPanel::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Children") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= PanelProperties && pProperty < PanelProperties + ARRAYSIZE(PanelProperties))
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElementCollection));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        CUIElementCollection* pUIElementCollection = (CUIElementCollection*)pValue;
+        UINT32 Index = (pStaticProperty - PanelProperties);
+        
+        switch(Index)
+        {
+            case PanelPropertyIndex::Children:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElementCollection));
 
-        //TODO: Implement!
-        //IFC(SetChildren(pUIElementCollection));
-        __debugbreak();
+                    CUIElementCollection* pUIElementCollection = (CUIElementCollection*)pValue;
+
+                    //TODO: Implement!
+                    //IFC(SetChildren(pUIElementCollection));
+                    __debugbreak();
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {
