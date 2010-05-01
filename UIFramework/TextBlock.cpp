@@ -6,7 +6,7 @@
 
 StaticClassProperty TextBlockPanelProperties[] =
 {
-    { L"Text", TRUE, TypeIndex::String }
+    { L"Text", TypeIndex::String, StaticPropertyFlags::Content }
 };
 
 StaticClassProperties TextBlockPropertyInformation =

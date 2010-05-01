@@ -4,7 +4,7 @@
 
 StaticClassProperty ImageProperties[] =
 {
-    { L"Source", FALSE, TypeIndex::Object }
+    { L"Source", TypeIndex::Object, StaticPropertyFlags::None }
 };
 
 StaticClassProperties ImagePropertyInformation =
@@ -36,6 +36,8 @@ HRESULT CImage::Initialize()
 
     IFC(CImageBrush::Create(&m_ImageBrush));
 
+    IFC(m_ImageRect->SetBrush(m_ImageBrush));
+
 Cleanup:
     return hr;
 }
@@ -59,20 +61,25 @@ Cleanup:
     return hr;
 }
 
-//HRESULT CImage::SetSource(CBitmapSource* pBitmapSource)
-//{
-//    HRESULT hr = S_OK;
-//
-//    ReleaseObject(m_Source);
-//
-//    m_Source = pBitmapSource;
-//    AddRefObject(m_Source);
-//
-//    IFC(m_ImageBrush->SetSource(m_Source));
-//
-//Cleanup:
-//    return hr;
-//}
+HRESULT CImage::SetSource(CObjectWithType* pSource)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InternalSetSource(pSource));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CImage::InternalSetSource(CObjectWithType* pSource)
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_ImageBrush->SetSource(pSource));
+
+Cleanup:
+    return hr;
+}
 
 HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
@@ -84,11 +91,7 @@ HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
     if(m_ImageBrush != NULL)
     {
-        //TODO: Fix this!
-        
-        __debugbreak();
-
-        //IFC(m_ImageBrush->GetSize(&ImageSize));
+        IFC(m_ImageBrush->GetSize(&ImageSize));
     }
 
     DesiredSize.width = max((FLOAT)ImageSize.width, BaseSize.width);
@@ -131,5 +134,37 @@ Cleanup:
     ReleaseObject(pBaseInformation);
     ReleaseObject(pDelegatingProperyInformation);
 
+    return hr;
+}
+
+HRESULT CImage::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    //TODO: Ensure this property actually belongs to this object.
+
+    //TODO: Looking up other than by name would be much better.
+    if(wcscmp(pProperty->GetName(), L"Source") == 0)
+    {
+        IFC(InternalSetSource(pValue));
+    }
+    else if(wcscmp(pProperty->GetName(), L"Padding") == 0)
+    {
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::RectF));
+        //TODO: Implement.
+
+        __debugbreak();
+
+        IFC(E_FAIL);
+    }
+    else
+    {
+        IFC(CFrameworkElement::SetValue(pProperty, pValue));
+    }
+
+Cleanup:
     return hr;
 }

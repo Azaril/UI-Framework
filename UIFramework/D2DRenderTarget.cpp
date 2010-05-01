@@ -205,13 +205,14 @@ HRESULT CD2DRenderTarget::CreateBitmapBrush(CBitmap* pBitmap, CGraphicsBrush** p
     CD2DBitmap* pD2DBitmap = NULL;
     CD2DBitmapBrush* pD2DBrush = NULL;
     ID2D1BitmapBrush* pD2DBitmapBrush = NULL;
+    D2D1_BITMAP_BRUSH_PROPERTIES BrushProperties = D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP, D2D1_EXTEND_MODE_WRAP, D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
 
     IFCPTR(pBitmap);
     IFCPTR(pBrush);
 
     pD2DBitmap = (CD2DBitmap*)pBitmap;
 
-    IFC(m_RenderTarget->CreateBitmapBrush(pD2DBitmap->GetD2DBitmap(), &pD2DBitmapBrush));
+    IFC(m_RenderTarget->CreateBitmapBrush(pD2DBitmap->GetD2DBitmap(), BrushProperties, &pD2DBitmapBrush));
 
     IFC(CD2DBitmapBrush::Create(pD2DBitmapBrush, &pD2DBrush));
 

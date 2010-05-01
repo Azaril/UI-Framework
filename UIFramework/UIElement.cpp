@@ -4,8 +4,8 @@
 
 StaticClassProperty UIElementProperties[] =
 {
-    { L"Width", FALSE, TypeIndex::Float },
-    { L"Height", FALSE, TypeIndex::Float }
+    { L"Width", TypeIndex::Float, StaticPropertyFlags::None },
+    { L"Height", TypeIndex::Float, StaticPropertyFlags::None }
 };
 
 StaticClassProperties UIElementPropertyInformation =
@@ -337,6 +337,39 @@ HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     }
     else
     {
+        IFC(E_FAIL);
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    //TODO: Ensure this property actually belongs to this object.
+
+    //TODO: Looking up other than by name would be much better.
+    //if(wcscmp(pProperty->GetName(), L"Height") == 0)
+    //{
+    //    __debugbreak;
+
+    //    //TODO: Implement!
+    //}
+    //else if(wcscmp(pProperty->GetName(), L"Width") == 0)
+    //{
+    //    __debugbreak;
+
+    //    //TODO: Implement!
+    //}
+    //else
+    {
+        __debugbreak();
+
         IFC(E_FAIL);
     }
 

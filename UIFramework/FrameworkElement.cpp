@@ -12,26 +12,27 @@
 //    ARRAYSIZE(FrameworkElementProperties)
 //};
 
-CFrameworkElement::CFrameworkElement()
+CFrameworkElement::CFrameworkElement() : m_Children(NULL),
+                                         m_ChildrenSubscriber(*this)
 {
 }
 
 CFrameworkElement::~CFrameworkElement()
 {
-    Finalize();
+    ReleaseObject(m_Children);
 }
 
-HRESULT CFrameworkElement::Finalize()
+HRESULT CFrameworkElement::Initialize()
 {
     HRESULT hr = S_OK;
 
-    for(ChildCollection::iterator It = m_Children.begin(); It != m_Children.end(); ++It)
-    {
-        (*It)->Release();
-    }
+    IFC(CUIElement::Initialize());
 
-    m_Children.clear();
+    IFC(CUIElementCollection::Create(&m_Children));
 
+    IFC(m_Children->AddSubscriber(&m_ChildrenSubscriber));
+
+Cleanup:
     return hr;
 }
 
@@ -44,9 +45,11 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
     {
         CUIAttachContext ChildContext(this);
 
-        for(ChildCollection::iterator It = m_Children.begin(); It != m_Children.end(); ++It)
+        for(UINT i = 0; i < m_Children->GetCount(); i++)
         {
-            IFC((*It)->OnAttach(ChildContext));
+            CUIElement* pElement = m_Children->GetAtIndex(i);
+
+            IFC(pElement->OnAttach(ChildContext));
         }
     }
 
@@ -63,9 +66,11 @@ HRESULT CFrameworkElement::OnDetach(CUIDetachContext& Context)
     {
         CUIDetachContext ChildContext(this);
 
-        for(ChildCollection::iterator It = m_Children.begin(); It != m_Children.end(); ++It)
+        for(UINT i = 0; i < m_Children->GetCount(); i++)
         {
-            IFC((*It)->OnDetach(ChildContext));
+            CUIElement* pElement = m_Children->GetAtIndex(i);
+
+            IFC(pElement->OnDetach(ChildContext));
         }
     }
 
@@ -79,26 +84,7 @@ HRESULT CFrameworkElement::AddLogicalChild(CUIElement* pElement)
 
     IFCPTR(pElement);
 
-    for(ChildCollection::iterator It = m_Children.begin(); It != m_Children.end(); ++It)
-    {
-        if(*It == pElement)
-        {
-            IFC(E_FAIL);
-        }
-    }
-
-    IFC(AddChildVisual(pElement));
-
-    m_Children.push_back(pElement);
-
-    AddRefObject(pElement);
-
-    if(IsAttached())
-    {
-        CUIAttachContext ChildContext(this);
-
-        IFC(pElement->OnAttach(ChildContext));
-    }
+    IFC(m_Children->AddObject(pElement));
 
 Cleanup:
     return hr;
@@ -110,31 +96,48 @@ HRESULT CFrameworkElement::RemoveLogicalChild(CUIElement* pElement)
 
     IFCPTR(pElement);
 
-    for(ChildCollection::iterator It = m_Children.begin(); It != m_Children.end(); ++It)
-    {
-        if(*It == pElement)
-        {
-            if(IsAttached())
-            {
-                CUIDetachContext ChildContext(this);
-
-                IFC(pElement->OnDetach(ChildContext));
-            }
-
-            (*It)->Release();
-
-            m_Children.erase(It);
-
-            IFC(RemoveChildVisual(pElement));
-
-            goto Cleanup;
-        }
-    }
-
-    IFC(E_FAIL);
+    IFC(m_Children->RemoveObject(pElement));
 
 Cleanup:
     return hr;
+}
+
+VOID CFrameworkElement::OnChildAdded(CUIElement* pElement)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pElement);
+
+    IFC(AddChildVisual(pElement));
+
+    if(IsAttached())
+    {
+        CUIAttachContext ChildContext(this);
+
+        IFC(pElement->OnAttach(ChildContext));
+    }
+
+Cleanup:
+    ;
+}
+
+VOID CFrameworkElement::OnChildRemoved(CUIElement* pElement)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pElement);
+
+    if(IsAttached())
+    {
+        CUIDetachContext ChildContext(this);
+
+        IFC(pElement->OnDetach(ChildContext));
+    }
+
+    IFC(RemoveChildVisual(pElement));
+
+Cleanup:
+    ;
 }
 
 //HRESULT CFrameworkElement::CreatePropertyInformation(CPropertyInformation **ppInformation)
@@ -160,3 +163,25 @@ Cleanup:
 //
 //    return hr;
 //}
+
+HRESULT CUIElementCollection::AddObject(CObjectWithType* pObject)
+{
+    HRESULT hr  = S_OK;
+
+    IFCPTR(pObject);
+
+    for(UINT i = 0; i < GetCount(); i++)
+    {
+        CUIElement* pChildElement = GetAtIndex(i);
+
+        if(pChildElement == pObject)
+        {
+            IFC(E_FAIL);
+        }
+    }
+
+    IFC(CCollection< CUIElement >::AddObject(pObject));
+
+Cleanup:
+    return hr;
+}

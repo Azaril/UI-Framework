@@ -4,7 +4,7 @@
 
 StaticClassProperty BrushProperties[] =
 {
-    { L"Opacity", FALSE, TypeIndex::Float }
+    { L"Opacity", TypeIndex::Float, StaticPropertyFlags::None }
 };
 
 StaticClassProperties BrushPropertyInformation =
@@ -78,6 +78,35 @@ HRESULT CBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     }
     else
     {
+        IFC(E_FAIL);
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    //TODO: Ensure this property actually belongs to this object.
+
+    //TODO: Looking up other than by name would be much better.
+    //if(wcscmp(pProperty->GetName(), L"Opacity") == 0)
+    //{
+    //    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
+    //    CFloatValue* pFloat = (CFloatValue*)pValue;
+
+    //    //TODO: Set opacity.
+    //}
+    //else
+    {
+        __debugbreak();
+
         IFC(E_FAIL);
     }
 

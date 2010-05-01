@@ -5,7 +5,7 @@
 
 StaticClassProperty ImageBrushProperties[] =
 {
-    { L"Source", FALSE, TypeIndex::Object }
+    { L"Source", TypeIndex::Object, StaticPropertyFlags::None }
 };
 
 StaticClassProperties ImageBrushPropertyInformation =
@@ -54,18 +54,15 @@ Cleanup:
     return hr;
 }
 
-//HRESULT CImageBrush::SetSource(CBitmapSource* pSource)
-//{
-//    HRESULT hr = S_OK;
-//
-//    ReleaseObject(m_Source);
-//
-//    m_Source = pSource;
-//
-//    AddRefObject(m_Source);
-//
-//    return hr;
-//}
+HRESULT CImageBrush::SetSource(CObjectWithType* pSource)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InternalSetSource(pSource));
+
+Cleanup:
+    return hr;
+}
 
 HRESULT CImageBrush::InternalSetSource(CObjectWithType* pSource)
 {
@@ -87,6 +84,8 @@ HRESULT CImageBrush::OnVisualAttach(CVisualAttachContext& Context)
 {
     HRESULT hr = S_OK;
     CImageBrushContext* pContext = NULL;
+    CImagingProvider* pImagingProvider = NULL;
+    CBitmapSource* pBitmapSource = NULL;
 
     for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
     {
@@ -105,7 +104,25 @@ HRESULT CImageBrush::OnVisualAttach(CVisualAttachContext& Context)
     }
     else
     {
-        IFC(CImageBrushContext::Create(Context.GetGraphicsDevice(), &pContext));
+        if(m_Source->IsTypeOf(TypeIndex::String))
+        {
+            CStringValue* pStringValue = (CStringValue*)m_Source;
+
+            IFC(Context.GetGraphicsDevice()->GetImagingProvider(&pImagingProvider));
+
+            IFC(pImagingProvider->LoadBitmapFromFile(pStringValue->GetValue(), &pBitmapSource));
+        }
+        else if(m_Source->IsTypeOf(TypeIndex::BitmapSource))
+        {
+            pBitmapSource = (CBitmapSource*)m_Source;
+            AddRefObject(m_Source);
+        }
+        else
+        {
+            IFC(E_FAIL);
+        }
+
+        IFC(CImageBrushContext::Create(Context.GetGraphicsDevice(), pBitmapSource, &pContext));
 
         m_Contexts.push_back(pContext);
 
@@ -114,6 +131,7 @@ HRESULT CImageBrush::OnVisualAttach(CVisualAttachContext& Context)
 
 Cleanup:
     ReleaseObject(pContext);
+    ReleaseObject(pImagingProvider);
 
     return hr;
 }
@@ -168,27 +186,27 @@ HRESULT CImageBrush::GetGraphicsBrush(CGraphicsDevice* pGraphicsDevice, CRenderT
 
     IFC(pContext->GetBitmapSource(&pBitmapSource));
 
-    if(pBitmapSource == NULL)
-    {
-        IFCPTR(m_Source);
+    //if(pBitmapSource == NULL)
+    //{
+    //    IFCPTR(m_Source);
 
-        if(m_Source->IsTypeOf(TypeIndex::String))
-        {
-            CStringValue* pStringValue = (CStringValue*)m_Source;
+    //    if(m_Source->IsTypeOf(TypeIndex::String))
+    //    {
+    //        CStringValue* pStringValue = (CStringValue*)m_Source;
 
-            IFC(pGraphicsDevice->GetImagingProvider(&pImagingProvider));
+    //        IFC(pGraphicsDevice->GetImagingProvider(&pImagingProvider));
 
-            IFC(pImagingProvider->LoadBitmapFromFile(pStringValue->GetValue(), &pBitmapSource));
-        }
-        else
-        {
-            IFC(E_FAIL);
-        }
+    //        IFC(pImagingProvider->LoadBitmapFromFile(pStringValue->GetValue(), &pBitmapSource));
+    //    }
+    //    else
+    //    {
+    //        IFC(E_FAIL);
+    //    }
 
-        IFCPTR(pBitmapSource);
+    //    IFCPTR(pBitmapSource);
 
-        IFC(pContext->SetBitmapSource(pBitmapSource));
-    }
+    //    IFC(pContext->SetBitmapSource(pBitmapSource));
+    //}
 
     //TODO: Find a way to keep a single instance per render target.
     IFC(pRenderTarget->LoadBitmap(pBitmapSource, &pBitmap));
@@ -226,75 +244,126 @@ Cleanup:
     return hr;
 }
 
-
-
-
-
-CImageBrushRenderContext::CImageBrushRenderContext() : m_RenderTarget(NULL),
-                                                       m_GraphicsBrush(NULL),
-                                                       m_UsageCount(1)
-{
-}
-
-CImageBrushRenderContext::~CImageBrushRenderContext()
-{
-    ReleaseObject(m_RenderTarget);
-    ReleaseObject(m_GraphicsBrush);
-}
-
-HRESULT CImageBrushRenderContext::Initialize(CRenderTarget* pRenderTarget)
+HRESULT CImageBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pRenderTarget);
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
 
-    m_RenderTarget = pRenderTarget;
-    AddRefObject(m_RenderTarget);
+    //TODO: Ensure this property actually belongs to this object.
+
+    //TODO: Looking up other than by name would be much better.
+    if(wcscmp(pProperty->GetName(), L"Source") == 0)
+    {
+        *ppValue = m_Source;
+        AddRefObject(m_Source);
+    }
+    else
+    {
+        IFC(CBrush::GetValue(pProperty, ppValue));
+    }
 
 Cleanup:
     return hr;
 }
 
-CRenderTarget* CImageBrushRenderContext::GetRenderTarget()
-{
-    return m_RenderTarget;
-}
-
-INT32 CImageBrushRenderContext::AddUsage()
-{
-    return ++m_UsageCount;
-}
-
-INT32 CImageBrushRenderContext::RemoveUsage()
-{
-    return --m_UsageCount;
-}
-
-HRESULT CImageBrushRenderContext::GetGraphicsBrush(CGraphicsBrush** ppBrush)
+HRESULT CImageBrush::GetSize(SizeU* pSize)
 {
     HRESULT hr = S_OK;
+    CBitmapSource* pBitmapSource = NULL;
 
-    IFCPTR(ppBrush);
+    IFCPTR(pSize);
 
-    *ppBrush = m_GraphicsBrush;
-    AddRefObject(m_GraphicsBrush);
+    for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
+    {
+        IFC((*It)->GetBitmapSource(&pBitmapSource));
+
+        if(pBitmapSource)
+        {
+            IFC(pBitmapSource->GetSize(pSize));
+
+            goto Cleanup;
+        }
+    }
+
+    pSize->height = 0;
+    pSize->width = 0;
 
 Cleanup:
+    ReleaseObject(pBitmapSource);
+
     return hr;
 }
 
-HRESULT CImageBrushRenderContext::SetGraphicsBrush(CGraphicsBrush* pBrush)
-{
-    HRESULT hr = S_OK;
 
-    IFCPTR(pBrush);
 
-    m_GraphicsBrush = pBrush;
-    AddRefObject(m_GraphicsBrush);
 
-Cleanup:
-    return hr;
-}
+//CImageBrushRenderContext::CImageBrushRenderContext() : m_RenderTarget(NULL),
+//                                                       m_GraphicsBrush(NULL),
+//                                                       m_UsageCount(1)
+//{
+//}
+//
+//CImageBrushRenderContext::~CImageBrushRenderContext()
+//{
+//    ReleaseObject(m_RenderTarget);
+//    ReleaseObject(m_GraphicsBrush);
+//}
+//
+//HRESULT CImageBrushRenderContext::Initialize(CRenderTarget* pRenderTarget)
+//{
+//    HRESULT hr = S_OK;
+//
+//    IFCPTR(pRenderTarget);
+//
+//    m_RenderTarget = pRenderTarget;
+//    AddRefObject(m_RenderTarget);
+//
+//Cleanup:
+//    return hr;
+//}
+//
+//CRenderTarget* CImageBrushRenderContext::GetRenderTarget()
+//{
+//    return m_RenderTarget;
+//}
+//
+//INT32 CImageBrushRenderContext::AddUsage()
+//{
+//    return ++m_UsageCount;
+//}
+//
+//INT32 CImageBrushRenderContext::RemoveUsage()
+//{
+//    return --m_UsageCount;
+//}
+//
+//HRESULT CImageBrushRenderContext::GetGraphicsBrush(CGraphicsBrush** ppBrush)
+//{
+//    HRESULT hr = S_OK;
+//
+//    IFCPTR(ppBrush);
+//
+//    *ppBrush = m_GraphicsBrush;
+//    AddRefObject(m_GraphicsBrush);
+//
+//Cleanup:
+//    return hr;
+//}
+//
+//HRESULT CImageBrushRenderContext::SetGraphicsBrush(CGraphicsBrush* pBrush)
+//{
+//    HRESULT hr = S_OK;
+//
+//    IFCPTR(pBrush);
+//
+//    m_GraphicsBrush = pBrush;
+//    AddRefObject(m_GraphicsBrush);
+//
+//Cleanup:
+//    return hr;
+//}
 
 
 
@@ -309,15 +378,15 @@ CImageBrushContext::~CImageBrushContext()
     ReleaseObject(m_Device);
     ReleaseObject(m_Source);
 
-    for(RenderTargetContextCollection::iterator It = m_RenderTargetContexts.begin(); It != m_RenderTargetContexts.end(); ++It)
-    {
-        (*It)->Release();
-    }
+    //for(RenderTargetContextCollection::iterator It = m_RenderTargetContexts.begin(); It != m_RenderTargetContexts.end(); ++It)
+    //{
+    //    (*It)->Release();
+    //}
 
-    m_RenderTargetContexts.clear();
+    //m_RenderTargetContexts.clear();
 }
 
-HRESULT CImageBrushContext::Initialize(CGraphicsDevice* pGraphicsDevice)
+HRESULT CImageBrushContext::Initialize(CGraphicsDevice* pGraphicsDevice, CBitmapSource* pBitmapSource)
 {
     HRESULT hr = S_OK;
 
@@ -325,6 +394,9 @@ HRESULT CImageBrushContext::Initialize(CGraphicsDevice* pGraphicsDevice)
 
     m_Device = pGraphicsDevice;
     AddRefObject(m_Device);
+    
+    m_Source = pBitmapSource;
+    AddRefObject(m_Source);
 
 Cleanup:
     return hr;
@@ -368,85 +440,84 @@ HRESULT CImageBrushContext::SetBitmapSource(CBitmapSource* pSource)
 
     AddRefObject(m_Source);
 
-Cleanup:
     return hr;
 }
 
-HRESULT CImageBrushContext::AddRenderTarget(CRenderTarget* pRenderTarget)
-{
-    HRESULT hr = S_OK;
-    CImageBrushRenderContext* pRenderTargetContext = NULL;
+//HRESULT CImageBrushContext::AddRenderTarget(CRenderTarget* pRenderTarget)
+//{
+//    HRESULT hr = S_OK;
+//    CImageBrushRenderContext* pRenderTargetContext = NULL;
+//
+//    IFCPTR(pRenderTarget);
+//
+//    for(RenderTargetContextCollection::iterator It = m_RenderTargetContexts.begin(); It != m_RenderTargetContexts.end(); ++It)
+//    {
+//        if((*It)->GetRenderTarget() == pRenderTarget)
+//        {
+//            (*It)->AddUsage();
+//
+//            goto Cleanup;
+//        }
+//    }
+//
+//    IFC(CImageBrushRenderContext::Create(pRenderTarget, &pRenderTargetContext));
+//
+//    m_RenderTargetContexts.push_back(pRenderTargetContext);
+//
+//    pRenderTargetContext = NULL;
+//
+//Cleanup:
+//    ReleaseObject(pRenderTargetContext);
+//
+//    return hr;
+//}
+//
+//HRESULT CImageBrushContext::RemoveRenderTarget(CRenderTarget* pRenderTarget)
+//{
+//    HRESULT hr = S_OK;
+//
+//    IFCPTR(pRenderTarget);
+//
+//    for(RenderTargetContextCollection::iterator It = m_RenderTargetContexts.begin(); It != m_RenderTargetContexts.end(); ++It)
+//    {
+//        if((*It)->GetRenderTarget() == pRenderTarget)
+//        {
+//            if((*It)->RemoveUsage() == 0)
+//            {
+//                (*It)->Release();
+//
+//                m_RenderTargetContexts.erase(It);
+//            }
+//
+//            goto Cleanup;
+//        }
+//    }
+//
+//    IFC(E_FAIL);
+//
+//Cleanup:
+//    return hr;
+//}
 
-    IFCPTR(pRenderTarget);
-
-    for(RenderTargetContextCollection::iterator It = m_RenderTargetContexts.begin(); It != m_RenderTargetContexts.end(); ++It)
-    {
-        if((*It)->GetRenderTarget() == pRenderTarget)
-        {
-            (*It)->AddUsage();
-
-            goto Cleanup;
-        }
-    }
-
-    IFC(CImageBrushRenderContext::Create(pRenderTarget, &pRenderTargetContext));
-
-    m_RenderTargetContexts.push_back(pRenderTargetContext);
-
-    pRenderTargetContext = NULL;
-
-Cleanup:
-    ReleaseObject(pRenderTargetContext);
-
-    return hr;
-}
-
-HRESULT CImageBrushContext::RemoveRenderTarget(CRenderTarget* pRenderTarget)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pRenderTarget);
-
-    for(RenderTargetContextCollection::iterator It = m_RenderTargetContexts.begin(); It != m_RenderTargetContexts.end(); ++It)
-    {
-        if((*It)->GetRenderTarget() == pRenderTarget)
-        {
-            if((*It)->RemoveUsage() == 0)
-            {
-                (*It)->Release();
-
-                m_RenderTargetContexts.erase(It);
-            }
-
-            goto Cleanup;
-        }
-    }
-
-    IFC(E_FAIL);
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CImageBrushContext::GetContextForRenderTarget(CRenderTarget* pRenderTarget, CImageBrushRenderContext** ppContext)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppContext);
-
-    for(RenderTargetContextCollection::iterator It = m_RenderTargetContexts.begin(); It != m_RenderTargetContexts.end(); ++It)
-    {
-        if((*It)->GetRenderTarget() == pRenderTarget)
-        {
-            *ppContext = (*It);
-            (*It)->AddRef();
-
-            goto Cleanup;
-        }
-    }
-
-    IFC(E_FAIL);
-
-Cleanup:
-    return hr;
-}
+//HRESULT CImageBrushContext::GetContextForRenderTarget(CRenderTarget* pRenderTarget, CImageBrushRenderContext** ppContext)
+//{
+//    HRESULT hr = S_OK;
+//
+//    IFCPTR(ppContext);
+//
+//    for(RenderTargetContextCollection::iterator It = m_RenderTargetContexts.begin(); It != m_RenderTargetContexts.end(); ++It)
+//    {
+//        if((*It)->GetRenderTarget() == pRenderTarget)
+//        {
+//            *ppContext = (*It);
+//            (*It)->AddRef();
+//
+//            goto Cleanup;
+//        }
+//    }
+//
+//    IFC(E_FAIL);
+//
+//Cleanup:
+//    return hr;
+//}

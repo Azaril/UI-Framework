@@ -4,7 +4,7 @@
 
 StaticClassProperty PanelProperties[] =
 {
-    { L"Children", TRUE, TypeIndex::UIElement }
+    { L"Children", TypeIndex::UIElement, StaticPropertyFlags::Content | StaticPropertyFlags::Collection }
 };
 
 StaticClassProperties PanelPropertyInformation =
@@ -66,5 +66,58 @@ Cleanup:
     ReleaseObject(pBaseInformation);
     ReleaseObject(pDelegatingProperyInformation);
 
+    return hr;
+}
+
+HRESULT CPanel::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    //TODO: Ensure this property actually belongs to this object.
+
+    //TODO: Looking up other than by name would be much better.
+    if(wcscmp(pProperty->GetName(), L"Children") == 0)
+    {
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElementCollection));
+
+        CUIElementCollection* pUIElementCollection = (CUIElementCollection*)pValue;
+
+        //TODO: Implement!
+        //IFC(SetChildren(pUIElementCollection));
+        __debugbreak();
+    }
+    else
+    {
+        IFC(CFrameworkElement::SetValue(pProperty, pValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CPanel::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    //TODO: Ensure this property actually belongs to this object.
+
+    //TODO: Looking up other than by name would be much better.
+    if(wcscmp(pProperty->GetName(), L"Children") == 0)
+    {
+        *ppValue = m_Children;
+        AddRefObject(m_Children);
+    }
+    else
+    {
+        IFC(CFrameworkElement::GetValue(pProperty, ppValue));
+    }
+
+Cleanup:
     return hr;
 }

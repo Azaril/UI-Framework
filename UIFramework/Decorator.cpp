@@ -4,7 +4,7 @@
 
 StaticClassProperty DecoratorProperties[] =
 {
-    { L"Child", TRUE, TypeIndex::UIElement }
+    { L"Child", TypeIndex::UIElement, StaticPropertyFlags::Content }
 };
 
 StaticClassProperties DecoratorPropertyInformation =
@@ -106,6 +106,30 @@ HRESULT CDecorator::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     else
     {
         IFC(CFrameworkElement::SetValue(pProperty, pValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CDecorator::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    //TODO: Ensure this property actually belongs to this object.
+
+    //TODO: Looking up other than by name would be much better.
+    if(wcscmp(pProperty->GetName(), L"Child") == 0)
+    {
+        *ppValue = m_Child;
+        AddRefObject(m_Child);
+    }
+    else
+    {
+        IFC(CFrameworkElement::GetValue(pProperty, ppValue));
     }
 
 Cleanup:

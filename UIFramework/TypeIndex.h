@@ -5,6 +5,8 @@ namespace TypeIndex
     enum Value
     {
         Object,
+            Collection,
+                UIElementCollection,
 
             Float,
             String,

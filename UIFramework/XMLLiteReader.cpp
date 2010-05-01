@@ -94,6 +94,9 @@ HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* p
                 {
                     const WCHAR* pName = NULL;
                     UINT32 NameLength = 0;
+                    BOOL EmptyElement = FALSE;
+
+                    EmptyElement = pReader->IsEmptyElement();
 
                     IFC(pReader->GetLocalName(&pName, &NameLength));
 
@@ -109,7 +112,7 @@ HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* p
                         IFC(RaiseAttribute(pReader, pCallback));
                     }
 
-                    if(pReader->IsEmptyElement())
+                    if(EmptyElement)
                     {
                         IFC(RaiseElementEnd(pNameCopy, NameLength, pCallback));
                     }

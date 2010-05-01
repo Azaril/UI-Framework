@@ -4,8 +4,8 @@
 
 StaticClassProperty BorderProperties[] =
 {
-    { L"Background", FALSE, TypeIndex::Brush },
-    { L"Padding", FALSE, TypeIndex::RectF }
+    { L"Background", TypeIndex::Brush, StaticPropertyFlags::None },
+    { L"Padding", TypeIndex::RectF, StaticPropertyFlags::None }
 };
 
 StaticClassProperties BorderPropertyInformation =

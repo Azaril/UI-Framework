@@ -639,6 +639,8 @@ HRESULT CRichPropertyNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
         IFC(AssignProperty(m_Parent, m_Property, pStringValue, m_Context->GetTypeConverter()))
 
         m_SetTextValue = TRUE;
+
+        Consumed = TRUE;
     }
 
 Cleanup:
@@ -810,6 +812,7 @@ Cleanup:
 HRESULT CContentPropertyNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
 {
     HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
 
     IFCPTR(pText);
 
@@ -824,10 +827,27 @@ HRESULT CContentPropertyNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
         IFCEXPECT(!m_SetTextValue);
         IFCEXPECT(!m_SetObjectValue);
 
-        IFC(E_UNEXPECTED);
+        const WCHAR* pString = NULL;
+        UINT32 StringLength = 0;
+
+        IFCEXPECT(!m_Complete);
+        IFCEXPECT(!m_SetTextValue);
+        IFCEXPECT(!m_SetObjectValue);
+
+        IFC(pText->GetText(&pString, &StringLength));
+
+        IFC(CStringValue::Create(pString, StringLength, &pStringValue));
+
+        IFC(AssignProperty(m_Parent, m_Property, pStringValue, m_Context->GetTypeConverter()))
+
+        m_SetTextValue = TRUE;
+
+        Consumed = TRUE;
     }
 
 Cleanup:
+    ReleaseObject(pStringValue);
+
     return hr;
 }
 
@@ -861,6 +881,8 @@ HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectW
 {
     HRESULT hr = S_OK;
     CObjectWithType* pConvertedType = NULL;
+    CObjectWithType* pCollectionObject = NULL;
+    CObjectCollection* pCollection = NULL;
 
     IFCPTR(pElement);
     IFCPTR(pProperty);
@@ -868,19 +890,34 @@ HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectW
 
     if(pProperty->GetType() == pValue->GetType() || pValue->IsTypeOf(pProperty->GetType()))
     {
-        IFC(pElement->SetValue(pProperty, pValue));
+        pConvertedType = pValue;
+        AddRefObject(pConvertedType);
     }
     else
     {
         IFCPTR(pTypeConverter);
 
         IFC(pTypeConverter->Convert(pValue, pProperty->GetType(), &pConvertedType));
+    }
 
+    if(pProperty->IsCollection())
+    {
+        IFC(pElement->GetValue(pProperty, &pCollectionObject));
+
+        IFCPTR(pCollectionObject);
+
+        pCollection = (CObjectCollection*)pCollectionObject;
+
+        IFC(pCollection->AddObject(pConvertedType));
+    }
+    else
+    {
         IFC(pElement->SetValue(pProperty, pConvertedType));
     }
 
 Cleanup:
     ReleaseObject(pConvertedType);
+    ReleaseObject(pCollectionObject);
 
     return hr;
 }

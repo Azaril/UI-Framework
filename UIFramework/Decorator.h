@@ -11,6 +11,7 @@ class CDecorator : public CFrameworkElement
         virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Decorator || CFrameworkElement::IsTypeOf(Type); }
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT SetChild( CUIElement* pChild );
         CUIElement* GetChild();

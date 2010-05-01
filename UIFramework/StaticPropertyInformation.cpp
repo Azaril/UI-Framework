@@ -58,7 +58,7 @@ HRESULT CStaticPropertyInformation::GetContentProperty(CProperty** ppProperty)
 
     for(UINT32 i = 0; i < m_ClassInformation->PropertyCount; i++)
     {
-        if(m_ClassInformation->Properties[i].IsContentProperty)
+        if(m_ClassInformation->Properties[i].Flags & StaticPropertyFlags::Content)
         {
             IFC(CStaticProperty::Create(&m_ClassInformation->Properties[i], &pStaticProperty));
 
@@ -105,4 +105,9 @@ TypeIndex::Value CStaticProperty::GetType()
 const WCHAR* CStaticProperty::GetName()
 {
     return m_Property->PropertyName;
+}
+
+BOOL CStaticProperty::IsCollection()
+{
+    return (m_Property->Flags & StaticPropertyFlags::Collection) ? TRUE : FALSE;
 }

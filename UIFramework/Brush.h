@@ -19,6 +19,7 @@ class CBrush : public CRefCountedObject,
 
         virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT GetGraphicsBrush( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush ) = 0;
 

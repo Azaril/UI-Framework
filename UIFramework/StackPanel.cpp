@@ -48,9 +48,9 @@ HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
     IFC(CPanel::MeasureInternal(AvailableSize, BaseDesiredSize));
 
-    for(ChildCollection::iterator It = m_Children.begin(); It != m_Children.end(); ++It)
+    for(UINT i = 0; i < m_Children->GetCount(); i++)
     {
-        CUIElement* pElement = (*It);
+        CUIElement* pElement = m_Children->GetAtIndex(i);
 
         IFC(pElement->Measure(MaxSize));
 
@@ -80,9 +80,9 @@ HRESULT CStackPanel::Arrange(SizeF Size)
     HRESULT hr = S_OK;
     Point2F LayoutPoint = { 0 };
 
-    for(ChildCollection::iterator It = m_Children.begin(); It != m_Children.end(); ++It)
+    for(UINT i = 0; i < m_Children->GetCount(); i++)
     {
-        CUIElement* pElement = (*It);
+        CUIElement* pElement = m_Children->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
 

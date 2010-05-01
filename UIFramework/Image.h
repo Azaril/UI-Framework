@@ -13,7 +13,9 @@ class CImage : public CFrameworkElement
 
         virtual HRESULT Arrange( SizeF Size );
 
-        /*HRESULT SetSource( CBitmapSource* pBitmapSource );*/
+        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+
+        HRESULT SetSource( CObjectWithType* pSource );
 
     protected:
         CImage();
@@ -29,7 +31,6 @@ class CImage : public CFrameworkElement
         HRESULT InternalSetSource( CObjectWithType* pSource );
 
         CObjectWithType* m_Source;
-        CBitmapSource* m_BitmapSource;
         CImageBrush* m_ImageBrush;
         CRectangleVisual* m_ImageRect;
 };

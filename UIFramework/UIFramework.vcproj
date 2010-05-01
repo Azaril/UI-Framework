@@ -382,19 +382,19 @@
 				Name="UI"
 				>
 				<File
-					RelativePath=".\Brush.cpp"
+					RelativePath=".\Collection.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Brush.h"
+					RelativePath=".\Collection.h"
 					>
 				</File>
 				<File
-					RelativePath=".\ImageBrush.cpp"
+					RelativePath=".\RenderContext.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ImageBrush.h"
+					RelativePath=".\RenderContext.h"
 					>
 				</File>
 				<File
@@ -403,6 +403,22 @@
 				</File>
 				<File
 					RelativePath=".\UIHost.h"
+					>
+				</File>
+				<File
+					RelativePath=".\VisualContext.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\VisualContext.h"
+					>
+				</File>
+				<File
+					RelativePath=".\VisualResource.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\VisualResource.h"
 					>
 				</File>
 				<Filter
@@ -578,6 +594,26 @@
 					</File>
 					<File
 						RelativePath=".\TypeIndex.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="VisualResources"
+					>
+					<File
+						RelativePath=".\Brush.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Brush.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ImageBrush.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ImageBrush.h"
 						>
 					</File>
 				</Filter>

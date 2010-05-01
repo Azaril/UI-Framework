@@ -95,6 +95,7 @@ class CUIElement : public CVisual,
 
         virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
@@ -150,4 +151,10 @@ class CUIElement : public CVisual,
         SizeF m_LastMeasureSize;
         SizeF m_DesiredSize;
         SizeF m_FinalSize;
+};
+
+template< >
+struct ObjectTypeTraits< CUIElement >
+{
+    static const TypeIndex::Value Type = TypeIndex::UIElement;
 };

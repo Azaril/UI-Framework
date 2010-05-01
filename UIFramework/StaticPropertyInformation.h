@@ -3,11 +3,21 @@
 #include "PropertyObject.h"
 #include "Factory.h"
 
+namespace StaticPropertyFlags
+{
+    enum Value
+    {
+        None        = 0x00,
+        Content     = 0x01,
+        Collection  = 0x02
+    };
+}
+
 struct StaticClassProperty
 {
     WCHAR* PropertyName;
-    BOOL IsContentProperty;
     TypeIndex::Value PropertyType;
+    UINT32 Flags;
 };
 
 struct StaticClassProperties
@@ -23,6 +33,7 @@ class CStaticProperty : public CProperty
 
         virtual TypeIndex::Value GetType();
         virtual const WCHAR* GetName();
+        virtual BOOL IsCollection();
 
     protected:
         CStaticProperty();
