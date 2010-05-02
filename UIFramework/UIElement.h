@@ -6,6 +6,8 @@
 #include "PropertyObject.h"
 #include "TypeIndex.h"
 #include "Enums.h"
+#include "RoutedEventArgs.h"
+#include "StaticRoutedEvent.h"
 
 class CUIElement;
 
@@ -120,6 +122,10 @@ class CUIElement : public CVisual
         virtual CUIElement* GetParent();
 
         virtual HRESULT SetVisibility( Visibility::Value State );
+
+        virtual HRESULT RaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
+
+        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseDownEvent;
     
     protected:
         CUIElement();
@@ -144,15 +150,26 @@ class CUIElement : public CVisual
 
         virtual HRESULT InternalSetVisibility( Visibility::Value State );
 
+        virtual HRESULT InternalRaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
+        virtual HRESULT InternalRaiseBubbledEvent( CRoutedEventArgs* pRoutedEventArgs );
+
         SizeF GetFinalSize();
 
         HRESULT InternalSetWidth( FLOAT Width );
         HRESULT InternalSetHeight( FLOAT Height );
+
+        HRESULT InternalSetMinimumWidth( FLOAT Width );
+        HRESULT InternalSetMinimumHeight( FLOAT Height );
+
+        HRESULT InternalSetMaximumWidth( FLOAT Width );
+        HRESULT InternalSetMaximumHeight( FLOAT Height );
    
         BOOL m_Attached;
         CUIAttachContext m_Context;
 
         SizeF m_Size;
+        SizeF m_MinimumSize;
+        SizeF m_MaximumSize;
 
         BOOL m_MeasureDirty;
         BOOL m_ArrangeDirty;

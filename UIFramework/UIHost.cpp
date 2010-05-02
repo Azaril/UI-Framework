@@ -105,7 +105,7 @@ HRESULT CUIHost::InjectMouseDown(MouseButton::Value Button, Point2F Point)
     HRESULT hr = S_OK;
 
     CMouseInputHitTestFilter Filter;
-    CMouseInputHitTestCallback Callback;
+    CMouseDownHitTestCallback Callback(Button);
 
     IFC(HitTestTree(m_RootElement, Point, &Filter, &Callback));
 

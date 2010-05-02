@@ -44,6 +44,6 @@ class CRenderTarget : public CRefCountedObject
 
         virtual HRESULT CreateBitmapBrush( CBitmap* pBitmap, CGraphicsBrush** pBrush ) = 0;
 
-        virtual HRESULT DrawGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush ) = 0;
+        virtual HRESULT DrawGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush, FLOAT StrokeThickness = 1.0f ) = 0;
         virtual HRESULT FillGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush ) = 0;
 };

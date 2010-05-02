@@ -1,16 +1,21 @@
 #include "GeometryVisual.h"
 
 CGeometryVisual::CGeometryVisual() : m_Geometry(NULL),
-                                     m_Brush(NULL),
-                                     m_GraphicsBrush(NULL)
+                                     m_FillBrush(NULL),
+                                     m_StrokeBrush(NULL),
+                                     m_FillGraphicsBrush(NULL),
+                                     m_StrokeGraphicsBrush(NULL),
+                                     m_StrokeThickness(1.0f)
 {
 }
 
 CGeometryVisual::~CGeometryVisual()
 {
     ReleaseObject(m_Geometry);
-    ReleaseObject(m_Brush);
-    ReleaseObject(m_GraphicsBrush);
+    ReleaseObject(m_FillBrush);
+    ReleaseObject(m_StrokeBrush);
+    ReleaseObject(m_FillGraphicsBrush);
+    ReleaseObject(m_StrokeGraphicsBrush);
 }
 
 
@@ -34,11 +39,31 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::SetBrush(CBrush* pBrush)
+HRESULT CGeometryVisual::SetFillBrush(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
-    IFC(InternalSetBrush(pBrush));
+    IFC(InternalSetFillBrush(pBrush));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CGeometryVisual::SetStrokeBrush(CBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InternalSetStrokeBrush(pBrush));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CGeometryVisual::SetStrokeThickness( FLOAT Thickness )
+{
+    HRESULT hr = S_OK;
+
+    IFC(InternalSetStrokeThickness(Thickness));
 
 Cleanup:
     return hr;
@@ -57,25 +82,61 @@ HRESULT CGeometryVisual::InternalSetGeometry(CGeometry* pGeometry)
     return hr;
 }
 
-HRESULT CGeometryVisual::InternalSetBrush(CBrush* pBrush)
+HRESULT CGeometryVisual::InternalSetFillBrush(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
-    if(m_Brush)
+    if(m_FillBrush)
     {
-        IFC(RemoveVisualResource(m_Brush));
+        IFC(RemoveVisualResource(m_FillBrush));
 
-        ReleaseObject(m_Brush);
+        ReleaseObject(m_FillBrush);
     }
 
-    m_Brush = pBrush;
+    m_FillBrush = pBrush;
 
-    if(m_Brush)
+    if(m_FillBrush)
     {
-        IFC(AddVisualResource(m_Brush));
+        IFC(AddVisualResource(m_FillBrush));
 
-        AddRefObject(m_Brush);
+        AddRefObject(m_FillBrush);
     }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CGeometryVisual::InternalSetStrokeBrush(CBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+
+    if(m_StrokeBrush)
+    {
+        IFC(RemoveVisualResource(m_StrokeBrush));
+
+        ReleaseObject(m_StrokeBrush);
+    }
+
+    m_StrokeBrush = pBrush;
+
+    if(m_StrokeBrush)
+    {
+        IFC(AddVisualResource(m_StrokeBrush));
+
+        AddRefObject(m_StrokeBrush);
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CGeometryVisual::InternalSetStrokeThickness(FLOAT Thickness)
+{
+    HRESULT hr = S_OK;
+
+    IFCEXPECT(Thickness >= 0 );
+
+    m_StrokeThickness = Thickness;
 
 Cleanup:
     return hr;
@@ -89,11 +150,19 @@ HRESULT CGeometryVisual::PreRender(CPreRenderContext& Context)
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
 
-    if(m_Brush != NULL && m_GraphicsBrush == NULL)
+    if(m_FillBrush != NULL && m_FillGraphicsBrush == NULL)
     {
-        if(FAILED(m_Brush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_GraphicsBrush)))
+        if(FAILED(m_FillBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_FillGraphicsBrush)))
         {
-            m_GraphicsBrush = NULL;
+            m_FillGraphicsBrush = NULL;
+        }
+    }
+
+    if(m_StrokeBrush != NULL && m_StrokeGraphicsBrush == NULL)
+    {
+        if(FAILED(m_StrokeBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_StrokeGraphicsBrush)))
+        {
+            m_StrokeGraphicsBrush = NULL;
         }
     }
 
@@ -109,9 +178,14 @@ HRESULT CGeometryVisual::RenderTransformed(CRenderContext& Context)
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
 
-    if(m_Geometry != NULL && m_GraphicsBrush != NULL)
+    if(m_Geometry != NULL && m_FillGraphicsBrush != NULL)
     {
-        IFC(pRenderTarget->FillGeometry(m_Geometry, m_GraphicsBrush));
+        IFC(pRenderTarget->FillGeometry(m_Geometry, m_FillGraphicsBrush));
+    }
+
+    if(m_Geometry != NULL && m_StrokeGraphicsBrush != NULL)
+    {
+        IFC(pRenderTarget->DrawGeometry(m_Geometry, m_StrokeGraphicsBrush, m_StrokeThickness));
     }
 
 Cleanup:

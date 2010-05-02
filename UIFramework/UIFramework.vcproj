@@ -446,6 +446,30 @@
 					>
 				</File>
 				<File
+					RelativePath=".\RoutedEvent.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\RoutedEvent.h"
+					>
+				</File>
+				<File
+					RelativePath=".\RoutedEventArgs.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\RoutedEventArgs.h"
+					>
+				</File>
+				<File
+					RelativePath=".\StaticRoutedEvent.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\StaticRoutedEvent.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Transform.cpp"
 					>
 				</File>

@@ -17,7 +17,7 @@ class CBorder : public CDecorator
 
         HRESULT SetBackground( CBrush* pBrush );
 
-        HRESULT SetBorderThickness( const RectF& Border );
+        HRESULT SetBorderThickness( FLOAT BorderThickness );
         HRESULT SetBorder( CBrush* pBrush );
 
         HRESULT SetPadding( const RectF& Padding );
@@ -46,7 +46,7 @@ class CBorder : public CDecorator
         HRESULT RebuildGeometry();
         HRESULT ReleaseGeometry();
 
-        RectF m_BorderThickness;
+        FLOAT m_BorderThickness;
         CGeometryVisual* m_BorderVisual;
         BOOL m_GeometryDirty;
 

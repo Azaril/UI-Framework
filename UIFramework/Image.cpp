@@ -39,7 +39,7 @@ HRESULT CImage::Initialize()
 
     IFC(CImageBrush::Create(&m_ImageBrush));
 
-    IFC(m_ImageVisual->SetBrush(m_ImageBrush));
+    IFC(m_ImageVisual->SetFillBrush(m_ImageBrush));
 
 Cleanup:
     return hr;
@@ -169,8 +169,30 @@ HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         IFC(m_ImageBrush->GetSize(&ImageSize));
     }
 
-    DesiredSize.width = max((FLOAT)ImageSize.width, BaseSize.width);
-    DesiredSize.height = max((FLOAT)ImageSize.height, BaseSize.height);
+    if(m_Size.width == 0 && m_Size.height == 0)
+    {
+        DesiredSize.width = max((FLOAT)ImageSize.width, BaseSize.width);
+        DesiredSize.height = max((FLOAT)ImageSize.height, BaseSize.height);
+    }
+    else if(m_Size.width == 0 && m_Size.height != 0 && ImageSize.height != 0)
+    {
+        FLOAT Ratio = m_Size.height / ImageSize.height;
+
+        DesiredSize.width = ImageSize.width * Ratio;
+        DesiredSize.height = m_Size.height;
+    }
+    else if(m_Size.width != 0 && m_Size.height == 0 && ImageSize.width != 0)
+    {
+        FLOAT Ratio = m_Size.width / ImageSize.width;
+
+        DesiredSize.width = m_Size.width;
+        DesiredSize.height = ImageSize.height * Ratio;
+    }
+    else
+    {
+        DesiredSize.width = BaseSize.width;
+        DesiredSize.height = BaseSize.height;
+    }
 
 Cleanup:
     return hr;
@@ -253,11 +275,19 @@ Cleanup:
 HRESULT CImage::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
 {
     HRESULT hr = S_OK;
+    CHitTestResult* pVisualHitTestResult = NULL;
 
     IFCPTR(ppHitTestResult);
 
-    *ppHitTestResult = NULL;
+    IFC(m_ImageVisual->HitTest(LocalPoint, &pVisualHitTestResult));
+
+    if(pVisualHitTestResult)
+    {
+        IFC(CHitTestResult::Create(this, ppHitTestResult));
+    }
 
 Cleanup:
+    ReleaseObject(pVisualHitTestResult);
+
     return hr;
 }

@@ -94,7 +94,7 @@ HRESULT CVisual::OnVisualDetach(CVisualDetachContext& Context)
 
     for(UINT32 i = 0; i < GetVisualChildCount(); i++)
     {
-        IFCPTR(pVisual);
+        CVisual* pVisual = GetVisualChild(i);
 
         IFC(pVisual->OnVisualDetach(Context));
     }

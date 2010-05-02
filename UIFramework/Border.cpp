@@ -6,7 +6,9 @@
 CStaticProperty BorderProperties[] = 
 {
     CStaticProperty( L"Background", TypeIndex::Brush, StaticPropertyFlags::None ),
-    CStaticProperty( L"Padding", TypeIndex::RectF, StaticPropertyFlags::None )
+    CStaticProperty( L"Padding", TypeIndex::RectF, StaticPropertyFlags::None ),
+    CStaticProperty( L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None ),
+    CStaticProperty( L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None ),
 };
 
 namespace BorderPropertyIndex
@@ -14,17 +16,16 @@ namespace BorderPropertyIndex
     enum Value
     {
         Background,
-        Padding
+        Padding,
+        BorderThickness,
+        BorderBrush
     };
 }
 
 CBorder::CBorder() : m_BorderVisual(NULL),
                      m_GeometryDirty(TRUE)
 {
-    m_BorderThickness.left = 0;
-    m_BorderThickness.top = 0;
-    m_BorderThickness.right = 0;
-    m_BorderThickness.bottom = 0;
+    m_BorderThickness = 0;
 
     m_Padding.left = 0;
     m_Padding.top = 0;
@@ -44,6 +45,8 @@ HRESULT CBorder::Initialize()
     IFC(CDecorator::Initialize());
 
     IFC(CGeometryVisual::Create(&m_BorderVisual));
+
+    IFC(m_BorderVisual->SetStrokeThickness(m_BorderThickness));
 
     IFC(AddChildVisual(m_BorderVisual));
 
@@ -82,23 +85,23 @@ HRESULT CBorder::SetBackground(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
-    IFC(m_BorderVisual->SetBrush(pBrush));
+    IFC(m_BorderVisual->SetFillBrush(pBrush));
 
 Cleanup:
     return hr;
 }
 
-HRESULT CBorder::SetBorderThickness(const RectF& Border)
+HRESULT CBorder::SetBorderThickness(FLOAT BorderThickness)
 {
     HRESULT hr = S_OK;
 
-    m_BorderThickness = Border;
+    IFCEXPECT(BorderThickness >= 0);
 
-    //IFC(m_BorderVisual->SetBorderThickness(Border));
+    m_BorderThickness = BorderThickness;
+
+    IFC(m_BorderVisual->SetStrokeThickness(BorderThickness));
 
     IFC(InvalidateMeasure());
-
-    IFC(ReleaseGeometry());
 
 Cleanup:
     return hr;
@@ -108,12 +111,9 @@ HRESULT CBorder::SetBorder(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
-    //IFC(m_BorderVisual->Set(pBrush));
+    IFC(m_BorderVisual->SetStrokeBrush(pBrush));
 
-    //TODO: Implement.
-    __debugbreak();
-
-//Cleanup:
+Cleanup:
     return hr;
 }
 
@@ -173,7 +173,7 @@ HRESULT CBorder::RebuildGeometry()
     HRESULT hr = S_OK;
     CRectangleGeometry* pRectangleGeometry = NULL;
     SizeF FinalSize = GetFinalSize();
-    RectF Rectangle = { 0, 0, FinalSize.width, FinalSize.height };
+    RectF Rectangle = { m_BorderThickness / 2, m_BorderThickness / 2, FinalSize.width - m_BorderThickness / 2, FinalSize.height - m_BorderThickness / 2 };
 
     IFC(m_VisualContext.GetGraphicsDevice()->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
 
@@ -221,8 +221,8 @@ HRESULT CBorder::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
     IFC(CDecorator::MeasureInternal(AvailableSize, BaseSize));
 
-    InternalSize.width = max(AvailableSize.width - (m_BorderThickness.left + m_BorderThickness.right) - (m_Padding.left + m_Padding.right), 0);
-    InternalSize.height = max(AvailableSize.height - (m_BorderThickness.top + m_BorderThickness.bottom) - (m_Padding.top + m_Padding.bottom), 0);
+    InternalSize.width = max(AvailableSize.width - (m_BorderThickness * 2) - (m_Padding.left + m_Padding.right), 0);
+    InternalSize.height = max(AvailableSize.height - (m_BorderThickness * 2) - (m_Padding.top + m_Padding.bottom), 0);
 
     if(m_Child != NULL)
     {
@@ -231,8 +231,8 @@ HRESULT CBorder::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         InternalSizeDesired = m_Child->GetDesiredSize();
     }
 
-    DesiredSize.width = max(InternalSizeDesired.width + (m_BorderThickness.left + m_BorderThickness.right) + (m_Padding.left + m_Padding.right), BaseSize.width);
-    DesiredSize.height = max(InternalSizeDesired.height + (m_BorderThickness.top + m_BorderThickness.bottom) + (m_Padding.top + m_Padding.bottom), BaseSize.height);
+    DesiredSize.width = max(InternalSizeDesired.width + (m_BorderThickness * 2) + (m_Padding.left + m_Padding.right), BaseSize.width);
+    DesiredSize.height = max(InternalSizeDesired.height + (m_BorderThickness * 2) + (m_Padding.top + m_Padding.bottom), BaseSize.height);
 
 Cleanup:
     return hr;
@@ -244,10 +244,10 @@ HRESULT CBorder::ArrangeInternal(SizeF Size)
 
     if(m_Child != NULL)
     {
-        SizeF InternalSize = { Size.width - (m_BorderThickness.left + m_BorderThickness.right) - (m_Padding.left + m_Padding.right), 
-                               Size.height - (m_BorderThickness.top + m_BorderThickness.bottom)- (m_Padding.top + m_Padding.bottom) };
+        SizeF InternalSize = { Size.width - (m_BorderThickness * 2) - (m_Padding.left + m_Padding.right), 
+                               Size.height - (m_BorderThickness * 2) - (m_Padding.top + m_Padding.bottom) };
 
-        Matrix3X2 Transform = D2D1::Matrix3x2F::Translation(m_BorderThickness.left + m_Padding.left, m_BorderThickness.top + m_Padding.top);
+        Matrix3X2 Transform = D2D1::Matrix3x2F::Translation(m_Padding.left + m_BorderThickness, m_Padding.top + m_BorderThickness);
         
         InternalSize.width = max(InternalSize.width, 0);
         InternalSize.height = max(InternalSize.height, 0);
@@ -272,18 +272,11 @@ HRESULT CBorder::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
 
     IFCPTR(ppHitTestResult);
 
-    if(m_BorderVisual != NULL)
-    {
-        IFC(m_BorderVisual->HitTest(LocalPoint, &pVisualHitTestResult));
+    IFC(m_BorderVisual->HitTest(LocalPoint, &pVisualHitTestResult));
 
-        if(pVisualHitTestResult)
-        {
-            IFC(CHitTestResult::Create(this, ppHitTestResult));
-        }
-    }
-    else
+    if(pVisualHitTestResult)
     {
-        *ppHitTestResult = NULL;
+        IFC(CHitTestResult::Create(this, ppHitTestResult));
     }
 
 Cleanup:
@@ -350,6 +343,28 @@ HRESULT CBorder::SetValue(CProperty* pProperty, CObjectWithType* pValue)
                     CRectFValue* pRectF = (CRectFValue*)pValue;
 
                     IFC(InternalSetPadding(pRectF->GetValue()))
+
+                    break;
+                }
+
+            case BorderPropertyIndex::BorderBrush:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Brush));
+
+                    CBrush* pBrush = (CBrush*)pValue;
+
+                    IFC(SetBorder(pBrush));
+
+                    break;
+                }
+
+            case BorderPropertyIndex::BorderThickness:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
+                    CFloatValue* pFloat = (CFloatValue*)pValue;
+
+                    IFC(SetBorderThickness(pFloat->GetValue()))
 
                     break;
                 }

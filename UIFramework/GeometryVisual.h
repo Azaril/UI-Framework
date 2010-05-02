@@ -10,7 +10,9 @@ class CGeometryVisual : public CVisual
         DECLARE_FACTORY( CGeometryVisual );
 
         HRESULT SetGeometry( CGeometry* pGeometry );
-        HRESULT SetBrush( CBrush* pBrush );
+        HRESULT SetFillBrush( CBrush* pBrush );
+        HRESULT SetStrokeBrush( CBrush* pBrush );
+        HRESULT SetStrokeThickness( FLOAT Thickness );
 
         virtual HRESULT PreRender( CPreRenderContext& Context );
 
@@ -23,11 +25,16 @@ class CGeometryVisual : public CVisual
         HRESULT Initialize();
 
         HRESULT InternalSetGeometry( CGeometry* pGeometry );
-        HRESULT InternalSetBrush( CBrush* pBrush );
+        HRESULT InternalSetFillBrush( CBrush* pBrush );
+        HRESULT InternalSetStrokeBrush( CBrush* pBrush );
+        HRESULT InternalSetStrokeThickness( FLOAT Thickness );
 
         virtual HRESULT RenderTransformed( CRenderContext& Context );
 
         CGeometry* m_Geometry;
-        CBrush* m_Brush;
-        CGraphicsBrush* m_GraphicsBrush;
+        CBrush* m_FillBrush;
+        CBrush* m_StrokeBrush;
+        CGraphicsBrush* m_FillGraphicsBrush;
+        CGraphicsBrush* m_StrokeGraphicsBrush;
+        FLOAT m_StrokeThickness;
 };

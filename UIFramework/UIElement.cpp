@@ -7,6 +7,10 @@ CStaticProperty UIElementProperties[] =
 {
     CStaticProperty( L"Width", TypeIndex::Float, StaticPropertyFlags::None ),
     CStaticProperty( L"Height", TypeIndex::Float, StaticPropertyFlags::None ),
+    CStaticProperty( L"MinimumWidth", TypeIndex::Float, StaticPropertyFlags::None ),
+    CStaticProperty( L"MinimumHeight", TypeIndex::Float, StaticPropertyFlags::None ),
+    CStaticProperty( L"MaximumWidth", TypeIndex::Float, StaticPropertyFlags::None ),
+    CStaticProperty( L"MaximumHeight", TypeIndex::Float, StaticPropertyFlags::None ),
     CStaticProperty( L"Visibility", TypeIndex::Visibility, StaticPropertyFlags::None )
 };
 
@@ -16,9 +20,15 @@ namespace UIElementPropertyIndex
     {
         Width,
         Height,
+        MinimumWidth,
+        MinimumHeight,
+        MaximumWidth,
+        MaximumHeight,
         Visibility
     };
 }
+
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseDownEvent;
 
 CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
@@ -28,6 +38,12 @@ CUIElement::CUIElement() : m_Attached(FALSE),
 {
     m_Size.width = 0;
     m_Size.height = 0;
+
+    m_MinimumSize.width = 0;
+    m_MinimumSize.height = 0;
+
+    m_MaximumSize.width = FLT_MAX;
+    m_MaximumSize.height = FLT_MAX;
 
     m_DesiredSize.width = 0;
     m_DesiredSize.height = 0;
@@ -157,6 +173,12 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
             IFC(MeasureInternal(AvailableSize, NewSize));
 
             m_LastMeasureSize = AvailableSize;
+
+            NewSize.width = max(NewSize.width, m_MinimumSize.width);
+            NewSize.height = max(NewSize.height, m_MinimumSize.height);
+
+            NewSize.width = min(NewSize.width, m_MaximumSize.width);
+            NewSize.height = min(NewSize.height, m_MaximumSize.height);
 
             if(NewSize.width != m_DesiredSize.width || NewSize.height != m_DesiredSize.width)
             {
@@ -448,6 +470,50 @@ HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
                     break;
                 }
 
+            case UIElementPropertyIndex::MinimumWidth:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
+                    CFloatValue* pFloat = (CFloatValue*)pValue;
+
+                    IFC(InternalSetMinimumHeight(pFloat->GetValue()));
+
+                    break;
+                }
+
+            case UIElementPropertyIndex::MinimumHeight:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
+                    CFloatValue* pFloat = (CFloatValue*)pValue;
+
+                    IFC(InternalSetMinimumWidth(pFloat->GetValue()));
+
+                    break;
+                }
+
+            case UIElementPropertyIndex::MaximumWidth:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
+                    CFloatValue* pFloat = (CFloatValue*)pValue;
+
+                    IFC(InternalSetMaximumHeight(pFloat->GetValue()));
+
+                    break;
+                }
+
+            case UIElementPropertyIndex::MaximumHeight:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
+                    CFloatValue* pFloat = (CFloatValue*)pValue;
+
+                    IFC(InternalSetMaximumWidth(pFloat->GetValue()));
+
+                    break;
+                }
+
             case UIElementPropertyIndex::Visibility:
                 {
                     IFCEXPECT(pValue->IsTypeOf(TypeIndex::Visibility));
@@ -562,6 +628,129 @@ HRESULT CUIElement::InternalSetHeight(FLOAT Height)
     m_Size.height = Height;
 
     IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::InternalSetMinimumWidth(FLOAT Width)
+{
+    HRESULT hr = S_OK;
+
+    IFCEXPECT(Width >= 0);
+
+    m_MinimumSize.width = Width;
+
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+HRESULT CUIElement::InternalSetMinimumHeight(FLOAT Height)
+{
+    HRESULT hr = S_OK;
+
+    IFCEXPECT(Height >= 0);
+
+    m_MinimumSize.height = Height;
+
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::InternalSetMaximumWidth(FLOAT Width)
+{
+    HRESULT hr = S_OK;
+
+    IFCEXPECT(Width >= 0);
+
+    m_MaximumSize.width = Width;
+
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+HRESULT CUIElement::InternalSetMaximumHeight(FLOAT Height)
+{
+    HRESULT hr = S_OK;
+
+    IFCEXPECT(Height >= 0);
+
+    m_MaximumSize.height = Height;
+
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::RaiseEvent(CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+    CRoutedEvent* pRoutedEvent = NULL;
+
+    IFCPTR(pRoutedEventArgs);
+
+    pRoutedEvent = pRoutedEventArgs->GetRoutedEvent();
+    IFCPTR(pRoutedEvent);
+
+    switch(pRoutedEvent->GetRoutingStrategy())
+    {
+        case RoutingStrategy::Direct:
+            {
+                IFC(InternalRaiseEvent(pRoutedEventArgs));
+                
+                break;
+            }
+
+        case RoutingStrategy::Bubbling:
+            {
+                IFC(InternalRaiseBubbledEvent(pRoutedEventArgs));
+
+                break;
+            }
+
+        default:
+            {
+                IFC(E_UNEXPECTED);
+            }
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::InternalRaiseEvent(CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pRoutedEventArgs);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::InternalRaiseBubbledEvent(CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+    CUIElement* pParent = NULL;
+
+    IFCPTR(pRoutedEventArgs);
+
+    IFC(InternalRaiseEvent(pRoutedEventArgs));
+
+    if(!pRoutedEventArgs->IsHandled())
+    {
+        pParent = GetParent();
+
+        if(pParent)
+        {
+            IFC(pParent->InternalRaiseBubbledEvent(pRoutedEventArgs));
+        }
+    }
 
 Cleanup:
     return hr;

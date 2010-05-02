@@ -258,7 +258,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBrush)
+HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBrush, FLOAT StrokeThickness)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
@@ -274,7 +274,7 @@ HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBr
             {
                 CD2DRectangleGeometry* pRectangleGeometry = (CD2DRectangleGeometry*)pGeometry;
 
-                m_RenderTarget->DrawGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
+                m_RenderTarget->DrawGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush(), StrokeThickness);
 
                 break;
             }
