@@ -49,7 +49,7 @@ struct ObjectTypeTraits< CObjectWithType >
 class CPropertyObject : public CObjectWithType
 {
     public:
-        virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation ) = 0;
+        virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue ) = 0;
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue ) = 0;
@@ -57,6 +57,10 @@ class CPropertyObject : public CObjectWithType
     protected:
         CPropertyObject();
         virtual ~CPropertyObject();
+
+        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation ) = 0;
+
+        CPropertyInformation* m_PropertyInformation;
 };
 
 class CObjectCollection : public CObjectWithType

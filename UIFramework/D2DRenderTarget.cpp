@@ -2,6 +2,7 @@
 #include "D2DSolidColorBrush.h"
 #include "D2DBitmap.h"
 #include "D2DBitmapBrush.h"
+#include "D2DRectangleGeometry.h"
 #include "ErrorChecking.h"
 #include "DirectWriteTextLayout.h"
 #include "WICBitmapSource.h"
@@ -223,5 +224,67 @@ Cleanup:
     ReleaseObject(pD2DBitmapBrush);
     ReleaseObject(pD2DBrush);
 
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::FillGeometry(CGeometry* pGeometry, CGraphicsBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+    CD2DBrush* pD2DBrush = NULL;
+
+    IFCPTR(pGeometry);
+    IFCPTR(pBrush);
+
+    pD2DBrush = (CD2DBrush*)pBrush;
+
+    switch(pGeometry->GetType())
+    {
+        case TypeIndex::RectangleGeometry:
+            {
+                CD2DRectangleGeometry* pRectangleGeometry = (CD2DRectangleGeometry*)pGeometry;
+
+                m_RenderTarget->FillGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
+
+                break;
+            }
+
+        default:
+            {
+                IFC(E_FAIL);
+            }
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+    CD2DBrush* pD2DBrush = NULL;
+
+    IFCPTR(pGeometry);
+    IFCPTR(pBrush);
+
+    pD2DBrush = (CD2DBrush*)pBrush;
+
+    switch(pGeometry->GetType())
+    {
+        case TypeIndex::RectangleGeometry:
+            {
+                CD2DRectangleGeometry* pRectangleGeometry = (CD2DRectangleGeometry*)pGeometry;
+
+                m_RenderTarget->DrawGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
+
+                break;
+            }
+
+        default:
+            {
+                IFC(E_FAIL);
+            }
+    }
+
+Cleanup:
     return hr;
 }

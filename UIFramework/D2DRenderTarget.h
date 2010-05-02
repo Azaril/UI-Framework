@@ -29,6 +29,9 @@ class CD2DRenderTarget : public CRenderTarget
 
         virtual HRESULT CreateBitmapBrush( CBitmap* pBitmap, CGraphicsBrush** CGraphicsBrush );
 
+        virtual HRESULT DrawGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush );
+        virtual HRESULT FillGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush );
+
     protected:
         CD2DRenderTarget();
         virtual ~CD2DRenderTarget();

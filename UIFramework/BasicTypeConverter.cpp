@@ -295,12 +295,31 @@ Cleanup:
     return hr;
 }
 
+namespace RectFParseState
+{
+    enum Value
+    {
+        BeforeNumber,
+        InNumber,
+        AfterNumber
+    };
+}
+
 HRESULT ConvertStringToRectF(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
     CRectFValue* pRectFValue = NULL;
     RectF Value = { 0 };
+    FLOAT Values[4] = { 0 };
+    UINT32 ValueCount = 0;
+    const WCHAR* pParsePoint = NULL;
+    WCHAR ValueBuffer[1024];
+    UINT32 ValueBufferIndex = 0;
+    RectFParseState::Value ParseState = RectFParseState::BeforeNumber;
+    BOOL Continue = TRUE;
+    BOOL GotSeperator = FALSE;
+    BOOL GotDigit = FALSE;
 
     IFCPTR(pValue);
     IFCPTR(ppConvertedValue);
@@ -309,8 +328,162 @@ HRESULT ConvertStringToRectF(CObjectWithType* pValue, TypeIndex::Value TargetTyp
 
     pStringValue = (CStringValue*)pValue;
 
-    //TODO: Implement!
-    __debugbreak();
+    pParsePoint = pStringValue->GetValue();
+
+    while(Continue)
+    {
+        const WCHAR Token = *pParsePoint;
+
+        switch(ParseState)
+        {
+            case RectFParseState::BeforeNumber:
+                {
+                    if(iswdigit(Token) || Token == L'.')
+                    {
+                        ParseState = RectFParseState::InNumber;
+                    }
+                    else if(Token == L',')
+                    {
+                        IFC(E_FAIL);
+                    }
+                    else if(iswspace(Token))
+                    {
+                        ++pParsePoint;
+                    }
+                    else if(Token == L'\0')
+                    {
+                        IFC(E_FAIL)
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case RectFParseState::InNumber:
+                {
+                    if(iswdigit(Token))
+                    {
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        ValueBuffer[ValueBufferIndex++] = Token;
+
+                        GotDigit = TRUE;
+
+                        ++pParsePoint;
+                    }
+                    else if(Token == L'.')
+                    {
+                        IFCEXPECT(!GotSeperator);
+
+                        GotSeperator = TRUE;
+
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        ValueBuffer[ValueBufferIndex++] = Token;
+
+                        ++pParsePoint;
+                    }
+                    else if(Token == ',' || iswspace(Token) || Token == L'\0')
+                    {
+                        ParseState = RectFParseState::AfterNumber;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case RectFParseState::AfterNumber:
+                {
+                    if(iswdigit(Token) || Token == L'.')
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+                    else if(Token == ',' || Token == L'\0')
+                    {
+                        IFCEXPECT(ValueCount < ARRAYSIZE(Values));
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        IFCEXPECT(ValueBufferIndex > 0);
+                        IFCEXPECT(GotDigit);
+
+                        ValueBuffer[ValueBufferIndex] = L'\0';
+                        ValueBufferIndex = 0;
+
+                        Values[ValueCount] = _wtof(ValueBuffer);
+
+                        ++ValueCount;
+
+                        if(Token == L'\0')
+                        {
+                            Continue = FALSE;
+                        }
+                        else
+                        {
+                            ParseState = RectFParseState::BeforeNumber;
+
+                            GotSeperator = FALSE;
+                            GotDigit = FALSE;
+
+                            ++pParsePoint;
+                        }
+                    }
+                    else if(iswspace(Token))
+                    {
+                        ++pParsePoint;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+        }
+    }
+
+    switch(ValueCount)
+    {
+        case 1:
+            {
+                Value.left = Values[0];
+                Value.top = Values[0];
+                Value.right = Values[0];
+                Value.bottom = Values[0];
+
+                break;
+            }
+
+        case 2:
+            {
+                Value.left = Values[0];
+                Value.top = Values[1];
+                Value.right = 0;
+                Value.bottom = 0;
+
+                break;
+            }
+
+        case 4:
+            {
+                Value.left = Values[0];
+                Value.top = Values[1];
+                Value.right = Values[2];
+                Value.bottom = Values[3];
+
+                break;
+            }
+
+        default:
+            {
+                IFC(E_UNEXPECTED);
+            }
+    }
 
     IFC(CRectFValue::Create(Value, &pRectFValue));
 

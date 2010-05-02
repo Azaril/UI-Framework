@@ -219,3 +219,15 @@ HRESULT CTextBlock::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 Cleanup:
     return hr;
 }
+
+HRESULT CTextBlock::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppHitTestResult);
+
+    *ppHitTestResult = NULL;
+
+Cleanup:
+    return hr;
+}

@@ -3,6 +3,10 @@
 #include "D2DBitmapRenderTarget.h"
 #include "DirectWriteTextProvider.h"
 #include "WICImagingProvider.h"
+#include "D2DRectangleGeometry.h"
+
+//TODO: Remove this!
+#pragma comment( lib, "d2d1.lib" )
 
 typedef HRESULT (WINAPI *D2D1CreateFactoryFunc)( __in D2D1_FACTORY_TYPE factoryType, __in REFIID riid, __in_opt CONST D2D1_FACTORY_OPTIONS *pFactoryOptions, __out void **ppIFactory );
 
@@ -147,6 +151,28 @@ HRESULT CD2DGraphicsDevice::CreateImagingProvider(CImagingProvider** ppImagingPr
 
 Cleanup:
     ReleaseObject(pWICImagingProvider);
+
+    return hr;
+}
+
+HRESULT CD2DGraphicsDevice::CreateRectangleGeometry(const RectF& Rectangle, CRectangleGeometry** ppRectangleGeometry)
+{
+    HRESULT hr = S_OK;
+    ID2D1RectangleGeometry* pD2DRectangleGeometry = NULL;
+    CD2DRectangleGeometry* pGeometry = NULL;
+
+    IFCPTR(ppRectangleGeometry);
+
+    IFC(m_Factory->CreateRectangleGeometry(Rectangle, &pD2DRectangleGeometry));
+
+    IFC(CD2DRectangleGeometry::Create(pD2DRectangleGeometry, &pGeometry));
+
+    *ppRectangleGeometry = pGeometry;
+    pGeometry = NULL;
+
+Cleanup:
+    ReleaseObject(pD2DRectangleGeometry);
+    ReleaseObject(pGeometry);
 
     return hr;
 }

@@ -1,4 +1,5 @@
 #include "UIHost.h"
+#include "MouseInput.h"
 
 CUIHost::CUIHost() : m_RenderTarget(NULL),
                      m_RootElement(NULL)
@@ -94,6 +95,19 @@ HRESULT CUIHost::Render()
             IFC(PreRenderContext.RenderRoots(RenderContext));
         }
     }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIHost::InjectMouseDown(MouseButton::Value Button, Point2F Point)
+{
+    HRESULT hr = S_OK;
+
+    CMouseInputHitTestFilter Filter;
+    CMouseInputHitTestCallback Callback;
+
+    IFC(HitTestTree(m_RootElement, Point, &Filter, &Callback));
 
 Cleanup:
     return hr;

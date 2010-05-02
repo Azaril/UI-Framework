@@ -5,8 +5,6 @@
 class CDecorator : public CFrameworkElement
 {
     public:
-        DECLARE_FACTORY( CDecorator );
-
         virtual TypeIndex::Value GetType() { return TypeIndex::Decorator; }
         virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Decorator || CFrameworkElement::IsTypeOf(Type); }
 

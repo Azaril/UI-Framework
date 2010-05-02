@@ -5,6 +5,8 @@
 #include "TextProvider.h"
 #include "ImagingProvider.h"
 
+class CRenderTarget;
+
 class CGraphicsDevice : public CRefCountedObject
 {
 	public:
@@ -14,6 +16,8 @@ class CGraphicsDevice : public CRefCountedObject
         virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider ) = 0;
 
         virtual HRESULT GetImagingProvider( CImagingProvider** ppImagingProvider ) = 0;
+
+        virtual HRESULT CreateRectangleGeometry( const RectF& Rectangle, CRectangleGeometry** ppRectangleGeometry ) = 0;
 };
 
 HRESULT CreateGraphicsDevice( CGraphicsDevice** ppGraphicsDevice );

@@ -6,6 +6,8 @@
 #include "TextLayout.h"
 #include "BitmapSource.h"
 #include "Bitmap.h"
+#include "Geometry.h"
+#include "Brush.h"
 
 namespace DefaultBrush
 {
@@ -41,4 +43,7 @@ class CRenderTarget : public CRefCountedObject
         virtual HRESULT LoadBitmap( CBitmapSource* pSource, CBitmap** ppBitmap ) = 0;
 
         virtual HRESULT CreateBitmapBrush( CBitmap* pBitmap, CGraphicsBrush** pBrush ) = 0;
+
+        virtual HRESULT DrawGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush ) = 0;
+        virtual HRESULT FillGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush ) = 0;
 };

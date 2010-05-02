@@ -7,25 +7,42 @@
 #include "RenderContext.h"
 #include "GraphicsDevice.h"
 #include "VisualResource.h"
+#include "HitTestResult.h"
+#include "Transform.h"
 
-class CVisual : public CRefCountedObject
+class CVisual : public CRefCountedObjectBase< CPropertyObject >
 {
     typedef std::vector< CVisual* > VisualChildCollection;
     typedef std::vector< CVisualResource* > VisualResourceCollection;
 
     public:
+        virtual TypeIndex::Value GetType() { return TypeIndex::Visual; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Visual || CObjectWithType::IsTypeOf(Type); }
+
+        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );
 
         HRESULT SetVisualTransform( const Matrix3X2& Matrix );
         const Matrix3X2& GetVisualTransform();
+
+        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult ) = 0;
+
+        virtual UINT32 GetVisualChildCount();
+        virtual CVisual* GetVisualChild( UINT32 Index );
+
+        virtual HRESULT TransformToParent( CTransform** ppTransform );
     
     protected:
         CVisual();
         virtual ~CVisual();
-    
+   
         HRESULT Initialize();
         HRESULT Finalize();
+
+        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
     
         virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
         virtual HRESULT OnVisualDetach( CVisualDetachContext& Context );
@@ -45,5 +62,6 @@ class CVisual : public CRefCountedObject
         VisualChildCollection m_VisualChildren;
         VisualResourceCollection m_VisualResources;
         Matrix3X2 m_VisualTransform;
+        Matrix3X2 m_FinalLocalTransform;
         BOOL m_VisualAttached;
 };

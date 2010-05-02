@@ -19,7 +19,7 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     IFC(CFrameworkElement::Initialize());
 
     {
-        CVisualAttachContext VisualContext(pGraphicsDevice);
+        CVisualAttachContext VisualContext(this, pGraphicsDevice);
 
         IFC(OnVisualAttach(VisualContext));
     }
@@ -45,7 +45,7 @@ HRESULT CRootUIElement::Finalize()
     }
 
     {
-        CVisualDetachContext VisualContext(m_VisualContext.GetGraphicsDevice());
+        CVisualDetachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
 
         IFC(OnVisualDetach(VisualContext));
     }
@@ -137,6 +137,20 @@ HRESULT CRootUIElement::ArrangeInternal(SizeF Size)
     if(m_Child)
     {
         IFC(m_Child->Arrange(Size));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CRootUIElement::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
+{
+    HRESULT hr = S_OK;
+    SizeF FinalSize = GetFinalSize();
+
+    if(LocalPoint.x >= 0 && LocalPoint.y >= 0 && LocalPoint.x < FinalSize.width && LocalPoint.y < FinalSize.height)
+    {
+        IFC(CHitTestResult::Create(this, ppHitTestResult));
     }
 
 Cleanup:

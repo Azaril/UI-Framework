@@ -14,6 +14,8 @@ class CPanel : public CFrameworkElement
         virtual HRESULT AddChild( CUIElement* pElement );
         virtual HRESULT RemoveChild( CUIElement* pElement );
 
+        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
+
     protected:
         CPanel();
         virtual ~CPanel();

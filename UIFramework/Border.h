@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Decorator.h"
-#include "RectangleVisual.h"
+#include "GeometryVisual.h"
 
 class CBorder : public CDecorator
 {
@@ -22,6 +22,11 @@ class CBorder : public CDecorator
 
         HRESULT SetPadding( const RectF& Padding );
 
+        virtual HRESULT OnAttach( CUIAttachContext& Context );
+        virtual HRESULT OnDetach( CUIDetachContext& Context );
+
+        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
+
     protected:
         CBorder();
         virtual ~CBorder();
@@ -32,10 +37,18 @@ class CBorder : public CDecorator
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
 
+        virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
+
         virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
+        HRESULT InternalSetPadding( const RectF& Padding );
+
+        HRESULT RebuildGeometry();
+        HRESULT ReleaseGeometry();
+
         RectF m_BorderThickness;
-        CRectangleVisual* m_BorderVisual;
+        CGeometryVisual* m_BorderVisual;
+        BOOL m_GeometryDirty;
 
         RectF m_Padding;
 };

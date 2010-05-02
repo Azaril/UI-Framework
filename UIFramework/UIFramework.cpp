@@ -18,6 +18,7 @@
 #include "BasicTypeConverter.h"
 
 #include <d2d1helper.h>
+#include <Windowsx.h>
 
 #define MAX_LOADSTRING 100
 
@@ -32,6 +33,7 @@ HRESULT InitInstance( HINSTANCE hInstance, int nCmdShow, HWND* pWindow );
 LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
 CD2DHWNDRenderTarget* g_RenderTarget = NULL;
+CUIHost* g_UIHost = NULL;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
@@ -96,6 +98,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     g_RenderTarget = (CD2DHWNDRenderTarget*)pRenderTarget;
 
     IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, &pUIHost));
+
+    g_UIHost = pUIHost;
 
     IFC(pUIHost->GetRootElement(&pRootElement));
 
@@ -299,6 +303,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 
                 pRenderTarget->Resize(D2D1::SizeU(LOWORD(lParam), HIWORD(lParam)));
             //}
+            break;
+        }
+
+    case WM_LBUTTONDOWN:
+        {
+            Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+
+            g_UIHost->InjectMouseDown(MouseButton::Left, Point);
+
             break;
         }
 

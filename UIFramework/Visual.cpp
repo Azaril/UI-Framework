@@ -1,8 +1,24 @@
 #include "Visual.h"
+#include "StaticPropertyInformation.h"
+#include "BasicTypes.h"
+
+CStaticProperty VisualProperties[] = 
+{
+    //TODO: Allow this to be 0 size!
+    CStaticProperty( L"Width", TypeIndex::Float, StaticPropertyFlags::None )
+};
+
+namespace VisualPropertyIndex
+{
+    enum Value
+    {
+    };
+}
 
 CVisual::CVisual() : m_VisualAttached(FALSE)
 {
     m_VisualTransform = D2D1::Matrix3x2F::Identity();
+    m_FinalLocalTransform = D2D1::Matrix3x2F::Identity();
 }
 
 CVisual::~CVisual()
@@ -39,15 +55,18 @@ HRESULT CVisual::Finalize()
 HRESULT CVisual::OnVisualAttach(CVisualAttachContext& Context)
 {
     HRESULT hr = S_OK;
+    CVisual* pVisual = NULL;
 
     IFCEXPECT(!m_VisualAttached);
 
     m_VisualAttached = TRUE;
     m_VisualContext = Context;
 
-    for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
+    for(UINT32 i = 0; i < GetVisualChildCount(); i++)
     {
-        IFC((*It)->OnVisualAttach(Context));
+        pVisual = GetVisualChild(i);
+
+        IFC(pVisual->OnVisualAttach(Context));
     }
 
     for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
@@ -62,6 +81,7 @@ Cleanup:
 HRESULT CVisual::OnVisualDetach(CVisualDetachContext& Context)
 {
     HRESULT hr = S_OK;
+    CVisual* pVisual = NULL;
 
     IFCEXPECT(m_VisualAttached);
 
@@ -72,9 +92,11 @@ HRESULT CVisual::OnVisualDetach(CVisualDetachContext& Context)
         IFC((*It)->OnVisualDetach(Context));
     }
 
-    for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
+    for(UINT32 i = 0; i < GetVisualChildCount(); i++)
     {
-        IFC((*It)->OnVisualDetach(Context));
+        IFCPTR(pVisual);
+
+        IFC(pVisual->OnVisualDetach(Context));
     }
 
     m_VisualContext.Reset();
@@ -122,7 +144,7 @@ HRESULT CVisual::RemoveChildVisual(CVisual* pVisualChild)
         {
             if(m_VisualAttached)
             {
-                CVisualDetachContext VisualContext(m_VisualContext.GetGraphicsDevice());
+                CVisualDetachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
 
                 IFC(pVisualChild->OnVisualDetach(VisualContext));
             }
@@ -209,7 +231,9 @@ HRESULT CVisual::Render(CRenderContext& Context)
 
     IFC(MatrixStack.Push());
 
-    IFC(MatrixStack.MultMatrixLocal(m_VisualTransform));
+    m_FinalLocalTransform = m_VisualTransform;
+
+    IFC(MatrixStack.MultMatrixLocal(m_FinalLocalTransform));
 
     IFC(Context.GetRenderTarget()->SetTransform(MatrixStack.GetTop()));
 
@@ -289,7 +313,7 @@ HRESULT CVisual::RemoveVisualResource(CVisualResource* pVisualResource)
         {
             if(m_VisualAttached)
             {
-                CVisualDetachContext VisualContext(m_VisualContext.GetGraphicsDevice());
+                CVisualDetachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
 
                 IFC(pVisualResource->OnVisualDetach(VisualContext));
             }
@@ -303,6 +327,120 @@ HRESULT CVisual::RemoveVisualResource(CVisualResource* pVisualResource)
     }
 
     IFC(E_FAIL);
+
+Cleanup:
+    return hr;
+}
+
+UINT32 CVisual::GetVisualChildCount()
+{
+    return m_VisualChildren.size();
+}
+
+CVisual* CVisual::GetVisualChild(UINT32 Index)
+{
+    return m_VisualChildren.at(Index);
+}
+
+HRESULT CVisual::TransformToParent(CTransform** ppTransform)
+{
+    HRESULT hr = S_OK;
+    CMatrixTransform* pMatrixTransform = NULL;
+    Matrix3X2 TransformedMatrix = m_FinalLocalTransform;
+
+    IFCPTR(ppTransform);
+
+    //TODO: Remove D2D dependency!
+    IFCEXPECT(D2D1IsMatrixInvertible(&m_FinalLocalTransform));
+
+    IFCEXPECT(D2D1InvertMatrix(&TransformedMatrix));
+
+    IFC(CMatrixTransform::Create(TransformedMatrix, &pMatrixTransform));
+
+    *ppTransform = pMatrixTransform;
+    pMatrixTransform = NULL;
+
+Cleanup:
+    ReleaseObject(pMatrixTransform);
+
+    return hr;
+}
+
+HRESULT CVisual::CreatePropertyInformation(CPropertyInformation** ppInformation)
+{
+    HRESULT hr = S_OK;
+    CStaticPropertyInformation* pStaticInformation = NULL;
+
+    IFCPTR(ppInformation);
+
+    IFC(CStaticPropertyInformation::Create(VisualProperties, ARRAYSIZE(VisualProperties), &pStaticInformation));
+
+    *ppInformation = pStaticInformation;
+    pStaticInformation = NULL;
+
+Cleanup:
+    ReleaseObject(pStaticInformation);
+
+    return hr;
+}
+
+HRESULT CVisual::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    // Check if the property is a static property.
+    if(pProperty >= VisualProperties && pProperty < VisualProperties + ARRAYSIZE(VisualProperties))
+    {
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        UINT32 Index = (pStaticProperty - VisualProperties);
+        
+        switch(Index)
+        {
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
+    }
+    else
+    {
+        IFC(E_FAIL);
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CVisual::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    // Check if the property is a static property.
+    if(pProperty >= VisualProperties && pProperty < VisualProperties + ARRAYSIZE(VisualProperties))
+    {
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        UINT32 Index = (pStaticProperty - VisualProperties);
+        
+        switch(Index)
+        {
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
+    }
+    else
+    {
+        IFC(E_FAIL);
+    }
 
 Cleanup:
     return hr;

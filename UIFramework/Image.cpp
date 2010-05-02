@@ -16,8 +16,9 @@ namespace ImagePropertyIndex
 }
 
 CImage::CImage() : m_Source(NULL),
-                   m_ImageRect(NULL),
-                   m_ImageBrush(NULL)
+                   m_ImageVisual(NULL),
+                   m_ImageBrush(NULL),
+                   m_GeometryDirty(TRUE)
 {
 }
 
@@ -32,13 +33,13 @@ HRESULT CImage::Initialize()
 
     IFC(CFrameworkElement::Initialize());
 
-    IFC(CRectangleVisual::Create(&m_ImageRect));
+    IFC(CGeometryVisual::Create(&m_ImageVisual));
 
-    IFC(AddChildVisual(m_ImageRect));
+    IFC(AddChildVisual(m_ImageVisual));
 
     IFC(CImageBrush::Create(&m_ImageBrush));
 
-    IFC(m_ImageRect->SetBrush(m_ImageBrush));
+    IFC(m_ImageVisual->SetBrush(m_ImageBrush));
 
 Cleanup:
     return hr;
@@ -48,11 +49,11 @@ HRESULT CImage::Finalize()
 {
     HRESULT hr = S_OK;
 
-    if(m_ImageRect)
+    if(m_ImageVisual)
     {
-        IFC(RemoveChildVisual(m_ImageRect));
+        IFC(RemoveChildVisual(m_ImageVisual));
 
-        ReleaseObject(m_ImageRect);
+        ReleaseObject(m_ImageVisual);
     }
 
     ReleaseObject(m_Source);
@@ -78,6 +79,78 @@ HRESULT CImage::InternalSetSource(CObjectWithType* pSource)
     HRESULT hr = S_OK;
 
     IFC(m_ImageBrush->SetSource(pSource));
+
+    m_GeometryDirty = TRUE;
+
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CImage::OnAttach(CUIAttachContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    IFC(CFrameworkElement::OnAttach(Context));
+
+    m_GeometryDirty = TRUE;
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CImage::OnDetach(CUIDetachContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    IFC(ReleaseGeometry());
+
+    IFC(CFrameworkElement::OnDetach(Context));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CImage::RebuildGeometry()
+{
+    HRESULT hr = S_OK;
+    CRectangleGeometry* pRectangleGeometry = NULL;
+    SizeF FinalSize = GetFinalSize();
+    RectF Rectangle = { 0, 0, FinalSize.width, FinalSize.height };
+
+    IFC(m_VisualContext.GetGraphicsDevice()->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
+
+    IFC(m_ImageVisual->SetGeometry(pRectangleGeometry));
+
+Cleanup:
+    ReleaseObject(pRectangleGeometry);
+
+    return hr;
+}
+
+HRESULT CImage::ReleaseGeometry()
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_ImageVisual->SetGeometry(NULL));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CImage::PreRenderInternal(CPreRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    if(m_GeometryDirty)
+    {
+        m_GeometryDirty = FALSE;
+
+        IFC(RebuildGeometry());
+    }
+
+    IFC(CFrameworkElement::PreRenderInternal(Context));
 
 Cleanup:
     return hr;
@@ -107,9 +180,9 @@ HRESULT CImage::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
 
-    IFC(m_ImageRect->SetSize(Size));
-
     IFC(CFrameworkElement::ArrangeInternal(Size));
+
+    m_GeometryDirty = TRUE;
 
 Cleanup:
     return hr;
@@ -172,6 +245,18 @@ HRESULT CImage::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     {
         IFC(CFrameworkElement::SetValue(pProperty, pValue));
     }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CImage::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppHitTestResult);
+
+    *ppHitTestResult = NULL;
 
 Cleanup:
     return hr;

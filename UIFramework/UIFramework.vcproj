@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="%DXSDK_DIR%\Lib"
+				AdditionalLibraryDirectories="&quot;$(DXSDK_DIR)\Lib\x86&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -138,7 +138,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="%DXSDK_DIR%\Lib"
+				AdditionalLibraryDirectories="&quot;$(DXSDK_DIR)\Lib\x86&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -238,6 +238,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Geometry.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Geometry.h"
+					>
+				</File>
+				<File
 					RelativePath=".\GraphicsBrush.cpp"
 					>
 				</File>
@@ -321,6 +329,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\D2DRectangleGeometry.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DRectangleGeometry.h"
+						>
+					</File>
+					<File
 						RelativePath=".\D2DRenderTarget.cpp"
 						>
 					</File>
@@ -398,11 +414,43 @@
 					>
 				</File>
 				<File
+					RelativePath=".\HitTesting.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\HitTesting.h"
+					>
+				</File>
+				<File
+					RelativePath=".\HitTestResult.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\HitTestResult.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MouseInput.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MouseInput.h"
+					>
+				</File>
+				<File
 					RelativePath=".\RenderContext.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\RenderContext.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Transform.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Transform.h"
 					>
 				</File>
 				<File
@@ -413,25 +461,17 @@
 					RelativePath=".\UIHost.h"
 					>
 				</File>
-				<File
-					RelativePath=".\VisualContext.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\VisualContext.h"
-					>
-				</File>
-				<File
-					RelativePath=".\VisualResource.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\VisualResource.h"
-					>
-				</File>
 				<Filter
 					Name="Visuals"
 					>
+					<File
+						RelativePath=".\GeometryVisual.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\GeometryVisual.h"
+						>
+					</File>
 					<File
 						RelativePath=".\RectangleVisual.cpp"
 						>
@@ -446,6 +486,22 @@
 					</File>
 					<File
 						RelativePath=".\Visual.h"
+						>
+					</File>
+					<File
+						RelativePath=".\VisualContext.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\VisualContext.h"
+						>
+					</File>
+					<File
+						RelativePath=".\VisualResource.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\VisualResource.h"
 						>
 					</File>
 					<Filter

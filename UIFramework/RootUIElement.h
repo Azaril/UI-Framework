@@ -12,6 +12,8 @@ class CRootUIElement : public CFrameworkElement,
 
         virtual HRESULT SetChild( CUIElement* pChild );
 
+        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
+
     protected:
         CRootUIElement();
         virtual ~CRootUIElement();

@@ -15,6 +15,8 @@ class CTextBlock : public CFrameworkElement
 
         virtual HRESULT SetText( const WCHAR* pText );
 
+        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
+
     protected:
         CTextBlock();
         virtual ~CTextBlock();

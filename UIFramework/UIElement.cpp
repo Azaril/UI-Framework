@@ -1,6 +1,7 @@
 #include "UIElement.h"
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
+#include "DelegatingPropertyInformation.h"
 
 CStaticProperty UIElementProperties[] = 
 {
@@ -35,7 +36,7 @@ CUIElement::CUIElement() : m_Attached(FALSE),
     m_LastMeasureSize.height = 0;
 
     m_FinalSize.width = 0;
-    m_FinalSize.width = 0;
+    m_FinalSize.height = 0;
 }
 
 CUIElement::~CUIElement()
@@ -196,6 +197,11 @@ SizeF CUIElement::GetDesiredSize()
     return m_DesiredSize;
 }
 
+SizeF CUIElement::GetFinalSize()
+{
+    return m_FinalSize;
+}
+
 HRESULT CUIElement::Arrange(SizeF Size)
 {
     HRESULT hr = S_OK;
@@ -203,7 +209,7 @@ HRESULT CUIElement::Arrange(SizeF Size)
     IFCEXPECT(Size.width >= 0);
     IFCEXPECT(Size.height >= 0);
 
-    if(m_ArrangeDirty)
+    if(m_ArrangeDirty || Size.width != m_FinalSize.width || Size.height != m_FinalSize.width)
     {
         if(m_Visibility == Visibility::Visible || m_Visibility == Visibility::Hidden)
         {
@@ -380,38 +386,26 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::GetPropertyInformation(CPropertyInformation** ppInformation)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppInformation);
-
-    if(m_PropertyInformation == NULL)
-    {
-        IFC(CreatePropertyInformation(&m_PropertyInformation));
-    }
-
-    *ppInformation = m_PropertyInformation;
-    AddRefObject(m_PropertyInformation);
-
-Cleanup:
-    return hr;
-}
-
 HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformation)
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
+    CPropertyInformation* pBaseInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(UIElementProperties, ARRAYSIZE(UIElementProperties), &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(UIElementProperties, ARRAYSIZE(UIElementProperties), &pStaticInformation))
+    IFC(CVisual::CreatePropertyInformation(&pBaseInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
-    *ppInformation = pStaticInformation;
-    pStaticInformation = NULL;
+    *ppInformation = pDelegatingProperyInformation;
+    pDelegatingProperyInformation = NULL;
 
 Cleanup:
     ReleaseObject(pStaticInformation);
+    ReleaseObject(pBaseInformation);
+    ReleaseObject(pDelegatingProperyInformation);
 
     return hr;
 }
@@ -483,33 +477,66 @@ Cleanup:
 HRESULT CUIElement::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
+    CFloatValue* pFloatValue = NULL;
+    CVisibilityValue* pVisibilityValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    //if(wcscmp(pProperty->GetName(), L"Height") == 0)
-    //{
-    //    __debugbreak;
-
-    //    //TODO: Implement!
-    //}
-    //else if(wcscmp(pProperty->GetName(), L"Width") == 0)
-    //{
-    //    __debugbreak;
-
-    //    //TODO: Implement!
-    //}
-    //else
+    // Check if the property is a static property.
+    if(pProperty >= UIElementProperties && pProperty < UIElementProperties + ARRAYSIZE(UIElementProperties))
     {
-        __debugbreak();
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
+        UINT32 Index = (pStaticProperty - UIElementProperties);
+        
+        switch(Index)
+        {
+            case UIElementPropertyIndex::Width:
+                {
+                    IFC(CFloatValue::Create(m_Size.width, &pFloatValue));
+
+                    *ppValue = pFloatValue;
+                    pFloatValue = NULL;
+
+                    break;
+                }
+
+            case UIElementPropertyIndex::Height:
+                {
+                    IFC(CFloatValue::Create(m_Size.width, &pFloatValue));
+
+                    *ppValue = pFloatValue;
+                    pFloatValue = NULL;
+
+                    break;
+                }
+
+            case UIElementPropertyIndex::Visibility:
+                {
+                    IFC(CVisibilityValue::Create(m_Visibility, &pVisibilityValue));
+
+                    *ppValue = pVisibilityValue;
+                    pVisibilityValue = NULL;
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
+    }
+    else
+    {
         IFC(E_FAIL);
     }
 
 Cleanup:
+    ReleaseObject(pFloatValue);
+    ReleaseObject(pVisibilityValue);
+
     return hr;
 }
 

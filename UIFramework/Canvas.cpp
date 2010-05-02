@@ -170,6 +170,18 @@ Cleanup:
     return hr;
 }
 
+HRESULT CCanvas::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppHitTestResult);
+
+    *ppHitTestResult = NULL;
+
+Cleanup:
+    return hr;
+}
+
 //HRESULT CCanvas::CreatePropertyInformation(CPropertyInformation** ppInformation)
 //{
 //    HRESULT hr = S_OK;

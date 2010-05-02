@@ -14,21 +14,25 @@ namespace TypeIndex
             ColorF,
             Visibility,
 
-            UIElement,
-                FrameworkElement,
-                    Panel,
-                        StackPanel,
-                        Canvas,
-                        Grid,
-                    Image,
-                    Decorator,
-                        Border,
-                    TextBlock,
+            Visual,
+                UIElement,
+                    FrameworkElement,
+                        Panel,
+                            StackPanel,
+                            Canvas,
+                            Grid,
+                        Image,
+                        Decorator,
+                            Border,
+                        TextBlock,
 
             BitmapSource,
 
             Brush,
                 ImageBrush,
-                SolidColorBrush
+                SolidColorBrush,
+
+            Geometry,
+                RectangleGeometry
     };
 }

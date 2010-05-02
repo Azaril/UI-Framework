@@ -1,6 +1,7 @@
 #include "Border.h"
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
+#include "BasicTypes.h"
 
 CStaticProperty BorderProperties[] = 
 {
@@ -17,7 +18,8 @@ namespace BorderPropertyIndex
     };
 }
 
-CBorder::CBorder() : m_BorderVisual(NULL)
+CBorder::CBorder() : m_BorderVisual(NULL),
+                     m_GeometryDirty(TRUE)
 {
     m_BorderThickness.left = 0;
     m_BorderThickness.top = 0;
@@ -41,7 +43,7 @@ HRESULT CBorder::Initialize()
 
     IFC(CDecorator::Initialize());
 
-    IFC(CRectangleVisual::Create(&m_BorderVisual));
+    IFC(CGeometryVisual::Create(&m_BorderVisual));
 
     IFC(AddChildVisual(m_BorderVisual));
 
@@ -92,9 +94,11 @@ HRESULT CBorder::SetBorderThickness(const RectF& Border)
 
     m_BorderThickness = Border;
 
-    IFC(m_BorderVisual->SetBorderThickness(Border));
+    //IFC(m_BorderVisual->SetBorderThickness(Border));
 
     IFC(InvalidateMeasure());
+
+    IFC(ReleaseGeometry());
 
 Cleanup:
     return hr;
@@ -104,9 +108,12 @@ HRESULT CBorder::SetBorder(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
-    IFC(m_BorderVisual->SetOutlineBrush(pBrush));
+    //IFC(m_BorderVisual->Set(pBrush));
 
-Cleanup:
+    //TODO: Implement.
+    __debugbreak();
+
+//Cleanup:
     return hr;
 }
 
@@ -114,9 +121,92 @@ HRESULT CBorder::SetPadding(const RectF& Padding)
 {
     HRESULT hr = S_OK;
 
+    IFC(InternalSetPadding(Padding));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::InternalSetPadding(const RectF& Padding)
+{
+    HRESULT hr = S_OK;
+
+    IFCEXPECT(Padding.left >= 0);
+    IFCEXPECT(Padding.right >= 0);
+    IFCEXPECT(Padding.top >= 0);
+    IFCEXPECT(Padding.bottom >= 0);
+
     m_Padding = Padding;
 
     IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::OnAttach(CUIAttachContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    IFC(CFrameworkElement::OnAttach(Context));
+
+    m_GeometryDirty = TRUE;
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::OnDetach(CUIDetachContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    IFC(ReleaseGeometry());
+
+    IFC(CFrameworkElement::OnDetach(Context));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::RebuildGeometry()
+{
+    HRESULT hr = S_OK;
+    CRectangleGeometry* pRectangleGeometry = NULL;
+    SizeF FinalSize = GetFinalSize();
+    RectF Rectangle = { 0, 0, FinalSize.width, FinalSize.height };
+
+    IFC(m_VisualContext.GetGraphicsDevice()->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
+
+    IFC(m_BorderVisual->SetGeometry(pRectangleGeometry));
+
+Cleanup:
+    ReleaseObject(pRectangleGeometry);
+
+    return hr;
+}
+
+HRESULT CBorder::ReleaseGeometry()
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_BorderVisual->SetGeometry(NULL));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::PreRenderInternal(CPreRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    if(m_GeometryDirty)
+    {
+        m_GeometryDirty = FALSE;
+
+        IFC(RebuildGeometry());
+    }
+
+    IFC(CFrameworkElement::PreRenderInternal(Context));
 
 Cleanup:
     return hr;
@@ -152,8 +242,6 @@ HRESULT CBorder::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
 
-    IFC(m_BorderVisual->SetSize(Size));
-
     if(m_Child != NULL)
     {
         SizeF InternalSize = { Size.width - (m_BorderThickness.left + m_BorderThickness.right) - (m_Padding.left + m_Padding.right), 
@@ -170,8 +258,37 @@ HRESULT CBorder::ArrangeInternal(SizeF Size)
     }
 
     IFC(CDecorator::ArrangeInternal(Size));
+
+    m_GeometryDirty = TRUE;
       
 Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
+{
+    HRESULT hr = S_OK;
+    CHitTestResult* pVisualHitTestResult = NULL;
+
+    IFCPTR(ppHitTestResult);
+
+    if(m_BorderVisual != NULL)
+    {
+        IFC(m_BorderVisual->HitTest(LocalPoint, &pVisualHitTestResult));
+
+        if(pVisualHitTestResult)
+        {
+            IFC(CHitTestResult::Create(this, ppHitTestResult));
+        }
+    }
+    else
+    {
+        *ppHitTestResult = NULL;
+    }
+
+Cleanup:
+    ReleaseObject(pVisualHitTestResult);
+
     return hr;
 }
 
@@ -230,9 +347,9 @@ HRESULT CBorder::SetValue(CProperty* pProperty, CObjectWithType* pValue)
                 {
                     IFCEXPECT(pValue->IsTypeOf(TypeIndex::RectF));
 
-                    //TODO: Implement!
+                    CRectFValue* pRectF = (CRectFValue*)pValue;
 
-                    __debugbreak();
+                    IFC(InternalSetPadding(pRectF->GetValue()))
 
                     break;
                 }

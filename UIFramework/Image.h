@@ -2,6 +2,7 @@
 
 #include "FrameworkElement.h"
 #include "ImageBrush.h"
+#include "GeometryVisual.h"
 
 class CImage : public CFrameworkElement
 {
@@ -15,6 +16,11 @@ class CImage : public CFrameworkElement
 
         HRESULT SetSource( CObjectWithType* pSource );
 
+        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
+
+        virtual HRESULT OnAttach( CUIAttachContext& Context );
+        virtual HRESULT OnDetach( CUIDetachContext& Context );
+
     protected:
         CImage();
         virtual ~CImage();
@@ -25,11 +31,17 @@ class CImage : public CFrameworkElement
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
 
+        virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
+
         virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         HRESULT InternalSetSource( CObjectWithType* pSource );
 
+        HRESULT RebuildGeometry();
+        HRESULT ReleaseGeometry();
+
         CObjectWithType* m_Source;
         CImageBrush* m_ImageBrush;
-        CRectangleVisual* m_ImageRect;
+        CGeometryVisual* m_ImageVisual;
+        BOOL m_GeometryDirty;
 };

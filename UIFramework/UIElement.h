@@ -85,19 +85,17 @@ class CParameterlessUINotification : public CUINotification
 typedef CParameterlessUINotification< UINotification::ChildMeasureInvalidated > CChildMeasureInvalidatedNotification;
 typedef CParameterlessUINotification< UINotification::ChildArrangeInvalidated > CChildArrangeInvalidatedNotification;
 
-class CUIElement : public CVisual,
-                   public CPropertyObject
+class CUIElement : public CVisual
 {
     public:
         DELEGATE_REFCOUNTING( CVisual );
 
         virtual TypeIndex::Value GetType() { return TypeIndex::UIElement; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::UIElement || CPropertyObject::IsTypeOf(Type); }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::UIElement || CVisual::IsTypeOf(Type); }
 
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );
 
-        virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
@@ -145,6 +143,8 @@ class CUIElement : public CVisual,
         virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         virtual HRESULT InternalSetVisibility( Visibility::Value State );
+
+        SizeF GetFinalSize();
 
         HRESULT InternalSetWidth( FLOAT Width );
         HRESULT InternalSetHeight( FLOAT Height );

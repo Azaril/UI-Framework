@@ -2,7 +2,8 @@
 
 #include "MatrixStack.h"
 #include "Collections.h"
-#include "RenderTarget.h"
+
+class CRenderTarget;
 
 class CRenderContext
 {

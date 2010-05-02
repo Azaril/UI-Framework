@@ -138,3 +138,15 @@ HRESULT CPanel::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
 Cleanup:
     return hr;
 }
+
+HRESULT CPanel::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppHitTestResult);
+
+    *ppHitTestResult = NULL;
+
+Cleanup:
+    return hr;
+}

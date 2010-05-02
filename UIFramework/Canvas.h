@@ -37,6 +37,8 @@ class CCanvas : public CPanel
 
         virtual HRESULT SetChildPosition( CUIElement* pElement, Point2F Position );
 
+        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
+
     public:
         CCanvas();
         virtual ~CCanvas();
