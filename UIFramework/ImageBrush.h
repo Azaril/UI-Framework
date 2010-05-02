@@ -89,6 +89,10 @@ class CImageBrush : public CBrush
         HRESULT Initialize();
         HRESULT InternalSetSource( CObjectWithType* m_Source );
 
+        HRESULT EnsureBitmaps();
+        HRESULT ReleaseBitmaps();
+        HRESULT CreateBitmapFromSource( CGraphicsDevice* pGraphicsDevice, CBitmapSource** ppBitmapSource );
+
         virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         CObjectWithType* m_Source;

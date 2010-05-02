@@ -61,12 +61,23 @@ HRESULT CGeometryVisual::InternalSetBrush(CBrush* pBrush)
 {
     HRESULT hr = S_OK;
 
-    ReleaseObject(m_Brush);
+    if(m_Brush)
+    {
+        IFC(RemoveVisualResource(m_Brush));
+
+        ReleaseObject(m_Brush);
+    }
 
     m_Brush = pBrush;
 
-    AddRefObject(m_Brush);
+    if(m_Brush)
+    {
+        IFC(AddVisualResource(m_Brush));
 
+        AddRefObject(m_Brush);
+    }
+
+Cleanup:
     return hr;
 }
 

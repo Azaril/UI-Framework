@@ -72,11 +72,17 @@ HRESULT CImageBrush::InternalSetSource(CObjectWithType* pSource)
 
     IFCEXPECT(pSource->IsTypeOf(TypeIndex::String) || pSource->IsTypeOf(TypeIndex::BitmapSource));
 
-    ReleaseObject(m_Source);
+    if(pSource != m_Source)
+    {
+        ReleaseObject(m_Source);
 
-    m_Source = pSource;
+        m_Source = pSource;
 
-    AddRefObject(m_Source);
+        AddRefObject(m_Source);
+
+        IFC(ReleaseBitmaps());
+        IFC(EnsureBitmaps());
+    }
 
 Cleanup:
     return hr;
@@ -86,7 +92,6 @@ HRESULT CImageBrush::OnVisualAttach(CVisualAttachContext& Context)
 {
     HRESULT hr = S_OK;
     CImageBrushContext* pContext = NULL;
-    CImagingProvider* pImagingProvider = NULL;
     CBitmapSource* pBitmapSource = NULL;
 
     for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
@@ -106,23 +111,7 @@ HRESULT CImageBrush::OnVisualAttach(CVisualAttachContext& Context)
     }
     else
     {
-        if(m_Source->IsTypeOf(TypeIndex::String))
-        {
-            CStringValue* pStringValue = (CStringValue*)m_Source;
-
-            IFC(Context.GetGraphicsDevice()->GetImagingProvider(&pImagingProvider));
-
-            IFC(pImagingProvider->LoadBitmapFromFile(pStringValue->GetValue(), &pBitmapSource));
-        }
-        else if(m_Source->IsTypeOf(TypeIndex::BitmapSource))
-        {
-            pBitmapSource = (CBitmapSource*)m_Source;
-            AddRefObject(m_Source);
-        }
-        else
-        {
-            IFC(E_FAIL);
-        }
+        IFC(CreateBitmapFromSource(Context.GetGraphicsDevice(), &pBitmapSource));
 
         IFC(CImageBrushContext::Create(Context.GetGraphicsDevice(), pBitmapSource, &pContext));
 
@@ -133,6 +122,75 @@ HRESULT CImageBrush::OnVisualAttach(CVisualAttachContext& Context)
 
 Cleanup:
     ReleaseObject(pContext);
+
+    return hr;
+}
+
+HRESULT CImageBrush::ReleaseBitmaps()
+{
+    HRESULT hr = S_OK;
+
+    for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
+    {
+        IFC((*It)->SetBitmapSource(NULL));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CImageBrush::EnsureBitmaps()
+{
+    HRESULT hr = S_OK;
+    CBitmapSource* pBitmapSource = NULL;
+
+    for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
+    {
+        IFC((*It)->GetBitmapSource(&pBitmapSource));
+
+        if(pBitmapSource == NULL)
+        {
+            IFC(CreateBitmapFromSource((*It)->GetGraphicsDevice(), &pBitmapSource));
+
+            IFC((*It)->SetBitmapSource(pBitmapSource));
+        }
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CImageBrush::CreateBitmapFromSource(CGraphicsDevice* pGraphicsDevice, CBitmapSource** ppBitmapSource)
+{
+    HRESULT hr = S_OK;
+    CBitmapSource* pBitmapSource = NULL;
+    CImagingProvider* pImagingProvider = NULL;
+
+    IFCPTR(ppBitmapSource);
+
+    if(m_Source->IsTypeOf(TypeIndex::String))
+    {
+        CStringValue* pStringValue = (CStringValue*)m_Source;
+
+        IFC(pGraphicsDevice->GetImagingProvider(&pImagingProvider));
+
+        IFC(pImagingProvider->LoadBitmapFromFile(pStringValue->GetValue(), &pBitmapSource));
+    }
+    else if(m_Source->IsTypeOf(TypeIndex::BitmapSource))
+    {
+        pBitmapSource = (CBitmapSource*)m_Source;
+        AddRefObject(m_Source);
+    }
+    else
+    {
+        IFC(E_FAIL);
+    }
+
+    *ppBitmapSource = pBitmapSource;
+    pBitmapSource = NULL;
+
+Cleanup:
+    ReleaseObject(pBitmapSource);
     ReleaseObject(pImagingProvider);
 
     return hr;
