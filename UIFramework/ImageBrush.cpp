@@ -121,6 +121,7 @@ HRESULT CImageBrush::OnVisualAttach(CVisualAttachContext& Context)
     }
 
 Cleanup:
+    ReleaseObject(pBitmapSource);
     ReleaseObject(pContext);
 
     return hr;

@@ -9,8 +9,7 @@ class CImage : public CFrameworkElement
     public:
         DECLARE_FACTORY( CImage );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::Image; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Image || CFrameworkElement::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Image, CFrameworkElement );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
 
@@ -44,4 +43,10 @@ class CImage : public CFrameworkElement
         CImageBrush* m_ImageBrush;
         CGeometryVisual* m_ImageVisual;
         BOOL m_GeometryDirty;
+};
+
+template< >
+struct ObjectTypeTraits< CImage >
+{
+    static const TypeIndex::Value Type = TypeIndex::Image;
 };

@@ -78,3 +78,11 @@ struct ObjectTypeTraits< CObjectCollection >
 {
     static const TypeIndex::Value Type = TypeIndex::Collection;
 };
+
+#define DECLARE_TYPE( type ) \
+virtual TypeIndex::Value GetType() { return type; } \
+virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type; }
+
+#define DECLARE_TYPE_WITH_BASE( type, base ) \
+virtual TypeIndex::Value GetType() { return type; } \
+virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type || base::IsTypeOf(Type); }

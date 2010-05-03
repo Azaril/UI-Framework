@@ -7,15 +7,13 @@
 #include "GraphicsDevice.h"
 #include "Visual.h"
 
-class CBrush : public CRefCountedObject,
-               public CPropertyObject,
+class CBrush : public CRefCountedObjectBase< CPropertyObject >,
                public CVisualResource
 {
     public:
-        DELEGATE_REFCOUNTING( CRefCountedObject );
+        DELEGATE_REFCOUNTING( CRefCountedObjectBase< CPropertyObject > );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::Brush; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Brush; }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Brush, CObjectWithType );
 
         virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
@@ -33,4 +31,10 @@ class CBrush : public CRefCountedObject,
         virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         CPropertyInformation* m_PropertyInformation;
+};
+
+template< >
+struct ObjectTypeTraits< CBrush >
+{
+    static const TypeIndex::Value Type = TypeIndex::Brush;
 };

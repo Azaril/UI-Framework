@@ -13,3 +13,9 @@
 //
 //        HRESULT Initialize();
 //};
+
+//template< >
+//struct ObjectTypeTraits< CGrid >
+//{
+//    static const TypeIndex::Value Type = TypeIndex::Grid;
+//};

@@ -1,6 +1,7 @@
 #include "RootUIElement.h"
 
-CRootUIElement::CRootUIElement() : m_Child(NULL)
+CRootUIElement::CRootUIElement() : m_Child(NULL),
+                                   m_Namescope(NULL)
 {
 }
 
@@ -17,6 +18,8 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     IFCPTR(pRenderTarget);
 
     IFC(CFrameworkElement::Initialize());
+
+    IFC(CNamescope::Create(&m_Namescope));
 
     {
         CVisualAttachContext VisualContext(this, pGraphicsDevice);
@@ -50,10 +53,16 @@ HRESULT CRootUIElement::Finalize()
         IFC(OnVisualDetach(VisualContext));
     }
 
-    ReleaseObject(m_Child);
-
 Cleanup:
+    ReleaseObject(m_Child);
+    ReleaseObject(m_Namescope);
+
     return hr;
+}
+
+CNamescope* CRootUIElement::GetNamescope()
+{
+    return m_Namescope;
 }
 
 HRESULT CRootUIElement::SetChild(CUIElement* pChild)

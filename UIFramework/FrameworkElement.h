@@ -8,10 +8,15 @@ class CUIElementCollection : public CCollection< CUIElement >
     public:
         DECLARE_FACTORY( CUIElementCollection );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::UIElementCollection; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::UIElementCollection || CCollection< CUIElement >::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::UIElementCollection, CCollection< CUIElement > );
 
         virtual HRESULT AddObject( CObjectWithType* pObject );
+};
+
+template< >
+struct ObjectTypeTraits< CUIElementCollection >
+{
+    static const TypeIndex::Value Type = TypeIndex::UIElementCollection;
 };
 
 class CFrameworkElement : public CUIElement
@@ -19,11 +24,45 @@ class CFrameworkElement : public CUIElement
     typedef std::vector< CUIElement* > ChildCollection;
 
     public:
-        virtual TypeIndex::Value GetType() { return TypeIndex::FrameworkElement; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::FrameworkElement || CUIElement::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::FrameworkElement, CUIElement );
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
+
+        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+
+        HRESULT SetName( const WCHAR* pName );
+
+        virtual CNamescope* GetNamescope();
+
+        HRESULT FindName( const WCHAR* pName, CObjectWithType** ppObject );
+
+        template< typename T >
+        HRESULT FindName( const WCHAR* pName, T** ppObject )
+        {
+            HRESULT hr = S_OK;
+            CObjectWithType* pFoundObject = NULL;
+
+            IFC(FindName(pName, &pFoundObject));
+
+            if(pFoundObject)
+            {
+                IFCEXPECT(pFoundObject->IsTypeOf(ObjectTypeTraits< T >::Type));
+
+                *ppObject = (T*)pFoundObject;
+                pFoundObject = NULL;
+            }
+            else
+            {
+                *ppObject = NULL;
+            }
+
+        Cleanup:
+            ReleaseObject(pFoundObject);
+
+            return hr;
+        }
 
     protected:
         CFrameworkElement();
@@ -34,12 +73,15 @@ class CFrameworkElement : public CUIElement
         virtual HRESULT AddLogicalChild( CUIElement* pElement );
         virtual HRESULT RemoveLogicalChild( CUIElement* pElement );
 
-        //virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         virtual VOID OnChildAdded( CUIElement* pElement );
         virtual VOID OnChildRemoved( CUIElement* pElement );
 
+        HRESULT InternalSetName( const WCHAR* pName );
+
         CUIElementCollection* m_Children;
+        std::wstring m_Name;
 
         class CChildrenSubscriber : public CUIElementCollection::SubscriberType
         {
@@ -60,4 +102,10 @@ class CFrameworkElement : public CUIElement
 
             CFrameworkElement& m_This;
         } m_ChildrenSubscriber;
+};
+
+template< >
+struct ObjectTypeTraits< CFrameworkElement >
+{
+    static const TypeIndex::Value Type = TypeIndex::FrameworkElement;
 };

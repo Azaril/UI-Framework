@@ -100,12 +100,25 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIHost::InjectMouseDown(MouseButton::Value Button, Point2F Point)
+HRESULT CUIHost::InjectMouseButton(MouseButton::Value Button, MouseButtonState::Value State, Point2F Point)
 {
     HRESULT hr = S_OK;
 
     CMouseInputHitTestFilter Filter;
-    CMouseDownHitTestCallback Callback(Button);
+    CMouseButtonHitTestCallback Callback(Point, Button, State);
+
+    IFC(HitTestTree(m_RootElement, Point, &Filter, &Callback));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIHost::InjectMouseMove(Point2F Point)
+{
+    HRESULT hr = S_OK;
+
+    CMouseInputHitTestFilter Filter;
+    CMouseMoveHitTestCallback Callback(Point);
 
     IFC(HitTestTree(m_RootElement, Point, &Filter, &Callback));
 

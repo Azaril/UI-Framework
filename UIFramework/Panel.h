@@ -5,8 +5,7 @@
 class CPanel : public CFrameworkElement
 {
     public:       
-        virtual TypeIndex::Value GetType() { return TypeIndex::Panel; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Panel || CFrameworkElement::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Panel, CFrameworkElement );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
@@ -21,4 +20,10 @@ class CPanel : public CFrameworkElement
         virtual ~CPanel();
 
         virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+};
+
+template< >
+struct ObjectTypeTraits< CPanel >
+{
+    static const TypeIndex::Value Type = TypeIndex::Panel;
 };

@@ -21,6 +21,7 @@ CD2DGraphicsDevice::~CD2DGraphicsDevice()
 {
     ReleaseObject(m_Factory);
     ReleaseObject(m_TextProvider);
+    ReleaseObject(m_ImagingProvider);
 
     if(m_D2DModule != NULL)
     {

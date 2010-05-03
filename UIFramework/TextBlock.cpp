@@ -42,6 +42,8 @@ HRESULT CTextBlock::SetText(const WCHAR* pText)
 
     ReleaseObject(m_TextLayout);
 
+    IFC(InvalidateMeasure());
+
 Cleanup:
     return hr;
 }
@@ -149,7 +151,7 @@ HRESULT CTextBlock::RenderTransformed(CRenderContext& Context)
     }
 
 Cleanup:
-    ReleaseObject(m_TextBrush);
+    ReleaseObject(pTextBrush);
 
     return hr;
 }

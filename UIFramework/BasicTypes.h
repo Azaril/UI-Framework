@@ -12,8 +12,7 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
     public:
         DECLARE_FACTORY1( CBasicValue, T );
 
-        virtual TypeIndex::Value GetType() { return Type; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == Type || CObjectWithType::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( Type, CObjectWithType );
 
         virtual T GetValue()
         {
@@ -32,9 +31,36 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
 };
 
 typedef CBasicValue< FLOAT, TypeIndex::Float > CFloatValue;
+
+template< >
+struct ObjectTypeTraits< CFloatValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::Float;
+};
+
 typedef CBasicValue< Visibility::Value, TypeIndex::Visibility > CVisibilityValue;
+
+template< >
+struct ObjectTypeTraits< CVisibilityValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::Visibility;
+};
+
 typedef CBasicValue< ColorF, TypeIndex::ColorF > CColorFValue;
+
+template< >
+struct ObjectTypeTraits< CColorFValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::ColorF;
+};
+
 typedef CBasicValue< RectF, TypeIndex::RectF > CRectFValue;
+
+template< >
+struct ObjectTypeTraits< CRectFValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::RectF;
+};
 
 class CStringValue : public CRefCountedObjectBase< CObjectWithType >
 {
@@ -42,8 +68,7 @@ class CStringValue : public CRefCountedObjectBase< CObjectWithType >
         DECLARE_FACTORY1( CStringValue, const WCHAR* );
         DECLARE_FACTORY2( CStringValue, const WCHAR*, UINT32 );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::String; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::String || CObjectWithType::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::String, CObjectWithType );
 
         const WCHAR* GetValue();
 
@@ -55,4 +80,10 @@ class CStringValue : public CRefCountedObjectBase< CObjectWithType >
         HRESULT Initialize( const WCHAR* pValue, UINT32 Length );
 
         WCHAR* m_Value;
+};
+
+template< >
+struct ObjectTypeTraits< CStringValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::String;
 };

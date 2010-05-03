@@ -33,6 +33,11 @@ namespace TypeIndex
                 SolidColorBrush,
 
             Geometry,
-                RectangleGeometry
+                RectangleGeometry,
+
+            RoutedEventArgs,
+                InputEventArgs,
+                    MouseEventArgs,
+                        MouseButtonEventArgs
     };
 }

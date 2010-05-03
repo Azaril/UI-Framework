@@ -7,15 +7,25 @@
 class CGeometry : public CObjectWithType
 {
     public:
-        virtual TypeIndex::Value GetType() { return TypeIndex::Geometry; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Geometry || CObjectWithType::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Geometry, CObjectWithType );
 
         virtual HRESULT FillContainsPoint( const Point2F& LocalPoint, BOOL* pContainsPoint ) = 0;
+};
+
+template< >
+struct ObjectTypeTraits< CGeometry >
+{
+    static const TypeIndex::Value Type = TypeIndex::Geometry;
 };
 
 class CRectangleGeometry : public CGeometry
 {
     public:
-        virtual TypeIndex::Value GetType() { return TypeIndex::RectangleGeometry; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::RectangleGeometry || CGeometry::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::RectangleGeometry, CGeometry );
+};
+
+template< >
+struct ObjectTypeTraits< CRectangleGeometry >
+{
+    static const TypeIndex::Value Type = TypeIndex::RectangleGeometry;
 };

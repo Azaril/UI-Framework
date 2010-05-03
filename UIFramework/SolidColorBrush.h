@@ -7,8 +7,7 @@ class CSolidColorBrush : public CBrush
     public:
         DECLARE_FACTORY( CSolidColorBrush );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::SolidColorBrush; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::SolidColorBrush || CBrush::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::SolidColorBrush, CBrush );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
@@ -26,4 +25,10 @@ class CSolidColorBrush : public CBrush
         HRESULT InternalSetColor( ColorF Color );
 
         ColorF m_Color;
+};
+
+template< >
+struct ObjectTypeTraits< CSolidColorBrush >
+{
+    static const TypeIndex::Value Type = TypeIndex::SolidColorBrush;
 };

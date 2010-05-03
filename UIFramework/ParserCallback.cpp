@@ -218,6 +218,7 @@ CParseContext::CParseContext() : m_ClassResolver(NULL),
 CParseContext::~CParseContext()
 {
     ReleaseObject(m_ClassResolver);
+    ReleaseObject(m_TypeConverter);
 }
 
 HRESULT CParseContext::Initialize(CClassResolver* pClassResolver, CTypeConverter* pTypeConverter)

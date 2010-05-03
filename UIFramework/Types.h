@@ -1,8 +1,18 @@
 #pragma once
 
-#include <float.h>
-
 #if _WINDOWS
+
+#include <stdlib.h>
+
+#include <crtdbg.h>
+
+#ifdef _DEBUG
+
+#include "Signals.h"
+
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+
+#endif
 
 #include <windows.h>
 #include <D2D1.h>
@@ -28,9 +38,6 @@ typedef INT32 HRESULT;
 
 #endif
 
-inline bool IsPositiveInfinity(double Val)
-{
-    return _fpclass(Val) == _FPCLASS_PINF;
-}
+#include <float.h>
 
 struct Nothing;

@@ -6,8 +6,13 @@
 class CBitmapSource : public CRefCountedObjectBase< CObjectWithType >
 {
     public:
-        virtual TypeIndex::Value GetType() { return TypeIndex::BitmapSource; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::BitmapSource || CObjectWithType::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::BitmapSource, CObjectWithType );
 
         virtual HRESULT GetSize( SizeU* pSize ) = 0;
+};
+
+template< >
+struct ObjectTypeTraits< CBitmapSource >
+{
+    static const TypeIndex::Value Type = TypeIndex::BitmapSource;
 };

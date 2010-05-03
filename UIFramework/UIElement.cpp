@@ -2,6 +2,7 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 #include "DelegatingPropertyInformation.h"
+#include "MouseInput.h"
 
 CStaticProperty UIElementProperties[] = 
 {
@@ -28,7 +29,20 @@ namespace UIElementPropertyIndex
     };
 }
 
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseDownEvent;
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseButtonEvent;
+
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseDownEvent;
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseUpEvent;
+
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseLeftButtonDownEvent;
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseRightButtonDownEvent;
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseMiddleButtonDownEvent;
+
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseLeftButtonUpEvent;
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseRightButtonUpEvent;
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseMiddleButtonUpEvent;
+
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseMoveEvent;
 
 CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
@@ -57,7 +71,25 @@ CUIElement::CUIElement() : m_Attached(FALSE),
 
 CUIElement::~CUIElement()
 {
+    m_MouseButtonConnection.disconnect();
+    m_MouseDownConnection.disconnect();
+    m_MouseUpConnection.disconnect();
+    m_MouseLeftButtonDownConnection.disconnect();
+    m_MouseRightButtonDownConnection.disconnect();
+    m_MouseMiddleButtonDownConnection.disconnect();
+    m_MouseLeftButtonUpConnection.disconnect();
+    m_MouseRightButtonUpConnection.disconnect();
+    m_MouseMiddleButtonUpConnection.disconnect();
+    m_MouseMoveConnection.disconnect();
+
     ReleaseObject(m_PropertyInformation);
+
+    for(std::vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
+    {
+        (*It)->Release();
+    }
+
+    m_EventHandlers.clear();
 }
 
 HRESULT CUIElement::Initialize()
@@ -65,6 +97,21 @@ HRESULT CUIElement::Initialize()
     HRESULT hr = S_OK;
 
     IFC(CVisual::Initialize());
+
+    IFC(AddHandler(&MouseButtonEvent, boost::bind(&CUIElement::OnMouseButton, this, _1, _2), &m_MouseButtonConnection));
+
+    IFC(AddHandler(&MouseDownEvent, boost::bind(&CUIElement::OnMouseDown, this, _1, _2), &m_MouseDownConnection));
+    IFC(AddHandler(&MouseUpEvent, boost::bind(&CUIElement::OnMouseUp, this, _1, _2), &m_MouseUpConnection));
+
+    IFC(AddHandler(&MouseLeftButtonDownEvent, boost::bind(&CUIElement::OnMouseLeftButtonDown, this, _1, _2), &m_MouseLeftButtonDownConnection));
+    IFC(AddHandler(&MouseRightButtonDownEvent, boost::bind(&CUIElement::OnMouseRightButtonDown, this, _1, _2), &m_MouseRightButtonDownConnection));
+    IFC(AddHandler(&MouseMiddleButtonDownEvent, boost::bind(&CUIElement::OnMouseMiddleButtonDown, this, _1, _2), &m_MouseMiddleButtonDownConnection));
+
+    IFC(AddHandler(&MouseRightButtonUpEvent, boost::bind(&CUIElement::OnMouseRightButtonUp, this, _1, _2), &m_MouseRightButtonUpConnection));
+    IFC(AddHandler(&MouseLeftButtonUpEvent, boost::bind(&CUIElement::OnMouseLeftButtonUp, this, _1, _2), &m_MouseLeftButtonUpConnection));
+    IFC(AddHandler(&MouseMiddleButtonUpEvent, boost::bind(&CUIElement::OnMouseMiddleButtonUp, this, _1, _2), &m_MouseMiddleButtonUpConnection));
+
+    IFC(AddHandler(&MouseMoveEvent, boost::bind(&CUIElement::OnMouseMove, this, _1, _2), &m_MouseMoveConnection));
     
 Cleanup:
     return hr;
@@ -139,6 +186,8 @@ HRESULT CUIElement::OnDetach(CUIDetachContext& Context)
     IFCEXPECT(IsAttached());
 
     m_Attached = FALSE;
+
+    m_Context.Reset();
     
 Cleanup:
     return hr;
@@ -533,7 +582,7 @@ HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     }
     else
     {
-        IFC(E_FAIL);
+        IFC(CVisual::SetValue(pProperty, pValue));
     }
 
 Cleanup:
@@ -596,7 +645,7 @@ HRESULT CUIElement::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     }
     else
     {
-        IFC(E_FAIL);
+        IFC(CVisual::GetValue(pProperty, ppValue));
     }
 
 Cleanup:
@@ -729,6 +778,18 @@ HRESULT CUIElement::InternalRaiseEvent(CRoutedEventArgs* pRoutedEventArgs)
 
     IFCPTR(pRoutedEventArgs);
 
+    for(std::vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
+    {
+        CEventHandlerChain* pCurrentChain = (*It);
+
+        if(pCurrentChain->GetRoutedEvent() == pRoutedEventArgs->GetRoutedEvent())
+        {
+            IFC(pCurrentChain->RaiseEvent(this, pRoutedEventArgs));
+
+            break;
+        }
+    }
+
 Cleanup:
     return hr;
 }
@@ -751,6 +812,359 @@ HRESULT CUIElement::InternalRaiseBubbledEvent(CRoutedEventArgs* pRoutedEventArgs
             IFC(pParent->InternalRaiseBubbledEvent(pRoutedEventArgs));
         }
     }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::AddHandler(CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, connection* pConnection)
+{
+    HRESULT hr = S_OK;
+    CEventHandlerChain* pHandlerChain = NULL;
+
+    IFCPTR(pRoutedEvent);
+    IFCPTR(pConnection);
+
+    for(std::vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
+    {
+        CEventHandlerChain* pCurrentChain = (*It);
+
+        if(pCurrentChain->GetRoutedEvent() == pRoutedEvent)
+        {
+            pHandlerChain = (*It);
+            break;
+        }
+    }
+
+    if(pHandlerChain == NULL)
+    {
+        IFC(CEventHandlerChain::Create(pRoutedEvent, &pHandlerChain));
+
+        m_EventHandlers.push_back(pHandlerChain);
+    }
+
+    IFC(pHandlerChain->AddHandler(Handler, pConnection));
+
+Cleanup:
+
+    return hr;
+}
+
+void CUIElement::OnMouseButton(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+    CMouseButtonEventArgs* pMouseButtonEventArgs = NULL;
+    CMouseButtonEventArgs* pNewEventArgs = NULL;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+    IFCEXPECT(pRoutedEventArgs->IsTypeOf(TypeIndex::MouseButtonEventArgs));
+
+    pMouseButtonEventArgs = (CMouseButtonEventArgs*)pRoutedEventArgs;
+
+    if(!pMouseButtonEventArgs->IsHandled())
+    {
+        switch(pMouseButtonEventArgs->GetButtonState())
+        {
+            case MouseButtonState::Down:
+                {
+                    IFC(CMouseButtonEventArgs::Create(&MouseDownEvent, pMouseButtonEventArgs, &pNewEventArgs));
+
+                    IFC(RaiseEvent(pNewEventArgs));
+
+                    if(pNewEventArgs->IsHandled())
+                    {
+                        pMouseButtonEventArgs->SetHandled();
+                    }
+
+                    break;
+                }
+
+            case MouseButtonState::Up:
+                {
+                    IFC(CMouseButtonEventArgs::Create(&MouseUpEvent, pMouseButtonEventArgs, &pNewEventArgs));
+
+                    IFC(RaiseEvent(pNewEventArgs));
+
+                    if(pNewEventArgs->IsHandled())
+                    {
+                        pMouseButtonEventArgs->SetHandled();
+                    }
+
+                    break;
+                }
+        }
+    }
+
+Cleanup:
+    ReleaseObject(pNewEventArgs);
+    ;
+}
+
+void CUIElement::OnMouseDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+    CMouseButtonEventArgs* pMouseButtonEventArgs = NULL;
+    CMouseButtonEventArgs* pNewEventArgs = NULL;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+    IFCEXPECT(pRoutedEventArgs->IsTypeOf(TypeIndex::MouseButtonEventArgs));
+
+    pMouseButtonEventArgs = (CMouseButtonEventArgs*)pRoutedEventArgs;
+
+    if(!pMouseButtonEventArgs->IsHandled())
+    {
+        switch(pMouseButtonEventArgs->GetChangedButton())
+        {
+            case MouseButton::Left:
+                {
+                    IFC(CMouseButtonEventArgs::Create(&MouseLeftButtonDownEvent, pMouseButtonEventArgs, &pNewEventArgs));
+
+                    IFC(RaiseEvent(pNewEventArgs));
+
+                    if(pNewEventArgs->IsHandled())
+                    {
+                        pMouseButtonEventArgs->SetHandled();
+                    }
+
+                    break;
+                }
+
+            case MouseButton::Right:
+                {
+                    IFC(CMouseButtonEventArgs::Create(&MouseRightButtonDownEvent, pMouseButtonEventArgs, &pNewEventArgs));
+
+                    IFC(RaiseEvent(pNewEventArgs));
+
+                    if(pNewEventArgs->IsHandled())
+                    {
+                        pMouseButtonEventArgs->SetHandled();
+                    }
+
+                    break;
+                }
+
+            case MouseButton::Middle:
+                {
+                    IFC(CMouseButtonEventArgs::Create(&MouseMiddleButtonDownEvent, pMouseButtonEventArgs, &pNewEventArgs));
+
+                    IFC(RaiseEvent(pNewEventArgs));
+
+                    if(pNewEventArgs->IsHandled())
+                    {
+                        pMouseButtonEventArgs->SetHandled();
+                    }
+
+                    break;
+                }
+        }
+    }
+
+Cleanup:
+    ReleaseObject(pNewEventArgs);
+    ;
+}
+
+
+
+void CUIElement::OnMouseUp(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+    CMouseButtonEventArgs* pMouseButtonEventArgs = NULL;
+    CMouseButtonEventArgs* pNewEventArgs = NULL;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+    IFCEXPECT(pRoutedEventArgs->IsTypeOf(TypeIndex::MouseButtonEventArgs));
+
+    pMouseButtonEventArgs = (CMouseButtonEventArgs*)pRoutedEventArgs;
+
+    if(!pMouseButtonEventArgs->IsHandled())
+    {
+        switch(pMouseButtonEventArgs->GetChangedButton())
+        {
+            case MouseButton::Left:
+                {
+                    IFC(CMouseButtonEventArgs::Create(&MouseLeftButtonUpEvent, pMouseButtonEventArgs, &pNewEventArgs));
+
+                    IFC(RaiseEvent(pNewEventArgs));
+
+                    if(pNewEventArgs->IsHandled())
+                    {
+                        pMouseButtonEventArgs->SetHandled();
+                    }
+
+                    break;
+                }
+
+            case MouseButton::Right:
+                {
+                    IFC(CMouseButtonEventArgs::Create(&MouseRightButtonUpEvent, pMouseButtonEventArgs, &pNewEventArgs));
+
+                    IFC(RaiseEvent(pNewEventArgs));
+
+                    if(pNewEventArgs->IsHandled())
+                    {
+                        pMouseButtonEventArgs->SetHandled();
+                    }
+
+                    break;
+                }
+
+            case MouseButton::Middle:
+                {
+                    IFC(CMouseButtonEventArgs::Create(&MouseMiddleButtonUpEvent, pMouseButtonEventArgs, &pNewEventArgs));
+
+                    IFC(RaiseEvent(pNewEventArgs));
+
+                    if(pNewEventArgs->IsHandled())
+                    {
+                        pMouseButtonEventArgs->SetHandled();
+                    }
+
+                    break;
+                }
+        }
+    }
+
+Cleanup:
+    ReleaseObject(pNewEventArgs);
+    ;
+}
+
+void CUIElement::OnMouseLeftButtonDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+Cleanup:
+    ;
+}
+
+void CUIElement::OnMouseRightButtonDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+Cleanup:
+    ;
+}
+
+void CUIElement::OnMouseMiddleButtonDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+Cleanup:
+    ;
+}
+
+void CUIElement::OnMouseLeftButtonUp(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+Cleanup:
+    ;
+}
+
+void CUIElement::OnMouseRightButtonUp(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+Cleanup:
+    ;
+}
+
+void CUIElement::OnMouseMiddleButtonUp(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+Cleanup:
+    ;
+}
+
+void CUIElement::OnMouseMove(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+Cleanup:
+    ;
+}
+
+CEventHandlerChain::CEventHandlerChain() : m_RoutedEvent(NULL)
+{
+}
+
+CEventHandlerChain::~CEventHandlerChain()
+{
+    ReleaseObject(m_RoutedEvent);
+}
+
+HRESULT CEventHandlerChain::Initialize(CRoutedEvent* pRoutedEvent)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pRoutedEvent);
+
+    m_RoutedEvent = pRoutedEvent;
+    AddRefObject(m_RoutedEvent);
+
+Cleanup:
+    return hr;
+}
+
+CRoutedEvent* CEventHandlerChain::GetRoutedEvent()
+{
+    return m_RoutedEvent;
+}
+
+HRESULT CEventHandlerChain::AddHandler(const RoutedEventHandler& Handler, connection* pConnection)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pConnection);
+
+    *pConnection = m_Handlers.connect(Handler);
+
+Cleanup:
+    return hr;
+}
+
+BOOL CEventHandlerChain::HasHandlers()
+{
+    return !m_Handlers.empty();
+}
+
+HRESULT CEventHandlerChain::RaiseEvent(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+    m_Handlers(pSender, pRoutedEventArgs);
 
 Cleanup:
     return hr;

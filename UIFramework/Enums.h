@@ -10,6 +10,15 @@ namespace MouseButton
     };
 }
 
+namespace MouseButtonState
+{
+    enum Value
+    {
+        Up,
+        Down
+    };
+};
+
 namespace Visibility
 {
     enum Value

@@ -42,8 +42,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DXSDK_DIR)\Include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="&quot;$(DXSDK_DIR)\Include&quot;;&quot;$(ProjectDir)\External\boost&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRTDBG_MAP_ALLOC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -118,7 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(DXSDK_DIR)\Include&quot;"
+				AdditionalIncludeDirectories="&quot;$(DXSDK_DIR)\Include&quot;;&quot;$(ProjectDir)\External\boost&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -215,6 +215,14 @@
 				</File>
 				<File
 					RelativePath=".\RefCounted.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Signals.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Signals.h"
 					>
 				</File>
 				<File
@@ -414,59 +422,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\HitTesting.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\HitTesting.h"
-					>
-				</File>
-				<File
-					RelativePath=".\HitTestResult.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\HitTestResult.h"
-					>
-				</File>
-				<File
-					RelativePath=".\MouseInput.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\MouseInput.h"
-					>
-				</File>
-				<File
 					RelativePath=".\RenderContext.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\RenderContext.h"
-					>
-				</File>
-				<File
-					RelativePath=".\RoutedEvent.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\RoutedEvent.h"
-					>
-				</File>
-				<File
-					RelativePath=".\RoutedEventArgs.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\RoutedEventArgs.h"
-					>
-				</File>
-				<File
-					RelativePath=".\StaticRoutedEvent.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\StaticRoutedEvent.h"
 					>
 				</File>
 				<File
@@ -710,6 +670,94 @@
 					</File>
 					<File
 						RelativePath=".\SolidColorBrush.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Input"
+					>
+					<File
+						RelativePath=".\InputEventArgs.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\InputEventArgs.h"
+						>
+					</File>
+					<File
+						RelativePath=".\MouseInput.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\MouseInput.h"
+						>
+					</File>
+					<File
+						RelativePath=".\MouseInputEventArgs.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\MouseInputEventArgs.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Events"
+					>
+					<File
+						RelativePath=".\RoutedEvent.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\RoutedEvent.h"
+						>
+					</File>
+					<File
+						RelativePath=".\RoutedEventArgs.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\RoutedEventArgs.h"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticRoutedEvent.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticRoutedEvent.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Hit Testing"
+					>
+					<File
+						RelativePath=".\HitTesting.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\HitTesting.h"
+						>
+					</File>
+					<File
+						RelativePath=".\HitTestResult.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\HitTestResult.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Namescope"
+					>
+					<File
+						RelativePath=".\Namescope.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Namescope.h"
 						>
 					</File>
 				</Filter>

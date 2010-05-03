@@ -16,8 +16,7 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
     typedef std::vector< CVisualResource* > VisualResourceCollection;
 
     public:
-        virtual TypeIndex::Value GetType() { return TypeIndex::Visual; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Visual || CObjectWithType::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Visual, CObjectWithType );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
@@ -64,4 +63,10 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
         Matrix3X2 m_VisualTransform;
         Matrix3X2 m_FinalLocalTransform;
         BOOL m_VisualAttached;
+};
+
+template< >
+struct ObjectTypeTraits< CVisual >
+{
+    static const TypeIndex::Value Type = TypeIndex::Visual;
 };

@@ -14,7 +14,8 @@ class CUIHost : public CRefCountedObject
 
         HRESULT Render();
 
-        HRESULT InjectMouseDown( MouseButton::Value Button, Point2F Point );
+        HRESULT InjectMouseButton( MouseButton::Value Button, MouseButtonState::Value State, Point2F Point );
+        HRESULT InjectMouseMove( Point2F Point );
 
     protected:
         CUIHost();

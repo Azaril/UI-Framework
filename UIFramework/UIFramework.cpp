@@ -19,6 +19,7 @@
 
 #include <d2d1helper.h>
 #include <Windowsx.h>
+#include <strsafe.h>
 
 #define MAX_LOADSTRING 100
 
@@ -35,6 +36,19 @@ LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 CD2DHWNDRenderTarget* g_RenderTarget = NULL;
 CUIHost* g_UIHost = NULL;
 
+void OnImageLeftMouseDown(CObjectWithType* pObject, CRoutedEventArgs* pArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pObject);
+    IFCPTR(pArgs);
+
+    pArgs->SetHandled();
+
+Cleanup:
+    ;
+}
+
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
     HRESULT hr = S_OK;
@@ -42,23 +56,30 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     MSG msg = { 0 };
 	HACCEL hAccelTable = NULL;
     CGraphicsDevice* pGraphicsDevice = NULL;
-    CImagingProvider* pImagingProvider = NULL;
     CRenderTarget* pRenderTarget = NULL;
     CUIHost* pUIHost = NULL;
-    CRootUIElement* pRootElement = NULL;
-    CCanvas* pCanvas = NULL;
-    CStackPanel* pStackPanel = NULL;
-    CStackPanel* pChildStackPanel = NULL;
-    CGraphicsBrush* pWhiteSolidBrush = NULL;
-    CGraphicsBrush* pBlueSolidBrush = NULL;
-    CGraphicsBrush* pRedSolidBrush = NULL;
-    CBitmapSource* pBitmapSource = NULL;
-    CBorder* pRootBorder = NULL;    
+    CRootUIElement* pRootElement = NULL; 
     CUIElement* pParsedRoot = NULL;
-
     CParser* pParser = NULL;
     CStaticClassResolver* pStaticClassResolver = NULL;
     CTypeConverter* pTypeConverter = NULL;
+    CTextBlock* pTextBlock1 = NULL;
+    CImage* pImage1 = NULL;
+    connection ImageLeftButtonDownConnection;
+
+#ifdef _DEBUG
+    // Get current flag
+    int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+
+    // Turn on leak-checking bit.
+    tmpFlag |= _CRTDBG_LEAK_CHECK_DF;
+
+    //// Turn off CRT block checking bit.
+    //tmpFlag &= ~_CRTDBG_CHECK_CRT_DF;
+
+    // Set flag to the new value.
+    _CrtSetDbgFlag( tmpFlag );
+#endif
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -91,10 +112,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     IFC(pGraphicsDevice->CreateHWNDRenderTarget(hWnd, &pRenderTarget));
 
-    IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::White), &pWhiteSolidBrush));
-    IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::AliceBlue), &pBlueSolidBrush));
-    IFC(pRenderTarget->CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::Red), &pRedSolidBrush));
-
     g_RenderTarget = (CD2DHWNDRenderTarget*)pRenderTarget;
 
     IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, &pUIHost));
@@ -105,74 +122,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     IFC(pRootElement->SetChild(pParsedRoot));
 
-    //IFC(CBorder::Create(&pRootBorder));
-    //IFC(pRootBorder->SetBackgroundBrush(pWhiteSolidBrush));
-    //IFC(pRootElement->SetChild(pRootBorder));
+    IFC(pRootElement->FindName(L"TextBlock1", &pTextBlock1));
 
-    //IFC(CCanvas::Create(&pCanvas));
+    IFC(pRootElement->FindName(L"Image1", &pImage1));
 
-    //IFC(CStackPanel::Create(&pStackPanel));
-    //IFC(pStackPanel->SetOrientation(Orientation::Vertical));    
-
-    //IFC(pRootBorder->SetChild(pStackPanel));
-
-    //IFC(pGraphicsDevice->GetImagingProvider(&pImagingProvider));
-
-    //IFC(pImagingProvider->LoadBitmapFromFile(L"C:\\3.png", &pBitmapSource));
-
-    ////IFC(pRootElement->SetBackground(pBlueSolidBrush));
-
-    //for(unsigned int j = 0; j < 10; j++)
-    //{
-    //    IFC(CStackPanel::Create(&pChildStackPanel));
-
-    //    IFC(pChildStackPanel->SetOrientation(Orientation::Horizontal));
-
-    //    IFC(pStackPanel->AddChild(pChildStackPanel));
-
-    //    for(unsigned int i = 0; i < 10; i++)
-    //    {
-    //        CTextBlock* pTextBlock = NULL;
-    //        CBorder* pBorder = NULL;
-    //        CImage* pImage = NULL;
-
-    //        SizeF Size = { 20, 20 };
-    //        Point2F Position = { 20.0f * i, 20.0f * i };
-    //        RectF Border = { 4, 4, 4, 4 };
-
-    //        IFC(CBorder::Create(&pBorder));
-    //        IFC(CTextBlock::Create(&pTextBlock));
-    //        IFC(CImage::Create(&pImage));
-
-    //        //IFC(pBorder->SetSize(Size));
-    //        //IFC(pBorder->SetBackgroundBrush(pBlueSolidBrush));
-    //        
-    //        IFC(pBorder->SetBorderThickness(Border));
-    //        IFC(pBorder->SetBorderBrush(pRedSolidBrush));
-    //        IFC(pBorder->SetPadding(Border));
-
-    //        //IFC(pTextBlock->SetSize(Size));
-    //        //IFC(pTextBlock->SetBackground(pRedSolidBrush));
-
-    //        //IFC(pBorder->SetChild(pTextBlock));
-    //        IFC(pBorder->SetChild(pImage));
-
-    //        //IFC(pCanvas->SetChildPosition(pTextBlock, Position));
-
-    //        IFC(pTextBlock->SetText(L"Testing!"));
-
-    //        IFC(pImage->SetSource(pBitmapSource));
-
-    //        IFC(pChildStackPanel->AddChild(pBorder));
-    //        //IFC(pChildStackPanel->AddChild(pImage));
-    //        IFC(pChildStackPanel->AddChild(pTextBlock));
-
-    //        ReleaseObject(pTextBlock);
-    //        ReleaseObject(pBorder);
-    //    }
-
-    //    ReleaseObject(pChildStackPanel);
-    //}
+    if(pImage1)
+    {
+        pImage1->AddHandler(&CUIElement::MouseLeftButtonDownEvent, bind(&OnImageLeftMouseDown, _1, _2), &ImageLeftButtonDownConnection);
+    }
 
     //
     // Message pump
@@ -186,23 +143,25 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
         }
         else
         {
+            WCHAR TextBuffer[1024];
+
+            IFC(StringCchPrintf(TextBuffer, ARRAYSIZE(TextBuffer), L"%u", GetTickCount()));
+
+            IFC(pTextBlock1->SetText(TextBuffer));
+
             IFC(pUIHost->Render());
         }
     } while(msg.message != WM_QUIT);
 
 
 Cleanup:
+    ReleaseObject(pTextBlock1);
+    ReleaseObject(pImage1);
     ReleaseObject(pParsedRoot);
-    ReleaseObject(pWhiteSolidBrush);
-    ReleaseObject(pBlueSolidBrush);
-    ReleaseObject(pRedSolidBrush);
     ReleaseObject(pRootElement);
-    ReleaseObject(pRootBorder);
     ReleaseObject(pUIHost);
     ReleaseObject(pRenderTarget);
-    ReleaseObject(pImagingProvider);
     ReleaseObject(pGraphicsDevice);
-    ReleaseObject(pBitmapSource);
     ReleaseObject(pStaticClassResolver);
     ReleaseObject(pTypeConverter);
     ReleaseObject(pParser);
@@ -306,11 +265,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
 
+    case WM_MOUSEMOVE:
+        {
+            Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+
+            g_UIHost->InjectMouseMove(Point);
+
+            break;
+        }
+
     case WM_LBUTTONDOWN:
         {
             Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
 
-            g_UIHost->InjectMouseDown(MouseButton::Left, Point);
+            g_UIHost->InjectMouseButton(MouseButton::Left, MouseButtonState::Down, Point);
+
+            break;
+        }
+
+    case WM_LBUTTONUP:
+        {
+            Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+
+            g_UIHost->InjectMouseButton(MouseButton::Left, MouseButtonState::Up, Point);
 
             break;
         }

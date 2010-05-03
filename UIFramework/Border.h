@@ -8,8 +8,7 @@ class CBorder : public CDecorator
     public:
         DECLARE_FACTORY( CBorder );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::Border; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Border || CDecorator::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Border, CDecorator );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
 
@@ -51,4 +50,10 @@ class CBorder : public CDecorator
         BOOL m_GeometryDirty;
 
         RectF m_Padding;
+};
+
+template< >
+struct ObjectTypeTraits< CBorder >
+{
+    static const TypeIndex::Value Type = TypeIndex::Border;
 };

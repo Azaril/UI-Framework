@@ -67,8 +67,7 @@ class CImageBrush : public CBrush
     public:
         DECLARE_FACTORY( CImageBrush );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::ImageBrush; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::ImageBrush || CBrush::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::ImageBrush, CBrush );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
@@ -97,4 +96,10 @@ class CImageBrush : public CBrush
 
         CObjectWithType* m_Source;
         ContextCollection m_Contexts;
+};
+
+template< >
+struct ObjectTypeTraits< CImageBrush >
+{
+    static const TypeIndex::Value Type = TypeIndex::ImageBrush;
 };

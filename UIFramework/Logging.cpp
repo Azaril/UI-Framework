@@ -1,5 +1,5 @@
-#include "StdAfx.h"
 #include "Logging.h"
+#include <atlstr.h>
 
 VOID InternalDebugOutCallbackA(LPCSTR strText)
 {

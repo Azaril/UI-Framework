@@ -8,8 +8,7 @@ class CTextBlock : public CFrameworkElement
     public:
         DECLARE_FACTORY( CTextBlock );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::TextBlock; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::TextBlock || CFrameworkElement::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::TextBlock, CFrameworkElement );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
 
@@ -33,4 +32,10 @@ class CTextBlock : public CFrameworkElement
         CTextLayout* m_TextLayout;
         CBrush* m_TextBrush;
         CGraphicsBrush* m_TextGraphicsBrush;
+};
+
+template< >
+struct ObjectTypeTraits< CTextBlock >
+{
+    static const TypeIndex::Value Type = TypeIndex::TextBlock;
 };

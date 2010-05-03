@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Types.h"
+
 //#include "PublicUtilities.h"
 
 #define LOGGING_TRACE       4
@@ -27,21 +29,21 @@
 //#include "Common.h"
 //#include "LoggingMacros.h"
 
-typedef VOID (*DebugOutCallbackFuncA)(LPCSTR strOutput);
-typedef VOID (*DebugOutCallbackFuncW)(LPCWSTR strOutput);
+typedef void (*DebugOutCallbackFuncA)(const char* strOutput);
+typedef void (*DebugOutCallbackFuncW)(const wchar_t* strOutput);
 
-VOID SetDebugOutCallback(DebugOutCallbackFuncA Func);
-VOID SetDebugOutCallback(DebugOutCallbackFuncW Func);
+void SetDebugOutCallback(DebugOutCallbackFuncA Func);
+void SetDebugOutCallback(DebugOutCallbackFuncW Func);
 
-VOID InternalDebugOut(LPCSTR strText);
-VOID InternalDebugOut(LPCWSTR strText);
+void InternalDebugOut(const char* strText);
+void InternalDebugOut(const wchar_t* strText);
 
 DebugOutCallbackFuncA GetDebugOutCallbackA();
 DebugOutCallbackFuncW GetDebugOutCallbackW();
 
-VOID DebugOut(LPCSTR pFormat, ...);
-VOID DebugOut(LPCWSTR pFormat, ...);
-VOID ZoneOut(LPCSTR pZone, LPCSTR pFormat, ...);
-VOID ZoneOut(LPCWSTR pZone, LPCWSTR pFormat, ...);
-VOID ZoneLevelOut(DWORD Level, LPCSTR pZone, LPCSTR pFormat, ...);
-VOID ZoneLevelOut(DWORD Level, LPCWSTR pZone, LPCWSTR pFormat, ...);
+void DebugOut(const char* pFormat, ...);
+void DebugOut(const wchar_t* pFormat, ...);
+void ZoneOut(const char* pZone, const char* pFormat, ...);
+void ZoneOut(const wchar_t* pZone, const wchar_t* pFormat, ...);
+void ZoneLevelOut(UINT32 Level, const char* pZone, const char* pFormat, ...);
+void ZoneLevelOut(UINT32 Level, const wchar_t* pZone, const wchar_t* pFormat, ...);

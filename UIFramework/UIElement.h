@@ -8,6 +8,8 @@
 #include "Enums.h"
 #include "RoutedEventArgs.h"
 #include "StaticRoutedEvent.h"
+#include "Signals.h"
+#include "Namescope.h"
 
 class CUIElement;
 
@@ -25,6 +27,11 @@ class CUIAttachContext
         CUIElement* GetParent()
         {
             return m_Parent;
+        }
+
+        void Reset()
+        {
+            m_Parent = NULL;
         }
     
     protected:
@@ -45,6 +52,11 @@ class CUIDetachContext
         CUIElement* GetParent()
         {
             return m_Parent;
+        }
+
+        void Reset()
+        {
+            m_Parent = NULL;
         }
         
     protected:
@@ -87,13 +99,38 @@ class CParameterlessUINotification : public CUINotification
 typedef CParameterlessUINotification< UINotification::ChildMeasureInvalidated > CChildMeasureInvalidatedNotification;
 typedef CParameterlessUINotification< UINotification::ChildArrangeInvalidated > CChildArrangeInvalidatedNotification;
 
+typedef signal< void ( CObjectWithType*, CRoutedEventArgs* ) > RoutedEventSignal;
+typedef RoutedEventSignal::slot_type RoutedEventHandler;
+
+class CEventHandlerChain : public CRefCountedObject
+{
+    public:
+        DECLARE_FACTORY1( CEventHandlerChain, CRoutedEvent* );
+
+        CRoutedEvent* GetRoutedEvent();
+
+        HRESULT AddHandler( const RoutedEventHandler& Handler, connection* pConnection );
+
+        BOOL HasHandlers();
+
+        HRESULT RaiseEvent( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+
+    protected:
+        CEventHandlerChain();
+        virtual ~CEventHandlerChain();
+
+        HRESULT Initialize( CRoutedEvent* pRoutedEvent );
+
+        CRoutedEvent* m_RoutedEvent;
+        signal< void ( CObjectWithType*, CRoutedEventArgs* ) > m_Handlers;
+};
+
 class CUIElement : public CVisual
 {
     public:
         DELEGATE_REFCOUNTING( CVisual );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::UIElement; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::UIElement || CVisual::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::UIElement, CVisual );
 
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );
@@ -125,7 +162,23 @@ class CUIElement : public CVisual
 
         virtual HRESULT RaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
 
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseDownEvent;
+        virtual HRESULT AddHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, connection* pConnection );
+        /*virtual HRESULT RemoveHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler );*/
+
+        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseButtonEvent;
+
+        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseDownEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseUpEvent;
+
+        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseLeftButtonDownEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseRightButtonDownEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseMiddleButtonDownEvent;
+
+        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseLeftButtonUpEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseRightButtonUpEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseMiddleButtonUpEvent;
+
+        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseMoveEvent;
     
     protected:
         CUIElement();
@@ -163,9 +216,23 @@ class CUIElement : public CVisual
 
         HRESULT InternalSetMaximumWidth( FLOAT Width );
         HRESULT InternalSetMaximumHeight( FLOAT Height );
+
+        virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+
+        virtual void OnMouseDown( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+        virtual void OnMouseUp( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+
+        virtual void OnMouseLeftButtonDown( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+        virtual void OnMouseRightButtonDown( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+        virtual void OnMouseMiddleButtonDown( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+
+        virtual void OnMouseLeftButtonUp( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+        virtual void OnMouseRightButtonUp( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+        virtual void OnMouseMiddleButtonUp( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+
+        virtual void OnMouseMove( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
    
         BOOL m_Attached;
-        CUIAttachContext m_Context;
 
         SizeF m_Size;
         SizeF m_MinimumSize;
@@ -182,6 +249,21 @@ class CUIElement : public CVisual
         SizeF m_LastMeasureSize;
         SizeF m_DesiredSize;
         SizeF m_FinalSize;
+
+        CUIAttachContext m_Context;
+
+        std::vector< CEventHandlerChain* > m_EventHandlers;
+
+        connection m_MouseButtonConnection;
+        connection m_MouseDownConnection;
+        connection m_MouseUpConnection;
+        connection m_MouseLeftButtonDownConnection;
+        connection m_MouseRightButtonDownConnection;
+        connection m_MouseMiddleButtonDownConnection;
+        connection m_MouseLeftButtonUpConnection;
+        connection m_MouseRightButtonUpConnection;
+        connection m_MouseMiddleButtonUpConnection;
+        connection m_MouseMoveConnection;
 };
 
 template< >

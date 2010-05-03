@@ -14,6 +14,8 @@ class CRootUIElement : public CFrameworkElement,
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
 
+        virtual CNamescope* GetNamescope();
+
     protected:
         CRootUIElement();
         virtual ~CRootUIElement();
@@ -27,4 +29,5 @@ class CRootUIElement : public CFrameworkElement,
         virtual HRESULT ArrangeInternal( SizeF Size );
 
         CUIElement* m_Child;
+        CNamescope* m_Namescope;
 };

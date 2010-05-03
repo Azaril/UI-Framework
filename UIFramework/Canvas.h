@@ -29,8 +29,7 @@ class CCanvas : public CPanel
     public:
         DECLARE_FACTORY( CCanvas );
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::Canvas; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Canvas || CPanel::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Canvas, CPanel );
 
         virtual HRESULT AddChild( CUIElement* pElement );
         virtual HRESULT RemoveChild( CUIElement* pElement );
@@ -53,4 +52,10 @@ class CCanvas : public CPanel
         //virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         LayoutInformationCollection m_LayoutInformation;
+};
+
+template< >
+struct ObjectTypeTraits< CCanvas >
+{
+    static const TypeIndex::Value Type = TypeIndex::Canvas;
 };
