@@ -383,3 +383,34 @@ HRESULT CBorder::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 Cleanup:
     return hr;
 }
+
+HRESULT CBorder::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    // Check if the property is a static property.
+    if(pProperty >= BorderProperties && pProperty < BorderProperties + ARRAYSIZE(BorderProperties))
+    {
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        UINT32 Index = (pStaticProperty - BorderProperties);
+        
+        switch(Index)
+        {
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
+    }
+    else
+    {
+        IFC(CDecorator::GetValue(pProperty, ppValue));
+    }
+
+Cleanup:
+    return hr;
+}

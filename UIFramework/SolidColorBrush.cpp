@@ -41,10 +41,13 @@ HRESULT CSolidColorBrush::InternalSetColor(ColorF Color)
 
     m_Color = Color;
 
+    IFC(InvalidateBrush());
+
+Cleanup:
     return hr;
 }
 
-HRESULT CSolidColorBrush::GetGraphicsBrush( CGraphicsDevice* pDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush )
+HRESULT CSolidColorBrush::GetGraphicsBrush(CGraphicsDevice* pDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush)
 {
     HRESULT hr = S_OK;
 
@@ -126,20 +129,24 @@ Cleanup:
 HRESULT CSolidColorBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
-    CColorFValue* pColorFValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Color") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= SolidColorBrushProperties && pProperty < SolidColorBrushProperties + ARRAYSIZE(SolidColorBrushProperties))
     {
-        IFC(CColorFValue::Create(m_Color, &pColorFValue));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        *ppValue = pColorFValue;
-        pColorFValue = NULL;
+        UINT32 Index = (pStaticProperty - SolidColorBrushProperties);
+        
+        switch(Index)
+        {
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {
@@ -147,7 +154,5 @@ HRESULT CSolidColorBrush::GetValue(CProperty* pProperty, CObjectWithType** ppVal
     }
 
 Cleanup:
-    ReleaseObject(pColorFValue);
-
     return hr;
 }

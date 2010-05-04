@@ -15,7 +15,8 @@ class CImage : public CFrameworkElement
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
 
-        HRESULT SetSource( CObjectWithType* pSource );
+        HRESULT SetSource( const WCHAR* pSource );
+        HRESULT SetSource( CObjectWithType* pSource);
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
 

@@ -196,7 +196,7 @@ class CUIElement : public CVisual
 
         virtual HRESULT NotifyParent( CUINotification* pNotification );
 
-        virtual HRESULT OnNotification( CUINotification* pNotification );
+        virtual HRESULT OnUINotification( CUINotification* pNotification );
 
         virtual HRESULT OnChildMeasureInvalidated( CChildMeasureInvalidatedNotification* pNotification );
         virtual HRESULT OnChildArrangeInvalidated( CChildArrangeInvalidatedNotification* pNotification );

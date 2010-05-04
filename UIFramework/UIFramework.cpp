@@ -36,12 +36,30 @@ LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 CD2DHWNDRenderTarget* g_RenderTarget = NULL;
 CUIHost* g_UIHost = NULL;
 
+const WCHAR* ImageSources[] =
+{
+    L"C:\\1.jpg",
+    L"C:\\2.jpg",
+    L"C:\\3.png"
+};
+
+UINT32 ImageSourceIndex = 0;
+
 void OnImageLeftMouseDown(CObjectWithType* pObject, CRoutedEventArgs* pArgs)
 {
     HRESULT hr = S_OK;
+    CImage* pImage = NULL;
 
     IFCPTR(pObject);
     IFCPTR(pArgs);
+
+    IFCEXPECT(pObject->IsTypeOf(TypeIndex::Image));
+
+    pImage = (CImage*)pObject;
+
+    IFC(pImage->SetSource(ImageSources[ImageSourceIndex]));
+
+    ImageSourceIndex = (ImageSourceIndex + 1) % ARRAYSIZE(ImageSources);
 
     pArgs->SetHandled();
 

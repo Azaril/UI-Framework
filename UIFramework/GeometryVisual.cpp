@@ -142,6 +142,49 @@ Cleanup:
     return hr;
 }
 
+HRESULT CGeometryVisual::OnVisualNotification(CVisualNotification* pNotification)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pNotification);
+
+    switch(pNotification->GetType())
+    {
+        case VisualNotification::ChildBrushInvalidated:
+            {
+                CBrushInvalidatedNotification* pBrushInvalidatedNotification = (CBrushInvalidatedNotification*)pNotification;
+
+                IFC(OnBrushInvalidated(pBrushInvalidatedNotification->GetBrush()));
+
+                break;
+            }
+    }
+
+    IFC(CVisual::OnVisualNotification(pNotification));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CGeometryVisual::OnBrushInvalidated(CBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pBrush);
+
+    if(pBrush == m_FillBrush)
+    {
+        ReleaseObject(m_FillGraphicsBrush);
+    }
+    else if(pBrush == m_StrokeBrush)
+    {
+        ReleaseObject(m_StrokeGraphicsBrush);
+    }
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CGeometryVisual::PreRender(CPreRenderContext& Context)
 {
     HRESULT hr = S_OK;

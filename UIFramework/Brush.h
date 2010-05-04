@@ -23,6 +23,8 @@ class CBrush : public CRefCountedObjectBase< CPropertyObject >,
         virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
         virtual HRESULT OnVisualDetach( CVisualDetachContext& Context );
 
+        HRESULT InvalidateBrush();
+
         virtual HRESULT GetGraphicsBrush( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush ) = 0;
 
     protected:
@@ -36,4 +38,21 @@ template< >
 struct ObjectTypeTraits< CBrush >
 {
     static const TypeIndex::Value Type = TypeIndex::Brush;
+};
+
+class CBrushInvalidatedNotification : public CVisualNotification
+{
+    public:
+        DECLARE_FACTORY1( CBrushInvalidatedNotification, CBrush* );
+
+        virtual VisualNotification::Value GetType();
+        CBrush* GetBrush();
+
+    protected:
+        CBrushInvalidatedNotification();
+        virtual ~CBrushInvalidatedNotification();
+
+        HRESULT Initialize( CBrush* pBrush );
+
+        CBrush* m_Brush;
 };

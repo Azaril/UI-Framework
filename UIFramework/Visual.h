@@ -35,6 +35,8 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
         virtual CVisual* GetVisualChild( UINT32 Index );
 
         virtual HRESULT TransformToParent( CTransform** ppTransform );
+
+        virtual HRESULT OnVisualNotification( CVisualNotification* pNotification );
     
     protected:
         CVisual();

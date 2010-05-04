@@ -13,6 +13,7 @@ class CBorder : public CDecorator
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** pValue );
 
         virtual HRESULT SetChild( CUIElement* pChild );
 

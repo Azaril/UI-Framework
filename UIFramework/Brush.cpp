@@ -28,12 +28,33 @@ HRESULT CBrush::OnVisualAttach(CVisualAttachContext& Context)
 {
     HRESULT hr = S_OK;
 
+    IFC(CVisualResource::OnVisualAttach(Context));
+
+Cleanup:
     return hr;
 }
 
 HRESULT CBrush::OnVisualDetach(CVisualDetachContext& Context)
 {
     HRESULT hr = S_OK;
+
+    IFC(CVisualResource::OnVisualDetach(Context));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBrush::InvalidateBrush()
+{
+    HRESULT hr = S_OK;
+    CBrushInvalidatedNotification* pNotification = NULL;
+
+    IFC(CBrushInvalidatedNotification::Create(this, &pNotification));
+
+    IFC(NotifyParents(pNotification));
+
+Cleanup:
+    ReleaseObject(pNotification);
 
     return hr;
 }
@@ -107,22 +128,61 @@ HRESULT CBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    //TODO: Ensure this property actually belongs to this object.
+    // Check if the property is a static property.
+    if(pProperty >= BrushProperties && pProperty < BrushProperties + ARRAYSIZE(BrushProperties))
+    {
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-    //TODO: Looking up other than by name would be much better.
-    //if(wcscmp(pProperty->GetName(), L"Opacity") == 0)
-    //{
-    //    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-    //    CFloatValue* pFloat = (CFloatValue*)pValue;
-
-    //    //TODO: Set opacity.
-    //}
-    //else
+        UINT32 Index = (pStaticProperty - BrushProperties);
+        
+        switch(Index)
+        {
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
+    }
+    else
     {
         IFC(CPropertyObject::GetValue(pProperty, ppValue));
     }
 
 Cleanup:
     return hr;
+}
+
+
+
+
+CBrushInvalidatedNotification::CBrushInvalidatedNotification() : m_Brush(NULL)
+{
+}
+
+CBrushInvalidatedNotification::~CBrushInvalidatedNotification()
+{
+    ReleaseObject(m_Brush);
+}
+
+HRESULT CBrushInvalidatedNotification::Initialize(CBrush* pBrush)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pBrush);
+
+    m_Brush = pBrush;
+    AddRefObject(m_Brush);
+
+Cleanup:
+    return hr;
+}
+
+VisualNotification::Value CBrushInvalidatedNotification::GetType()
+{
+    return VisualNotification::ChildBrushInvalidated;
+}
+
+CBrush* CBrushInvalidatedNotification::GetBrush()
+{
+    return m_Brush;
 }

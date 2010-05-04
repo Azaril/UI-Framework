@@ -62,16 +62,20 @@ HRESULT CVisual::OnVisualAttach(CVisualAttachContext& Context)
     m_VisualAttached = TRUE;
     m_VisualContext = Context;
 
-    for(UINT32 i = 0; i < GetVisualChildCount(); i++)
     {
-        pVisual = GetVisualChild(i);
+        CVisualAttachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
 
-        IFC(pVisual->OnVisualAttach(Context));
-    }
+        for(UINT32 i = 0; i < GetVisualChildCount(); i++)
+        {
+            pVisual = GetVisualChild(i);
 
-    for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
-    {
-        IFC((*It)->OnVisualAttach(Context));
+            IFC(pVisual->OnVisualAttach(VisualContext));
+        }
+
+        for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
+        {
+            IFC((*It)->OnVisualAttach(VisualContext));
+        }
     }
     
 Cleanup:
@@ -87,16 +91,20 @@ HRESULT CVisual::OnVisualDetach(CVisualDetachContext& Context)
 
     m_VisualAttached = FALSE;
 
-    for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
     {
-        IFC((*It)->OnVisualDetach(Context));
-    }
+        CVisualDetachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
 
-    for(UINT32 i = 0; i < GetVisualChildCount(); i++)
-    {
-        CVisual* pVisual = GetVisualChild(i);
+        for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
+        {
+            IFC((*It)->OnVisualDetach(VisualContext));
+        }
 
-        IFC(pVisual->OnVisualDetach(Context));
+        for(UINT32 i = 0; i < GetVisualChildCount(); i++)
+        {
+            CVisual* pVisual = GetVisualChild(i);
+
+            IFC(pVisual->OnVisualDetach(VisualContext));
+        }
     }
 
     m_VisualContext.Reset();
@@ -125,7 +133,9 @@ HRESULT CVisual::AddChildVisual(CVisual* pVisualChild)
 
     if(m_VisualAttached)
     {
-        IFC(pVisualChild->OnVisualAttach(m_VisualContext));
+        CVisualAttachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
+
+        IFC(pVisualChild->OnVisualAttach(VisualContext));
     }
 
 Cleanup:
@@ -294,7 +304,9 @@ HRESULT CVisual::AddVisualResource(CVisualResource* pVisualResource)
 
     if(m_VisualAttached)
     {
-        IFC(pVisualResource->OnVisualAttach(m_VisualContext));
+        CVisualAttachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
+
+        IFC(pVisualResource->OnVisualAttach(VisualContext));
     }
 
 Cleanup:
@@ -327,6 +339,16 @@ HRESULT CVisual::RemoveVisualResource(CVisualResource* pVisualResource)
     }
 
     IFC(E_FAIL);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CVisual::OnVisualNotification(CVisualNotification* pNotification)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pNotification);
 
 Cleanup:
     return hr;

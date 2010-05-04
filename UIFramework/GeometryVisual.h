@@ -18,6 +18,8 @@ class CGeometryVisual : public CVisual
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
 
+        virtual HRESULT OnVisualNotification( CVisualNotification* pNotification );
+
     protected:
         CGeometryVisual();
         virtual ~CGeometryVisual();
@@ -28,6 +30,8 @@ class CGeometryVisual : public CVisual
         HRESULT InternalSetFillBrush( CBrush* pBrush );
         HRESULT InternalSetStrokeBrush( CBrush* pBrush );
         HRESULT InternalSetStrokeThickness( FLOAT Thickness );
+
+        HRESULT OnBrushInvalidated( CBrush* pBrush );
 
         virtual HRESULT RenderTransformed( CRenderContext& Context );
 

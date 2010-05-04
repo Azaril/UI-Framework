@@ -82,6 +82,8 @@ HRESULT CImageBrush::InternalSetSource(CObjectWithType* pSource)
 
         IFC(ReleaseBitmaps());
         IFC(EnsureBitmaps());
+
+        IFC(InvalidateBrush());
     }
 
 Cleanup:
@@ -93,6 +95,8 @@ HRESULT CImageBrush::OnVisualAttach(CVisualAttachContext& Context)
     HRESULT hr = S_OK;
     CImageBrushContext* pContext = NULL;
     CBitmapSource* pBitmapSource = NULL;
+
+    IFC(CBrush::OnVisualAttach(Context));
 
     for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
     {
@@ -158,6 +162,8 @@ HRESULT CImageBrush::EnsureBitmaps()
     }
 
 Cleanup:
+    ReleaseObject(pBitmapSource);
+
     return hr;
 }
 
@@ -200,6 +206,8 @@ Cleanup:
 HRESULT CImageBrush::OnVisualDetach(CVisualDetachContext& Context)
 {
     HRESULT hr = S_OK;
+
+    IFC(CBrush::OnVisualDetach(Context));
 
     for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
     {
@@ -327,13 +335,28 @@ HRESULT CImageBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Source") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= ImageBrushProperties && pProperty < ImageBrushProperties + ARRAYSIZE(ImageBrushProperties))
     {
-        *ppValue = m_Source;
-        AddRefObject(m_Source);
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        UINT32 Index = (pStaticProperty - ImageBrushProperties);
+        
+        switch(Index)
+        {
+            case ImageBrushPropertyIndex::Source:
+                {
+                    *ppValue = m_Source;
+                    AddRefObject(m_Source);
+                    
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {

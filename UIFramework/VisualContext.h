@@ -23,7 +23,10 @@ class CVisualAttachContext
         {
         }
 
-        CVisual* GetParent();
+        CVisual* GetParent()
+        {
+            return m_Parent;
+        }
 
         CGraphicsDevice* GetGraphicsDevice()
         {
@@ -59,7 +62,10 @@ class CVisualDetachContext
         {
         }
 
-        CVisual* GetParent();
+        CVisual* GetParent()
+        {
+            return m_Parent;
+        }
 
         CGraphicsDevice* GetGraphicsDevice()
         {

@@ -122,17 +122,32 @@ HRESULT CPanel::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Children") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= PanelProperties && pProperty < PanelProperties + ARRAYSIZE(PanelProperties))
     {
-        *ppValue = m_Children;
-        AddRefObject(m_Children);
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        UINT32 Index = (pStaticProperty - PanelProperties);
+        
+        switch(Index)
+        {
+            case PanelPropertyIndex::Children:
+                {
+                    *ppValue = m_Children;
+                    AddRefObject(m_Children);
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {
-        IFC(CFrameworkElement::GetValue(pProperty, ppValue));
+        IFC(CPanel::GetValue(pProperty, ppValue));
     }
 
 Cleanup:

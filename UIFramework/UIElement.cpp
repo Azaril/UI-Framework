@@ -374,14 +374,14 @@ HRESULT CUIElement::NotifyParent(CUINotification* pNotification)
 
     if(pParent)
     {
-        IFC(pParent->OnNotification(pNotification));
+        IFC(pParent->OnUINotification(pNotification));
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::OnNotification(CUINotification* pNotification)
+HRESULT CUIElement::OnUINotification(CUINotification* pNotification)
 {
     HRESULT hr = S_OK;
 

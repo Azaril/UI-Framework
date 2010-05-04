@@ -136,13 +136,28 @@ HRESULT CDecorator::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    //TODO: Ensure this property actually belongs to this object.
-
-    //TODO: Looking up other than by name would be much better.
-    if(wcscmp(pProperty->GetName(), L"Child") == 0)
+    // Check if the property is a static property.
+    if(pProperty >= DecoratorProperties && pProperty < DecoratorProperties + ARRAYSIZE(DecoratorProperties))
     {
-        *ppValue = m_Child;
-        AddRefObject(m_Child);
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        UINT32 Index = (pStaticProperty - DecoratorProperties);
+        
+        switch(Index)
+        {
+            case DecoratorPropertyIndex::Child:
+                {
+                    *ppValue = m_Child;
+                    AddRefObject(m_Child);
+
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
     }
     else
     {

@@ -1,6 +1,7 @@
 #include "Image.h"
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
+#include "BasicTypes.h"
 
 CStaticProperty ImageProperties[] = 
 {
@@ -61,6 +62,23 @@ HRESULT CImage::Finalize()
     ReleaseObject(m_ImageBrush);
 
 Cleanup:
+    return hr;
+}
+
+HRESULT CImage::SetSource(const WCHAR* pSource)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+
+    IFCPTR(pSource);
+
+    IFC(CStringValue::Create(pSource, &pStringValue));
+
+    IFC(SetSource(pStringValue));
+
+Cleanup:
+    ReleaseObject(pStringValue);
+
     return hr;
 }
 

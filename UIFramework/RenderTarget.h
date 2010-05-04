@@ -7,7 +7,6 @@
 #include "BitmapSource.h"
 #include "Bitmap.h"
 #include "Geometry.h"
-#include "Brush.h"
 
 namespace DefaultBrush
 {
