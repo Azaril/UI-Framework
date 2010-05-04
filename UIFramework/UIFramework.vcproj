@@ -500,43 +500,11 @@
 						Name="Elements"
 						>
 						<File
-							RelativePath=".\Border.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Border.h"
-							>
-						</File>
-						<File
-							RelativePath=".\Canvas.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Canvas.h"
-							>
-						</File>
-						<File
-							RelativePath=".\Decorator.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Decorator.h"
-							>
-						</File>
-						<File
 							RelativePath=".\FrameworkElement.cpp"
 							>
 						</File>
 						<File
 							RelativePath=".\FrameworkElement.h"
-							>
-						</File>
-						<File
-							RelativePath=".\Grid.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Grid.h"
 							>
 						</File>
 						<File
@@ -548,27 +516,11 @@
 							>
 						</File>
 						<File
-							RelativePath=".\Panel.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Panel.h"
-							>
-						</File>
-						<File
 							RelativePath=".\RootUIElement.cpp"
 							>
 						</File>
 						<File
 							RelativePath=".\RootUIElement.h"
-							>
-						</File>
-						<File
-							RelativePath=".\StackPanel.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\StackPanel.h"
 							>
 						</File>
 						<File
@@ -587,6 +539,70 @@
 							RelativePath=".\UIElement.h"
 							>
 						</File>
+						<Filter
+							Name="Panels"
+							>
+							<File
+								RelativePath=".\Canvas.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\Canvas.h"
+								>
+							</File>
+							<File
+								RelativePath=".\DockPanel.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\DockPanel.h"
+								>
+							</File>
+							<File
+								RelativePath=".\Grid.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\Grid.h"
+								>
+							</File>
+							<File
+								RelativePath=".\Panel.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\Panel.h"
+								>
+							</File>
+							<File
+								RelativePath=".\StackPanel.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\StackPanel.h"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="Decorators"
+							>
+							<File
+								RelativePath=".\Border.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\Border.h"
+								>
+							</File>
+							<File
+								RelativePath=".\Decorator.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\Decorator.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 				</Filter>
 				<Filter
