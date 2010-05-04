@@ -29,14 +29,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParser::LoadFromFile(const WCHAR* pPath, CUIElement** pRootElement)
+HRESULT CParser::LoadFromFile(const WCHAR* pPath, CObjectWithType** ppRootObject)
 {
     HRESULT hr = S_OK;
     CXMLReader* pXMLReader = NULL;
     CParserCallback* pCallback = NULL;
 
     IFCPTR(pPath);
-    IFCPTR(pRootElement);
+    IFCPTR(ppRootObject);
 
     IFC(CParserCallback::Create(m_ClassResolver, m_TypeConverter, &pCallback));
 
@@ -44,7 +44,7 @@ HRESULT CParser::LoadFromFile(const WCHAR* pPath, CUIElement** pRootElement)
 
     IFC(pXMLReader->LoadFromFile(pPath, pCallback));
 
-    IFC(pCallback->GetRootElement(pRootElement));
+    IFC(pCallback->GetRootObject(ppRootObject));
 
 Cleanup:
     ReleaseObject(pCallback);

@@ -445,6 +445,14 @@
 					RelativePath=".\UIHost.h"
 					>
 				</File>
+				<File
+					RelativePath=".\VisualNotification.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\VisualNotification.h"
+					>
+				</File>
 				<Filter
 					Name="Visuals"
 					>
@@ -846,6 +854,30 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ContentPropertyNodeCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ContentPropertyNodeCallback.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ElementNodeCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ElementNodeCallback.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ParseContext.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ParseContext.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Parser.cpp"
 					>
 				</File>
@@ -859,6 +891,46 @@
 				</File>
 				<File
 					RelativePath=".\ParserCallback.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ParserNodeCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ParserNodeCallback.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ParserUtilities.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ParserUtilities.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ParserXMLCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ParserXMLCallback.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PropertyNodeCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PropertyNodeCallback.h"
+					>
+				</File>
+				<File
+					RelativePath=".\RichPropertyNodeCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\RichPropertyNodeCallback.h"
 					>
 				</File>
 				<File
