@@ -21,6 +21,7 @@ class CProperty
         virtual const WCHAR* GetName() = 0;
         virtual TypeIndex::Value GetType() = 0;
         virtual BOOL IsCollection() = 0;
+        virtual BOOL IsAttached() = 0;
 };
 
 class CPropertyInformation : public CRefCountedObject
@@ -46,21 +47,60 @@ struct ObjectTypeTraits< CObjectWithType >
     static const TypeIndex::Value Type = TypeIndex::Object;
 };
 
+class CAttachedPropertyHolder
+{
+    public:
+        CAttachedPropertyHolder( const CAttachedPropertyHolder& Other );
+        CAttachedPropertyHolder( CProperty* pProperty, CObjectWithType* pObject );
+        ~CAttachedPropertyHolder();
+
+        HRESULT SetValue( CObjectWithType* pObject );
+        HRESULT GetValue( CObjectWithType** ppObject );
+
+        CProperty* GetProperty();
+
+    protected:
+        CProperty* m_Property;
+        CObjectWithType* m_Value;
+};
+
 class CPropertyObject : public CObjectWithType
 {
     public:
-        virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
+        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue ) = 0;
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue ) = 0;
+        template< typename T >
+        HRESULT GetTypedValue( CProperty* pProperty, T** ppValue )
+        {
+            HRESULT hr = S_OK;
+            CObjectWithType* pVal = NULL;
+
+            IFC(GetValue(pProperty, &pVal));
+
+            if(pVal)
+            {
+                IFCEXPECT(pVal->IsTypeOf(ObjectTypeTraits< T >::Type));
+
+                *ppValue = (T*)pVal;
+                pVal = NULL;
+            }
+            else
+            {
+                *ppValue = NULL;
+            }
+
+        Cleanup:
+            ReleaseObject(pVal);
+
+            return hr;
+        }
 
     protected:
         CPropertyObject();
         virtual ~CPropertyObject();
 
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation ) = 0;
-
-        CPropertyInformation* m_PropertyInformation;
+        std::vector< CAttachedPropertyHolder > m_AttachedProperties;
 };
 
 class CObjectCollection : public CObjectWithType

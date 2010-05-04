@@ -132,6 +132,8 @@ class CUIElement : public CVisual
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::UIElement, CVisual );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );
 
@@ -198,8 +200,6 @@ class CUIElement : public CVisual
 
         virtual HRESULT OnChildMeasureInvalidated( CChildMeasureInvalidatedNotification* pNotification );
         virtual HRESULT OnChildArrangeInvalidated( CChildArrangeInvalidatedNotification* pNotification );
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         virtual HRESULT InternalSetVisibility( Visibility::Value State );
 

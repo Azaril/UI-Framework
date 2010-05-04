@@ -11,6 +11,8 @@ class CImage : public CFrameworkElement
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Image, CFrameworkElement );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
 
         HRESULT SetSource( CObjectWithType* pSource );
@@ -31,8 +33,6 @@ class CImage : public CFrameworkElement
         virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         HRESULT InternalSetSource( CObjectWithType* pSource );
 

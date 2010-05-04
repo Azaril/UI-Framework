@@ -18,6 +18,8 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Visual, CObjectWithType );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
@@ -40,8 +42,6 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
    
         HRESULT Initialize();
         HRESULT Finalize();
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
     
         virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
         virtual HRESULT OnVisualDetach( CVisualDetachContext& Context );

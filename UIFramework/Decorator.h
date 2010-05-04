@@ -7,6 +7,8 @@ class CDecorator : public CFrameworkElement
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Decorator, CFrameworkElement );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
@@ -18,8 +20,6 @@ class CDecorator : public CFrameworkElement
         virtual ~CDecorator();
 
         HRESULT Initialize();
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         CUIElement* m_Child;
 };

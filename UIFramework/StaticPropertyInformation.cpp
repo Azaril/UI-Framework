@@ -102,3 +102,8 @@ BOOL CStaticProperty::IsContent()
 {
     return (m_Flags & StaticPropertyFlags::Content) ? TRUE : FALSE;
 }
+
+BOOL CStaticProperty::IsAttached()
+{
+    return (m_Flags & StaticPropertyFlags::Attached) ? TRUE : FALSE;
+}

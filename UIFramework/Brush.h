@@ -15,7 +15,8 @@ class CBrush : public CRefCountedObjectBase< CPropertyObject >,
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Brush, CObjectWithType );
 
-        virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
@@ -27,8 +28,6 @@ class CBrush : public CRefCountedObjectBase< CPropertyObject >,
     protected:
         CBrush();
         virtual ~CBrush();
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         CPropertyInformation* m_PropertyInformation;
 };

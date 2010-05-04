@@ -38,24 +38,6 @@ HRESULT CBrush::OnVisualDetach(CVisualDetachContext& Context)
     return hr;
 }
 
-HRESULT CBrush::GetPropertyInformation(CPropertyInformation** ppInformation)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppInformation);
-
-    if(m_PropertyInformation == NULL)
-    {
-        IFC(CreatePropertyInformation(&m_PropertyInformation));
-    }
-
-    *ppInformation = m_PropertyInformation;
-    AddRefObject(m_PropertyInformation);
-
-Cleanup:
-    return hr;
-}
-
 HRESULT CBrush::CreatePropertyInformation(CPropertyInformation **ppInformation)
 {
     HRESULT hr = S_OK;
@@ -111,7 +93,7 @@ HRESULT CBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     }
     else
     {
-        IFC(E_FAIL);
+        IFC(CPropertyObject::SetValue(pProperty, pValue));
     }
 
 Cleanup:
@@ -138,9 +120,7 @@ HRESULT CBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     //}
     //else
     {
-        __debugbreak();
-
-        IFC(E_FAIL);
+        IFC(CPropertyObject::GetValue(pProperty, ppValue));
     }
 
 Cleanup:

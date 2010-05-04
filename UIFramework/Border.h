@@ -10,6 +10,8 @@ class CBorder : public CDecorator
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Border, CDecorator );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
 
         virtual HRESULT SetChild( CUIElement* pChild );
@@ -37,8 +39,6 @@ class CBorder : public CDecorator
         virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         HRESULT InternalSetPadding( const RectF& Padding );
 

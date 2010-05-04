@@ -9,6 +9,8 @@ class CSolidColorBrush : public CBrush
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::SolidColorBrush, CBrush );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
@@ -19,8 +21,6 @@ class CSolidColorBrush : public CBrush
         virtual ~CSolidColorBrush();
 
         HRESULT Initialize();
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         HRESULT InternalSetColor( ColorF Color );
 

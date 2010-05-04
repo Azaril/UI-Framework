@@ -18,6 +18,8 @@ class CStackPanel : public CPanel
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::StackPanel, CPanel );
 
+        //static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         HRESULT SetOrientation( Orientation::Value Direction );
 
     public:
@@ -28,8 +30,6 @@ class CStackPanel : public CPanel
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
-
-        //virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         Orientation::Value m_Orientation;
 };

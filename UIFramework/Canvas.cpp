@@ -1,16 +1,26 @@
 #include "Canvas.h"
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
+#include "BasicTypes.h"
 
-//StaticClassProperty CanvasProperties[] =
-//{
-//};
-//
-//StaticClassProperties CanvasPropertyInformation =
-//{
-//    CanvasProperties,
-//    ARRAYSIZE(CanvasProperties)
-//};
+CStaticProperty CanvasProperties[] = 
+{
+    CStaticProperty( L"Left", TypeIndex::Float, StaticPropertyFlags::Attached ),
+    CStaticProperty( L"Top", TypeIndex::Float, StaticPropertyFlags::Attached ),
+    CStaticProperty( L"Right", TypeIndex::Float, StaticPropertyFlags::Attached ),
+    CStaticProperty( L"Bottom", TypeIndex::Float, StaticPropertyFlags::Attached ),
+};
+
+namespace CanvasPropertyIndex
+{
+    enum Value
+    {
+        Left,
+        Top,
+        Right,
+        Bottom
+    };
+}
 
 CCanvas::CCanvas()
 {
@@ -30,143 +40,139 @@ Cleanup:
     return hr;
 }
 
-HRESULT CCanvas::AddChild(CUIElement* pElement)
-{
-    HRESULT hr = S_OK;
-    CCanvasLayoutInformation* pLayoutInformation = NULL;
-
-    IFCPTR(pElement);
-
-    IFC(CPanel::AddChild(pElement));
-
-    IFC(CCanvasLayoutInformation::Create(pElement, &pLayoutInformation));
-
-    m_LayoutInformation.push_back(pLayoutInformation);
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CCanvas::RemoveChild(CUIElement* pElement)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pElement);
-
-    IFC(CPanel::RemoveChild(pElement));
-
-    for(LayoutInformationCollection::iterator It = m_LayoutInformation.begin(); It != m_LayoutInformation.end(); ++It)
-    {
-        if((*It)->GetUIElement() == pElement)
-        {
-            (*It)->Release();
-
-            m_LayoutInformation.erase(It);
-
-            goto Cleanup;
-        }
-    }
-
-    IFC(E_FAIL);
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CCanvas::SetChildPosition(CUIElement* pElement, Point2F Position)
-{
-    HRESULT hr = S_OK;
-    CCanvasLayoutInformation* pLayoutInformation = NULL;
-
-    IFCPTR(pElement);
-
-    IFC(GetChildLayout(pElement, &pLayoutInformation));
-
-    IFC(pLayoutInformation->SetPosition(Position));
-
-Cleanup:
-    ReleaseObject(pLayoutInformation);
-
-    return hr;
-}
-
-HRESULT CCanvas::GetChildLayout(CUIElement* pElement, CCanvasLayoutInformation** ppLayoutInfo)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pElement);
-    IFCPTR(ppLayoutInfo);
-
-    for(LayoutInformationCollection::iterator It = m_LayoutInformation.begin(); It != m_LayoutInformation.end(); ++It)
-    {
-        if((*It)->GetUIElement() == pElement)
-        {
-            *ppLayoutInfo = *It;
-
-            AddRefObject(*It);
-
-            goto Cleanup;
-        }
-    }
-
-    IFC(E_FAIL);
-
-Cleanup:
-    return hr;
-}
-
 HRESULT CCanvas::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
     SizeF BaseDesiredSize = { 0 };
     SizeF MaxSize = { FLT_MAX, FLT_MAX };
     SizeF MaxSizeNeeded = { 0, 0 };
+    CFloatValue* pLeft = NULL;
+    CFloatValue* pTop = NULL;
+    CFloatValue* pRight = NULL;
+    CFloatValue* pBottom = NULL;
 
     IFC(CPanel::MeasureInternal(AvailableSize, BaseDesiredSize));
 
     MaxSizeNeeded = BaseDesiredSize;
 
-    for(LayoutInformationCollection::iterator It = m_LayoutInformation.begin(); It != m_LayoutInformation.end(); ++It)
+    for(UINT i = 0; i < m_Children->GetCount(); i++)
     {
-        CUIElement* pElement = (*It)->GetUIElement();
+        CUIElement* pElement = m_Children->GetAtIndex(i);
 
         IFC(pElement->Measure(MaxSize));
 
+        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Left], &pLeft));
+        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Top], &pTop));
+        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Right], &pRight));
+        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Bottom], &pBottom));
+
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
-        Point2F ElementPosition = (*It)->GetPosition();
-        SizeF ElementExtentNeeded = { ElementPosition.x + ElementDesiredSize.width, ElementPosition.y + ElementDesiredSize.height };
+        SizeF ElementExtentNeeded = { 0 };
+
+        if(pLeft)
+        {
+            ElementExtentNeeded.width = pLeft->GetValue() + ElementDesiredSize.width;
+        }
+        else if(pRight)
+        {
+            ElementExtentNeeded.width = pRight->GetValue();
+        }
+        else
+        {
+            ElementExtentNeeded.width = ElementDesiredSize.width;
+        }
+
+        if(pTop)
+        {
+            ElementExtentNeeded.height = pTop->GetValue() + ElementDesiredSize.height;
+        }
+        else if(pBottom)
+        {
+            ElementExtentNeeded.height = pBottom->GetValue();
+        }
+        else
+        {
+            ElementExtentNeeded.height = ElementDesiredSize.height;
+        }
 
         MaxSizeNeeded.width = max(MaxSizeNeeded.width, ElementExtentNeeded.width);
         MaxSizeNeeded.height = max(MaxSizeNeeded.height, ElementExtentNeeded.height);
+
+        ReleaseObject(pLeft);
+        ReleaseObject(pTop);
+        ReleaseObject(pRight);
+        ReleaseObject(pBottom);
     }
 
     DesiredSize = MaxSizeNeeded;
 
 Cleanup:
+    ReleaseObject(pLeft);
+    ReleaseObject(pTop);
+    ReleaseObject(pRight);
+    ReleaseObject(pBottom);
+
     return hr;
 }
 
 HRESULT CCanvas::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
+    CFloatValue* pLeft = NULL;
+    CFloatValue* pTop = NULL;
+    CFloatValue* pRight = NULL;
+    CFloatValue* pBottom = NULL;
 
-    for(LayoutInformationCollection::iterator It = m_LayoutInformation.begin(); It != m_LayoutInformation.end(); ++It)
+    for(UINT i = 0; i < m_Children->GetCount(); i++)
     {
-        CUIElement* pElement = (*It)->GetUIElement();
+        CUIElement* pElement = m_Children->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
-        Point2F ElementPosition = (*It)->GetPosition();
+        SizeF ElementPosition = { 0 };
 
-        Matrix3X2 VisualTransform = D2D1::Matrix3x2F::Translation(ElementPosition.x, ElementPosition.y);
+        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Left], &pLeft));
+        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Top], &pTop));
+        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Right], &pRight));
+        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Bottom], &pBottom));
+
+        if(pLeft)
+        {
+            ElementPosition.width = pLeft->GetValue();
+        }
+        else if(pRight)
+        {
+            ElementPosition.width = pRight->GetValue() - ElementDesiredSize.width;
+        }
+
+        if(pTop)
+        {
+            ElementPosition.height = pTop->GetValue();
+        }
+        else if(pBottom)
+        {
+            ElementPosition.height = pBottom->GetValue() - ElementDesiredSize.height;
+        }
+
+        Matrix3X2 VisualTransform = D2D1::Matrix3x2F::Translation(ElementPosition);
         
         IFC(pElement->SetVisualTransform(VisualTransform));
 
         IFC(pElement->Arrange(ElementDesiredSize));
+
+        ReleaseObject(pLeft);
+        ReleaseObject(pTop);
+        ReleaseObject(pRight);
+        ReleaseObject(pBottom);
     }
 
     IFC(CPanel::ArrangeInternal(Size));
 
 Cleanup:
+    ReleaseObject(pLeft);
+    ReleaseObject(pTop);
+    ReleaseObject(pRight);
+    ReleaseObject(pBottom);
+
     return hr;
 }
 
@@ -182,69 +188,26 @@ Cleanup:
     return hr;
 }
 
-//HRESULT CCanvas::CreatePropertyInformation(CPropertyInformation** ppInformation)
-//{
-//    HRESULT hr = S_OK;
-//    CStaticPropertyInformation* pStaticInformation = NULL;
-//    CPropertyInformation* pBaseInformation = NULL;
-//    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
-//
-//    IFCPTR(ppInformation);
-//
-//    IFC(CStaticPropertyInformation::Create(&CanvasPropertyInformation, &pStaticInformation));
-//    IFC(CPanel::CreatePropertyInformation(&pBaseInformation));
-//    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
-//
-//    *ppInformation = pDelegatingProperyInformation;
-//    pDelegatingProperyInformation = NULL;
-//
-//Cleanup:
-//    ReleaseObject(pStaticInformation);
-//    ReleaseObject(pBaseInformation);
-//    ReleaseObject(pDelegatingProperyInformation);
-//
-//    return hr;
-//}
-
-CCanvasLayoutInformation::CCanvasLayoutInformation() : m_Element(NULL)
-{
-    m_Position.x = 0;
-    m_Position.y = 0;
-}
-
-CCanvasLayoutInformation::~CCanvasLayoutInformation()
-{
-    ReleaseObject(m_Element);
-}
-
-HRESULT CCanvasLayoutInformation::Initialize(CUIElement* pElement)
+HRESULT CCanvas::CreatePropertyInformation(CPropertyInformation** ppInformation)
 {
     HRESULT hr = S_OK;
+    CStaticPropertyInformation* pStaticInformation = NULL;
+    CPropertyInformation* pBaseInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(pElement);
+    IFCPTR(ppInformation);
 
-    m_Element = pElement;
-    AddRefObject(m_Element);
+    IFC(CStaticPropertyInformation::Create(CanvasProperties, ARRAYSIZE(CanvasProperties), &pStaticInformation));
+    IFC(CPanel::CreatePropertyInformation(&pBaseInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+
+    *ppInformation = pDelegatingProperyInformation;
+    pDelegatingProperyInformation = NULL;
 
 Cleanup:
-    return hr;
-}
-
-CUIElement* CCanvasLayoutInformation::GetUIElement()
-{
-    return m_Element;
-}
-
-Point2F CCanvasLayoutInformation::GetPosition()
-{
-    return m_Position;
-}
-
-HRESULT CCanvasLayoutInformation::SetPosition(Point2F Position)
-{
-    HRESULT hr = S_OK;
-
-    m_Position = Position;
+    ReleaseObject(pStaticInformation);
+    ReleaseObject(pBaseInformation);
+    ReleaseObject(pDelegatingProperyInformation);
 
     return hr;
 }

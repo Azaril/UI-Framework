@@ -408,7 +408,7 @@ HRESULT CVisual::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     }
     else
     {
-        IFC(E_FAIL);
+        IFC(CPropertyObject::SetValue(pProperty, pValue));
     }
 
 Cleanup:
@@ -439,7 +439,7 @@ HRESULT CVisual::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     }
     else
     {
-        IFC(E_FAIL);
+        IFC(CPropertyObject::GetValue(pProperty, ppValue));
     }
 
 Cleanup:

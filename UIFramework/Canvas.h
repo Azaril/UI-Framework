@@ -2,39 +2,14 @@
 
 #include "Panel.h"
 
-class CCanvasLayoutInformation : public CRefCountedObject
-{
-    public:
-        DECLARE_FACTORY1( CCanvasLayoutInformation, CUIElement* );
-
-        CUIElement* GetUIElement();
-
-        Point2F GetPosition();
-        HRESULT SetPosition( Point2F Position );
-        
-    protected:
-        CCanvasLayoutInformation();
-        virtual ~CCanvasLayoutInformation();
-
-        HRESULT Initialize( CUIElement* pElement );
-
-        CUIElement* m_Element;
-        Point2F m_Position;
-};
-
 class CCanvas : public CPanel
 {
-    typedef std::vector< CCanvasLayoutInformation* > LayoutInformationCollection;
-
     public:
         DECLARE_FACTORY( CCanvas );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Canvas, CPanel );
 
-        virtual HRESULT AddChild( CUIElement* pElement );
-        virtual HRESULT RemoveChild( CUIElement* pElement );
-
-        virtual HRESULT SetChildPosition( CUIElement* pElement, Point2F Position );
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
 
@@ -44,14 +19,8 @@ class CCanvas : public CPanel
 
         HRESULT Initialize();
 
-        virtual HRESULT GetChildLayout( CUIElement* pElement, CCanvasLayoutInformation** ppLayoutInfo );
-
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
-
-        //virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
-
-        LayoutInformationCollection m_LayoutInformation;
 };
 
 template< >

@@ -10,6 +10,8 @@ class CTextBlock : public CFrameworkElement
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::TextBlock, CFrameworkElement );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
 
         virtual HRESULT SetText( const WCHAR* pText );
@@ -24,8 +26,6 @@ class CTextBlock : public CFrameworkElement
         virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT RenderTransformed( CRenderContext& Context );
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         std::wstring m_Text;
         CTextFormat* m_TextFormat;

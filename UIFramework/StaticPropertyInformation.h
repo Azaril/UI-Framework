@@ -9,7 +9,8 @@ namespace StaticPropertyFlags
     {
         None        = 0x00,
         Content     = 0x01,
-        Collection  = 0x02
+        Collection  = 0x02,
+        Attached    = 0x04
     };
 }
 
@@ -24,6 +25,7 @@ class CStaticProperty : public CProperty
         virtual TypeIndex::Value GetType();
         virtual const WCHAR* GetName();
         virtual BOOL IsCollection();
+        virtual BOOL IsAttached();
         BOOL IsContent();
 
     protected:

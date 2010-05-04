@@ -69,6 +69,8 @@ class CImageBrush : public CBrush
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::ImageBrush, CBrush );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
@@ -91,8 +93,6 @@ class CImageBrush : public CBrush
         HRESULT EnsureBitmaps();
         HRESULT ReleaseBitmaps();
         HRESULT CreateBitmapFromSource( CGraphicsDevice* pGraphicsDevice, CBitmapSource** ppBitmapSource );
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         CObjectWithType* m_Source;
         ContextCollection m_Contexts;

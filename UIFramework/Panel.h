@@ -7,6 +7,8 @@ class CPanel : public CFrameworkElement
     public:       
         DECLARE_TYPE_WITH_BASE( TypeIndex::Panel, CFrameworkElement );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
@@ -18,8 +20,6 @@ class CPanel : public CFrameworkElement
     protected:
         CPanel();
         virtual ~CPanel();
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 };
 
 template< >

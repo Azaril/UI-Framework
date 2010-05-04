@@ -26,6 +26,8 @@ class CFrameworkElement : public CUIElement
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::FrameworkElement, CUIElement );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
@@ -72,8 +74,6 @@ class CFrameworkElement : public CUIElement
 
         virtual HRESULT AddLogicalChild( CUIElement* pElement );
         virtual HRESULT RemoveLogicalChild( CUIElement* pElement );
-
-        virtual HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         virtual VOID OnChildAdded( CUIElement* pElement );
         virtual VOID OnChildRemoved( CUIElement* pElement );
