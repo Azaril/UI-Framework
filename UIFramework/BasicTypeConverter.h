@@ -8,3 +8,5 @@ HRESULT ConvertStringToFloat( CObjectWithType* pValue, TypeIndex::Value TargetTy
 HRESULT ConvertStringToVisibility( CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToColorF( CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToRectF( CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToRectangleEdge( CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToBool( CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue );

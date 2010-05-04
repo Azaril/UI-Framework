@@ -28,3 +28,14 @@ namespace Visibility
         Collapsed
     };
 }
+
+namespace RectangleEdge
+{
+    enum Value
+    {
+        Left,
+        Right,
+        Top,
+        Bottom
+    };
+}

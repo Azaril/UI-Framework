@@ -6,6 +6,7 @@
 #include "StackPanel.h"
 #include "TextBlock.h"
 #include "SolidColorBrush.h"
+#include "DockPanel.h"
 
 template< typename FromType >
 class StaticClassFactory
@@ -37,6 +38,7 @@ CStaticResolvedClass Classes[] =
     //CStaticResolvedClass(L"Grid", { &StaticClassFactory< CGrid >::Create, CGrid::CreatePropertyInformation),
     CStaticResolvedClass(L"Image", &StaticClassFactory< CImage >::Create, CImage::CreatePropertyInformation),
     CStaticResolvedClass(L"StackPanel", &StaticClassFactory< CStackPanel >::Create, CStackPanel::CreatePropertyInformation),
+    CStaticResolvedClass(L"DockPanel", &StaticClassFactory< CDockPanel >::Create, CDockPanel::CreatePropertyInformation),
     CStaticResolvedClass(L"TextBlock", &StaticClassFactory< CTextBlock >::Create, CTextBlock::CreatePropertyInformation),
     CStaticResolvedClass(L"ImageBrush", &StaticClassFactory< CImageBrush >::Create, CImageBrush::CreatePropertyInformation),
     CStaticResolvedClass(L"SolidColorBrush", &StaticClassFactory< CSolidColorBrush >::Create, CSolidColorBrush::CreatePropertyInformation),

@@ -62,6 +62,22 @@ struct ObjectTypeTraits< CRectFValue >
     static const TypeIndex::Value Type = TypeIndex::RectF;
 };
 
+typedef CBasicValue< RectangleEdge::Value, TypeIndex::RectF > CRectangleEdgeValue;
+
+template< >
+struct ObjectTypeTraits< CRectangleEdgeValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::RectangleEdge;
+};
+
+typedef CBasicValue< bool, TypeIndex::Bool > CBoolValue;
+
+template< >
+struct ObjectTypeTraits< CBoolValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::Bool;
+};
+
 class CStringValue : public CRefCountedObjectBase< CObjectWithType >
 {
     public:

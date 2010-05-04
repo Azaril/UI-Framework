@@ -14,6 +14,7 @@ class CImage : public CFrameworkElement
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         HRESULT SetSource( const WCHAR* pSource );
         HRESULT SetSource( CObjectWithType* pSource);

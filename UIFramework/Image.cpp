@@ -290,6 +290,37 @@ Cleanup:
     return hr;
 }
 
+HRESULT CImage::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    // Check if the property is a static property.
+    if(pProperty >= ImageProperties && pProperty < ImageProperties + ARRAYSIZE(ImageProperties))
+    {
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        UINT32 Index = (pStaticProperty - ImageProperties);
+        
+        switch(Index)
+        {
+            default:
+                {
+                    IFC(E_FAIL);
+                }
+        }
+    }
+    else
+    {
+        IFC(CFrameworkElement::GetValue(pProperty, ppValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CImage::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
 {
     HRESULT hr = S_OK;

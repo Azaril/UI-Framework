@@ -503,7 +503,7 @@ HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 
                     CFloatValue* pFloat = (CFloatValue*)pValue;
 
-                    IFC(InternalSetHeight(pFloat->GetValue()));
+                    IFC(InternalSetWidth(pFloat->GetValue()));
 
                     break;
                 }
@@ -514,7 +514,7 @@ HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 
                     CFloatValue* pFloat = (CFloatValue*)pValue;
 
-                    IFC(InternalSetWidth(pFloat->GetValue()));
+                    IFC(InternalSetHeight(pFloat->GetValue()));
 
                     break;
                 }

@@ -13,6 +13,9 @@ namespace TypeIndex
             RectF,
             ColorF,
             Visibility,
+            Bool,
+
+            RectangleEdge,
 
             Visual,
                 UIElement,
@@ -21,6 +24,7 @@ namespace TypeIndex
                             StackPanel,
                             Canvas,
                             Grid,
+                            DockPanel,
                         Image,
                         Decorator,
                             Border,

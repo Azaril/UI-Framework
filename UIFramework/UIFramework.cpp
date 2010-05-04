@@ -161,11 +161,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
         }
         else
         {
-            WCHAR TextBuffer[1024];
+            //WCHAR TextBuffer[1024];
 
-            IFC(StringCchPrintf(TextBuffer, ARRAYSIZE(TextBuffer), L"%u", GetTickCount()));
+            //IFC(StringCchPrintf(TextBuffer, ARRAYSIZE(TextBuffer), L"%u", GetTickCount()));
 
-            IFC(pTextBlock1->SetText(TextBuffer));
+            //IFC(pTextBlock1->SetText(TextBuffer));
 
             IFC(pUIHost->Render());
         }

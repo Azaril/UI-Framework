@@ -9,6 +9,8 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::Visibility, ConvertStringToVisibility },
     { TypeIndex::String, TypeIndex::ColorF, ConvertStringToColorF }, 
     { TypeIndex::String, TypeIndex::RectF, ConvertStringToRectF },
+    { TypeIndex::String, TypeIndex::RectangleEdge, ConvertStringToRectangleEdge },
+    { TypeIndex::String, TypeIndex::Bool, ConvertStringToBool }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -492,6 +494,90 @@ HRESULT ConvertStringToRectF(CObjectWithType* pValue, TypeIndex::Value TargetTyp
 
 Cleanup:
     ReleaseObject(pRectFValue);
+
+    return hr;
+}
+
+HRESULT ConvertStringToRectangleEdge(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    RectangleEdge::Value Value;
+    CStringValue* pStringValue = NULL;
+    CRectangleEdgeValue* pRectangleEdgeValue = NULL;
+
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    if(wcscmp(pStringValue->GetValue(), L"Left") == 0)
+    {
+        Value = RectangleEdge::Left;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"Right") == 0)
+    {
+        Value = RectangleEdge::Right;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"Top") == 0)
+    {
+        Value = RectangleEdge::Top;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"Bottom") == 0)
+    {
+        Value = RectangleEdge::Bottom;
+    }
+    else
+    {
+        IFC(E_FAIL);
+    }
+
+    IFC(CRectangleEdgeValue::Create(Value, &pRectangleEdgeValue));
+
+    *ppConvertedValue = pRectangleEdgeValue;
+    pRectangleEdgeValue = NULL;
+
+Cleanup:
+    ReleaseObject(pRectangleEdgeValue);
+
+    return hr;
+}
+
+HRESULT ConvertStringToBool(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    bool Value;
+    CStringValue* pStringValue = NULL;
+    CBoolValue* pBoolValue = NULL;
+
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    if(wcscmp(pStringValue->GetValue(), L"True") == 0)
+    {
+        Value = true;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"False") == 0)
+    {
+        Value = false;
+    }
+    else
+    {
+        IFC(E_FAIL);
+    }
+
+    IFC(CBoolValue::Create(Value, &pBoolValue));
+
+    *ppConvertedValue = pBoolValue;
+    pBoolValue = NULL;
+
+Cleanup:
+    ReleaseObject(pBoolValue);
 
     return hr;
 }
