@@ -321,6 +321,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\D2DGeometryBase.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DGeometryBase.h"
+						>
+					</File>
+					<File
 						RelativePath=".\D2DGraphicsDevice.cpp"
 						>
 					</File>
@@ -350,6 +358,14 @@
 					</File>
 					<File
 						RelativePath=".\D2DRenderTarget.h"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DRoundedRectangleGeometry.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DRoundedRectangleGeometry.h"
 						>
 					</File>
 					<File
@@ -414,6 +430,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Dictionary.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dictionary.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Enums.cpp"
 					>
 				</File>
@@ -427,6 +451,14 @@
 				</File>
 				<File
 					RelativePath=".\RenderContext.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceDictionary.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceDictionary.h"
 					>
 				</File>
 				<File

@@ -6,7 +6,8 @@ CElementNodeCallback::CElementNodeCallback() : m_Element(NULL),
                                                m_ChildNode(NULL),
                                                m_ResolvedClass(NULL),
                                                m_Properties(NULL),
-                                               m_Complete(FALSE)
+                                               m_Complete(FALSE),
+                                               m_Key(NULL)
 {
 }
 
@@ -16,6 +17,7 @@ CElementNodeCallback::~CElementNodeCallback()
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_ResolvedClass);
     ReleaseObject(m_Properties);
+    ReleaseObject(m_Key);
 }
 
 HRESULT CElementNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart)
@@ -44,6 +46,11 @@ Cleanup:
 CPropertyObject* CElementNodeCallback::GetObject()
 {
     return m_Element;
+}
+
+CObjectWithType* CElementNodeCallback::GetKey()
+{
+    return m_Key;
 }
 
 HRESULT CElementNodeCallback::OnElementStart(CXMLElementStart* pElementStart, BOOL& Consumed)
@@ -125,11 +132,11 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
 {
     HRESULT hr = S_OK;
     CProperty* pProperty = NULL;
-    CStringValue* pStringValue = NULL;
     WCHAR* pClassType = NULL;
     UINT32 ClassTypeLength = 0;
     CResolvedClass* pResolvedClass = NULL;
     CPropertyInformation* pResolvedClassProperties = NULL;
+    CObjectWithType* pValue = NULL;
 
     IFCPTR(pAttribute);
 
@@ -141,6 +148,8 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
     }
     else
     {
+        const WCHAR* pNamespaceUriString = NULL;
+        UINT32 NamespaceUriStringLength = 0;
         const WCHAR* pNameString = NULL;
         UINT32 NameStringLength = 0;
         const WCHAR* pValueString = NULL;
@@ -150,52 +159,74 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
 
         IFCEXPECT(!m_Complete);
 
+        IFC(pAttribute->GetNamespaceUri(&pNamespaceUriString, &NamespaceUriStringLength));
         IFC(pAttribute->GetName(&pNameString, &NameStringLength));
         IFC(pAttribute->GetValue(&pValueString, &ValueStringLength));
 
-        pPropertyStart = wcschr(pNameString, L'.');
-        
-        if(pPropertyStart == NULL)
+        if(wcscmp(pNamespaceUriString, L"http://www.w3.org/2000/xmlns/") == 0)
         {
-            pPropertyStart = pNameString;
+            Consumed = TRUE;
+        }
+        else if(wcscmp(pNamespaceUriString, L"http://internal") == 0)
+        {
+            if(wcscmp(pNameString, L"Key") == 0)
+            {
+                IFC(AttributeStringToValue(pValueString, ValueStringLength, &m_Key));
+            }
+            else
+            {
+                IFC(E_UNEXPECTED);
+            }
 
-            pPropertyLookup = m_Properties;
+            Consumed = TRUE;
         }
         else
         {
-            ClassTypeLength = (pPropertyStart - pNameString);
+            pPropertyStart = wcschr(pNameString, L'.');
+            
+            if(pPropertyStart == NULL)
+            {
+                pPropertyStart = pNameString;
 
-            pClassType = new WCHAR[ClassTypeLength + 1];
-            IFCOOM(pClassType);
+                pPropertyLookup = m_Properties;
+            }
+            else
+            {
+                ClassTypeLength = (pPropertyStart - pNameString);
 
-            wcsncpy_s(pClassType, ClassTypeLength + 1, pNameString, ClassTypeLength);
-            pClassType[ClassTypeLength] = L'\0';
+                pClassType = new WCHAR[ClassTypeLength + 1];
+                IFCOOM(pClassType);
 
-            IFC(m_Context->GetClassResolver()->ResolveType(pClassType, &pResolvedClass));
+                wcsncpy_s(pClassType, ClassTypeLength + 1, pNameString, ClassTypeLength);
+                pClassType[ClassTypeLength] = L'\0';
 
-            IFC(pResolvedClass->GetPropertyInformation(&pResolvedClassProperties));
+                IFC(m_Context->GetClassResolver()->ResolveType(pClassType, &pResolvedClass));
 
-            pPropertyLookup = pResolvedClassProperties;
+                IFC(pResolvedClass->GetPropertyInformation(&pResolvedClassProperties));
 
-            ++pPropertyStart;
+                pPropertyLookup = pResolvedClassProperties;
+
+                ++pPropertyStart;
+            }
+
+            IFCPTR(pPropertyStart);
+
+            IFC(pPropertyLookup->GetProperty(pPropertyStart, &pProperty));
+
+            IFC(AttributeStringToValue(pValueString, ValueStringLength, &pValue));
+
+            IFC(AssignProperty(m_Element, pProperty, pValue, m_Context->GetTypeConverter()));
+
+            Consumed = TRUE;
         }
-
-        IFCPTR(pPropertyStart);
-
-        IFC(pPropertyLookup->GetProperty(pPropertyStart, &pProperty));
-
-        IFC(CStringValue::Create(pValueString, ValueStringLength, &pStringValue));
-
-        IFC(AssignProperty(m_Element, pProperty, pStringValue, m_Context->GetTypeConverter()))
-
-        Consumed = TRUE;
     }
 
 Cleanup:
     ReleaseObject(pProperty);
-    ReleaseObject(pStringValue);
+    ReleaseObject(pValue);
     ReleaseObject(pResolvedClass);
     ReleaseObject(pResolvedClassProperties);
+    ReleaseObject(pValue);
     delete [] pClassType;
 
     return hr;

@@ -121,7 +121,7 @@ HRESULT CContentPropertyNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, 
 
         if(m_ChildNode->IsComplete())
         {
-            IFC(AssignProperty(m_Parent, m_Property, m_ChildNode->GetObject(), m_Context->GetTypeConverter()));
+            IFC(AssignProperty(m_Parent, m_Property, m_ChildNode->GetObject(), m_Context->GetTypeConverter(), m_ChildNode->GetKey()));
 
             ReleaseObject(m_ChildNode);
         }

@@ -59,3 +59,15 @@ const WCHAR* CStringValue::GetValue()
 {
     return m_Value;
 }
+
+BOOL CStringValue::Equals(CObjectWithType* pOther)
+{
+    if(pOther && pOther->GetType() == GetType())
+    {
+        CStringValue* pTypedOther = (CStringValue*)pOther;
+
+        return (wcscmp(pTypedOther->GetValue(), m_Value) == 0);
+    }
+
+    return FALSE;
+}

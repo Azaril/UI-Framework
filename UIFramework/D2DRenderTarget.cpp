@@ -3,6 +3,7 @@
 #include "D2DBitmap.h"
 #include "D2DBitmapBrush.h"
 #include "D2DRectangleGeometry.h"
+#include "D2DRoundedRectangleGeometry.h"
 #include "ErrorChecking.h"
 #include "DirectWriteTextLayout.h"
 #include "WICBitmapSource.h"
@@ -248,6 +249,15 @@ HRESULT CD2DRenderTarget::FillGeometry(CGeometry* pGeometry, CGraphicsBrush* pBr
                 break;
             }
 
+        case TypeIndex::RoundedRectangleGeometry:
+            {
+                CD2DRoundedRectangleGeometry* pRoundedRectangleGeometry = (CD2DRoundedRectangleGeometry*)pGeometry;
+
+                m_RenderTarget->FillGeometry(pRoundedRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
+
+                break;
+            }
+
         default:
             {
                 IFC(E_FAIL);
@@ -275,6 +285,15 @@ HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBr
                 CD2DRectangleGeometry* pRectangleGeometry = (CD2DRectangleGeometry*)pGeometry;
 
                 m_RenderTarget->DrawGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush(), StrokeThickness);
+
+                break;
+            }
+
+        case TypeIndex::RoundedRectangleGeometry:
+            {
+                CD2DRoundedRectangleGeometry* pRoundedRectangleGeometry = (CD2DRoundedRectangleGeometry*)pGeometry;
+
+                m_RenderTarget->DrawGeometry(pRoundedRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush(), StrokeThickness);
 
                 break;
             }

@@ -19,6 +19,18 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
             return m_Value;
         }
 
+        virtual BOOL Equals( CObjectWithType* pOther )
+        {
+            if(pOther && pOther->GetType() == GetType())
+            {
+                CBasicValue< T, Type >* pTypedOther = (CBasicValue< T, Type >*)pOther;
+
+                return pTypedOther->GetValue() == m_Value;
+            }
+
+            return FALSE;
+        }
+
     protected:
         HRESULT Initialize( T Value )
         {
@@ -87,6 +99,8 @@ class CStringValue : public CRefCountedObjectBase< CObjectWithType >
         DECLARE_TYPE_WITH_BASE( TypeIndex::String, CObjectWithType );
 
         const WCHAR* GetValue();
+
+        virtual BOOL Equals( CObjectWithType* pOther );
 
     protected:
         CStringValue();

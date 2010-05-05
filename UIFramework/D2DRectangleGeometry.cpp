@@ -13,6 +13,8 @@ HRESULT CD2DRectangleGeometry::Initialize(ID2D1RectangleGeometry* pRectangleGeom
 {
     HRESULT hr = S_OK;
 
+    IFCPTR(pRectangleGeometry);
+
     IFC(CD2DGeometryBase< CRefCountedObjectBase< CRectangleGeometry > >::Initialize(pRectangleGeometry));
 
     m_RectangleGeometry = pRectangleGeometry;

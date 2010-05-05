@@ -21,6 +21,7 @@ class CProperty
         virtual const WCHAR* GetName() = 0;
         virtual TypeIndex::Value GetType() = 0;
         virtual BOOL IsCollection() = 0;
+        virtual BOOL IsDictionary() = 0;
         virtual BOOL IsAttached() = 0;
 };
 
@@ -39,6 +40,7 @@ class CObjectWithType
 
         virtual TypeIndex::Value GetType() { return TypeIndex::Object; }
         virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Object; }
+        virtual BOOL Equals( CObjectWithType* pOther ) { return this == pOther; }
 };
 
 template< >
@@ -117,6 +119,22 @@ template< >
 struct ObjectTypeTraits< CObjectCollection >
 {
     static const TypeIndex::Value Type = TypeIndex::Collection;
+};
+
+class CObjectDictionary : public CObjectWithType
+{
+    public:
+        virtual TypeIndex::Value GetType() { return TypeIndex::Dictionary; }
+        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Dictionary || CObjectWithType::IsTypeOf(Type); }
+
+        virtual HRESULT AddObject( CObjectWithType* pKey, CObjectWithType* pObject ) = 0;
+        virtual HRESULT RemoveObject( CObjectWithType* pKey, CObjectWithType* pObject ) = 0;
+};
+
+template< >
+struct ObjectTypeTraits< CObjectDictionary >
+{
+    static const TypeIndex::Value Type = TypeIndex::Dictionary;
 };
 
 #define DECLARE_TYPE( type ) \

@@ -98,6 +98,11 @@ BOOL CStaticProperty::IsCollection()
     return (m_Flags & StaticPropertyFlags::Collection) ? TRUE : FALSE;
 }
 
+BOOL CStaticProperty::IsDictionary()
+{
+    return (m_Flags & StaticPropertyFlags::Dictionary) ? TRUE : FALSE;
+}
+
 BOOL CStaticProperty::IsContent()
 {
     return (m_Flags & StaticPropertyFlags::Content) ? TRUE : FALSE;

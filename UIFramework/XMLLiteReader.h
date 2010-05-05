@@ -49,6 +49,8 @@ class CXMLLiteXMLAttribute : public CXMLAttribute
     public:
         CXMLLiteXMLAttribute( IXmlReader* pReader );
 
+        virtual HRESULT GetPrefix( const WCHAR** ppPrefix, UINT32* pPrefixBufferLength );
+        virtual HRESULT GetNamespaceUri( const WCHAR** ppNamespaceUri, UINT32* pNamespaceUriLength );
         virtual HRESULT GetName( const WCHAR** ppNameBuffer, UINT32* pNameBufferLength );
         virtual HRESULT GetValue( const WCHAR** ppValueBuffer, UINT32* pValueBufferLength );
 

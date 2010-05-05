@@ -4,6 +4,7 @@
 #include "DirectWriteTextProvider.h"
 #include "WICImagingProvider.h"
 #include "D2DRectangleGeometry.h"
+#include "D2DRoundedRectangleGeometry.h"
 
 //TODO: Remove this!
 #pragma comment( lib, "d2d1.lib" )
@@ -173,6 +174,29 @@ HRESULT CD2DGraphicsDevice::CreateRectangleGeometry(const RectF& Rectangle, CRec
 
 Cleanup:
     ReleaseObject(pD2DRectangleGeometry);
+    ReleaseObject(pGeometry);
+
+    return hr;
+}
+
+HRESULT CD2DGraphicsDevice::CreateRoundedRectangleGeometry(const RectF& Rectangle, FLOAT CornerRadius, CRoundedRectangleGeometry** ppRoundedRectangleGeometry)
+{
+    HRESULT hr = S_OK;
+    ID2D1RoundedRectangleGeometry* pD2DRoundedRectangleGeometry = NULL;
+    CD2DRoundedRectangleGeometry* pGeometry = NULL;
+    D2D1_ROUNDED_RECT RoundedRect = { Rectangle, CornerRadius, CornerRadius };
+
+    IFCPTR(ppRoundedRectangleGeometry);
+
+    IFC(m_Factory->CreateRoundedRectangleGeometry(RoundedRect, &pD2DRoundedRectangleGeometry));
+
+    IFC(CD2DRoundedRectangleGeometry::Create(pD2DRoundedRectangleGeometry, &pGeometry));
+
+    *ppRoundedRectangleGeometry = pGeometry;
+    pGeometry = NULL;
+
+Cleanup:
+    ReleaseObject(pD2DRoundedRectangleGeometry);
     ReleaseObject(pGeometry);
 
     return hr;

@@ -2,6 +2,7 @@
 
 #include "UIElement.h"
 #include "Collection.h"
+#include "ResourceDictionary.h"
 
 class CUIElementCollection : public CCollection< CUIElement >
 {
@@ -66,6 +67,47 @@ class CFrameworkElement : public CUIElement
             return hr;
         }
 
+        HRESULT FindResource( CObjectWithType* pKey, CObjectWithType** ppObject );
+        HRESULT FindResource( const WCHAR* pResourceName, CObjectWithType** ppObject );
+
+        template< typename T >
+        HRESULT FindResource( CObjectWithType* pKey, T** ppObject )
+        {
+            HRESULT hr = S_OK;
+            CObjectWithType* pFoundObject = NULL;
+
+            IFC(FindResource(pKey, &pFoundObject));
+
+            IFCEXPECT(pFoundObject->IsTypeOf(ObjectTypeTraits< T >::Type));
+
+            *ppObject = (T*)pFoundObject;
+            pFoundObject = NULL;
+
+        Cleanup:
+            ReleaseObject(pFoundObject);
+
+            return hr;
+        }
+
+        template< typename T >
+        HRESULT FindResource( const WCHAR* pResourceName, T** ppObject )
+        {
+            HRESULT hr = S_OK;
+            CObjectWithType* pFoundObject = NULL;
+
+            IFC(FindResource(pResourceName, &pFoundObject));
+
+            IFCEXPECT(pFoundObject->IsTypeOf(ObjectTypeTraits< T >::Type));
+
+            *ppObject = (T*)pFoundObject;
+            pFoundObject = NULL;
+
+        Cleanup:
+            ReleaseObject(pFoundObject);
+
+            return hr;
+        }
+
     protected:
         CFrameworkElement();
         virtual ~CFrameworkElement();
@@ -82,6 +124,7 @@ class CFrameworkElement : public CUIElement
 
         CUIElementCollection* m_Children;
         std::wstring m_Name;
+        CResourceDictionary* m_Resources;
 
         class CChildrenSubscriber : public CUIElementCollection::SubscriberType
         {

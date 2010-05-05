@@ -1,6 +1,7 @@
 #include "ParserUtilities.h"
 #include "RichPropertyNodeCallback.h"
 #include "ContentPropertyNodeCallback.h"
+#include "BasicTypes.h"
 
 BOOL IsAttribute(const WCHAR* pText)
 {
@@ -105,16 +106,42 @@ Cleanup:
     return hr;
 }
 
-HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CTypeConverter* pTypeConverter)
+HRESULT AttributeStringToValue(const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+
+    IFCPTR(pValue);
+
+    //TODO: Support markup extensions and bindings.
+    IFC(CStringValue::Create(pValue, ValueLength, &pStringValue));
+
+    *ppValue = pStringValue;
+    pStringValue = NULL;
+
+Cleanup:
+    ReleaseObject(pStringValue);
+
+    return hr;
+}
+
+HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CTypeConverter* pTypeConverter, CObjectWithType* pKey)
 {
     HRESULT hr = S_OK;
     CObjectWithType* pConvertedType = NULL;
     CObjectWithType* pCollectionObject = NULL;
     CObjectCollection* pCollection = NULL;
+    CObjectWithType* pDictionaryObject = NULL;
+    CObjectDictionary* pDictionary = NULL;
 
     IFCPTR(pElement);
     IFCPTR(pProperty);
     IFCPTR(pValue);
+
+    if(pKey)
+    {
+        IFCEXPECT(pProperty->IsDictionary());
+    }
 
     if(pProperty->GetType() == pValue->GetType() || pValue->IsTypeOf(pProperty->GetType()))
     {
@@ -128,11 +155,25 @@ HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectW
         IFC(pTypeConverter->Convert(pValue, pProperty->GetType(), &pConvertedType));
     }
 
-    if(pProperty->IsCollection())
+    if(pKey)
+    {
+        IFC(pElement->GetValue(pProperty, &pDictionaryObject));
+
+        IFCPTR(pDictionaryObject);
+
+        IFCEXPECT(pDictionaryObject->IsTypeOf(TypeIndex::Dictionary));
+
+        pDictionary = (CObjectDictionary*)pDictionaryObject;
+
+        IFC(pDictionary->AddObject(pKey, pConvertedType));
+    }
+    else if(pProperty->IsCollection())
     {
         IFC(pElement->GetValue(pProperty, &pCollectionObject));
 
         IFCPTR(pCollectionObject);
+
+        IFCEXPECT(pCollectionObject->IsTypeOf(TypeIndex::Collection));
 
         pCollection = (CObjectCollection*)pCollectionObject;
 
@@ -146,6 +187,7 @@ HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectW
 Cleanup:
     ReleaseObject(pConvertedType);
     ReleaseObject(pCollectionObject);
+    ReleaseObject(pDictionaryObject);
 
     return hr;
 }

@@ -9,6 +9,7 @@ CStaticProperty BorderProperties[] =
     CStaticProperty( L"Padding", TypeIndex::RectF, StaticPropertyFlags::None ),
     CStaticProperty( L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None ),
     CStaticProperty( L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None ),
+    CStaticProperty( L"CornerRadius", TypeIndex::Float, StaticPropertyFlags::None )
 };
 
 namespace BorderPropertyIndex
@@ -18,15 +19,16 @@ namespace BorderPropertyIndex
         Background,
         Padding,
         BorderThickness,
-        BorderBrush
+        BorderBrush,
+        CornerRadius
     };
 }
 
 CBorder::CBorder() : m_BorderVisual(NULL),
-                     m_GeometryDirty(TRUE)
+                     m_GeometryDirty(TRUE),
+                     m_CornerRadius(0),
+                     m_BorderThickness(0)
 {
-    m_BorderThickness = 0;
-
     m_Padding.left = 0;
     m_Padding.top = 0;
     m_Padding.right = 0;
@@ -121,13 +123,13 @@ HRESULT CBorder::SetPadding(const RectF& Padding)
 {
     HRESULT hr = S_OK;
 
-    IFC(InternalSetPadding(Padding));
+    IFC(SetPaddingInternal(Padding));
 
 Cleanup:
     return hr;
 }
 
-HRESULT CBorder::InternalSetPadding(const RectF& Padding)
+HRESULT CBorder::SetPaddingInternal(const RectF& Padding)
 {
     HRESULT hr = S_OK;
 
@@ -144,13 +146,46 @@ Cleanup:
     return hr;
 }
 
+HRESULT CBorder::SetCornerRadius(FLOAT Radius)
+{
+    HRESULT hr = S_OK;
+
+    IFC(SetCornerRadiusInternal(Radius));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::SetCornerRadiusInternal(FLOAT Radius)
+{
+    HRESULT hr = S_OK;
+
+    IFCEXPECT(Radius >= 0);
+
+    m_CornerRadius = Radius;
+
+    IFC(InvalidateGeometry());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::InvalidateGeometry()
+{
+    HRESULT hr = S_OK;
+
+    m_GeometryDirty = TRUE;
+
+    return hr;
+}
+
 HRESULT CBorder::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
 
     IFC(CFrameworkElement::OnAttach(Context));
 
-    m_GeometryDirty = TRUE;
+    IFC(InvalidateGeometry());
 
 Cleanup:
     return hr;
@@ -172,15 +207,26 @@ HRESULT CBorder::RebuildGeometry()
 {
     HRESULT hr = S_OK;
     CRectangleGeometry* pRectangleGeometry = NULL;
+    CRoundedRectangleGeometry* pRoundedRectangleGeometry = NULL;
     SizeF FinalSize = GetFinalSize();
     RectF Rectangle = { m_BorderThickness / 2, m_BorderThickness / 2, FinalSize.width - m_BorderThickness / 2, FinalSize.height - m_BorderThickness / 2 };
 
-    IFC(m_VisualContext.GetGraphicsDevice()->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
+    if(m_CornerRadius == 0)
+    {
+        IFC(m_VisualContext.GetGraphicsDevice()->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
 
-    IFC(m_BorderVisual->SetGeometry(pRectangleGeometry));
+        IFC(m_BorderVisual->SetGeometry(pRectangleGeometry));
+    }
+    else
+    {
+        IFC(m_VisualContext.GetGraphicsDevice()->CreateRoundedRectangleGeometry(Rectangle, m_CornerRadius, &pRoundedRectangleGeometry));
+
+        IFC(m_BorderVisual->SetGeometry(pRoundedRectangleGeometry));
+    }    
 
 Cleanup:
     ReleaseObject(pRectangleGeometry);
+    ReleaseObject(pRoundedRectangleGeometry);
 
     return hr;
 }
@@ -259,7 +305,7 @@ HRESULT CBorder::ArrangeInternal(SizeF Size)
 
     IFC(CDecorator::ArrangeInternal(Size));
 
-    m_GeometryDirty = TRUE;
+    IFC(InvalidateGeometry());
       
 Cleanup:
     return hr;
@@ -342,7 +388,7 @@ HRESULT CBorder::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 
                     CRectFValue* pRectF = (CRectFValue*)pValue;
 
-                    IFC(InternalSetPadding(pRectF->GetValue()))
+                    IFC(SetPaddingInternal(pRectF->GetValue()))
 
                     break;
                 }
@@ -365,6 +411,17 @@ HRESULT CBorder::SetValue(CProperty* pProperty, CObjectWithType* pValue)
                     CFloatValue* pFloat = (CFloatValue*)pValue;
 
                     IFC(SetBorderThickness(pFloat->GetValue()))
+
+                    break;
+                }
+
+            case BorderPropertyIndex::CornerRadius:
+                {
+                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
+
+                    CFloatValue* pFloat = (CFloatValue*)pValue;
+
+                    IFC(SetCornerRadiusInternal(pFloat->GetValue()))
 
                     break;
                 }

@@ -83,6 +83,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CTypeConverter* pTypeConverter = NULL;
     CTextBlock* pTextBlock1 = NULL;
     CImage* pImage1 = NULL;
+    CBrush* pWhiteBrush = NULL;
     connection ImageLeftButtonDownConnection;
 
 #ifdef _DEBUG
@@ -144,6 +145,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     IFC(pRootElement->FindName(L"Image1", &pImage1));
 
+    IFC(pImage1->FindResource(L"WhiteBrush", &pWhiteBrush));
+
     if(pImage1)
     {
         pImage1->AddHandler(&CUIElement::MouseLeftButtonDownEvent, bind(&OnImageLeftMouseDown, _1, _2), &ImageLeftButtonDownConnection);
@@ -173,6 +176,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 
 Cleanup:
+    ReleaseObject(pWhiteBrush);
     ReleaseObject(pTextBlock1);
     ReleaseObject(pImage1);
     ReleaseObject(pParsedRoot);

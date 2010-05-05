@@ -19,6 +19,7 @@ class CD2DGraphicsDevice : public CGraphicsDevice
         virtual HRESULT GetImagingProvider( CImagingProvider** ppImagingProvider );
 
         virtual HRESULT CreateRectangleGeometry( const RectF& Rectangle, CRectangleGeometry** ppRectangleGeometry );
+        virtual HRESULT CreateRoundedRectangleGeometry( const RectF& Rectangle, FLOAT CornerRadius, CRoundedRectangleGeometry** ppRectangleGeometry );
 
     protected:
         CD2DGraphicsDevice();

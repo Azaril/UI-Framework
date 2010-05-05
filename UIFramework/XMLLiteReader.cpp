@@ -86,8 +86,15 @@ HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* p
 
     XmlNodeType NodeType = XmlNodeType_None;
 
-    while(S_OK == (hr = pReader->Read(&NodeType)))
+    do
     {
+        IFC(pReader->Read(&NodeType));
+
+        if(hr == S_FALSE)
+        {
+            break;
+        }
+
         switch(NodeType)
         {
             case XmlNodeType_Element:
@@ -151,6 +158,7 @@ HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* p
                 }
         }
     }
+    while(SUCCEEDED(hr));
 
 Cleanup:
     delete pNameCopy;
@@ -310,6 +318,32 @@ HRESULT CXMLLiteXMLAttribute::GetValue(const WCHAR** ppValueBuffer, UINT32* pVal
     IFCPTR(pValueBufferLength);
 
     IFC(m_Reader->GetValue(ppValueBuffer, pValueBufferLength));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CXMLLiteXMLAttribute::GetPrefix(const WCHAR** ppPrefix, UINT32* pPrefixBufferLength)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppPrefix);
+    IFCPTR(pPrefixBufferLength);
+
+    IFC(m_Reader->GetPrefix(ppPrefix, pPrefixBufferLength));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CXMLLiteXMLAttribute::GetNamespaceUri(const WCHAR** ppNamespaceUri, UINT32* pNamespaceUriLength)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppNamespaceUri);
+    IFCPTR(pNamespaceUriLength);
+
+    IFC(m_Reader->GetNamespaceUri(ppNamespaceUri, pNamespaceUriLength));
 
 Cleanup:
     return hr;

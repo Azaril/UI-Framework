@@ -8,6 +8,9 @@ namespace TypeIndex
             Collection,
                 UIElementCollection,
 
+            Dictionary,
+                ResourceDictionary,
+
             Float,
             String,
             RectF,
@@ -38,6 +41,7 @@ namespace TypeIndex
 
             Geometry,
                 RectangleGeometry,
+                RoundedRectangleGeometry,
 
             RoutedEventArgs,
                 InputEventArgs,

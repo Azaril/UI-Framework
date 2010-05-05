@@ -23,6 +23,8 @@ class CXMLText
 class CXMLAttribute
 {
     public:
+        virtual HRESULT GetPrefix( const WCHAR** ppPrefix, UINT32* pPrefixBufferLength ) = 0;
+        virtual HRESULT GetNamespaceUri( const WCHAR** ppNamespaceUri, UINT32* pNamespaceUriLength ) = 0;
         virtual HRESULT GetName( const WCHAR** ppNameBuffer, UINT32* pNameBufferLength ) = 0;
         virtual HRESULT GetValue( const WCHAR** ppValueBuffer, UINT32* pValueBufferLength ) = 0;
 };

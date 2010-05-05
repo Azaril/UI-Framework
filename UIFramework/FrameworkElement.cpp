@@ -5,25 +5,29 @@
 
 CStaticProperty FrameworkElementProperties[] = 
 {
-    CStaticProperty( L"Name", TypeIndex::String, StaticPropertyFlags::None )
+    CStaticProperty( L"Name", TypeIndex::String, StaticPropertyFlags::None ),
+    CStaticProperty( L"Resources", TypeIndex::Object, StaticPropertyFlags::Dictionary )
 };
 
 namespace FrameworkElementPropertyIndex
 {
     enum Value
     {
-        Name
+        Name,
+        Resources
     };
 }
 
 CFrameworkElement::CFrameworkElement() : m_Children(NULL),
-                                         m_ChildrenSubscriber(*this)
+                                         m_ChildrenSubscriber(*this),
+                                         m_Resources(NULL)
 {
 }
 
 CFrameworkElement::~CFrameworkElement()
 {
     ReleaseObject(m_Children);
+    ReleaseObject(m_Resources);
 }
 
 HRESULT CFrameworkElement::Initialize()
@@ -31,6 +35,8 @@ HRESULT CFrameworkElement::Initialize()
     HRESULT hr = S_OK;
 
     IFC(CUIElement::Initialize());
+
+    IFC(CResourceDictionary::Create(&m_Resources));
 
     IFC(CUIElementCollection::Create(&m_Children));
 
@@ -244,6 +250,46 @@ Cleanup:
     return hr;
 }
 
+HRESULT CFrameworkElement::FindResource(const WCHAR* pResourceName, CObjectWithType** ppObject)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+
+    IFCPTR(pResourceName);
+    IFCPTR(ppObject);
+
+    IFC(CStringValue::Create(pResourceName, &pStringValue));
+
+    IFC(FindResource(pStringValue, ppObject));
+
+Cleanup:
+    ReleaseObject(pStringValue);
+
+    return hr;
+}
+
+HRESULT CFrameworkElement::FindResource(CObjectWithType* pKey, CObjectWithType** ppObject)
+{
+    HRESULT hr = S_OK;
+
+    hr = m_Resources->GetObject(pKey, ppObject);
+
+    if(FAILED(hr))
+    {
+        CUIElement* pParent = GetParent();
+
+        if(pParent != NULL && pParent->IsTypeOf(TypeIndex::FrameworkElement))
+        {
+            CFrameworkElement* pParentFrameworkElement = (CFrameworkElement*)pParent;
+
+            IFC(pParentFrameworkElement->FindResource(pKey, ppObject));
+        }
+    }
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CFrameworkElement::CreatePropertyInformation(CPropertyInformation **ppInformation)
 {
     HRESULT hr = S_OK;
@@ -333,6 +379,14 @@ HRESULT CFrameworkElement::GetValue(CProperty* pProperty, CObjectWithType** ppVa
 
                     *ppValue = pStringValue;
                     pStringValue = NULL;
+
+                    break;
+                }
+
+            case FrameworkElementPropertyIndex::Resources:
+                {
+                    *ppValue = m_Resources;
+                    AddRefObject(m_Resources);
 
                     break;
                 }

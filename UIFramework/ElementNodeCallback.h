@@ -14,6 +14,7 @@ class CElementNodeCallback : public CParserNodeCallback
         DECLARE_FACTORY3( CElementNodeCallback, CParseContext*, CPropertyObject*, CXMLElementStart* );
 
         CPropertyObject* GetObject();
+        CObjectWithType* GetKey();
 
         virtual BOOL IsComplete();
 
@@ -33,4 +34,5 @@ class CElementNodeCallback : public CParserNodeCallback
         CResolvedClass* m_ResolvedClass;
         CPropertyInformation* m_Properties;
         BOOL m_Complete;
+        CObjectWithType* m_Key;
 };

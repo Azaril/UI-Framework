@@ -24,6 +24,8 @@ class CBorder : public CDecorator
 
         HRESULT SetPadding( const RectF& Padding );
 
+        HRESULT SetCornerRadius( FLOAT Radius );
+
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
@@ -41,12 +43,15 @@ class CBorder : public CDecorator
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
 
-        HRESULT InternalSetPadding( const RectF& Padding );
+        HRESULT SetPaddingInternal( const RectF& Padding );
+        HRESULT SetCornerRadiusInternal( FLOAT Radius );
 
+        HRESULT InvalidateGeometry();
         HRESULT RebuildGeometry();
         HRESULT ReleaseGeometry();
 
         FLOAT m_BorderThickness;
+        FLOAT m_CornerRadius;
         CGeometryVisual* m_BorderVisual;
         BOOL m_GeometryDirty;
 

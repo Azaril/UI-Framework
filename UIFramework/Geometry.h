@@ -29,3 +29,15 @@ struct ObjectTypeTraits< CRectangleGeometry >
 {
     static const TypeIndex::Value Type = TypeIndex::RectangleGeometry;
 };
+
+class CRoundedRectangleGeometry : public CGeometry
+{
+    public:
+        DECLARE_TYPE_WITH_BASE( TypeIndex::RoundedRectangleGeometry, CGeometry );
+};
+
+template< >
+struct ObjectTypeTraits< CRoundedRectangleGeometry >
+{
+    static const TypeIndex::Value Type = TypeIndex::RoundedRectangleGeometry;
+};
