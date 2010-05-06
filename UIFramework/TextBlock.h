@@ -12,15 +12,21 @@ class CTextBlock : public CFrameworkElement
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
-
         virtual HRESULT SetText( const WCHAR* pText );
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
 
+        //
+        // Properties
+        //
+        static CStaticProperty TextProperty;
+
     protected:
         CTextBlock();
         virtual ~CTextBlock();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );

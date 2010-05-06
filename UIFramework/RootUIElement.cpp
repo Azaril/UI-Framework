@@ -1,7 +1,8 @@
 #include "RootUIElement.h"
 
 CRootUIElement::CRootUIElement() : m_Child(NULL),
-                                   m_Namescope(NULL)
+                                   m_Namescope(NULL),
+                                   m_Providers(NULL)
 {
 }
 
@@ -10,16 +11,20 @@ CRootUIElement::~CRootUIElement()
     Finalize();
 }
 
-HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget)
+HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pGraphicsDevice);
     IFCPTR(pRenderTarget);
+    IFCPTR(pProviders);
 
     IFC(CFrameworkElement::Initialize());
 
     IFC(CNamescope::Create(&m_Namescope));
+
+    m_Providers = pProviders;
+    AddRefObject(m_Providers);
 
     {
         CVisualAttachContext VisualContext(this, pGraphicsDevice);
@@ -28,7 +33,7 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     }
 
     {
-        CUIAttachContext UIContext;
+        CUIAttachContext UIContext(NULL, m_Providers);
 
         IFC(OnAttach(UIContext));
     }
@@ -56,6 +61,7 @@ HRESULT CRootUIElement::Finalize()
 Cleanup:
     ReleaseObject(m_Child);
     ReleaseObject(m_Namescope);
+    ReleaseObject(m_Providers);
 
     return hr;
 }

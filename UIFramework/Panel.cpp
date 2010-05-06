@@ -2,18 +2,10 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 
-CStaticProperty PanelProperties[] = 
-{
-    CStaticProperty( L"Children", TypeIndex::UIElement, StaticPropertyFlags::Content | StaticPropertyFlags::Collection )
-};
-
-namespace PanelPropertyIndex
-{
-    enum Value
-    {
-        Children
-    };
-}
+//
+// Properties
+//
+CStaticProperty CPanel::ChildrenProperty( L"Children", TypeIndex::UIElement, StaticPropertyFlags::Content | StaticPropertyFlags::Collection );
 
 CPanel::CPanel()
 {
@@ -56,7 +48,12 @@ HRESULT CPanel::CreatePropertyInformation(CPropertyInformation** ppInformation)
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(PanelProperties, ARRAYSIZE(PanelProperties), &pStaticInformation));
+    CStaticProperty* Properties[] = 
+    {
+        &ChildrenProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -71,83 +68,47 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPanel::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CPanel::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= PanelProperties && pProperty < PanelProperties + ARRAYSIZE(PanelProperties))
+    if(pProperty == &CPanel::ChildrenProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElementCollection));
 
-        UINT32 Index = (pStaticProperty - PanelProperties);
-        
-        switch(Index)
-        {
-            case PanelPropertyIndex::Children:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElementCollection));
+        CUIElementCollection* pUIElementCollection = (CUIElementCollection*)pValue;
 
-                    CUIElementCollection* pUIElementCollection = (CUIElementCollection*)pValue;
-
-                    //TODO: Implement!
-                    //IFC(SetChildren(pUIElementCollection));
-                    __debugbreak();
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        //TODO: Implement!
+        //IFC(SetChildren(pUIElementCollection));
+        __debugbreak();
     }
     else
     {
-        IFC(CFrameworkElement::SetValue(pProperty, pValue));
+        IFC(CFrameworkElement::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CPanel::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+HRESULT CPanel::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= PanelProperties && pProperty < PanelProperties + ARRAYSIZE(PanelProperties))
+    if(pProperty == &CPanel::ChildrenProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - PanelProperties);
-        
-        switch(Index)
-        {
-            case PanelPropertyIndex::Children:
-                {
-                    *ppValue = m_Children;
-                    AddRefObject(m_Children);
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        *ppValue = m_Children;
+        AddRefObject(m_Children);
     }
     else
     {
-        IFC(CPanel::GetValue(pProperty, ppValue));
+        IFC(CFrameworkElement::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:

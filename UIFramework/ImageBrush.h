@@ -83,6 +83,11 @@ class CImageBrush : public CBrush
 
         virtual HRESULT GetSize( SizeU* pSize );
 
+        //
+        // Properties
+        //
+        static CStaticProperty SourceProperty;
+
     protected:
         CImageBrush();
         virtual ~CImageBrush();

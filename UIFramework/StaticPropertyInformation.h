@@ -15,10 +15,13 @@ namespace StaticPropertyFlags
     };
 }
 
+typedef HRESULT (*GetDefaultPropertyValueFunc)( CObjectWithType** ppObject );
+typedef HRESULT (*OnValueChangeFunc)( CPropertyObject* pObjectInstance );
+
 class CStaticProperty : public CProperty
 {
     public:
-        CStaticProperty( const WCHAR* Name, const TypeIndex::Value Type, UINT32 Flags );
+        CStaticProperty( const WCHAR* Name, const TypeIndex::Value Type, UINT32 Flags, GetDefaultPropertyValueFunc DefaultValueFunc = NULL, OnValueChangeFunc ValueChangeFunc = NULL );
 
         virtual INT32 AddRef();
         virtual INT32 Release();
@@ -30,16 +33,22 @@ class CStaticProperty : public CProperty
         virtual BOOL IsAttached();
         BOOL IsContent();
 
+        virtual HRESULT GetDefaultValue( CObjectWithType** ppObject );
+
+        virtual HRESULT OnValueChanged( CPropertyObject* pObjectInstance );
+
     protected:
         const WCHAR* m_Name;
         TypeIndex::Value m_Type;
         UINT32 m_Flags;
+        GetDefaultPropertyValueFunc m_DefaultValueFunc;
+        OnValueChangeFunc m_ValueChangeFunc;
 };
 
 class CStaticPropertyInformation : public CPropertyInformation
 {
     public:
-        DECLARE_FACTORY2( CStaticPropertyInformation, CStaticProperty*, UINT32 );
+        DECLARE_FACTORY2( CStaticPropertyInformation, CStaticProperty**, UINT32 );
 
         virtual HRESULT GetProperty( const WCHAR* pPropertyName, CProperty** ppProperty );
         virtual HRESULT GetContentProperty( CProperty** ppProperty );
@@ -48,8 +57,62 @@ class CStaticPropertyInformation : public CPropertyInformation
         CStaticPropertyInformation();
         virtual ~CStaticPropertyInformation();
 
-        HRESULT Initialize( CStaticProperty* pProperties, UINT32 PropertyCount );
+        HRESULT Initialize( CStaticProperty** ppProperties, UINT32 PropertyCount );
 
-        CStaticProperty* m_Properties;
-        UINT32 m_PropertyCount;
+        std::vector< CStaticProperty* > m_Properties;
 };
+
+// HACK: Remove this as it triggers an allocation for every default value query.
+#define DEFINE_GET_DEFAULT( name, type, value ) \
+HRESULT GetDefault##name(CObjectWithType** ppObject)    \
+{   \
+    HRESULT hr = S_OK;  \
+    type* pValue = NULL;    \
+    \
+    IFCPTR(ppObject);   \
+    \
+    IFC(##type::Create(value, &pValue));    \
+    \
+    *ppObject = pValue; \
+    pValue = NULL;  \
+    \
+Cleanup:    \
+    ReleaseObject(pValue);  \
+    \
+    return hr;  \
+}
+
+#define DEFINE_GET_DEFAULT_NULL( name ) \
+HRESULT GetDefault##name(CObjectWithType** ppObject)    \
+{   \
+    HRESULT hr = S_OK;  \
+    \
+    IFCPTR(ppObject);   \
+    \
+    *ppObject = NULL; \
+    \
+Cleanup:    \
+    return hr;  \
+}
+
+#define GET_DEFAULT( name ) GetDefault##name
+
+#define DEFINE_INSTANCE_CHANGE_CALLBACK( type, name ) \
+HRESULT type::Static##name(CPropertyObject* pObjectInstance)    \
+{   \
+    HRESULT hr = S_OK;  \
+    type* pTypedInstance = NULL;    \
+    \
+    IFCPTR(pObjectInstance);   \
+    \
+    IFCEXPECT(pObjectInstance->IsTypeOf(ObjectTypeTraits< type >::Type));   \
+    \
+    pTypedInstance = (##type*)pObjectInstance;  \
+    \
+    IFC(pTypedInstance->##name());  \
+    \
+Cleanup:    \
+    return hr;  \
+}
+
+#define INSTANCE_CHANGE_CALLBACK( type, name ) type::Static##name

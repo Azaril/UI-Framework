@@ -13,9 +13,6 @@ class CImage : public CFrameworkElement
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-
         HRESULT SetSource( const WCHAR* pSource );
         HRESULT SetSource( CObjectWithType* pSource);
 
@@ -24,12 +21,20 @@ class CImage : public CFrameworkElement
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
+        //
+        // Properties
+        //
+        static CStaticProperty SourceProperty;
+
     protected:
         CImage();
         virtual ~CImage();
 
         HRESULT Initialize();
         HRESULT Finalize();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );

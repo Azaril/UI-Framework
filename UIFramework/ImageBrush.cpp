@@ -3,18 +3,10 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-CStaticProperty ImageBrushProperties[] = 
-{
-    CStaticProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None )
-};
-
-namespace ImageBrushPropertyIndex
-{
-    enum Value
-    {
-        Source
-    };
-}
+//
+// Properties
+//
+CStaticProperty CImageBrush::SourceProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None );
 
 CImageBrush::CImageBrush() : m_Source(NULL)
 {
@@ -41,7 +33,12 @@ HRESULT CImageBrush::CreatePropertyInformation(CPropertyInformation **ppInformat
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(ImageBrushProperties, ARRAYSIZE(ImageBrushProperties), &pStaticInformation));
+    CStaticProperty* Properties[] = 
+    {
+        &SourceProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CBrush::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -297,27 +294,9 @@ HRESULT CImageBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= ImageBrushProperties && pProperty < ImageBrushProperties + ARRAYSIZE(ImageBrushProperties))
+    if(pProperty == &CImageBrush::SourceProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - ImageBrushProperties);
-        
-        switch(Index)
-        {
-            case ImageBrushPropertyIndex::Source:
-                {
-                    IFC(InternalSetSource(pValue));
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(InternalSetSource(pValue));
     }
     else
     {
@@ -335,28 +314,10 @@ HRESULT CImageBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= ImageBrushProperties && pProperty < ImageBrushProperties + ARRAYSIZE(ImageBrushProperties))
+    if(pProperty == &CImageBrush::SourceProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - ImageBrushProperties);
-        
-        switch(Index)
-        {
-            case ImageBrushPropertyIndex::Source:
-                {
-                    *ppValue = m_Source;
-                    AddRefObject(m_Source);
-                    
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        *ppValue = m_Source;
+        AddRefObject(m_Source);
     }
     else
     {

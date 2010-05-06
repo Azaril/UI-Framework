@@ -32,6 +32,4 @@ class CRichPropertyNodeCallback : public CPropertyNodeCallback
         BOOL m_SetObjectValue;
         CElementNodeCallback* m_ChildNode;
         CProperty* m_Property;
-        CResolvedClass* m_ResolvedClass;
-        CPropertyInformation* m_Properties;
 };

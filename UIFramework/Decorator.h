@@ -9,17 +9,22 @@ class CDecorator : public CFrameworkElement
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-
         virtual HRESULT SetChild( CUIElement* pChild );
         CUIElement* GetChild();
+
+        //
+        // Properties
+        //
+        static CStaticProperty ChildProperty;
 
     protected:
         CDecorator();
         virtual ~CDecorator();
 
         HRESULT Initialize();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
 
         CUIElement* m_Child;
 };

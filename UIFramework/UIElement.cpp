@@ -4,31 +4,70 @@
 #include "DelegatingPropertyInformation.h"
 #include "MouseInput.h"
 
-CStaticProperty UIElementProperties[] = 
+//
+// Property Change Handlers
+//
+//TODO: Make these instance methods.
+HRESULT OnWidthChanged(CPropertyObject* pObjectInstance)
 {
-    CStaticProperty( L"Width", TypeIndex::Float, StaticPropertyFlags::None ),
-    CStaticProperty( L"Height", TypeIndex::Float, StaticPropertyFlags::None ),
-    CStaticProperty( L"MinimumWidth", TypeIndex::Float, StaticPropertyFlags::None ),
-    CStaticProperty( L"MinimumHeight", TypeIndex::Float, StaticPropertyFlags::None ),
-    CStaticProperty( L"MaximumWidth", TypeIndex::Float, StaticPropertyFlags::None ),
-    CStaticProperty( L"MaximumHeight", TypeIndex::Float, StaticPropertyFlags::None ),
-    CStaticProperty( L"Visibility", TypeIndex::Visibility, StaticPropertyFlags::None )
-};
+    HRESULT hr = S_OK;
+    CUIElement* pUIElement = NULL;
 
-namespace UIElementPropertyIndex
-{
-    enum Value
-    {
-        Width,
-        Height,
-        MinimumWidth,
-        MinimumHeight,
-        MaximumWidth,
-        MaximumHeight,
-        Visibility
-    };
+    IFCPTR(pObjectInstance);
+
+    IFCEXPECT(pObjectInstance->IsTypeOf(TypeIndex::UIElement));
+
+    pUIElement = (CUIElement*)pObjectInstance;
+
+    IFC(pUIElement->InvalidateMeasure());
+
+Cleanup:
+    return hr;
 }
 
+//TODO: Make these instance methods.
+HRESULT OnHeightChanged(CPropertyObject* pObjectInstance)
+{
+    HRESULT hr = S_OK;
+    CUIElement* pUIElement = NULL;
+
+    IFCPTR(pObjectInstance);
+
+    IFCEXPECT(pObjectInstance->IsTypeOf(TypeIndex::UIElement));
+
+    pUIElement = (CUIElement*)pObjectInstance;
+
+    IFC(pUIElement->InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+//
+// Property Defaults
+//
+DEFINE_GET_DEFAULT( Width, CFloatValue, 0 );
+DEFINE_GET_DEFAULT( Height, CFloatValue, 0 );
+DEFINE_GET_DEFAULT( MinimumWidth, CFloatValue, 0 );
+DEFINE_GET_DEFAULT( MinimumHeight, CFloatValue, 0 );
+DEFINE_GET_DEFAULT( MaximumWidth, CFloatValue, FLT_MAX );
+DEFINE_GET_DEFAULT( MaximumHeight, CFloatValue, FLT_MAX );
+DEFINE_GET_DEFAULT( Visibility, CVisibilityValue, Visibility::Visible );
+
+//
+// Properties
+//
+CStaticProperty CUIElement::WidthProperty( L"Width", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Width ), &OnWidthChanged );
+CStaticProperty CUIElement::HeightProperty( L"Height", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Height ), &OnHeightChanged );
+CStaticProperty CUIElement::MinimumWidthProperty( L"MinimumWidth", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MinimumWidth ) );
+CStaticProperty CUIElement::MinimumHeightProperty( L"MinimumHeight", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MinimumHeight ) );
+CStaticProperty CUIElement::MaximumWidthProperty( L"MaximumWidth", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MaximumWidth ) );
+CStaticProperty CUIElement::MaximumHeightProperty( L"MaximumHeight", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MaximumHeight ) );
+CStaticProperty CUIElement::VisibilityProperty( L"Visibility", TypeIndex::Visibility, StaticPropertyFlags::None, &GET_DEFAULT( Visibility ) );
+
+//
+// Events
+//
 CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseButtonEvent;
 
 CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseDownEvent;
@@ -48,16 +87,23 @@ CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
                            m_ArrangeDirty(TRUE),
                            m_PropertyInformation(NULL),
-                           m_Visibility(Visibility::Visible)
+                           m_Width(&CUIElement::WidthProperty),
+                           m_Height(&CUIElement::HeightProperty),
+                           m_MinimumWidth(&CUIElement::MinimumWidthProperty),
+                           m_MinimumHeight(&CUIElement::MinimumHeightProperty),
+                           m_MaximumWidth(&CUIElement::MaximumWidthProperty),
+                           m_MaximumHeight(&CUIElement::MaximumHeightProperty),
+                           m_Visibility(&CUIElement::VisibilityProperty)
+                           /*m_Visibility(Visibility::Visible)*/
 {
-    m_Size.width = 0;
-    m_Size.height = 0;
+    //m_Size.width = 0;
+    //m_Size.height = 0;
 
-    m_MinimumSize.width = 0;
-    m_MinimumSize.height = 0;
+    //m_MinimumSize.width = 0;
+    //m_MinimumSize.height = 0;
 
-    m_MaximumSize.width = FLT_MAX;
-    m_MaximumSize.height = FLT_MAX;
+    //m_MaximumSize.width = FLT_MAX;
+    //m_MaximumSize.height = FLT_MAX;
 
     m_DesiredSize.width = 0;
     m_DesiredSize.height = 0;
@@ -120,8 +166,11 @@ Cleanup:
 HRESULT CUIElement::PreRender(CPreRenderContext& Context)
 {
     HRESULT hr = S_OK;
+    Visibility::Value EffectiveVisibility = Visibility::Visible;
 
-    if(m_Visibility == Visibility::Visible)
+    IFC(GetEffectiveVisibility(&EffectiveVisibility));
+
+    if(EffectiveVisibility == Visibility::Visible)
     {
         IFC(PreRenderInternal(Context));
     }
@@ -143,8 +192,11 @@ Cleanup:
 HRESULT CUIElement::Render(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
+    Visibility::Value EffectiveVisibility = Visibility::Visible;
 
-    if(m_Visibility == Visibility::Visible)
+    IFC(GetEffectiveVisibility(&EffectiveVisibility));
+
+    if(EffectiveVisibility == Visibility::Visible)
     {
         IFC(RenderInternal(Context));
     }
@@ -215,19 +267,32 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
 
     if(m_MeasureDirty || m_LastMeasureSize.height != AvailableSize.height || m_LastMeasureSize.width != AvailableSize.width)
     {
-        if(m_Visibility == Visibility::Visible || m_Visibility == Visibility::Hidden)
+        Visibility::Value EffectiveVisibility = Visibility::Visible;
+
+        IFC(GetEffectiveVisibility(&EffectiveVisibility));
+
+        if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
             SizeF NewSize = { 0 };
+            FLOAT MinimumWidth = 0;
+            FLOAT MinimumHeight = 0;
+            FLOAT MaximumWidth = 0;
+            FLOAT MaximumHeight = 0;
+
+            IFC(GetEffectiveMinimumWidth(&MinimumWidth));
+            IFC(GetEffectiveMinimumHeight(&MinimumHeight));
+            IFC(GetEffectiveMaximumWidth(&MaximumWidth));
+            IFC(GetEffectiveMaximumHeight(&MaximumHeight));
 
             IFC(MeasureInternal(AvailableSize, NewSize));
 
             m_LastMeasureSize = AvailableSize;
 
-            NewSize.width = max(NewSize.width, m_MinimumSize.width);
-            NewSize.height = max(NewSize.height, m_MinimumSize.height);
+            NewSize.width = max(NewSize.width, MinimumWidth);
+            NewSize.height = max(NewSize.height, MinimumHeight);
 
-            NewSize.width = min(NewSize.width, m_MaximumSize.width);
-            NewSize.height = min(NewSize.height, m_MaximumSize.height);
+            NewSize.width = min(NewSize.width, MaximumWidth);
+            NewSize.height = min(NewSize.height, MaximumHeight);
 
             if(NewSize.width != m_DesiredSize.width || NewSize.height != m_DesiredSize.width)
             {
@@ -252,14 +317,138 @@ Cleanup:
 HRESULT CUIElement::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
+    FLOAT Width = 0;
+    FLOAT Height = 0;
 
     IFCEXPECT(AvailableSize.width >= 0);
     IFCEXPECT(AvailableSize.height >= 0);
 
-    DesiredSize.width = min(AvailableSize.width, m_Size.width);
-    DesiredSize.height = min(AvailableSize.height, m_Size.height);
+    IFC(GetEffectiveWidth(&Width));
+    IFC(GetEffectiveHeight(&Height));
+
+    DesiredSize.width = min(AvailableSize.width, Width);
+    DesiredSize.height = min(AvailableSize.height, Height);
 
 Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::GetEffectiveWidth(FLOAT* pWidth)
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pEffectiveValue = NULL;
+
+    IFCPTR(pWidth);
+
+    IFC(m_Width.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pWidth = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
+HRESULT CUIElement::GetEffectiveHeight(FLOAT* pHeight)
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pEffectiveValue = NULL;
+
+    IFCPTR(pHeight);
+
+    IFC(m_Height.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pHeight = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
+HRESULT CUIElement::GetEffectiveVisibility(Visibility::Value* pVisibility)
+{
+    HRESULT hr = S_OK;
+    CVisibilityValue* pEffectiveValue = NULL;
+
+    IFCPTR(pVisibility);
+
+    IFC(m_Visibility.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pVisibility = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
+HRESULT CUIElement::GetEffectiveMinimumWidth(FLOAT* pMinimumWidth)
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pEffectiveValue = NULL;
+
+    IFCPTR(pMinimumWidth);
+
+    IFC(m_MinimumWidth.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pMinimumWidth = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
+HRESULT CUIElement::GetEffectiveMinimumHeight(FLOAT* pMinimumHeight)
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pEffectiveValue = NULL;
+
+    IFCPTR(pMinimumHeight);
+
+    IFC(m_MinimumHeight.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pMinimumHeight = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
+HRESULT CUIElement::GetEffectiveMaximumWidth(FLOAT* pMaximumWidth)
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pEffectiveValue = NULL;
+
+    IFCPTR(pMaximumWidth);
+
+    IFC(m_MaximumWidth.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pMaximumWidth = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
+HRESULT CUIElement::GetEffectiveMaximumHeight(FLOAT* pMaximumHeight)
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pEffectiveValue = NULL;
+
+    IFCPTR(pMaximumHeight);
+
+    IFC(m_MaximumHeight.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pMaximumHeight = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
     return hr;
 }
 
@@ -282,7 +471,11 @@ HRESULT CUIElement::Arrange(SizeF Size)
 
     if(m_ArrangeDirty || Size.width != m_FinalSize.width || Size.height != m_FinalSize.width)
     {
-        if(m_Visibility == Visibility::Visible || m_Visibility == Visibility::Hidden)
+        Visibility::Value EffectiveVisibility = Visibility::Visible;
+
+        IFC(GetEffectiveVisibility(&EffectiveVisibility))
+
+        if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
             m_FinalSize = Size;
 
@@ -363,6 +556,16 @@ CUIElement* CUIElement::GetParent()
     return m_Context.GetParent();
 }
 
+CProviders* CUIElement::GetProviders()
+{
+    return m_Context.GetProviders();
+}
+
+CTypeConverter* CUIElement::GetTypeConverter()
+{
+    return (m_Context.GetProviders() != NULL) ? m_Context.GetProviders()->GetTypeConverter() : NULL;
+}
+
 HRESULT CUIElement::NotifyParent(CUINotification* pNotification)
 {
     HRESULT hr = S_OK;
@@ -422,12 +625,13 @@ HRESULT CUIElement::InternalSetVisibility(Visibility::Value State)
 {
     HRESULT hr = S_OK;
 
-    IFCEXPECT(State == Visibility::Visible || State == Visibility::Hidden || State == Visibility::Collapsed);
+    //IFCEXPECT(State == Visibility::Visible || State == Visibility::Hidden || State == Visibility::Collapsed);
 
-    m_Visibility = State;
+    //IFC(SetValue
+    //m_Visibility = State;
 
-    IFC(InvalidateMeasure());
-    IFC(InvalidateArrange());
+    //IFC(InvalidateMeasure());
+    //IFC(InvalidateArrange());
 
 Cleanup:
     return hr;
@@ -466,7 +670,18 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(UIElementProperties, ARRAYSIZE(UIElementProperties), &pStaticInformation))
+    CStaticProperty* Properties[] = 
+    {
+        &WidthProperty,
+        &HeightProperty,
+        &MinimumWidthProperty,
+        &MinimumHeightProperty,
+        &MaximumWidthProperty,
+        &MaximumHeightProperty,
+        &VisibilityProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
     IFC(CVisual::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -481,109 +696,84 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppLayeredValue);
+
+    //TODO: Make this a lookup table rather than requiring a comparison per property.
+    if(pProperty == &CUIElement::WidthProperty)
+    {
+        *ppLayeredValue = &m_Width;
+    }
+    else if(pProperty == &CUIElement::HeightProperty)
+    {
+        *ppLayeredValue = &m_Height;
+    }
+    else if(pProperty == &CUIElement::MinimumWidthProperty)
+    {
+        *ppLayeredValue = &m_MinimumWidth;
+    }
+    else if(pProperty == &CUIElement::MinimumHeightProperty)
+    {
+        *ppLayeredValue = &m_MinimumHeight;
+    }
+    else if(pProperty == &CUIElement::MaximumWidthProperty)
+    {
+        *ppLayeredValue = &m_MinimumWidth;
+    }
+    else if(pProperty == &CUIElement::MaximumHeightProperty)
+    {
+        *ppLayeredValue = &m_MaximumHeight;
+    }
+    else if(pProperty == &CUIElement::VisibilityProperty)
+    {
+        *ppLayeredValue = &m_Visibility;
+    }
+    else
+    {
+        hr = E_FAIL;
+    }
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CLayeredValue* pLayeredValue = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    {
+        IFC(pLayeredValue->SetLocalValue(pValue, GetProviders()));
+    }
+    else
+    {
+        IFC(SetValueInternal(pProperty, pValue));
+    }
+
+    //TODO: Where is the value changed notification supposed to go?
+    //TODO: How does this fit with invalidated layered properties?
+    IFC(pProperty->OnValueChanged(this));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= UIElementProperties && pProperty < UIElementProperties + ARRAYSIZE(UIElementProperties))
-    {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - UIElementProperties);
-        
-        switch(Index)
-        {
-            case UIElementPropertyIndex::Width:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-                    CFloatValue* pFloat = (CFloatValue*)pValue;
-
-                    IFC(InternalSetWidth(pFloat->GetValue()));
-
-                    break;
-                }
-
-            case UIElementPropertyIndex::Height:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-                    CFloatValue* pFloat = (CFloatValue*)pValue;
-
-                    IFC(InternalSetHeight(pFloat->GetValue()));
-
-                    break;
-                }
-
-            case UIElementPropertyIndex::MinimumWidth:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-                    CFloatValue* pFloat = (CFloatValue*)pValue;
-
-                    IFC(InternalSetMinimumHeight(pFloat->GetValue()));
-
-                    break;
-                }
-
-            case UIElementPropertyIndex::MinimumHeight:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-                    CFloatValue* pFloat = (CFloatValue*)pValue;
-
-                    IFC(InternalSetMinimumWidth(pFloat->GetValue()));
-
-                    break;
-                }
-
-            case UIElementPropertyIndex::MaximumWidth:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-                    CFloatValue* pFloat = (CFloatValue*)pValue;
-
-                    IFC(InternalSetMaximumHeight(pFloat->GetValue()));
-
-                    break;
-                }
-
-            case UIElementPropertyIndex::MaximumHeight:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-                    CFloatValue* pFloat = (CFloatValue*)pValue;
-
-                    IFC(InternalSetMaximumWidth(pFloat->GetValue()));
-
-                    break;
-                }
-
-            case UIElementPropertyIndex::Visibility:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Visibility));
-
-                    CVisibilityValue* pVisibility = (CVisibilityValue*)pValue;
-
-                    IFC(InternalSetVisibility(pVisibility->GetValue()));
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
-    }
-    else
-    {
-        IFC(CVisual::SetValue(pProperty, pValue));
-    }
+    IFC(CVisual::SetValue(pProperty, pValue));
 
 Cleanup:
     return hr;
@@ -592,65 +782,56 @@ Cleanup:
 HRESULT CUIElement::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
-    CFloatValue* pFloatValue = NULL;
-    CVisibilityValue* pVisibilityValue = NULL;
+    CLayeredValue* pLayeredValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= UIElementProperties && pProperty < UIElementProperties + ARRAYSIZE(UIElementProperties))
+    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - UIElementProperties);
-        
-        switch(Index)
-        {
-            case UIElementPropertyIndex::Width:
-                {
-                    IFC(CFloatValue::Create(m_Size.width, &pFloatValue));
-
-                    *ppValue = pFloatValue;
-                    pFloatValue = NULL;
-
-                    break;
-                }
-
-            case UIElementPropertyIndex::Height:
-                {
-                    IFC(CFloatValue::Create(m_Size.width, &pFloatValue));
-
-                    *ppValue = pFloatValue;
-                    pFloatValue = NULL;
-
-                    break;
-                }
-
-            case UIElementPropertyIndex::Visibility:
-                {
-                    IFC(CVisibilityValue::Create(m_Visibility, &pVisibilityValue));
-
-                    *ppValue = pVisibilityValue;
-                    pVisibilityValue = NULL;
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(pLayeredValue->GetLocalValue(GetProviders(), ppValue));
     }
     else
     {
-        IFC(CVisual::GetValue(pProperty, ppValue));
+        IFC(GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:
-    ReleaseObject(pFloatValue);
-    ReleaseObject(pVisibilityValue);
+    return hr;
+}
+
+HRESULT CUIElement::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    IFC(CVisual::GetValue(pProperty, ppValue));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::GetEffectiveValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+    CLayeredValue* pLayeredValue = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    {
+        IFC(pLayeredValue->GetEffectiveValue(GetProviders(), ppValue));
+    }
+    else
+    {
+        //TODO: This will trigger yet another layered property lookup, needs optomization.
+        IFC(GetValue(pProperty, ppValue));
+    }
+
+Cleanup:
 
     return hr;
 }
@@ -661,9 +842,9 @@ HRESULT CUIElement::InternalSetWidth(FLOAT Width)
 
     IFCEXPECT(Width >= 0);
 
-    m_Size.width = Width;
+    //m_Size.width = Width;
 
-    IFC(InvalidateMeasure());
+    //IFC(InvalidateMeasure());
 
 Cleanup:
     return hr;
@@ -674,9 +855,9 @@ HRESULT CUIElement::InternalSetHeight(FLOAT Height)
 
     IFCEXPECT(Height >= 0);
 
-    m_Size.height = Height;
+    //m_Size.height = Height;
 
-    IFC(InvalidateMeasure());
+    //IFC(InvalidateMeasure());
 
 Cleanup:
     return hr;
@@ -686,11 +867,11 @@ HRESULT CUIElement::InternalSetMinimumWidth(FLOAT Width)
 {
     HRESULT hr = S_OK;
 
-    IFCEXPECT(Width >= 0);
+    //IFCEXPECT(Width >= 0);
 
-    m_MinimumSize.width = Width;
+    //m_MinimumSize.width = Width;
 
-    IFC(InvalidateMeasure());
+    //IFC(InvalidateMeasure());
 
 Cleanup:
     return hr;
@@ -699,11 +880,11 @@ HRESULT CUIElement::InternalSetMinimumHeight(FLOAT Height)
 {
     HRESULT hr = S_OK;
 
-    IFCEXPECT(Height >= 0);
+    //IFCEXPECT(Height >= 0);
 
-    m_MinimumSize.height = Height;
+    //m_MinimumSize.height = Height;
 
-    IFC(InvalidateMeasure());
+    //IFC(InvalidateMeasure());
 
 Cleanup:
     return hr;
@@ -713,11 +894,11 @@ HRESULT CUIElement::InternalSetMaximumWidth(FLOAT Width)
 {
     HRESULT hr = S_OK;
 
-    IFCEXPECT(Width >= 0);
+    //IFCEXPECT(Width >= 0);
 
-    m_MaximumSize.width = Width;
+    //m_MaximumSize.width = Width;
 
-    IFC(InvalidateMeasure());
+    //IFC(InvalidateMeasure());
 
 Cleanup:
     return hr;
@@ -726,11 +907,11 @@ HRESULT CUIElement::InternalSetMaximumHeight(FLOAT Height)
 {
     HRESULT hr = S_OK;
 
-    IFCEXPECT(Height >= 0);
+    //IFCEXPECT(Height >= 0);
 
-    m_MaximumSize.height = Height;
+    //m_MaximumSize.height = Height;
 
-    IFC(InvalidateMeasure());
+    //IFC(InvalidateMeasure());
 
 Cleanup:
     return hr;

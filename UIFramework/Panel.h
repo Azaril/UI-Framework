@@ -9,17 +9,19 @@ class CPanel : public CFrameworkElement
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-
         virtual HRESULT AddChild( CUIElement* pElement );
         virtual HRESULT RemoveChild( CUIElement* pElement );
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
 
+        static CStaticProperty ChildrenProperty;
+
     protected:
         CPanel();
         virtual ~CPanel();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
 };
 
 template< >

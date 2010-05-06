@@ -155,8 +155,10 @@ HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectW
         IFC(pTypeConverter->Convert(pValue, pProperty->GetType(), &pConvertedType));
     }
 
-    if(pKey)
+    if(pProperty->IsDictionary())
     {
+        IFCPTR(pKey);
+
         IFC(pElement->GetValue(pProperty, &pDictionaryObject));
 
         IFCPTR(pDictionaryObject);

@@ -3,24 +3,19 @@
 #include "DelegatingPropertyInformation.h"
 #include "BasicTypes.h"
 
-CStaticProperty FrameworkElementProperties[] = 
-{
-    CStaticProperty( L"Name", TypeIndex::String, StaticPropertyFlags::None ),
-    CStaticProperty( L"Resources", TypeIndex::Object, StaticPropertyFlags::Dictionary )
-};
-
-namespace FrameworkElementPropertyIndex
-{
-    enum Value
-    {
-        Name,
-        Resources
-    };
-}
+//
+// Properties
+//
+CStaticProperty CFrameworkElement::NameProperty( L"Name", TypeIndex::String, StaticPropertyFlags::None );
+CStaticProperty CFrameworkElement::ResourcesProperty( L"Resources", TypeIndex::Object, StaticPropertyFlags::Dictionary );
+CStaticProperty CFrameworkElement::StyleProperty( L"Style", TypeIndex::Style, StaticPropertyFlags::None );
 
 CFrameworkElement::CFrameworkElement() : m_Children(NULL),
                                          m_ChildrenSubscriber(*this),
-                                         m_Resources(NULL)
+                                         m_SetterResolvedCallback(*this),
+                                         m_Resources(NULL),
+                                         m_Style(NULL),
+                                         m_StyleDirty(FALSE)
 {
 }
 
@@ -28,6 +23,7 @@ CFrameworkElement::~CFrameworkElement()
 {
     ReleaseObject(m_Children);
     ReleaseObject(m_Resources);
+    ReleaseObject(m_Style);
 }
 
 HRESULT CFrameworkElement::Initialize()
@@ -61,8 +57,10 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
         IFC(pNamescope->RegisterName(m_Name.c_str(), this));
     }
 
+    IFC(EnsureStyle());
+
     {
-        CUIAttachContext ChildContext(this);
+        CUIAttachContext ChildContext(this, GetProviders());
 
         for(UINT i = 0; i < m_Children->GetCount(); i++)
         {
@@ -174,7 +172,7 @@ VOID CFrameworkElement::OnChildAdded(CUIElement* pElement)
 
     if(IsAttached())
     {
-        CUIAttachContext ChildContext(this);
+        CUIAttachContext ChildContext(this, GetProviders());
 
         IFC(pElement->OnAttach(ChildContext));
     }
@@ -208,13 +206,13 @@ HRESULT CFrameworkElement::SetName(const WCHAR* pName)
 
     IFCPTR(pName);
 
-    IFC(InternalSetName(pName));
+    IFC(SetNameInternal(pName));
 
 Cleanup:
     return hr;
 }
 
-HRESULT CFrameworkElement::InternalSetName(const WCHAR* pName)
+HRESULT CFrameworkElement::SetNameInternal(const WCHAR* pName)
 {
     HRESULT hr = S_OK;
     CNamescope* pNamescope = NULL;
@@ -247,6 +245,86 @@ HRESULT CFrameworkElement::InternalSetName(const WCHAR* pName)
     }
 
 Cleanup:
+    return hr;
+}
+
+HRESULT CFrameworkElement::SetStyleInternal(CStyle* pStyle)
+{
+    HRESULT hr = S_OK;
+
+    ReleaseObject(m_Style);
+
+    m_Style = pStyle;
+
+    AddRefObject(m_Style);
+
+    m_StyleDirty = TRUE;
+
+    IFC(EnsureStyle());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CFrameworkElement::EnsureStyle()
+{
+    HRESULT hr = S_OK;
+
+    if(m_StyleDirty)
+    {
+        if(m_Style)
+        {
+            if(IsAttached())
+            {
+                IFC(ApplyStyle(m_Style));
+            }
+        }
+        else
+        {
+            m_StyleDirty = FALSE;
+        }
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CFrameworkElement::ApplyStyle(CStyle* pStyle)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pStyle);
+
+    IFC(pStyle->ResolveSetters(this, GetProviders(), &m_SetterResolvedCallback));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CFrameworkElement::OnStyleSetterResolved(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CTypeConverter* pTypeConverter = NULL;
+    CObjectWithType* pConvertedType = NULL;
+    CLayeredValue* pLayeredValue = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    pTypeConverter = GetTypeConverter();
+    IFCPTR(pTypeConverter);
+
+    IFC(GetLayeredValue(pProperty, &pLayeredValue));
+
+    IFC(pLayeredValue->SetStyleValue(pValue, GetProviders()));
+
+    //TODO: Where is the value changed notification supposed to go?
+    //TODO: How does this fit with invalidated layered properties?
+    IFC(pProperty->OnValueChanged(this));
+
+Cleanup:
+    ReleaseObject(pConvertedType);
+
     return hr;
 }
 
@@ -299,7 +377,14 @@ HRESULT CFrameworkElement::CreatePropertyInformation(CPropertyInformation **ppIn
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(FrameworkElementProperties, ARRAYSIZE(FrameworkElementProperties), &pStaticInformation))
+    CStaticProperty* Properties[] = 
+    {
+        &NameProperty,
+        &ResourcesProperty,
+        &StyleProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
     IFC(CUIElement::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -314,49 +399,72 @@ Cleanup:
     return hr;
 }
 
-HRESULT CFrameworkElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CFrameworkElement::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppLayeredValue);
+
+    //TODO: Make this a lookup table rather than requiring a comparison per property.
+    //if(pProperty == &CFrameworkElement::NameProperty)
+    //{
+    //    *ppLayeredValue = &m_Name;
+    //}
+    //else if(pProperty == &CFrameworkElement::ResourcesProperty)
+    //{
+    //    *ppLayeredValue = &m_Resources;
+    //}
+    //else if(pProperty == &CFrameworkElement::StyleProperty)
+    //{
+    //    *ppLayeredValue = &m_Style;
+    //}
+    //else
+    //{
+        hr = CUIElement::GetLayeredValue(pProperty, ppLayeredValue);
+    /*}*/
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CFrameworkElement::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= FrameworkElementProperties && pProperty < FrameworkElementProperties + ARRAYSIZE(FrameworkElementProperties))
+    if(pProperty == &CFrameworkElement::NameProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
 
-        UINT32 Index = (pStaticProperty - FrameworkElementProperties);
-        
-        switch(Index)
-        {
-            case FrameworkElementPropertyIndex::Name:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
+        CStringValue* pString = (CStringValue*)pValue;
 
-                    CStringValue* pString = (CStringValue*)pValue;
+        IFC(SetNameInternal(pString->GetValue()));
+    }
+    else if(pProperty == &CFrameworkElement::ResourcesProperty)
+    {
+        IFC(E_NOTIMPL);
+    }
+    else if(pProperty == &CFrameworkElement::StyleProperty)
+    {
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Style));
 
-                    IFC(InternalSetName(pString->GetValue()));
+        CStyle* pStyle = (CStyle*)pValue;
 
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(SetStyleInternal(pStyle));
     }
     else
     {
-        IFC(CUIElement::SetValue(pProperty, pValue));
+        IFC(CUIElement::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CFrameworkElement::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+HRESULT CFrameworkElement::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -364,42 +472,26 @@ HRESULT CFrameworkElement::GetValue(CProperty* pProperty, CObjectWithType** ppVa
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= FrameworkElementProperties && pProperty < FrameworkElementProperties + ARRAYSIZE(FrameworkElementProperties))
+    if(pProperty == &CFrameworkElement::NameProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+        IFC(CStringValue::Create(m_Name.c_str(), &pStringValue));
 
-        UINT32 Index = (pStaticProperty - FrameworkElementProperties);
-        
-        switch(Index)
-        {
-            case FrameworkElementPropertyIndex::Name:
-                {
-                    IFC(CStringValue::Create(m_Name.c_str(), &pStringValue));
-
-                    *ppValue = pStringValue;
-                    pStringValue = NULL;
-
-                    break;
-                }
-
-            case FrameworkElementPropertyIndex::Resources:
-                {
-                    *ppValue = m_Resources;
-                    AddRefObject(m_Resources);
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        *ppValue = pStringValue;
+        pStringValue = NULL;
+    }
+    else if(pProperty == &CFrameworkElement::ResourcesProperty)
+    {
+        *ppValue = m_Resources;
+        AddRefObject(m_Resources);
+    }
+    else if(pProperty == &CFrameworkElement::StyleProperty)
+    {
+        *ppValue = m_Style;
+        AddRefObject(m_Style);
     }
     else
     {
-        IFC(CUIElement::GetValue(pProperty, ppValue));
+        IFC(CUIElement::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:

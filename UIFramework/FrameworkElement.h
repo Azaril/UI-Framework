@@ -3,6 +3,8 @@
 #include "UIElement.h"
 #include "Collection.h"
 #include "ResourceDictionary.h"
+#include "Style.h"
+#include "LayeredValue.h"
 
 class CUIElementCollection : public CCollection< CUIElement >
 {
@@ -31,9 +33,6 @@ class CFrameworkElement : public CUIElement
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
-
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         HRESULT SetName( const WCHAR* pName );
 
@@ -108,11 +107,23 @@ class CFrameworkElement : public CUIElement
             return hr;
         }
 
+        //
+        // Properties
+        //
+        static CStaticProperty NameProperty;
+        static CStaticProperty ResourcesProperty;
+        static CStaticProperty StyleProperty;
+
     protected:
         CFrameworkElement();
         virtual ~CFrameworkElement();
 
         HRESULT Initialize();
+
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT AddLogicalChild( CUIElement* pElement );
         virtual HRESULT RemoveLogicalChild( CUIElement* pElement );
@@ -120,31 +131,57 @@ class CFrameworkElement : public CUIElement
         virtual VOID OnChildAdded( CUIElement* pElement );
         virtual VOID OnChildRemoved( CUIElement* pElement );
 
-        HRESULT InternalSetName( const WCHAR* pName );
+        HRESULT SetNameInternal( const WCHAR* pName );
+        HRESULT SetStyleInternal( CStyle* pStyle );
+
+        HRESULT EnsureStyle();
+        virtual HRESULT ApplyStyle( CStyle* pStyle );
+        virtual HRESULT OnStyleSetterResolved( CProperty* pProperty, CObjectWithType* pValue );
 
         CUIElementCollection* m_Children;
         std::wstring m_Name;
         CResourceDictionary* m_Resources;
+        CStyle* m_Style;
+        BOOL m_StyleDirty;
 
         class CChildrenSubscriber : public CUIElementCollection::SubscriberType
         {
             public:
-                CChildrenSubscriber(CFrameworkElement& This) : m_This(This)
+                CChildrenSubscriber( CFrameworkElement& This ) : m_This(This)
                 {
                 }
 
-                virtual void OnItemAdded(CUIElement* pItem)
+                virtual void OnItemAdded( CUIElement* pItem )
                 {
                     m_This.OnChildAdded(pItem);
                 }
 
-                virtual void OnItemRemoved(CUIElement* pItem)
+                virtual void OnItemRemoved( CUIElement* pItem )
                 {
                     m_This.OnChildRemoved(pItem);
                 }
 
-            CFrameworkElement& m_This;
+            protected:
+                CFrameworkElement& m_This;
+
         } m_ChildrenSubscriber;
+
+        class CSetterResolverCallback : public IResolvedStyleSetterCallback
+        {
+            public:
+                CSetterResolverCallback( CFrameworkElement& This ) : m_This(This)
+                {
+                }
+
+                virtual HRESULT OnResolvedSetter( CProperty* pProperty, CObjectWithType* pValue )
+                {
+                    return m_This.OnStyleSetterResolved(pProperty, pValue);
+                }
+
+            protected:
+                CFrameworkElement& m_This;
+
+        } m_SetterResolvedCallback;
 };
 
 template< >

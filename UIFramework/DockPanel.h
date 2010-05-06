@@ -9,16 +9,22 @@ class CDockPanel : public CPanel
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
+
+        //
+        // Properties
+        //
+        static CStaticProperty DockProperty;
+        static CStaticProperty LastChildFillProperty;
 
     public:
         CDockPanel();
         virtual ~CDockPanel();
 
         HRESULT Initialize();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );

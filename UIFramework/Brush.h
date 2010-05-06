@@ -6,6 +6,7 @@
 #include "TypeIndex.h"
 #include "GraphicsDevice.h"
 #include "Visual.h"
+#include "StaticPropertyInformation.h"
 
 class CBrush : public CRefCountedObjectBase< CPropertyObject >,
                public CVisualResource
@@ -13,7 +14,7 @@ class CBrush : public CRefCountedObjectBase< CPropertyObject >,
     public:
         DELEGATE_REFCOUNTING( CRefCountedObjectBase< CPropertyObject > );
 
-        DECLARE_TYPE_WITH_BASE( TypeIndex::Brush, CObjectWithType );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Brush, CPropertyObject );
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 

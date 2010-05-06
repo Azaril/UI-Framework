@@ -134,8 +134,6 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
     CProperty* pProperty = NULL;
     WCHAR* pClassType = NULL;
     UINT32 ClassTypeLength = 0;
-    CResolvedClass* pResolvedClass = NULL;
-    CPropertyInformation* pResolvedClassProperties = NULL;
     CObjectWithType* pValue = NULL;
 
     IFCPTR(pAttribute);
@@ -182,36 +180,7 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
         }
         else
         {
-            pPropertyStart = wcschr(pNameString, L'.');
-            
-            if(pPropertyStart == NULL)
-            {
-                pPropertyStart = pNameString;
-
-                pPropertyLookup = m_Properties;
-            }
-            else
-            {
-                ClassTypeLength = (pPropertyStart - pNameString);
-
-                pClassType = new WCHAR[ClassTypeLength + 1];
-                IFCOOM(pClassType);
-
-                wcsncpy_s(pClassType, ClassTypeLength + 1, pNameString, ClassTypeLength);
-                pClassType[ClassTypeLength] = L'\0';
-
-                IFC(m_Context->GetClassResolver()->ResolveType(pClassType, &pResolvedClass));
-
-                IFC(pResolvedClass->GetPropertyInformation(&pResolvedClassProperties));
-
-                pPropertyLookup = pResolvedClassProperties;
-
-                ++pPropertyStart;
-            }
-
-            IFCPTR(pPropertyStart);
-
-            IFC(pPropertyLookup->GetProperty(pPropertyStart, &pProperty));
+            IFC(m_Context->GetClassResolver()->ResolveProperty(pNameString, m_Properties, &pProperty));
 
             IFC(AttributeStringToValue(pValueString, ValueStringLength, &pValue));
 
@@ -223,9 +192,6 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
 
 Cleanup:
     ReleaseObject(pProperty);
-    ReleaseObject(pValue);
-    ReleaseObject(pResolvedClass);
-    ReleaseObject(pResolvedClassProperties);
     ReleaseObject(pValue);
     delete [] pClassType;
 

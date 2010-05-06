@@ -3,18 +3,10 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-CStaticProperty SolidColorBrushProperties[] = 
-{
-    CStaticProperty( L"Color", TypeIndex::ColorF, StaticPropertyFlags::None )
-};
-
-namespace SolidColorBrushPropertyIndex
-{
-    enum Value
-    {
-        Color
-    };
-}
+//
+// Properties
+//
+CStaticProperty CSolidColorBrush::ColorProperty( L"Color", TypeIndex::ColorF, StaticPropertyFlags::None );
 
 CSolidColorBrush::CSolidColorBrush()
 {
@@ -71,7 +63,12 @@ HRESULT CSolidColorBrush::CreatePropertyInformation(CPropertyInformation **ppInf
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(SolidColorBrushProperties, ARRAYSIZE(SolidColorBrushProperties), &pStaticInformation));
+    CStaticProperty* Properties[] = 
+    {
+        &ColorProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CBrush::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -93,29 +90,11 @@ HRESULT CSolidColorBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= SolidColorBrushProperties && pProperty < SolidColorBrushProperties + ARRAYSIZE(SolidColorBrushProperties))
+    if(pProperty == &CSolidColorBrush::ColorProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+        CColorFValue* pColorValue = (CColorFValue*)pValue;
 
-        UINT32 Index = (pStaticProperty - SolidColorBrushProperties);
-        
-        switch(Index)
-        {
-            case SolidColorBrushPropertyIndex::Color:
-                {
-                    CColorFValue* pColorValue = (CColorFValue*)pValue;
-
-                    IFC(InternalSetColor(pColorValue->GetValue()));
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(InternalSetColor(pColorValue->GetValue()));
     }
     else
     {
@@ -133,20 +112,9 @@ HRESULT CSolidColorBrush::GetValue(CProperty* pProperty, CObjectWithType** ppVal
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= SolidColorBrushProperties && pProperty < SolidColorBrushProperties + ARRAYSIZE(SolidColorBrushProperties))
+    if(pProperty  == &CSolidColorBrush::ColorProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - SolidColorBrushProperties);
-        
-        switch(Index)
-        {
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(E_NOTIMPL);
     }
     else
     {

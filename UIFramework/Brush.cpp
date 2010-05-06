@@ -2,19 +2,6 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-CStaticProperty BrushProperties[] = 
-{
-    CStaticProperty( L"Opacity", TypeIndex::Float, StaticPropertyFlags::None )
-};
-
-namespace BrushPropertyIndex
-{
-    enum Value
-    {
-        Opacity
-    };
-}
-
 CBrush::CBrush() : m_PropertyInformation(NULL)
 {
 }
@@ -66,7 +53,7 @@ HRESULT CBrush::CreatePropertyInformation(CPropertyInformation **ppInformation)
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(BrushProperties, ARRAYSIZE(BrushProperties), &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(NULL, 0, &pStaticInformation));
 
     *ppInformation = pStaticInformation;
     pStaticInformation = NULL;
@@ -84,38 +71,7 @@ HRESULT CBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= BrushProperties && pProperty < BrushProperties + ARRAYSIZE(BrushProperties))
-    {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - BrushProperties);
-        
-        switch(Index)
-        {
-            case BrushPropertyIndex::Opacity:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-                    CFloatValue* pFloat = (CFloatValue*)pValue;
-
-                    //TODO: Set opacity!
-
-                    __debugbreak();
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
-    }
-    else
-    {
-        IFC(CPropertyObject::SetValue(pProperty, pValue));
-    }
+    IFC(CPropertyObject::SetValue(pProperty, pValue));
 
 Cleanup:
     return hr;
@@ -128,25 +84,7 @@ HRESULT CBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= BrushProperties && pProperty < BrushProperties + ARRAYSIZE(BrushProperties))
-    {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - BrushProperties);
-        
-        switch(Index)
-        {
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
-    }
-    else
-    {
-        IFC(CPropertyObject::GetValue(pProperty, ppValue));
-    }
+    IFC(CPropertyObject::GetValue(pProperty, ppValue));
 
 Cleanup:
     return hr;

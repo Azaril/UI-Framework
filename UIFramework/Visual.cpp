@@ -2,18 +2,6 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-CStaticProperty VisualProperties[] = 
-{
-    //TODO: Allow this to be 0 size!
-    CStaticProperty( L"Width", TypeIndex::Float, StaticPropertyFlags::None )
-};
-
-namespace VisualPropertyIndex
-{
-    enum Value
-    {
-    };
-}
 
 CVisual::CVisual() : m_VisualAttached(FALSE)
 {
@@ -395,7 +383,7 @@ HRESULT CVisual::CreatePropertyInformation(CPropertyInformation** ppInformation)
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(VisualProperties, ARRAYSIZE(VisualProperties), &pStaticInformation));
+    IFC(CStaticPropertyInformation::Create(NULL, 0, &pStaticInformation));
 
     *ppInformation = pStaticInformation;
     pStaticInformation = NULL;
@@ -413,25 +401,7 @@ HRESULT CVisual::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= VisualProperties && pProperty < VisualProperties + ARRAYSIZE(VisualProperties))
-    {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - VisualProperties);
-        
-        switch(Index)
-        {
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
-    }
-    else
-    {
-        IFC(CPropertyObject::SetValue(pProperty, pValue));
-    }
+    IFC(CPropertyObject::SetValue(pProperty, pValue));
 
 Cleanup:
     return hr;
@@ -444,25 +414,7 @@ HRESULT CVisual::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= VisualProperties && pProperty < VisualProperties + ARRAYSIZE(VisualProperties))
-    {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - VisualProperties);
-        
-        switch(Index)
-        {
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
-    }
-    else
-    {
-        IFC(CPropertyObject::GetValue(pProperty, ppValue));
-    }
+    IFC(CPropertyObject::GetValue(pProperty, ppValue));
 
 Cleanup:
     return hr;

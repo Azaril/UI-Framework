@@ -16,5 +16,10 @@ class CResolvedClass
 class CClassResolver : public CRefCountedObject
 {
     public:
+        virtual HRESULT ResolveType( TypeIndex::Value ClassType, CResolvedClass** ppResolvedClass ) = 0;
         virtual HRESULT ResolveType( const WCHAR* pTypeName, CResolvedClass** ppResolvedClass ) = 0;
+        virtual HRESULT ResolveProperties( TypeIndex::Value ClassType, CPropertyInformation** ppProperties ) = 0;
+        virtual HRESULT ResolveProperties( const WCHAR* pTypeName, CPropertyInformation** ppProperties ) = 0;
+        virtual HRESULT ResolveProperty( const WCHAR* pPropertyName, TypeIndex::Value ImplicitClass, CProperty** ppProperty ) = 0;
+        virtual HRESULT ResolveProperty( const WCHAR* pPropertyName, CPropertyInformation* pImplicitClassProperties, CProperty** ppProperty ) = 0;
 };

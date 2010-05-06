@@ -3,20 +3,11 @@
 #include "DelegatingPropertyInformation.h"
 #include "BasicTypes.h"
 
-CStaticProperty DockPanelProperties[] = 
-{
-    CStaticProperty( L"Dock", TypeIndex::RectangleEdge, StaticPropertyFlags::Attached ),
-    CStaticProperty( L"LastChildFill", TypeIndex::Bool, StaticPropertyFlags::None )
-};
-
-namespace DockPanelPropertyIndex
-{
-    enum Value
-    {
-        Dock,
-        LastChildFill
-    };
-}
+//
+// Properties
+//
+CStaticProperty CDockPanel::DockProperty( L"Dock", TypeIndex::RectangleEdge, StaticPropertyFlags::Attached );
+CStaticProperty CDockPanel::LastChildFillProperty( L"LastChildFill", TypeIndex::Bool, StaticPropertyFlags::None );
 
 CDockPanel::CDockPanel() : m_FillLastChild(TRUE)
 {
@@ -64,7 +55,7 @@ HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     }
 
     //TODO: Is it correct for a dock panel to always consume the available size?
-    DesiredSize = BaseDesiredSize;
+    DesiredSize = AvailableSize;
 
 Cleanup:
     return hr;
@@ -89,7 +80,7 @@ HRESULT CDockPanel::ArrangeInternal(SizeF Size)
         SizeF ElementPosition = { 0 };
         SizeF ElementFinalSize = { 0 };
 
-        IFC(pElement->GetTypedValue(&DockPanelProperties[DockPanelPropertyIndex::Dock], &pDock));
+        IFC(pElement->GetTypedValue(&DockProperty, &pDock));
 
         if(m_FillLastChild && LastChild)
         {
@@ -181,7 +172,12 @@ HRESULT CDockPanel::CreatePropertyInformation(CPropertyInformation** ppInformati
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(DockPanelProperties, ARRAYSIZE(DockPanelProperties), &pStaticInformation));
+    CStaticProperty* Properties[] = 
+    {
+        &DockProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CPanel::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -196,73 +192,44 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDockPanel::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CDockPanel::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= DockPanelProperties && pProperty < DockPanelProperties + ARRAYSIZE(DockPanelProperties))
+    if(pProperty == &CDockPanel::LastChildFillProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Bool));
 
-        UINT32 Index = (pStaticProperty - DockPanelProperties);
-        
-        switch(Index)
-        {
-            case DockPanelPropertyIndex::LastChildFill:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::Bool));
+        CBoolValue* pBool = (CBoolValue*)pValue;
 
-                    CBoolValue* pBool = (CBoolValue*)pValue;
-
-                    IFC(SetFillLastChildInternal(pBool->GetValue()));
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(SetFillLastChildInternal(pBool->GetValue()));
     }
     else
     {
-        IFC(CPanel::SetValue(pProperty, pValue));
+        IFC(CPanel::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CDockPanel::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+HRESULT CDockPanel::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= DockPanelProperties && pProperty < DockPanelProperties + ARRAYSIZE(DockPanelProperties))
+    if(pProperty == &CDockPanel::LastChildFillProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - DockPanelProperties);
-        
-        switch(Index)
-        {
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(E_NOTIMPL);
     }
     else
     {
-        IFC(CPanel::GetValue(pProperty, ppValue));
+        IFC(CPanel::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:

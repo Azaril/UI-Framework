@@ -1,22 +1,38 @@
 #include "StaticPropertyInformation.h"
 
-CStaticPropertyInformation::CStaticPropertyInformation() : m_Properties(NULL),
-                                                           m_PropertyCount(0)
+CStaticPropertyInformation::CStaticPropertyInformation()
 {
 }
 
 CStaticPropertyInformation::~CStaticPropertyInformation()
 {
+    for(std::vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
+    {
+        (*It)->Release();
+    }
+
+    m_Properties.clear();
 }
 
-HRESULT CStaticPropertyInformation::Initialize(CStaticProperty* pProperties, UINT32 PropertyCount)
+HRESULT CStaticPropertyInformation::Initialize(CStaticProperty** ppProperties, UINT32 PropertyCount)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pProperties);
+    if(PropertyCount > 0)
+    {
+        IFCPTR(ppProperties);
+    }
 
-    m_Properties = pProperties;
-    m_PropertyCount = PropertyCount;
+    for(UINT32 i = 0; i < PropertyCount; i++)
+    {
+        CStaticProperty* pProperty = ppProperties[i];
+
+        IFCPTR(pProperty);
+
+        m_Properties.push_back(pProperty);
+
+        AddRefObject(pProperty);
+    }
 
 Cleanup:
     return hr;
@@ -29,17 +45,20 @@ HRESULT CStaticPropertyInformation::GetProperty(const WCHAR* pPropertyName, CPro
     IFCPTR(pPropertyName);
     IFCPTR(ppProperty);
 
-    for(UINT32 i = 0; i < m_PropertyCount; i++)
+    for(std::vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
     {
-        if(wcscmp(pPropertyName, m_Properties[i].GetName()) == 0)
+        CStaticProperty* pProperty = (*It);
+
+        if(wcscmp(pPropertyName, pProperty->GetName()) == 0)
         {
-            *ppProperty = &m_Properties[i];
+            *ppProperty = pProperty;
+            AddRefObject(pProperty);
 
             goto Cleanup;
         }
     }
 
-    IFC(E_FAIL);
+    hr = E_FAIL;
 
 Cleanup:
     return hr;
@@ -51,25 +70,30 @@ HRESULT CStaticPropertyInformation::GetContentProperty(CProperty** ppProperty)
 
     IFCPTR(ppProperty);
 
-    for(UINT32 i = 0; i < m_PropertyCount; i++)
+    for(std::vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
     {
-        if(m_Properties[i].IsContent())
+        CStaticProperty* pProperty = (*It);
+
+        if(pProperty->IsContent())
         {
-            *ppProperty = &m_Properties[i];
+            *ppProperty = pProperty;
+            AddRefObject(pProperty);
 
             goto Cleanup;
         }
     }
 
-    IFC(E_FAIL);
+    hr = E_FAIL;
 
 Cleanup:
     return hr;
 }
 
-CStaticProperty::CStaticProperty(const WCHAR* pName, const TypeIndex::Value Type, UINT32 Flags) : m_Name(pName),
-                                                                                                  m_Type(Type),
-                                                                                                  m_Flags(Flags)
+CStaticProperty::CStaticProperty(const WCHAR* pName, const TypeIndex::Value Type, UINT32 Flags, GetDefaultPropertyValueFunc DefaultValueFunc, OnValueChangeFunc ValueChangeFunc) : m_Name(pName),
+                                                                                                                                                                                   m_Type(Type),
+                                                                                                                                                                                   m_Flags(Flags),
+                                                                                                                                                                                   m_DefaultValueFunc(DefaultValueFunc),
+                                                                                                                                                                                   m_ValueChangeFunc(ValueChangeFunc)
 {
 }
 
@@ -111,4 +135,33 @@ BOOL CStaticProperty::IsContent()
 BOOL CStaticProperty::IsAttached()
 {
     return (m_Flags & StaticPropertyFlags::Attached) ? TRUE : FALSE;
+}
+
+HRESULT CStaticProperty::GetDefaultValue(CObjectWithType** ppObject)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppObject);
+
+    IFCPTR(m_DefaultValueFunc);
+
+    IFC(m_DefaultValueFunc(ppObject));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CStaticProperty::OnValueChanged(CPropertyObject* pObjectInstance)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pObjectInstance);
+
+    if(m_ValueChangeFunc)
+    {
+        IFC(m_ValueChangeFunc(pObjectInstance));
+    }
+
+Cleanup:
+    return hr;
 }

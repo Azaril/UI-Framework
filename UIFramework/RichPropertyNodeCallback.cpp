@@ -5,8 +5,6 @@
 CRichPropertyNodeCallback::CRichPropertyNodeCallback() : m_Parent(NULL),
                                                          m_Complete(FALSE),
                                                          m_ChildNode(NULL),
-                                                         m_ResolvedClass(NULL),
-                                                         m_Properties(NULL),
                                                          m_Property(NULL),
                                                          m_SetTextValue(FALSE),
                                                          m_SetObjectValue(FALSE)
@@ -18,8 +16,6 @@ CRichPropertyNodeCallback::~CRichPropertyNodeCallback()
     ReleaseObject(m_Parent);
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_Property);
-    ReleaseObject(m_ResolvedClass);
-    ReleaseObject(m_Properties);
 }
 
 HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart)
@@ -27,10 +23,6 @@ HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CProperty
     HRESULT hr = S_OK;
     const WCHAR* pElementName = NULL;
     UINT32 ElementNameLength = 0;
-    const WCHAR* pPropertyStart = NULL;
-    CPropertyInformation* pProperties = NULL;
-    WCHAR* pClassType = NULL;
-    UINT32 ClassTypeLength = 0;
 
     IFCPTR(pContext);
     IFCPTR(pParent);
@@ -43,28 +35,9 @@ HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CProperty
 
     IFC(pXMLStart->GetName(&pElementName, &ElementNameLength));
 
-    pPropertyStart = wcschr(pElementName, L'.');
-    IFCPTR(pPropertyStart);
-
-    ClassTypeLength = (pPropertyStart - pElementName);
-
-    pClassType = new WCHAR[ClassTypeLength + 1];
-    IFCOOM(pClassType);
-
-    wcsncpy_s(pClassType, ClassTypeLength + 1, pElementName, ClassTypeLength);
-    pClassType[ClassTypeLength] = L'\0';
-
-    ++pPropertyStart;
-
-    IFC(m_Context->GetClassResolver()->ResolveType(pClassType, &m_ResolvedClass));
-
-    IFC(m_ResolvedClass->GetPropertyInformation(&m_Properties));
-
-    IFC(m_Properties->GetProperty(pPropertyStart, &m_Property));
+    IFC(m_Context->GetClassResolver()->ResolveProperty(pElementName, pParent->GetType(), &m_Property));
 
 Cleanup:
-    ReleaseObject(pProperties);
-    delete [] pClassType;
 
     return hr;
 }

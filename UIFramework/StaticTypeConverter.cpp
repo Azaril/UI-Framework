@@ -30,17 +30,25 @@ HRESULT CStaticTypeConverter::Convert(CObjectWithType* pValue, TypeIndex::Value 
 
     SourceType = pValue->GetType();
 
-    for(UINT32 i = 0; i < m_ConverterInformation->ConverterCount; i++)
+    if(SourceType == TargetType)
     {
-        if(m_ConverterInformation->Converters[i].FromType == SourceType && m_ConverterInformation->Converters[i].ToType == TargetType)
-        {
-            IFC(m_ConverterInformation->Converters[i].Convert(pValue, TargetType, ppConvertedValue));
-
-            goto Cleanup;
-        }
+        *ppConvertedValue = pValue;
+        AddRefObject(pValue);
     }
+    else
+    {
+        for(UINT32 i = 0; i < m_ConverterInformation->ConverterCount; i++)
+        {
+            if(m_ConverterInformation->Converters[i].FromType == SourceType && m_ConverterInformation->Converters[i].ToType == TargetType)
+            {
+                IFC(m_ConverterInformation->Converters[i].Convert(pValue, TargetType, ppConvertedValue));
 
-    IFC(E_FAIL);
+                goto Cleanup;
+            }
+        }
+
+        IFC(E_FAIL);
+    }
 
 Cleanup:
     return hr;

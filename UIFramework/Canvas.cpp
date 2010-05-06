@@ -3,24 +3,13 @@
 #include "DelegatingPropertyInformation.h"
 #include "BasicTypes.h"
 
-CStaticProperty CanvasProperties[] = 
-{
-    CStaticProperty( L"Left", TypeIndex::Float, StaticPropertyFlags::Attached ),
-    CStaticProperty( L"Top", TypeIndex::Float, StaticPropertyFlags::Attached ),
-    CStaticProperty( L"Right", TypeIndex::Float, StaticPropertyFlags::Attached ),
-    CStaticProperty( L"Bottom", TypeIndex::Float, StaticPropertyFlags::Attached ),
-};
-
-namespace CanvasPropertyIndex
-{
-    enum Value
-    {
-        Left,
-        Top,
-        Right,
-        Bottom
-    };
-}
+//
+// Properties
+// 
+CStaticProperty CCanvas::LeftProperty( L"Left", TypeIndex::Float, StaticPropertyFlags::Attached );
+CStaticProperty CCanvas::TopProperty( L"Top", TypeIndex::Float, StaticPropertyFlags::Attached );
+CStaticProperty CCanvas::RightProperty( L"Right", TypeIndex::Float, StaticPropertyFlags::Attached );
+CStaticProperty CCanvas::BottomProperty( L"Bottom", TypeIndex::Float, StaticPropertyFlags::Attached );
 
 CCanvas::CCanvas()
 {
@@ -61,10 +50,10 @@ HRESULT CCanvas::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
         IFC(pElement->Measure(MaxSize));
 
-        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Left], &pLeft));
-        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Top], &pTop));
-        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Right], &pRight));
-        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Bottom], &pBottom));
+        IFC(pElement->GetTypedValue(&LeftProperty, &pLeft));
+        IFC(pElement->GetTypedValue(&TopProperty, &pTop));
+        IFC(pElement->GetTypedValue(&RightProperty, &pRight));
+        IFC(pElement->GetTypedValue(&BottomProperty, &pBottom));
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
         SizeF ElementExtentNeeded = { 0 };
@@ -130,10 +119,10 @@ HRESULT CCanvas::ArrangeInternal(SizeF Size)
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
         SizeF ElementPosition = { 0 };
 
-        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Left], &pLeft));
-        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Top], &pTop));
-        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Right], &pRight));
-        IFC(pElement->GetTypedValue(&CanvasProperties[CanvasPropertyIndex::Bottom], &pBottom));
+        IFC(pElement->GetTypedValue(&LeftProperty, &pLeft));
+        IFC(pElement->GetTypedValue(&TopProperty, &pTop));
+        IFC(pElement->GetTypedValue(&RightProperty, &pRight));
+        IFC(pElement->GetTypedValue(&BottomProperty, &pBottom));
 
         if(pLeft)
         {
@@ -197,7 +186,15 @@ HRESULT CCanvas::CreatePropertyInformation(CPropertyInformation** ppInformation)
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(CanvasProperties, ARRAYSIZE(CanvasProperties), &pStaticInformation));
+    CStaticProperty* Properties[] = 
+    {
+        &LeftProperty,
+        &TopProperty,
+        &RightProperty,
+        &BottomProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CPanel::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 

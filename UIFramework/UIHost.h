@@ -8,7 +8,7 @@
 class CUIHost : public CRefCountedObject
 {
     public:
-        DECLARE_FACTORY2( CUIHost, CGraphicsDevice*, CRenderTarget* );
+        DECLARE_FACTORY3( CUIHost, CGraphicsDevice*, CRenderTarget*, CProviders* );
 
         virtual HRESULT GetRootElement( CRootUIElement** ppElement );
 
@@ -21,7 +21,7 @@ class CUIHost : public CRefCountedObject
         CUIHost();
         virtual ~CUIHost();
 
-        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget );
+        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders );
 
         HRESULT EnsureLayout();
 

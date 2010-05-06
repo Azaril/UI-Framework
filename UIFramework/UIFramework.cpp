@@ -38,9 +38,8 @@ CUIHost* g_UIHost = NULL;
 
 const WCHAR* ImageSources[] =
 {
-    L"C:\\1.jpg",
-    L"C:\\2.jpg",
-    L"C:\\3.png"
+    L"C:\\3.png",
+    L"C:\\2.jpg"
 };
 
 UINT32 ImageSourceIndex = 0;
@@ -84,6 +83,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CTextBlock* pTextBlock1 = NULL;
     CImage* pImage1 = NULL;
     CBrush* pWhiteBrush = NULL;
+    CProviders* pProviders = NULL;
     connection ImageLeftButtonDownConnection;
 
 #ifdef _DEBUG
@@ -133,7 +133,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     g_RenderTarget = (CD2DHWNDRenderTarget*)pRenderTarget;
 
-    IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, &pUIHost));
+    IFC(CProviders::Create(pStaticClassResolver, pTypeConverter, &pProviders));
+
+    IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, pProviders, &pUIHost));
 
     g_UIHost = pUIHost;
 
@@ -145,7 +147,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     IFC(pRootElement->FindName(L"Image1", &pImage1));
 
-    IFC(pImage1->FindResource(L"WhiteBrush", &pWhiteBrush));
+    //IFC(pImage1->FindResource(L"WhiteBrush", &pWhiteBrush));
 
     if(pImage1)
     {
@@ -187,6 +189,7 @@ Cleanup:
     ReleaseObject(pStaticClassResolver);
     ReleaseObject(pTypeConverter);
     ReleaseObject(pParser);
+    ReleaseObject(pProviders);
 
 	return (int) msg.wParam;
 }

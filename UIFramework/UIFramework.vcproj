@@ -422,27 +422,27 @@
 				Name="UI"
 				>
 				<File
-					RelativePath=".\Collection.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Collection.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Dictionary.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Dictionary.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Enums.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\Enums.h"
+					>
+				</File>
+				<File
+					RelativePath=".\LayeredValue.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LayeredValue.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Providers.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Providers.h"
 					>
 				</File>
 				<File
@@ -475,14 +475,6 @@
 				</File>
 				<File
 					RelativePath=".\UIHost.h"
-					>
-				</File>
-				<File
-					RelativePath=".\VisualNotification.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\VisualNotification.h"
 					>
 				</File>
 				<Filter
@@ -518,6 +510,14 @@
 					</File>
 					<File
 						RelativePath=".\VisualContext.h"
+						>
+					</File>
+					<File
+						RelativePath=".\VisualNotification.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\VisualNotification.h"
 						>
 					</File>
 					<File
@@ -814,6 +814,46 @@
 					</File>
 					<File
 						RelativePath=".\Namescope.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Styling"
+					>
+					<File
+						RelativePath=".\Setter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Setter.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Style.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Style.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Collections"
+					>
+					<File
+						RelativePath=".\Collection.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Collection.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Dictionary.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Dictionary.h"
 						>
 					</File>
 				</Filter>

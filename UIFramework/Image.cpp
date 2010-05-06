@@ -3,18 +3,10 @@
 #include "DelegatingPropertyInformation.h"
 #include "BasicTypes.h"
 
-CStaticProperty ImageProperties[] = 
-{
-    CStaticProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None )
-};
-
-namespace ImagePropertyIndex
-{
-    enum Value
-    {
-        Source
-    };
-}
+//
+// Properties
+//
+CStaticProperty CImage::SourceProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None );
 
 CImage::CImage() : m_Source(NULL),
                    m_ImageVisual(NULL),
@@ -179,6 +171,11 @@ HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     HRESULT hr = S_OK;
     SizeU ImageSize = { 0 };
     SizeF BaseSize = { 0 };
+    FLOAT Width = 0;
+    FLOAT Height = 0;
+
+    IFC(GetEffectiveWidth(&Width));
+    IFC(GetEffectiveHeight(&Height));
 
     IFC(CFrameworkElement::MeasureInternal(AvailableSize, BaseSize));
 
@@ -187,23 +184,23 @@ HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         IFC(m_ImageBrush->GetSize(&ImageSize));
     }
 
-    if(m_Size.width == 0 && m_Size.height == 0)
+    if(Width == 0 && Height == 0)
     {
         DesiredSize.width = max((FLOAT)ImageSize.width, BaseSize.width);
         DesiredSize.height = max((FLOAT)ImageSize.height, BaseSize.height);
     }
-    else if(m_Size.width == 0 && m_Size.height != 0 && ImageSize.height != 0)
+    else if(Width == 0 && Height != 0 && ImageSize.height != 0)
     {
-        FLOAT Ratio = m_Size.height / ImageSize.height;
+        FLOAT Ratio = Height / ImageSize.height;
 
         DesiredSize.width = ImageSize.width * Ratio;
-        DesiredSize.height = m_Size.height;
+        DesiredSize.height = Height;
     }
-    else if(m_Size.width != 0 && m_Size.height == 0 && ImageSize.width != 0)
+    else if(Width != 0 && Height == 0 && ImageSize.width != 0)
     {
-        FLOAT Ratio = m_Size.width / ImageSize.width;
+        FLOAT Ratio = Width / ImageSize.width;
 
-        DesiredSize.width = m_Size.width;
+        DesiredSize.width = Width;
         DesiredSize.height = ImageSize.height * Ratio;
     }
     else
@@ -237,7 +234,12 @@ HRESULT CImage::CreatePropertyInformation(CPropertyInformation** ppInformation)
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(ImageProperties, ARRAYSIZE(ImageProperties), &pStaticInformation));
+    CStaticProperty* Properties[] = 
+    {
+        &SourceProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -252,69 +254,40 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImage::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CImage::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= ImageProperties && pProperty < ImageProperties + ARRAYSIZE(ImageProperties))
+    if(pProperty == &CImage::SourceProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - ImageProperties);
-        
-        switch(Index)
-        {
-            case ImagePropertyIndex::Source:
-                {
-                    IFC(InternalSetSource(pValue));
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(InternalSetSource(pValue));
     }
     else
     {
-        IFC(CFrameworkElement::SetValue(pProperty, pValue));
+        IFC(CFrameworkElement::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CImage::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+HRESULT CImage::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= ImageProperties && pProperty < ImageProperties + ARRAYSIZE(ImageProperties))
+    if(pProperty == &CImage::SourceProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - ImageProperties);
-        
-        switch(Index)
-        {
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(E_NOTIMPL);
     }
     else
     {
-        IFC(CFrameworkElement::GetValue(pProperty, ppValue));
+        IFC(CFrameworkElement::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:

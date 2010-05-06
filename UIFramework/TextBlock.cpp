@@ -4,18 +4,10 @@
 #include "DelegatingPropertyInformation.h"
 #include "BasicTypes.h"
 
-CStaticProperty TextBlockProperties[] = 
-{
-    CStaticProperty( L"Text", TypeIndex::String, StaticPropertyFlags::Content )
-};
-
-namespace TextBlockPropertyIndex
-{
-    enum Value
-    {
-        Text
-    };
-}
+//
+// Properties
+// 
+CStaticProperty CTextBlock::TextProperty( L"Text", TypeIndex::String, StaticPropertyFlags::Content );
 
 CTextBlock::CTextBlock() : m_TextLayout(NULL),
                            m_TextFormat(NULL),
@@ -165,7 +157,12 @@ HRESULT CTextBlock::CreatePropertyInformation(CPropertyInformation** ppInformati
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(TextBlockProperties, ARRAYSIZE(TextBlockProperties), &pStaticInformation));
+    CStaticProperty* Properties[] = 
+    {
+        &TextProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -180,42 +177,44 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextBlock::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CTextBlock::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= TextBlockProperties && pProperty < TextBlockProperties + ARRAYSIZE(TextBlockProperties))
+    if(pProperty == &CTextBlock::TextProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
 
-        UINT32 Index = (pStaticProperty - TextBlockProperties);
-        
-        switch(Index)
-        {
-            case TextBlockPropertyIndex::Text:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
+        CStringValue* pText = (CStringValue*)pValue;
 
-                    CStringValue* pText = (CStringValue*)pValue;
-
-                    IFC(SetText(pText->GetValue()));
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(SetText(pText->GetValue()));
     }
     else
     {
-        IFC(CFrameworkElement::SetValue(pProperty, pValue));
+        IFC(CFrameworkElement::SetValueInternal(pProperty, pValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CTextBlock::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    if(pProperty == &CTextBlock::TextProperty)
+    {
+        IFC(E_NOTIMPL);
+    }
+    else
+    {
+        IFC(CFrameworkElement::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:

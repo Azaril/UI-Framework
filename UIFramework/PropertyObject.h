@@ -4,13 +4,11 @@
 #include "RefCounted.h"
 #include "TypeIndex.h"
 
-namespace TypeIndex
-{
-    enum Value;
-}
-
 template< typename T >
 struct ObjectTypeTraits;
+
+class CObjectWithType;
+class CPropertyObject;
 
 class CProperty
 {
@@ -23,6 +21,10 @@ class CProperty
         virtual BOOL IsCollection() = 0;
         virtual BOOL IsDictionary() = 0;
         virtual BOOL IsAttached() = 0;
+
+        virtual HRESULT GetDefaultValue( CObjectWithType** ppObject ) = 0;
+
+        virtual HRESULT OnValueChanged( CPropertyObject* pObjectInstance ) = 0;
 };
 
 class CPropertyInformation : public CRefCountedObject
@@ -32,14 +34,22 @@ class CPropertyInformation : public CRefCountedObject
         virtual HRESULT GetContentProperty( CProperty** ppProperty ) = 0;
 };
 
+#define DECLARE_TYPE( type ) \
+virtual TypeIndex::Value GetType() { return type; } \
+virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type; }
+
+#define DECLARE_TYPE_WITH_BASE( type, base ) \
+virtual TypeIndex::Value GetType() { return type; } \
+virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type || base::IsTypeOf(Type); }
+
 class CObjectWithType
 {
     public:
         virtual INT32 AddRef() = 0;
         virtual INT32 Release() = 0;
 
-        virtual TypeIndex::Value GetType() { return TypeIndex::Object; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Object; }
+        DECLARE_TYPE( TypeIndex::Object );
+
         virtual BOOL Equals( CObjectWithType* pOther ) { return this == pOther; }
 };
 
@@ -69,6 +79,8 @@ class CAttachedPropertyHolder
 class CPropertyObject : public CObjectWithType
 {
     public:
+        DECLARE_TYPE_WITH_BASE( TypeIndex::PropertyObject, CObjectWithType );
+
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
@@ -108,8 +120,7 @@ class CPropertyObject : public CObjectWithType
 class CObjectCollection : public CObjectWithType
 {
     public:
-        virtual TypeIndex::Value GetType() { return TypeIndex::Collection; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Collection || CObjectWithType::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Collection, CObjectWithType );
 
         virtual HRESULT AddObject( CObjectWithType* pObject ) = 0;
         virtual HRESULT RemoveObject( CObjectWithType* pObject ) = 0;
@@ -124,8 +135,7 @@ struct ObjectTypeTraits< CObjectCollection >
 class CObjectDictionary : public CObjectWithType
 {
     public:
-        virtual TypeIndex::Value GetType() { return TypeIndex::Dictionary; }
-        virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == TypeIndex::Dictionary || CObjectWithType::IsTypeOf(Type); }
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Dictionary, CObjectWithType );
 
         virtual HRESULT AddObject( CObjectWithType* pKey, CObjectWithType* pObject ) = 0;
         virtual HRESULT RemoveObject( CObjectWithType* pKey, CObjectWithType* pObject ) = 0;
@@ -136,11 +146,3 @@ struct ObjectTypeTraits< CObjectDictionary >
 {
     static const TypeIndex::Value Type = TypeIndex::Dictionary;
 };
-
-#define DECLARE_TYPE( type ) \
-virtual TypeIndex::Value GetType() { return type; } \
-virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type; }
-
-#define DECLARE_TYPE_WITH_BASE( type, base ) \
-virtual TypeIndex::Value GetType() { return type; } \
-virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type || base::IsTypeOf(Type); }

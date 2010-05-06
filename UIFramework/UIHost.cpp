@@ -14,17 +14,18 @@ CUIHost::~CUIHost()
     ReleaseObject(m_RenderTarget);
 }
 
-HRESULT CUIHost::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget)
+HRESULT CUIHost::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pGraphicsDevice);
     IFCPTR(pRenderTarget);
+    IFCPTR(pProviders);
 
     m_RenderTarget = pRenderTarget;
     AddRefObject(m_RenderTarget);
 
-    IFC(CRootUIElement::Create(pGraphicsDevice, pRenderTarget, &m_RootElement));
+    IFC(CRootUIElement::Create(pGraphicsDevice, pRenderTarget, pProviders, &m_RootElement));
 
 Cleanup:
     return hr;
@@ -66,12 +67,7 @@ HRESULT CUIHost::EnsureLayout()
 
     if(m_RootElement->IsArrangeDirty())
     {
-        DesiredSize = m_RootElement->GetDesiredSize();
-
-        DesiredSize.width = min(DesiredSize.width, AvailableSize.width);
-        DesiredSize.height = min(DesiredSize.height, AvailableSize.height);
-
-        IFC(m_RootElement->Arrange(DesiredSize));
+        IFC(m_RootElement->Arrange(AvailableSize));
     }
 
 Cleanup:

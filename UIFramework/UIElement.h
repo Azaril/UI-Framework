@@ -10,17 +10,25 @@
 #include "StaticRoutedEvent.h"
 #include "Signals.h"
 #include "Namescope.h"
+#include "ClassResolver.h"
+#include "TypeConverter.h"
+#include "Providers.h"
+#include "LayeredValue.h"
+#include "BasicTypes.h"
+#include "StaticPropertyInformation.h"
 
 class CUIElement;
 
 class CUIAttachContext
 {
     public:
-        CUIAttachContext() : m_Parent(NULL)
+        CUIAttachContext() : m_Parent(NULL),
+                             m_Providers(NULL)
         {
         }
 
-        CUIAttachContext( CUIElement* pParent ) : m_Parent(pParent)
+        CUIAttachContext( CUIElement* pParent, CProviders* pProviders ) : m_Parent(pParent),
+                                                                          m_Providers(pProviders)
         {
         }
     
@@ -29,13 +37,20 @@ class CUIAttachContext
             return m_Parent;
         }
 
+        CProviders* GetProviders()
+        {
+            return m_Providers;
+        }
+
         void Reset()
         {
             m_Parent = NULL;
+            m_Providers = NULL;
         }
     
     protected:
         CUIElement* m_Parent;
+        CProviders* m_Providers;
 };
 
 class CUIDetachContext
@@ -159,6 +174,8 @@ class CUIElement : public CVisual
         BOOL IsArrangeDirty();
 
         virtual CUIElement* GetParent();
+        CProviders* GetProviders();
+        CTypeConverter* GetTypeConverter();
 
         virtual HRESULT SetVisibility( Visibility::Value State );
 
@@ -167,6 +184,20 @@ class CUIElement : public CVisual
         virtual HRESULT AddHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, connection* pConnection );
         /*virtual HRESULT RemoveHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler );*/
 
+        //
+        // Properties
+        //
+        static CStaticProperty WidthProperty;
+        static CStaticProperty HeightProperty;
+        static CStaticProperty MinimumWidthProperty;
+        static CStaticProperty MinimumHeightProperty;
+        static CStaticProperty MaximumWidthProperty;
+        static CStaticProperty MaximumHeightProperty;
+        static CStaticProperty VisibilityProperty;
+
+        //
+        // Events
+        //
         static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseButtonEvent;
 
         static CStaticRoutedEvent< RoutingStrategy::Direct > MouseDownEvent;
@@ -188,6 +219,9 @@ class CUIElement : public CVisual
     
         HRESULT Initialize();
 
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
         virtual HRESULT RenderInternal( CRenderContext& Context );
 
@@ -205,6 +239,17 @@ class CUIElement : public CVisual
 
         virtual HRESULT InternalRaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
         virtual HRESULT InternalRaiseBubbledEvent( CRoutedEventArgs* pRoutedEventArgs );
+
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
+        virtual HRESULT GetEffectiveValue( CProperty* pProperty, CObjectWithType** ppValue );
+
+        HRESULT GetEffectiveWidth( FLOAT* pWidth );
+        HRESULT GetEffectiveHeight( FLOAT* pHeight );
+        HRESULT GetEffectiveVisibility( Visibility::Value* pVisibility );
+        HRESULT GetEffectiveMinimumWidth( FLOAT* pMinimumWidth );
+        HRESULT GetEffectiveMinimumHeight( FLOAT* pMinimumHeight );
+        HRESULT GetEffectiveMaximumWidth( FLOAT* pMaximumWidth );
+        HRESULT GetEffectiveMaximumHeight( FLOAT* pMaximumHeight );
 
         SizeF GetFinalSize();
 
@@ -232,20 +277,22 @@ class CUIElement : public CVisual
 
         virtual void OnMouseMove( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
    
-        BOOL m_Attached;
-
-        SizeF m_Size;
-        SizeF m_MinimumSize;
-        SizeF m_MaximumSize;
+        CTypedLayeredValue< CFloatValue > m_Width;
+        CTypedLayeredValue< CFloatValue > m_Height;
+        CTypedLayeredValue< CFloatValue > m_MinimumWidth;
+        CTypedLayeredValue< CFloatValue > m_MinimumHeight;
+        CTypedLayeredValue< CFloatValue > m_MaximumWidth;
+        CTypedLayeredValue< CFloatValue > m_MaximumHeight;
+        CTypedLayeredValue< CVisibilityValue > m_Visibility;
 
         BOOL m_MeasureDirty;
         BOOL m_ArrangeDirty;
 
         CPropertyInformation* m_PropertyInformation;
 
-        Visibility::Value m_Visibility;
-
     private:
+        BOOL m_Attached;
+
         SizeF m_LastMeasureSize;
         SizeF m_DesiredSize;
         SizeF m_FinalSize;

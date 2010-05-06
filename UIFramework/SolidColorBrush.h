@@ -16,6 +16,11 @@ class CSolidColorBrush : public CBrush
 
         virtual HRESULT GetGraphicsBrush( CGraphicsDevice* pDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush );
 
+        //
+        // Properties
+        //
+        static CStaticProperty ColorProperty;
+
     protected:
         CSolidColorBrush();
         virtual ~CSolidColorBrush();

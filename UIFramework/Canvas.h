@@ -13,6 +13,11 @@ class CCanvas : public CPanel
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
 
+        static CStaticProperty LeftProperty;
+        static CStaticProperty TopProperty;
+        static CStaticProperty RightProperty;
+        static CStaticProperty BottomProperty;
+
     public:
         CCanvas();
         virtual ~CCanvas();

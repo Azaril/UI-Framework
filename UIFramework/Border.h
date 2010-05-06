@@ -12,9 +12,6 @@ class CBorder : public CDecorator
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** pValue );
-
         virtual HRESULT SetChild( CUIElement* pChild );
 
         HRESULT SetBackground( CBrush* pBrush );
@@ -31,6 +28,15 @@ class CBorder : public CDecorator
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
 
+        //
+        // Properties
+        //
+        static CStaticProperty BackgroundProperty;
+        static CStaticProperty PaddingProperty;
+        static CStaticProperty BorderThicknessProperty;
+        static CStaticProperty BorderBrushProperty;
+        static CStaticProperty CornerRadiusProperty;
+
     protected:
         CBorder();
         virtual ~CBorder();
@@ -41,7 +47,12 @@ class CBorder : public CDecorator
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
 
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
+
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         HRESULT SetPaddingInternal( const RectF& Padding );
         HRESULT SetCornerRadiusInternal( FLOAT Radius );
@@ -50,12 +61,23 @@ class CBorder : public CDecorator
         HRESULT RebuildGeometry();
         HRESULT ReleaseGeometry();
 
-        FLOAT m_BorderThickness;
-        FLOAT m_CornerRadius;
+        static HRESULT StaticOnBackgroundChanged( CPropertyObject* pObjectInstance );
+        HRESULT OnBackgroundChanged();
+
+        HRESULT GetEffectiveBackground( CBrush** ppBrush );
+        HRESULT GetEffectivePadding( RectF* pPadding );
+        HRESULT GetEffectiveBorderThickness( FLOAT* pBorderThickness );
+        HRESULT GetEffectiveBorderBrush( CBrush** ppBrush );
+        HRESULT GetEffectiveCornerRadius( FLOAT* pCornerRadius );
+
+        CTypedLayeredValue< CBrush > m_Background;
+        CTypedLayeredValue< CRectFValue > m_Padding;
+        CTypedLayeredValue< CFloatValue > m_BorderThickness;
+        CTypedLayeredValue< CBrush > m_BorderBrush;
+        CTypedLayeredValue< CFloatValue > m_CornerRadius;
+
         CGeometryVisual* m_BorderVisual;
         BOOL m_GeometryDirty;
-
-        RectF m_Padding;
 };
 
 template< >

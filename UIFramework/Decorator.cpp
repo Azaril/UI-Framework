@@ -2,18 +2,10 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 
-CStaticProperty DecoratorProperties[] = 
-{
-    CStaticProperty( L"Child", TypeIndex::UIElement, StaticPropertyFlags::Content )
-};
-
-namespace DecoratorPropertyIndex
-{
-    enum Value
-    {
-        Child
-    };
-}
+//
+// Properties
+//
+CStaticProperty CDecorator::ChildProperty( L"Child", TypeIndex::UIElement, StaticPropertyFlags::Content );
 
 CDecorator::CDecorator() : m_Child(NULL)
 {
@@ -72,7 +64,12 @@ HRESULT CDecorator::CreatePropertyInformation(CPropertyInformation **ppInformati
 
     IFCPTR(ppInformation);
 
-    IFC(CStaticPropertyInformation::Create(DecoratorProperties, ARRAYSIZE(DecoratorProperties), &pStaticInformation));
+    CStaticProperty* Properties[] = 
+    {
+        &ChildProperty
+    };
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
 
@@ -87,81 +84,45 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDecorator::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CDecorator::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= DecoratorProperties && pProperty < DecoratorProperties + ARRAYSIZE(DecoratorProperties))
+    if(pProperty == &CDecorator::ChildProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElement));
 
-        UINT32 Index = (pStaticProperty - DecoratorProperties);
-        
-        switch(Index)
-        {
-            case DecoratorPropertyIndex::Child:
-                {
-                    IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElement));
+        CUIElement* pUIElement = (CUIElement*)pValue;
 
-                    CUIElement* pUIElement = (CUIElement*)pValue;
-
-                    IFC(SetChild(pUIElement));
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        IFC(SetChild(pUIElement));
     }
     else
     {
-        IFC(CFrameworkElement::SetValue(pProperty, pValue));
+        IFC(CFrameworkElement::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CDecorator::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+HRESULT CDecorator::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    // Check if the property is a static property.
-    if(pProperty >= DecoratorProperties && pProperty < DecoratorProperties + ARRAYSIZE(DecoratorProperties))
+    if(pProperty == &CDecorator::ChildProperty)
     {
-        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
-
-        UINT32 Index = (pStaticProperty - DecoratorProperties);
-        
-        switch(Index)
-        {
-            case DecoratorPropertyIndex::Child:
-                {
-                    *ppValue = m_Child;
-                    AddRefObject(m_Child);
-
-                    break;
-                }
-
-            default:
-                {
-                    IFC(E_FAIL);
-                }
-        }
+        *ppValue = m_Child;
+        AddRefObject(m_Child);
     }
     else
     {
-        IFC(CFrameworkElement::GetValue(pProperty, ppValue));
+        IFC(CFrameworkElement::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:
