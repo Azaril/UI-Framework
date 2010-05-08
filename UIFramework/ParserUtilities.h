@@ -12,6 +12,6 @@ HRESULT ElementStartToParserCallback( CParseContext* pContext, CPropertyObject* 
 HRESULT ElementStartToParserCallback( CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLElementStart* pStart, CPropertyNodeCallback** ppCallback );
 HRESULT TextToParserCallback( CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLText* pText, CPropertyNodeCallback** ppCallback );
 
-HRESULT AttributeStringToValue( const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue );
+HRESULT AttributeStringToValue( CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue );
 
 HRESULT AssignProperty( CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CTypeConverter* pTypeConverter, CObjectWithType* pKey = NULL );

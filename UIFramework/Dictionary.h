@@ -142,7 +142,7 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
                 }
             }
 
-            IFC(E_FAIL);
+            hr = E_FAIL;
 
         Cleanup:
             return hr;

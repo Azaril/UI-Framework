@@ -6,7 +6,7 @@
 // Properties
 //
 CStaticProperty CSetter::PropertyProperty( L"Property", TypeIndex::String, StaticPropertyFlags::None );
-CStaticProperty CSetter::ValueProperty( L"Value", TypeIndex::Object, StaticPropertyFlags::None );
+CStaticProperty CSetter::ValueProperty( L"Value", TypeIndex::Object, StaticPropertyFlags::Content );
 
 CSetter::CSetter() : m_Property(NULL),
                      m_Value(NULL)

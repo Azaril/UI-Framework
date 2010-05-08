@@ -350,18 +350,18 @@ HRESULT CFrameworkElement::EnsureStyle()
 
     if(m_StyleDirty)
     {
-        IFC(GetEffectiveStyle(&pStyle));
-
-        if(pStyle)
+        if(IsAttached())
         {
-            if(IsAttached())
+            IFC(GetEffectiveStyle(&pStyle));
+
+            if(pStyle)
             {
                 IFC(ApplyStyle(pStyle));
             }
-        }
-        else
-        {
-            m_StyleDirty = FALSE;
+            else
+            {
+                m_StyleDirty = FALSE;
+            }
         }
     }
 

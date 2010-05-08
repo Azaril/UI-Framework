@@ -9,6 +9,7 @@
 #include "DockPanel.h"
 #include "Style.h"
 #include "Setter.h"
+#include "DynamicResource.h"
 
 template< typename FromType >
 class StaticClassFactory
@@ -48,6 +49,7 @@ CStaticResolvedClass Classes[] =
     CStaticResolvedClass(L"SolidColorBrush", STATIC_CLASS_INFO(CSolidColorBrush)),
     CStaticResolvedClass(L"Style", STATIC_CLASS_INFO(CStyle)),
     CStaticResolvedClass(L"Setter", STATIC_CLASS_INFO(CSetter)),
+    CStaticResolvedClass(L"DynamicResource", STATIC_CLASS_INFO(CDynamicResource))
 };
 
 CStaticClassResolver::CStaticClassResolver()

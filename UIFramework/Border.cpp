@@ -377,7 +377,7 @@ HRESULT CBorder::GetEffectiveCornerRadius(FLOAT* pCornerRadius)
     HRESULT hr = S_OK;
     CFloatValue* pEffectiveValue = NULL;
 
-    IFC(m_BorderThickness.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_CornerRadius.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
 
     *pCornerRadius = pEffectiveValue->GetValue();
 
@@ -562,98 +562,6 @@ HRESULT CBorder::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayered
     else
     {
         hr = CDecorator::GetLayeredValue(pProperty, ppLayeredValue);
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CBorder::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    if(pProperty == &CBorder::BackgroundProperty)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Brush));
-
-        CBrush* pBrush = (CBrush*)pValue;
-
-        IFC(SetBackground(pBrush));
-    }
-    else if(pProperty == &CBorder::PaddingProperty)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::RectF));
-
-        CRectFValue* pRectF = (CRectFValue*)pValue;
-
-        IFC(SetPaddingInternal(pRectF->GetValue()))
-    }
-    else if(pProperty == &CBorder::BorderBrushProperty)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Brush));
-
-        CBrush* pBrush = (CBrush*)pValue;
-
-        IFC(SetBorder(pBrush));
-    }
-    else if(pProperty == &CBorder::BorderThicknessProperty)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-        CFloatValue* pFloat = (CFloatValue*)pValue;
-
-        IFC(SetBorderThickness(pFloat->GetValue()))
-    }
-    else if(pProperty == &CBorder::CornerRadiusProperty)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Float));
-
-        CFloatValue* pFloat = (CFloatValue*)pValue;
-
-        IFC(SetCornerRadiusInternal(pFloat->GetValue()))
-    }
-    else
-    {
-        IFC(CDecorator::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CBorder::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CBorder::BackgroundProperty)
-    {
-        IFC(E_NOTIMPL);
-    }
-    else if(pProperty == &CBorder::PaddingProperty)
-    {
-        IFC(E_NOTIMPL);
-    }
-    else if(pProperty == &CBorder::BorderBrushProperty)
-    {
-        IFC(E_NOTIMPL);
-    }
-    else if(pProperty == &CBorder::BorderThicknessProperty)
-    {
-        IFC(E_NOTIMPL);
-    }
-    else if(pProperty == &CBorder::CornerRadiusProperty)
-    {
-        IFC(E_NOTIMPL);
-    }
-    else
-    {
-        IFC(CDecorator::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:

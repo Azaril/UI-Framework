@@ -2,6 +2,7 @@
 
 #include "PropertyObject.h"
 #include "Providers.h"
+#include "Binding.h"
 
 class CLayeredValue
 {
@@ -193,13 +194,16 @@ class CTypedLocalLayeredValue : public CLayeredValue
 
             ReleaseObject(*ppLayer);
 
-            //TODO: Support binding and expressions.
-
             if(pValue)
             {
                 if(pValue->IsTypeOf(ObjectTypeTraits< T >::Type))
                 {
                     *ppLayer = (T*)pValue;
+                    AddRefObject(pValue);
+                }
+                else if(pValue->IsTypeOf(TypeIndex::Binding))
+                {
+                    *ppLayer = (CBinding*)pValue;
                     AddRefObject(pValue);
                 }
                 else 
@@ -232,6 +236,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
         HRESULT GetValueFromLayer( CObjectWithType* pValue, CProviders* pProviders, CObjectWithType** ppEffectiveValue )
         {
             HRESULT hr = S_OK;
+            CObjectWithType* pBoundValue = NULL;
 
             IFCPTR(pValue);
             IFCPTR(ppEffectiveValue);
@@ -242,6 +247,31 @@ class CTypedLocalLayeredValue : public CLayeredValue
                 {
                     *ppEffectiveValue = pValue;
                     AddRefObject(pValue);
+                }
+                else if(pValue->IsTypeOf(TypeIndex::Binding))
+                {
+                    CBinding* pBinding = (CBinding*)pValue;
+
+                    IFC(pBinding->GetBoundValue(m_Owner, m_Property, &pBoundValue));
+
+                    if(pBoundValue)
+                    {
+                        if(pBoundValue->IsTypeOf(ObjectTypeTraits< T >::Type))
+                        {
+                            *ppEffectiveValue = pBoundValue;
+                            pBoundValue = NULL;
+                        }
+                        else
+                        {
+                            CTypeConverter* pTypeConverter = NULL;
+
+                            IFCPTR(pProviders);
+
+                            pTypeConverter = pProviders->GetTypeConverter();
+
+                            IFC(pTypeConverter->Convert(pBoundValue, ObjectTypeTraits< T >::Type, ppEffectiveValue));
+                        }
+                    }
                 }
                 else
                 {
@@ -254,6 +284,8 @@ class CTypedLocalLayeredValue : public CLayeredValue
             }
 
         Cleanup:
+            ReleaseObject(pBoundValue);
+
             return hr;
         }
 

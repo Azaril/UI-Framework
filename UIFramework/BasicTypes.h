@@ -99,6 +99,7 @@ class CStringValue : public CRefCountedObjectBase< CObjectWithType >
         DECLARE_TYPE_WITH_BASE( TypeIndex::String, CObjectWithType );
 
         const WCHAR* GetValue();
+        UINT32 GetLength();
 
         virtual BOOL Equals( CObjectWithType* pOther );
 
@@ -112,6 +113,7 @@ class CStringValue : public CRefCountedObjectBase< CObjectWithType >
         HRESULT Initialize( const WCHAR* pValue, UINT32 Length );
 
         WCHAR* m_Value;
+        UINT32 m_Length;
 };
 
 template< >

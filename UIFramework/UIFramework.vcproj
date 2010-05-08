@@ -857,6 +857,26 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Binding"
+					>
+					<File
+						RelativePath=".\Binding.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Binding.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DynamicResource.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DynamicResource.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Text"

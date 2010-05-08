@@ -169,7 +169,7 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
         {
             if(wcscmp(pNameString, L"Key") == 0)
             {
-                IFC(AttributeStringToValue(pValueString, ValueStringLength, &m_Key));
+                IFC(AttributeStringToValue(m_Context, pValueString, ValueStringLength, &m_Key));
             }
             else
             {
@@ -182,7 +182,7 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
         {
             IFC(m_Context->GetClassResolver()->ResolveProperty(pNameString, m_Properties, &pProperty));
 
-            IFC(AttributeStringToValue(pValueString, ValueStringLength, &pValue));
+            IFC(AttributeStringToValue(m_Context, pValueString, ValueStringLength, &pValue));
 
             IFC(AssignProperty(m_Element, pProperty, pValue, m_Context->GetTypeConverter()));
 

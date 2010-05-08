@@ -267,6 +267,8 @@ HRESULT ConvertStringToColorF(CObjectWithType* pValue, TypeIndex::Value TargetTy
     CColorFValue* pColorFValue = NULL;
     ColorF Value;
     BOOL GotColor = FALSE;
+    const WCHAR* pString = NULL;
+    UINT32 StringLength = 0;
 
     IFCPTR(pValue);
     IFCPTR(ppConvertedValue);
@@ -274,6 +276,100 @@ HRESULT ConvertStringToColorF(CObjectWithType* pValue, TypeIndex::Value TargetTy
     IFCEXPECT(pValue->GetType() == TypeIndex::String);
 
     pStringValue = (CStringValue*)pValue;
+
+    pString = pStringValue->GetValue();
+    StringLength = pStringValue->GetLength();
+
+    if(StringLength > 0 && pString[0] == L'#')
+    {
+        const WCHAR* pParsePoint = pString + 1;
+        BOOL Continue = TRUE;
+        UINT32 HexDigits = 0;
+        BOOL FailedParse = FALSE;
+        BYTE HexValues[8] = { 0 };
+
+        while(Continue && !FailedParse)
+        {
+            const WCHAR Token = *pParsePoint;
+
+            if(Token == L'\0')
+            {
+                Continue = FALSE;
+            }
+            else if(Token >= L'0' && Token <= L'9')
+            {
+                if(HexDigits < 8)
+                {
+                    HexValues[HexDigits] = Token - L'0';
+                    ++HexDigits;
+                }
+                else
+                {
+                    FailedParse = TRUE;
+                }
+            }
+            else if(Token >= L'a' && Token <= L'f')
+            {
+                if(HexDigits < 8)
+                {
+                    HexValues[HexDigits] = Token - L'a';
+                    ++HexDigits;
+                }
+                else
+                {
+                    FailedParse = TRUE;
+                }
+            }
+            else if(Token >= L'A' && Token <= L'F')
+            {
+                if(HexDigits < 8)
+                {
+                    HexValues[HexDigits] = Token - L'A';
+                    ++HexDigits;
+                }
+                else
+                {
+                    FailedParse = TRUE;
+                }
+            }
+            else
+            {
+                FailedParse = TRUE;
+            }
+
+            ++pParsePoint;
+        }
+
+        if(!FailedParse)
+        {
+            switch(HexDigits)
+            {
+                case 6:
+                    {
+                        Value.a = 1;
+                        Value.r = ((HexValues[0] << 4) | (HexValues[1])) / 255.f;;
+                        Value.g = ((HexValues[2] << 4) | (HexValues[3])) / 255.f;;
+                        Value.b = ((HexValues[4] << 4) | (HexValues[5])) / 255.f;;
+
+                        GotColor = TRUE;
+
+                        break;
+                    }
+
+                case 8:
+                    {
+                        Value.a = ((HexValues[0] << 4) | (HexValues[1])) / 255.f;;
+                        Value.r = ((HexValues[2] << 4) | (HexValues[3])) / 255.f;;
+                        Value.g = ((HexValues[4] << 4) | (HexValues[5])) / 255.f;;
+                        Value.b = ((HexValues[6] << 4) | (HexValues[7])) / 255.f;;
+
+                        GotColor = TRUE;
+
+                        break;
+                    }
+            }
+        }
+    }
 
     for(UINT32 i = 0; i < ARRAYSIZE(PredefinedColors) && !GotColor; i++)
     {

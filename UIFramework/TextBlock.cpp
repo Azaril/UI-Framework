@@ -8,22 +8,25 @@
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Text );
+DEFINE_GET_DEFAULT_NULL( Foreground );
 
 //
 // Properties
 // 
 CStaticProperty CTextBlock::TextProperty( L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT( Text ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnTextChanged ) );
+CStaticProperty CTextBlock::ForegroundProperty( L"Foreground", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Foreground ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnForegroundChanged ) );
 
 //
 // Property Change Handlers
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CTextBlock, OnTextChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CTextBlock, OnForegroundChanged );
 
 CTextBlock::CTextBlock() : m_TextLayout(NULL),
                            m_TextFormat(NULL),
-                           m_TextBrush(NULL),
-                           m_TextGraphicsBrush(NULL),
-                           m_Text(this, &CTextBlock::TextProperty)
+                           m_ForegroundGraphicsBrush(NULL),
+                           m_Text(this, &CTextBlock::TextProperty),
+                           m_Foreground(this, &CTextBlock::ForegroundProperty)
 {
 }
 
@@ -31,8 +34,7 @@ CTextBlock::~CTextBlock()
 {
     ReleaseObject(m_TextLayout);
     ReleaseObject(m_TextFormat);
-    ReleaseObject(m_TextBrush);
-    ReleaseObject(m_TextGraphicsBrush);
+    ReleaseObject(m_ForegroundGraphicsBrush);
 }
 
 HRESULT CTextBlock::SetText(const WCHAR* pText)
@@ -126,6 +128,36 @@ Cleanup:
     return hr;
 }
 
+HRESULT CTextBlock::PreRenderInternal(CPreRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+    CRenderTarget* pRenderTarget = NULL;
+    CBrush* pBrush = NULL;
+
+    pRenderTarget = Context.GetRenderTarget();
+    IFCPTR(pRenderTarget);
+
+    if(m_ForegroundGraphicsBrush == NULL)
+    {
+        IFC(GetEffectiveForeground(&pBrush));
+
+        if(pBrush)
+        {
+            if(FAILED(pBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_ForegroundGraphicsBrush)))
+            {
+                m_ForegroundGraphicsBrush = NULL;
+            }
+        }
+    }
+
+    IFC(CFrameworkElement::PreRenderInternal(Context));
+
+Cleanup:
+    ReleaseObject(pBrush);
+
+    return hr;
+}
+
 HRESULT CTextBlock::RenderTransformed(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
@@ -133,29 +165,14 @@ HRESULT CTextBlock::RenderTransformed(CRenderContext& Context)
     Point2F TextOrigin = { 0 };
     CGraphicsBrush* pTextBrush = NULL;
 
+    pRenderTarget = Context.GetRenderTarget();
+    IFCPTR(pRenderTarget);
+
     IFC(CFrameworkElement::RenderTransformed(Context));
 
-    if(m_TextLayout != NULL)
+    if(m_TextLayout != NULL && m_ForegroundGraphicsBrush != NULL)
     {
-        pRenderTarget = Context.GetRenderTarget();
-        IFCPTR(pRenderTarget);
-
-        if(m_TextBrush == NULL)
-        {
-            IFC(pRenderTarget->GetDefaultBrush(DefaultBrush::TextForeground, &pTextBrush));
-        }
-        else
-        {
-            //TODO: Figure out brush semantics...
-            __debugbreak();
-
-            IFC(m_TextBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &pTextBrush));
-
-            //pTextBrush = m_TextBrush;
-            //AddRefObject(m_TextBrush);
-        }
-
-        IFC(pRenderTarget->RenderTextLayout(TextOrigin, m_TextLayout, pTextBrush));  
+        IFC(pRenderTarget->RenderTextLayout(TextOrigin, m_TextLayout, m_ForegroundGraphicsBrush));  
     }
 
 Cleanup:
@@ -175,7 +192,8 @@ HRESULT CTextBlock::CreatePropertyInformation(CPropertyInformation** ppInformati
 
     CStaticProperty* Properties[] = 
     {
-        &TextProperty
+        &TextProperty,
+        &ForegroundProperty
     };
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
@@ -205,6 +223,10 @@ HRESULT CTextBlock::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
     {
         *ppLayeredValue = &m_Text;
     }
+    else if(pProperty == &CTextBlock::ForegroundProperty)
+    {
+        *ppLayeredValue = &m_Foreground;
+    }
     else
     {
         hr = CFrameworkElement::GetLayeredValue(pProperty, ppLayeredValue);
@@ -233,6 +255,28 @@ HRESULT CTextBlock::GetEffectiveText(CStringValue** ppText)
     IFCPTR(ppText);
 
     IFC(m_Text.GetTypedEffectiveValue(GetProviders(), ppText));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CTextBlock::OnForegroundChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    ReleaseObject(m_ForegroundGraphicsBrush);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CTextBlock::GetEffectiveForeground(CBrush** ppBrush)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppBrush);
+
+    IFC(m_Foreground.GetTypedEffectiveValue(GetProviders(), ppBrush));
 
 Cleanup:
     return hr;

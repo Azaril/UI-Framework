@@ -106,18 +106,341 @@ Cleanup:
     return hr;
 }
 
-HRESULT AttributeStringToValue(const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue)
+namespace MarkupExtensionParseState
+{
+    enum Value
+    {
+        Start,
+        ParseMarkupType,
+        CreateMarkupType,
+        BeginFindProperty,
+        FindProperty,
+        ParseProperty,
+        ParsePropertyValue,
+        BeginParsePropertyValue,
+        Complete
+    };
+}
+
+HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue, UINT32* pCharactersConsumed)
+{
+    HRESULT hr = S_OK;
+    const WCHAR* pParsePoint = NULL;
+    BOOL Continue = TRUE;
+    MarkupExtensionParseState::Value ParseState = MarkupExtensionParseState::Start;
+    UINT32 MarkupTypeCharacters = 0;
+    WCHAR MarkupType[256] = { 0 };
+    CClassResolver* pClassResolver = NULL;
+    CResolvedClass* pResolvedClass = NULL;
+    CPropertyObject* pExtension = NULL;
+    UINT32 PropertyNameCharacters = 0;
+    WCHAR PropertyName[256] = { 0 };    
+    UINT32 PropertyValueCharacters = 0;
+    WCHAR PropertyValue[256] = { 0 };    
+    CPropertyInformation* pProperties = NULL;
+    CProperty* pProperty = NULL;
+    CObjectWithType* pPropertyValue = NULL;
+    CStringValue* pStringPropertyValue = NULL;
+
+    IFCPTR(pContext);
+    IFCPTR(pValue);
+    IFCEXPECT(ValueLength > 0);
+    IFCPTR(ppValue);
+    IFCPTR(pCharactersConsumed);
+
+    pClassResolver = pContext->GetClassResolver();
+
+    IFCPTR(pClassResolver);
+
+    pParsePoint = pValue;
+
+    while(Continue)
+    {
+        switch(ParseState)
+        {
+            case MarkupExtensionParseState::Start:
+                {
+                    IFCEXPECT(pParsePoint < pValue + ValueLength);
+
+                    const WCHAR Token = *pParsePoint;
+
+                    if(Token == L'{')
+                    {
+                        ++pParsePoint;
+
+                        ParseState = MarkupExtensionParseState::ParseMarkupType;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case MarkupExtensionParseState::ParseMarkupType:
+                {
+                    IFCEXPECT(pParsePoint < pValue + ValueLength);
+
+                    const WCHAR Token = *pParsePoint;
+
+                    if(iswalnum(Token))
+                    {
+                        IFCEXPECT(MarkupTypeCharacters < ARRAYSIZE(MarkupType) - 1);
+
+                        MarkupType[MarkupTypeCharacters] = Token;
+
+                        ++MarkupTypeCharacters;
+
+                        ++pParsePoint;
+                    }
+                    else if(iswspace(Token))
+                    {
+                        ParseState = MarkupExtensionParseState::CreateMarkupType;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case MarkupExtensionParseState::CreateMarkupType:
+                {
+                    IFCEXPECT(MarkupTypeCharacters > 0);
+                    IFCEXPECT(MarkupTypeCharacters < ARRAYSIZE(MarkupType) - 1);
+
+                    MarkupType[MarkupTypeCharacters] = L'\0';
+
+                    IFC(pClassResolver->ResolveType(MarkupType, &pResolvedClass));
+
+                    IFC(pResolvedClass->CreateInstance(&pExtension));
+
+                    IFC(pResolvedClass->GetPropertyInformation(&pProperties));
+
+                    ParseState = MarkupExtensionParseState::BeginFindProperty;
+
+                    break;
+                }
+
+            case MarkupExtensionParseState::BeginFindProperty:
+                {
+                    IFCEXPECT(pParsePoint < pValue + ValueLength);
+
+                    const WCHAR Token = *pParsePoint;
+
+                    if(Token == L'}')
+                    {
+                        ++pParsePoint;
+
+                        ParseState = MarkupExtensionParseState::Complete;
+                    }
+                    else if(iswspace(Token))
+                    {
+                        ParseState = MarkupExtensionParseState::FindProperty;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case MarkupExtensionParseState::FindProperty:
+                {
+                    IFCEXPECT(pParsePoint < pValue + ValueLength);
+
+                    const WCHAR Token = *pParsePoint;
+
+                    if(iswalnum(Token))
+                    {
+                        ParseState = MarkupExtensionParseState::ParseProperty;
+                    }
+                    else if(iswspace(Token))
+                    {
+                        ++pParsePoint;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case MarkupExtensionParseState::ParseProperty:
+                {
+                    IFCEXPECT(pParsePoint < pValue + ValueLength);
+
+                    const WCHAR Token = *pParsePoint;
+
+                    if(iswalnum(Token))
+                    {
+                        IFCEXPECT(PropertyNameCharacters < ARRAYSIZE(PropertyName) - 1);
+
+                        PropertyName[PropertyNameCharacters] = Token;
+
+                        ++PropertyNameCharacters;
+
+                        ++pParsePoint;
+                    }
+                    else if(Token == L'=')
+                    {
+                        IFCEXPECT(PropertyNameCharacters < ARRAYSIZE(PropertyName) - 1);
+
+                        PropertyName[PropertyNameCharacters] = L'\0';
+
+                        IFC(pProperties->GetProperty(PropertyName, &pProperty));
+
+                        ++pParsePoint;
+
+                        ParseState = MarkupExtensionParseState::BeginParsePropertyValue;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case MarkupExtensionParseState::BeginParsePropertyValue:
+                {
+                    IFCEXPECT(pParsePoint < pValue + ValueLength);
+
+                    const WCHAR Token = *pParsePoint;
+
+                    if(Token == L'{')
+                    {
+                        UINT32 CharactersConsumed = 0;
+
+                        IFC(ParseMarkupExtensionInternal(pContext, pParsePoint, (pValue + ValueLength) - pParsePoint, &pPropertyValue, &CharactersConsumed));
+
+                        IFC(AssignProperty(pExtension, pProperty, pPropertyValue, pContext->GetTypeConverter()));
+
+                        ReleaseObject(pPropertyValue);
+
+                        pParsePoint += CharactersConsumed;
+
+                        ParseState = MarkupExtensionParseState::BeginFindProperty;
+                    }
+                    else if(iswalnum(Token))
+                    {
+                        ParseState = MarkupExtensionParseState::ParsePropertyValue;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case MarkupExtensionParseState::ParsePropertyValue:
+                {
+                    IFCEXPECT(pParsePoint < pValue + ValueLength);
+
+                    const WCHAR Token = *pParsePoint;
+
+                    if(iswalnum(Token))
+                    {
+                        IFCEXPECT(PropertyValueCharacters < ARRAYSIZE(PropertyValue) - 1);
+
+                        PropertyValue[PropertyValueCharacters] = Token;
+
+                        ++PropertyValueCharacters;
+
+                        ++pParsePoint;
+                    }
+                    else if(iswspace(Token) || Token == L'}')
+                    {
+                        IFCEXPECT(PropertyValueCharacters < ARRAYSIZE(PropertyValue) - 1);
+
+                        PropertyValue[PropertyValueCharacters] = L'\0';
+
+                        ++PropertyValueCharacters;
+
+                        IFC(CStringValue::Create(PropertyValue, &pStringPropertyValue));
+
+                        IFC(AssignProperty(pExtension, pProperty, pStringPropertyValue, pContext->GetTypeConverter()));
+
+                        ReleaseObject(pStringPropertyValue);
+
+                        ParseState = MarkupExtensionParseState::BeginFindProperty;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case MarkupExtensionParseState::Complete:
+                {
+                    *ppValue = pExtension;
+                    pExtension = NULL;
+
+                    *pCharactersConsumed = pParsePoint - pValue;
+
+                    Continue = FALSE;
+
+                    break;
+                }
+        }
+    }
+
+Cleanup:
+    ReleaseObject(pResolvedClass);
+    ReleaseObject(pExtension);
+    ReleaseObject(pProperty);
+    ReleaseObject(pProperties);
+    ReleaseObject(pPropertyValue);
+    ReleaseObject(pStringPropertyValue);
+
+    return hr;
+}
+
+HRESULT ParseMarkupExtension(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+    UINT32 ConsumedCharacters = 0;
+
+    IFCPTR(pContext);
+    IFCPTR(pValue);
+    IFCEXPECT(ValueLength > 0);
+    IFCPTR(ppValue);
+
+    IFC(ParseMarkupExtensionInternal(pContext, pValue, ValueLength, ppValue, &ConsumedCharacters));
+
+    IFCEXPECT(ConsumedCharacters == ValueLength);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT AttributeStringToValue(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
 
+    IFCPTR(pContext);
     IFCPTR(pValue);
+    IFCPTR(ppValue);
 
-    //TODO: Support markup extensions and bindings.
-    IFC(CStringValue::Create(pValue, ValueLength, &pStringValue));
+    if(SUCCEEDED(ParseMarkupExtension(pContext, pValue, ValueLength, ppValue)))
+    {
+        goto Cleanup;
+    }
+    else
+    {
+        IFC(CStringValue::Create(pValue, ValueLength, &pStringValue));
 
-    *ppValue = pStringValue;
-    pStringValue = NULL;
+        *ppValue = pStringValue;
+        pStringValue = NULL;
+    }
 
 Cleanup:
     ReleaseObject(pStringValue);
@@ -143,7 +466,7 @@ HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectW
         IFCEXPECT(pProperty->IsDictionary());
     }
 
-    if(pProperty->GetType() == pValue->GetType() || pValue->IsTypeOf(pProperty->GetType()))
+    if(pValue->IsTypeOf(pProperty->GetType()) || pValue->IsTypeOf(TypeIndex::Binding))
     {
         pConvertedType = pValue;
         AddRefObject(pConvertedType);

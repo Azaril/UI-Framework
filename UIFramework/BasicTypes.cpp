@@ -1,19 +1,20 @@
 #include "BasicTypes.h"
 #include <strsafe.h>
 
-HRESULT CFloatValue::Initialize(FLOAT Value)
-{
-    m_Value = Value;
+//HRESULT CFloatValue::Initialize(FLOAT Value)
+//{
+//    m_Value = Value;
+//
+//    return S_OK;
+//}
+//
+//FLOAT CFloatValue::GetValue()
+//{
+//    return m_Value;
+//}
 
-    return S_OK;
-}
-
-FLOAT CFloatValue::GetValue()
-{
-    return m_Value;
-}
-
-CStringValue::CStringValue() : m_Value(NULL)
+CStringValue::CStringValue() : m_Value(NULL),
+                               m_Length(0)
 {
 }
 
@@ -44,7 +45,9 @@ HRESULT CStringValue::Initialize(const WCHAR* pValue, UINT32 Length)
 
     IFCPTR(pValue);
 
-    BufferSize = Length + 1;
+    m_Length = Length;
+
+    BufferSize = m_Length + 1;
 
     m_Value = new WCHAR[BufferSize];
     IFCOOM(m_Value);
@@ -58,6 +61,10 @@ Cleanup:
 const WCHAR* CStringValue::GetValue()
 {
     return m_Value;
+}
+UINT32 CStringValue::GetLength()
+{
+    return m_Length;
 }
 
 BOOL CStringValue::Equals(CObjectWithType* pOther)

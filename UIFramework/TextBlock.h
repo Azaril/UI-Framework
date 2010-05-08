@@ -20,6 +20,7 @@ class CTextBlock : public CFrameworkElement
         // Properties
         //
         static CStaticProperty TextProperty;
+        static CStaticProperty ForegroundProperty;
 
     protected:
         CTextBlock();
@@ -28,6 +29,7 @@ class CTextBlock : public CFrameworkElement
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
 
+        virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
         virtual HRESULT RenderTransformed( CRenderContext& Context );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
@@ -36,16 +38,19 @@ class CTextBlock : public CFrameworkElement
         // Property Change Handlers
         //
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnTextChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnForegroundChanged );
 
         HRESULT OnTextChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnForegroundChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
         HRESULT GetEffectiveText( CStringValue** ppText );
+        HRESULT GetEffectiveForeground( CBrush** ppBrush );
 
-        CTypedLocalLayeredValue< CStringValue > m_Text;
+        CTypedLayeredValue< CStringValue > m_Text;
+        CTypedLayeredValue< CBrush > m_Foreground;
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;
-        CBrush* m_TextBrush;
-        CGraphicsBrush* m_TextGraphicsBrush;
+        CGraphicsBrush* m_ForegroundGraphicsBrush;
 };
 
 template< >

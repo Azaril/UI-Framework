@@ -46,7 +46,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBrush::CreatePropertyInformation(CPropertyInformation **ppInformation)
+HRESULT CBrush::CreatePropertyInformation(CPropertyInformation** ppInformation)
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;

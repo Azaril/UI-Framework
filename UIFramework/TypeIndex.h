@@ -23,6 +23,8 @@ namespace TypeIndex
                     SolidColorBrush,
                 Style,
                 Setter,
+                Binding,
+                    DynamicResource,
             Collection,
                 UIElementCollection,
                 SetterCollection,
