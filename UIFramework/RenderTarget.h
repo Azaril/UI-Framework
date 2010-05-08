@@ -29,6 +29,7 @@ class CRenderTarget : public CRefCountedObject
         virtual HRESULT Clear( ColorF Color ) = 0;
 
         virtual HRESULT CreateSolidBrush( ColorF Color, CGraphicsBrush** ppBrush ) = 0;
+        virtual HRESULT CreateLinearGradientBrush( const Point2F& StartPoint, const Point2F& EndPoint, GradientStop* pGradientStops, UINT32 GradientStopCount, CGraphicsBrush** ppBrush ) = 0;
         virtual HRESULT GetDefaultBrush( DefaultBrush::Value Type, CGraphicsBrush** ppBrush ) = 0;
 
         //TODO: Support border/stroke.

@@ -18,6 +18,7 @@ class CD2DRenderTarget : public CRenderTarget
         virtual HRESULT Clear( ColorF Color );
 
         virtual HRESULT CreateSolidBrush( ColorF Color, CGraphicsBrush** ppBrush );
+        virtual HRESULT CreateLinearGradientBrush( const Point2F& StartPoint, const Point2F& EndPoint, GradientStop* pGradientStops, UINT32 GradientStopCount, CGraphicsBrush** ppBrush );
         virtual HRESULT GetDefaultBrush( DefaultBrush::Value Type, CGraphicsBrush** ppBrush );
 
         virtual HRESULT DrawRectangle( const RectF& Size, CGraphicsBrush* pBrush );

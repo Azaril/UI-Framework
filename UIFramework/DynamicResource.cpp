@@ -82,7 +82,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CDynamicResource::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
@@ -97,7 +97,7 @@ HRESULT CDynamicResource::SetValue(CProperty* pProperty, CObjectWithType* pValue
     }
     else
     {
-        IFC(CBinding::SetValue(pProperty, pValue));
+        IFC(CBinding::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:

@@ -7,6 +7,7 @@ CGeometryVisual::CGeometryVisual() : m_Geometry(NULL),
                                      m_StrokeGraphicsBrush(NULL),
                                      m_StrokeThickness(1.0f)
 {
+    m_FillBrushTransform = D2D1::Matrix3x2F::Identity();
 }
 
 CGeometryVisual::~CGeometryVisual()
@@ -59,11 +60,21 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::SetStrokeThickness( FLOAT Thickness )
+HRESULT CGeometryVisual::SetStrokeThickness(FLOAT Thickness)
 {
     HRESULT hr = S_OK;
 
     IFC(InternalSetStrokeThickness(Thickness));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CGeometryVisual::SetFillBrushTransform(const Matrix3X2& Transform)
+{
+    HRESULT hr = S_OK;
+
+    m_FillBrushTransform = Transform;
 
 Cleanup:
     return hr;
@@ -223,6 +234,8 @@ HRESULT CGeometryVisual::RenderTransformed(CRenderContext& Context)
 
     if(m_Geometry != NULL && m_FillGraphicsBrush != NULL)
     {
+        IFC(m_FillGraphicsBrush->SetTransform(m_FillBrushTransform));
+
         IFC(pRenderTarget->FillGeometry(m_Geometry, m_FillGraphicsBrush));
     }
 

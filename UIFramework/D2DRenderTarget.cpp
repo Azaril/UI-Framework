@@ -4,6 +4,7 @@
 #include "D2DBitmapBrush.h"
 #include "D2DRectangleGeometry.h"
 #include "D2DRoundedRectangleGeometry.h"
+#include "D2DLinearGradientBrush.h"
 #include "ErrorChecking.h"
 #include "DirectWriteTextLayout.h"
 #include "WICBitmapSource.h"
@@ -90,6 +91,36 @@ HRESULT CD2DRenderTarget::CreateSolidBrush(ColorF Color, CGraphicsBrush** ppBrus
 Cleanup:
     ReleaseObject(pD2DSolidColorBrush);
     ReleaseObject(pSolidBrush);
+
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::CreateLinearGradientBrush(const Point2F& StartPoint, const Point2F& EndPoint, GradientStop* pGradientStops, UINT32 GradientStopCount, CGraphicsBrush** ppBrush)
+{
+    HRESULT hr = S_OK;
+    D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES BrushProperties = { 0 };
+    ID2D1GradientStopCollection* pD2DGradientStops = NULL;
+    ID2D1LinearGradientBrush* pD2DLinearGradientBrush = NULL;
+    CD2DLinearGradientBrush* pLinearGradientBrush = NULL;
+
+    IFCPTR(ppBrush);
+
+    BrushProperties.startPoint = StartPoint;
+    BrushProperties.endPoint = EndPoint;
+
+    IFC(m_RenderTarget->CreateGradientStopCollection(pGradientStops, GradientStopCount, D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_CLAMP, &pD2DGradientStops));
+
+    IFC(m_RenderTarget->CreateLinearGradientBrush(BrushProperties, pD2DGradientStops, &pD2DLinearGradientBrush));
+
+    IFC(CD2DLinearGradientBrush::Create(pD2DLinearGradientBrush, &pLinearGradientBrush));
+
+    *ppBrush = pLinearGradientBrush;
+    pLinearGradientBrush = NULL;
+
+Cleanup:
+    ReleaseObject(pD2DGradientStops);
+    ReleaseObject(pD2DLinearGradientBrush);
+    ReleaseObject(pLinearGradientBrush);
 
     return hr;
 }

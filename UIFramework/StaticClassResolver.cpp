@@ -10,6 +10,8 @@
 #include "Style.h"
 #include "Setter.h"
 #include "DynamicResource.h"
+#include "GradientStop.h"
+#include "LinearGradientBrush.h"
 
 template< typename FromType >
 class StaticClassFactory
@@ -49,7 +51,9 @@ CStaticResolvedClass Classes[] =
     CStaticResolvedClass(L"SolidColorBrush", STATIC_CLASS_INFO(CSolidColorBrush)),
     CStaticResolvedClass(L"Style", STATIC_CLASS_INFO(CStyle)),
     CStaticResolvedClass(L"Setter", STATIC_CLASS_INFO(CSetter)),
-    CStaticResolvedClass(L"DynamicResource", STATIC_CLASS_INFO(CDynamicResource))
+    CStaticResolvedClass(L"DynamicResource", STATIC_CLASS_INFO(CDynamicResource)),
+    CStaticResolvedClass(L"LinearGradientBrush", STATIC_CLASS_INFO(CLinearGradientBrush)),
+    CStaticResolvedClass(L"GradientStop", STATIC_CLASS_INFO(CGradientStop)),
 };
 
 CStaticClassResolver::CStaticClassResolver()

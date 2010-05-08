@@ -237,7 +237,9 @@ HRESULT CBorder::RebuildGeometry()
         IFC(m_VisualContext.GetGraphicsDevice()->CreateRoundedRectangleGeometry(Rectangle, CornerRadius, &pRoundedRectangleGeometry));
 
         IFC(m_BorderVisual->SetGeometry(pRoundedRectangleGeometry));
-    }    
+    }
+
+    IFC(m_BorderVisual->SetFillBrushTransform(D2D1::Matrix3x2F::Scale(Rectangle.right - Rectangle.left, Rectangle.bottom - Rectangle.top)));
 
 Cleanup:
     ReleaseObject(pRectangleGeometry);

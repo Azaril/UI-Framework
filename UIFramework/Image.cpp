@@ -153,6 +153,8 @@ HRESULT CImage::RebuildGeometry()
 
     IFC(m_ImageVisual->SetGeometry(pRectangleGeometry));
 
+    //TODO: Set brush transform.
+
 Cleanup:
     ReleaseObject(pRectangleGeometry);
 

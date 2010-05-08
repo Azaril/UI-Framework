@@ -66,22 +66,25 @@ class CStaticPropertyInformation : public CPropertyInformation
 
 // HACK: Remove this as it triggers an allocation for every default value query.
 #define DEFINE_GET_DEFAULT( name, type, value ) \
-HRESULT GetDefault##name(CObjectWithType** ppObject)    \
+namespace   \
 {   \
-    HRESULT hr = S_OK;  \
-    type* pValue = NULL;    \
-    \
-    IFCPTR(ppObject);   \
-    \
-    IFC(##type::Create(value, &pValue));    \
-    \
-    *ppObject = pValue; \
-    pValue = NULL;  \
-    \
-Cleanup:    \
-    ReleaseObject(pValue);  \
-    \
-    return hr;  \
+    HRESULT GetDefault##name(CObjectWithType** ppObject)    \
+    {   \
+        HRESULT hr = S_OK;  \
+        type* pValue = NULL;    \
+        \
+        IFCPTR(ppObject);   \
+        \
+        IFC(##type::Create(value, &pValue));    \
+        \
+        *ppObject = pValue; \
+        pValue = NULL;  \
+        \
+    Cleanup:    \
+        ReleaseObject(pValue);  \
+        \
+        return hr;  \
+    }   \
 }
 
 #define DEFINE_GET_DEFAULT_NULL( name ) \

@@ -345,6 +345,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\D2DLinearGradientBrush.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DLinearGradientBrush.h"
+						>
+					</File>
+					<File
 						RelativePath=".\D2DRectangleGeometry.cpp"
 						>
 					</File>
@@ -713,11 +721,35 @@
 						>
 					</File>
 					<File
+						RelativePath=".\GradientBrush.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\GradientBrush.h"
+						>
+					</File>
+					<File
+						RelativePath=".\GradientStop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\GradientStop.h"
+						>
+					</File>
+					<File
 						RelativePath=".\ImageBrush.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\ImageBrush.h"
+						>
+					</File>
+					<File
+						RelativePath=".\LinearGradientBrush.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\LinearGradientBrush.h"
 						>
 					</File>
 					<File

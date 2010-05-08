@@ -18,7 +18,6 @@ class CBrush : public CRefCountedObjectBase< CPropertyObject >,
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
@@ -31,6 +30,8 @@ class CBrush : public CRefCountedObjectBase< CPropertyObject >,
     protected:
         CBrush();
         virtual ~CBrush();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
         CPropertyInformation* m_PropertyInformation;
 };

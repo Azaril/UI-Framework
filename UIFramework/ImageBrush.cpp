@@ -287,7 +287,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CImageBrush::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
@@ -300,7 +300,7 @@ HRESULT CImageBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     }
     else
     {
-        IFC(CBrush::SetValue(pProperty, pValue));
+        IFC(CBrush::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:

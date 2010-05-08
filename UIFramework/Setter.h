@@ -15,7 +15,6 @@ class CSetter : public CRefCountedObjectBase< CPropertyObject >
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         const WCHAR* GetPropertyName();
@@ -32,6 +31,8 @@ class CSetter : public CRefCountedObjectBase< CPropertyObject >
         virtual ~CSetter();
 
         HRESULT Initialize();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
         HRESULT SetPropertyInternal( const WCHAR* pProperty );
         HRESULT SetPropertyValueInternal( CObjectWithType* pValue );

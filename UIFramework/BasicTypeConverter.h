@@ -10,3 +10,4 @@ HRESULT ConvertStringToColorF( CObjectWithType* pValue, TypeIndex::Value TargetT
 HRESULT ConvertStringToRectF( CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToRectangleEdge( CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToBool( CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToPoint2F( CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue );

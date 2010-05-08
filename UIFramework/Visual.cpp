@@ -393,14 +393,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CVisual::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    IFC(CPropertyObject::SetValue(pProperty, pValue));
+    IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
 
 Cleanup:
     return hr;

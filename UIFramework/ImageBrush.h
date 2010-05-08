@@ -71,7 +71,6 @@ class CImageBrush : public CBrush
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
@@ -93,6 +92,9 @@ class CImageBrush : public CBrush
         virtual ~CImageBrush();
 
         HRESULT Initialize();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+
         HRESULT InternalSetSource( CObjectWithType* m_Source );
 
         HRESULT EnsureBitmaps();

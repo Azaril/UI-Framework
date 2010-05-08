@@ -13,7 +13,6 @@ class CDynamicResource : public CBinding
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT GetBoundValue( CObjectWithType* pTarget, CProperty* pTargetProperty, CObjectWithType** ppValue );
@@ -28,6 +27,8 @@ class CDynamicResource : public CBinding
         virtual ~CDynamicResource();
 
         HRESULT Initialize();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
         CObjectWithType* m_ResourceKey;
 };

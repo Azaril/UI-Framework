@@ -88,7 +88,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSetter::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CSetter::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
@@ -109,7 +109,7 @@ HRESULT CSetter::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     }
     else
     {
-        IFC(CPropertyObject::SetValue(pProperty, pValue));
+        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:

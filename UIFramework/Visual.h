@@ -20,7 +20,6 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT PreRender( CPreRenderContext& Context );
@@ -44,6 +43,8 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
    
         HRESULT Initialize();
         HRESULT Finalize();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
     
         virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
         virtual HRESULT OnVisualDetach( CVisualDetachContext& Context );

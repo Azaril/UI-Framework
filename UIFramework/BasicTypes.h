@@ -90,6 +90,14 @@ struct ObjectTypeTraits< CBoolValue >
     static const TypeIndex::Value Type = TypeIndex::Bool;
 };
 
+typedef CBasicValue< Point2F, TypeIndex::Point2F > CPoint2FValue;
+
+template< >
+struct ObjectTypeTraits< CPoint2FValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::Point2F;
+};
+
 class CStringValue : public CRefCountedObjectBase< CObjectWithType >
 {
     public:

@@ -10,7 +10,8 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::ColorF, ConvertStringToColorF }, 
     { TypeIndex::String, TypeIndex::RectF, ConvertStringToRectF },
     { TypeIndex::String, TypeIndex::RectangleEdge, ConvertStringToRectangleEdge },
-    { TypeIndex::String, TypeIndex::Bool, ConvertStringToBool }
+    { TypeIndex::String, TypeIndex::Bool, ConvertStringToBool },
+    { TypeIndex::String, TypeIndex::Point2F, ConvertStringToPoint2F }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -674,6 +675,185 @@ HRESULT ConvertStringToBool(CObjectWithType* pValue, TypeIndex::Value TargetType
 
 Cleanup:
     ReleaseObject(pBoolValue);
+
+    return hr;
+}
+
+namespace Point2FParseState
+{
+    enum Value
+    {
+        BeforeNumber,
+        InNumber,
+        AfterNumber
+    };
+}
+
+HRESULT ConvertStringToPoint2F(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+    CPoint2FValue* pPoint2FValue = NULL;
+    Point2F Value = { 0 };
+    FLOAT Values[2] = { 0 };
+    UINT32 ValueCount = 0;
+    const WCHAR* pParsePoint = NULL;
+    WCHAR ValueBuffer[1024];
+    UINT32 ValueBufferIndex = 0;
+    Point2FParseState::Value ParseState = Point2FParseState::BeforeNumber;
+    BOOL Continue = TRUE;
+    BOOL GotSeperator = FALSE;
+    BOOL GotDigit = FALSE;
+
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    pParsePoint = pStringValue->GetValue();
+
+    while(Continue)
+    {
+        const WCHAR Token = *pParsePoint;
+
+        switch(ParseState)
+        {
+            case Point2FParseState::BeforeNumber:
+                {
+                    if(iswdigit(Token) || Token == L'.')
+                    {
+                        ParseState = Point2FParseState::InNumber;
+                    }
+                    else if(Token == L',')
+                    {
+                        IFC(E_FAIL);
+                    }
+                    else if(iswspace(Token))
+                    {
+                        ++pParsePoint;
+                    }
+                    else if(Token == L'\0')
+                    {
+                        IFC(E_FAIL)
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case Point2FParseState::InNumber:
+                {
+                    if(iswdigit(Token))
+                    {
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        ValueBuffer[ValueBufferIndex++] = Token;
+
+                        GotDigit = TRUE;
+
+                        ++pParsePoint;
+                    }
+                    else if(Token == L'.')
+                    {
+                        IFCEXPECT(!GotSeperator);
+
+                        GotSeperator = TRUE;
+
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        ValueBuffer[ValueBufferIndex++] = Token;
+
+                        ++pParsePoint;
+                    }
+                    else if(Token == ',' || iswspace(Token) || Token == L'\0')
+                    {
+                        ParseState = Point2FParseState::AfterNumber;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case Point2FParseState::AfterNumber:
+                {
+                    if(iswdigit(Token) || Token == L'.')
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+                    else if(Token == ',' || Token == L'\0')
+                    {
+                        IFCEXPECT(ValueCount < ARRAYSIZE(Values));
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        IFCEXPECT(ValueBufferIndex > 0);
+                        IFCEXPECT(GotDigit);
+
+                        ValueBuffer[ValueBufferIndex] = L'\0';
+                        ValueBufferIndex = 0;
+
+                        Values[ValueCount] = _wtof(ValueBuffer);
+
+                        ++ValueCount;
+
+                        if(Token == L'\0')
+                        {
+                            Continue = FALSE;
+                        }
+                        else
+                        {
+                            ParseState = Point2FParseState::BeforeNumber;
+
+                            GotSeperator = FALSE;
+                            GotDigit = FALSE;
+
+                            ++pParsePoint;
+                        }
+                    }
+                    else if(iswspace(Token))
+                    {
+                        ++pParsePoint;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+        }
+    }
+
+    switch(ValueCount)
+    {
+        case 2:
+            {
+                Value.x = Values[0];
+                Value.y = Values[1];
+
+                break;
+            }
+
+        default:
+            {
+                IFC(E_UNEXPECTED);
+            }
+    }
+
+    IFC(CPoint2FValue::Create(Value, &pPoint2FValue));
+
+    *ppConvertedValue = pPoint2FValue;
+    pPoint2FValue = NULL;
+
+Cleanup:
+    ReleaseObject(pPoint2FValue);
 
     return hr;
 }

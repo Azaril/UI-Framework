@@ -152,7 +152,6 @@ class CUIElement : public CVisual
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );

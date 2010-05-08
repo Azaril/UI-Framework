@@ -3,10 +3,22 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
+static ColorF DefaultColor = { 1, 1, 1, 1 };
+
+//
+// Property Defaults
+//
+DEFINE_GET_DEFAULT( Color, CColorFValue, DefaultColor );
+
 //
 // Properties
 //
-CStaticProperty CSolidColorBrush::ColorProperty( L"Color", TypeIndex::ColorF, StaticPropertyFlags::None );
+CStaticProperty CSolidColorBrush::ColorProperty( L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged ) );
+
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged );
 
 CSolidColorBrush::CSolidColorBrush()
 {
@@ -83,7 +95,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSolidColorBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CSolidColorBrush::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
@@ -98,7 +110,7 @@ HRESULT CSolidColorBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue
     }
     else
     {
-        IFC(CBrush::SetValue(pProperty, pValue));
+        IFC(CBrush::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:
@@ -120,6 +132,16 @@ HRESULT CSolidColorBrush::GetValue(CProperty* pProperty, CObjectWithType** ppVal
     {
         IFC(CBrush::GetValue(pProperty, ppValue));
     }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CSolidColorBrush::OnColorChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InvalidateBrush());
 
 Cleanup:
     return hr;

@@ -15,8 +15,6 @@ HRESULT CBrush::OnVisualAttach(CVisualAttachContext& Context)
 {
     HRESULT hr = S_OK;
 
-    IFC(CVisualResource::OnVisualAttach(Context));
-
 Cleanup:
     return hr;
 }
@@ -24,8 +22,6 @@ Cleanup:
 HRESULT CBrush::OnVisualDetach(CVisualDetachContext& Context)
 {
     HRESULT hr = S_OK;
-
-    IFC(CVisualResource::OnVisualDetach(Context));
 
 Cleanup:
     return hr;
@@ -64,14 +60,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBrush::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CBrush::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    IFC(CPropertyObject::SetValue(pProperty, pValue));
+    IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
 
 Cleanup:
     return hr;

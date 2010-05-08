@@ -11,7 +11,6 @@ class CSolidColorBrush : public CBrush
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT GetGraphicsBrush( CGraphicsDevice* pDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush );
@@ -27,7 +26,16 @@ class CSolidColorBrush : public CBrush
 
         HRESULT Initialize();
 
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+
         HRESULT InternalSetColor( ColorF Color );
+
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnColorChanged );
+
+        HRESULT OnColorChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
         ColorF m_Color;
 };

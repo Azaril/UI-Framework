@@ -89,7 +89,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CStyle::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
 
@@ -102,7 +102,7 @@ HRESULT CStyle::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     }
     else
     {
-        IFC(CPropertyObject::SetValue(pProperty, pValue));
+        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:

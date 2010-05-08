@@ -17,6 +17,24 @@ HRESULT CPropertyObject::SetValue(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
+    IFCEXPECT(!pProperty->IsReadOnly());
+
+    IFC(SetValueInternal(pProperty, pValue));
+
+Cleanup:
+    ReleaseObject(pOldValue);
+
+    return hr;
+}
+
+HRESULT CPropertyObject::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CObjectWithType* pOldValue = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
     if(pProperty->IsAttached())
     {
         BOOL SetVal = FALSE;

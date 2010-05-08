@@ -14,6 +14,8 @@ class CGeometryVisual : public CVisual
         HRESULT SetStrokeBrush( CBrush* pBrush );
         HRESULT SetStrokeThickness( FLOAT Thickness );
 
+        HRESULT SetFillBrushTransform( const Matrix3X2& Transform );
+
         virtual HRESULT PreRender( CPreRenderContext& Context );
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
@@ -41,4 +43,5 @@ class CGeometryVisual : public CVisual
         CGraphicsBrush* m_FillGraphicsBrush;
         CGraphicsBrush* m_StrokeGraphicsBrush;
         FLOAT m_StrokeThickness;
+        Matrix3X2 m_FillBrushTransform;
 };

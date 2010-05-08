@@ -36,7 +36,6 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         HRESULT ResolveSetters( CPropertyObject* pObject, CProviders* pProviders, IResolvedStyleSetterCallback* pCallback );
@@ -51,6 +50,8 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
         virtual ~CStyle();
 
         HRESULT Initialize();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
         CSetterCollection* m_Setters;
 };

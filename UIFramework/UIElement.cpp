@@ -692,7 +692,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CUIElement::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
     CLayeredValue* pLayeredValue = NULL;
@@ -710,33 +710,17 @@ HRESULT CUIElement::SetValue(CProperty* pProperty, CObjectWithType* pValue)
         }
         else
         {
-            IFC(SetValueInternal(pProperty, pValue));
+            IFC(CVisual::SetValueInternal(pProperty, pValue));
         }
     }
     else
     {
-        if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
-        {
-            IFC(pLayeredValue->SetLocalValue(pValue, GetProviders()));
-        }
-        else
-        {
-            IFC(SetValueInternal(pProperty, pValue));
-        }
+        IFC(GetLayeredValue(pProperty, &pLayeredValue));
+
+        IFC(pLayeredValue->SetLocalValue(pValue, GetProviders()));
+
+        //NOTE: Don't call the base class here as all properties are expected to be layered.
     }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CUIElement::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    IFC(CVisual::SetValue(pProperty, pValue));
 
 Cleanup:
     return hr;
@@ -763,14 +747,11 @@ HRESULT CUIElement::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     }
     else
     {
-        if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
-        {
-            IFC(pLayeredValue->GetLocalValue(GetProviders(), ppValue));
-        }
-        else
-        {
-            IFC(GetValueInternal(pProperty, ppValue));
-        }
+        IFC(GetLayeredValue(pProperty, &pLayeredValue));
+
+        IFC(pLayeredValue->GetLocalValue(GetProviders(), ppValue));
+
+        //NOTE: Don't call the base class here as all properties are expected to be layered.
     }
 
 Cleanup:

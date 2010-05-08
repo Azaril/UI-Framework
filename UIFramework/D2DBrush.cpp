@@ -27,3 +27,12 @@ ID2D1Brush* CD2DBrush::GetD2DBrush()
 {
     return m_Brush;
 }
+
+HRESULT CD2DBrush::SetTransform(const Matrix3X2& Transform)
+{
+    HRESULT hr = S_OK;
+
+    m_Brush->SetTransform(Transform);
+
+    return hr;
+}

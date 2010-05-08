@@ -3,6 +3,7 @@
 #include "Types.h"
 #include "RefCounted.h"
 #include "TypeIndex.h"
+#include "ErrorChecking.h"
 
 template< typename T >
 struct ObjectTypeTraits;
@@ -114,6 +115,8 @@ class CPropertyObject : public CObjectWithType
     protected:
         CPropertyObject();
         virtual ~CPropertyObject();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
         std::vector< CAttachedPropertyHolder > m_AttachedProperties;
 };
