@@ -61,8 +61,20 @@ class CBorder : public CDecorator
         HRESULT RebuildGeometry();
         HRESULT ReleaseGeometry();
 
-        static HRESULT StaticOnBackgroundChanged( CPropertyObject* pObjectInstance );
-        HRESULT OnBackgroundChanged();
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnBackgroundChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnPaddingChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnBorderThicknessChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnBorderBrushChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnCornerRadiusChanged );
+
+        HRESULT OnBackgroundChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnPaddingChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnBorderThicknessChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnBorderBrushChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnCornerRadiusChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
         HRESULT GetEffectiveBackground( CBrush** ppBrush );
         HRESULT GetEffectivePadding( RectF* pPadding );

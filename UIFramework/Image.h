@@ -33,20 +33,26 @@ class CImage : public CFrameworkElement
         HRESULT Initialize();
         HRESULT Finalize();
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
 
-        HRESULT InternalSetSource( CObjectWithType* pSource );
-
         HRESULT RebuildGeometry();
         HRESULT ReleaseGeometry();
 
-        CObjectWithType* m_Source;
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnSourceChanged );
+
+        HRESULT OnSourceChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+
+        HRESULT GetEffectiveSource( CObjectWithType** ppSource );
+
+        CTypedLayeredValue< CObjectWithType > m_Source;
         CImageBrush* m_ImageBrush;
         CGeometryVisual* m_ImageVisual;
         BOOL m_GeometryDirty;

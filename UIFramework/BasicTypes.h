@@ -102,6 +102,8 @@ class CStringValue : public CRefCountedObjectBase< CObjectWithType >
 
         virtual BOOL Equals( CObjectWithType* pOther );
 
+        HRESULT Clone( CStringValue** ppClone );
+
     protected:
         CStringValue();
         virtual ~CStringValue();

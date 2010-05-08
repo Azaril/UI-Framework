@@ -39,14 +39,18 @@ HRESULT CCanvas::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     CFloatValue* pTop = NULL;
     CFloatValue* pRight = NULL;
     CFloatValue* pBottom = NULL;
+    CUIElementCollection* pChildCollection = NULL;
 
     IFC(CPanel::MeasureInternal(AvailableSize, BaseDesiredSize));
 
     MaxSizeNeeded = BaseDesiredSize;
 
-    for(UINT i = 0; i < m_Children->GetCount(); i++)
+    pChildCollection = GetChildCollection();
+    IFCPTR(pChildCollection);
+
+    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
     {
-        CUIElement* pElement = m_Children->GetAtIndex(i);
+        CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         IFC(pElement->Measure(MaxSize));
 
@@ -111,10 +115,14 @@ HRESULT CCanvas::ArrangeInternal(SizeF Size)
     CFloatValue* pTop = NULL;
     CFloatValue* pRight = NULL;
     CFloatValue* pBottom = NULL;
+    CUIElementCollection* pChildCollection = NULL;
 
-    for(UINT i = 0; i < m_Children->GetCount(); i++)
+    pChildCollection = GetChildCollection();
+    IFCPTR(pChildCollection);
+
+    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
     {
-        CUIElement* pElement = m_Children->GetAtIndex(i);
+        CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
         SizeF ElementPosition = { 0 };

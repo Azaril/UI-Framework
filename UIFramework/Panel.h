@@ -20,8 +20,11 @@ class CPanel : public CFrameworkElement
         CPanel();
         virtual ~CPanel();
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+        HRESULT Initialize();
+
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
+
+        CTypedLocalLayeredValue< CUIElementCollection > m_Children;
 };
 
 template< >

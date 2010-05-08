@@ -2,16 +2,6 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 
-//StaticClassProperty StackPanelProperties[] =
-//{
-//};
-//
-//StaticClassProperties StackPanelPropertyInformation =
-//{
-//    StackPanelProperties,
-//    ARRAYSIZE(StackPanelProperties)
-//};
-
 CStackPanel::CStackPanel() : m_Orientation(Orientation::Vertical)
 {
 }
@@ -45,12 +35,16 @@ HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     SizeF BaseDesiredSize = { 0 };
     SizeF ChildrenSize = { 0 };
     SizeF MaxSize = { FLT_MAX, FLT_MAX };
+    CUIElementCollection* pChildCollection = NULL;
 
     IFC(CPanel::MeasureInternal(AvailableSize, BaseDesiredSize));
 
-    for(UINT i = 0; i < m_Children->GetCount(); i++)
+    pChildCollection = GetChildCollection();
+    IFCPTR(pChildCollection);
+
+    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
     {
-        CUIElement* pElement = m_Children->GetAtIndex(i);
+        CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         IFC(pElement->Measure(MaxSize));
 
@@ -79,10 +73,14 @@ HRESULT CStackPanel::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
     Point2F LayoutPoint = { 0 };
+    CUIElementCollection* pChildCollection = NULL;
 
-    for(UINT i = 0; i < m_Children->GetCount(); i++)
+    pChildCollection = GetChildCollection();
+    IFCPTR(pChildCollection);
+
+    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
     {
-        CUIElement* pElement = m_Children->GetAtIndex(i);
+        CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
 
@@ -107,27 +105,3 @@ HRESULT CStackPanel::ArrangeInternal(SizeF Size)
 Cleanup:
     return hr;
 }
-
-//HRESULT CStackPanel::CreatePropertyInformation(CPropertyInformation** ppInformation)
-//{
-//    HRESULT hr = S_OK;
-//    CStaticPropertyInformation* pStaticInformation = NULL;
-//    CPropertyInformation* pBaseInformation = NULL;
-//    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
-//
-//    IFCPTR(ppInformation);
-//
-//    IFC(CStaticPropertyInformation::Create(&StackPanelPropertyInformation, &pStaticInformation));
-//    IFC(CPanel::CreatePropertyInformation(&pBaseInformation));
-//    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
-//
-//    *ppInformation = pDelegatingProperyInformation;
-//    pDelegatingProperyInformation = NULL;
-//
-//Cleanup:
-//    ReleaseObject(pStaticInformation);
-//    ReleaseObject(pBaseInformation);
-//    ReleaseObject(pDelegatingProperyInformation);
-//
-//    return hr;
-//}

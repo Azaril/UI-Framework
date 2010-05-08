@@ -21,10 +21,11 @@ class CProperty
         virtual BOOL IsCollection() = 0;
         virtual BOOL IsDictionary() = 0;
         virtual BOOL IsAttached() = 0;
+        virtual BOOL IsReadOnly() = 0;
 
         virtual HRESULT GetDefaultValue( CObjectWithType** ppObject ) = 0;
 
-        virtual HRESULT OnValueChanged( CPropertyObject* pObjectInstance ) = 0;
+        virtual HRESULT OnValueChanged( CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue ) = 0;
 };
 
 class CPropertyInformation : public CRefCountedObject
@@ -146,3 +147,25 @@ struct ObjectTypeTraits< CObjectDictionary >
 {
     static const TypeIndex::Value Type = TypeIndex::Dictionary;
 };
+
+template< typename T >
+inline HRESULT CastType( CObjectWithType* pBaseObject, T** ppObject )
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppObject);
+
+    if(pBaseObject)
+    {
+        IFCEXPECT(pBaseObject->IsTypeOf(ObjectTypeTraits< T >::Type));
+
+        *ppObject = (T*)pBaseObject;
+    }
+    else
+    {
+        *ppObject = NULL;
+    }
+
+Cleanup:
+    return hr;
+}

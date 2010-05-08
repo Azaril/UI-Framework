@@ -4,11 +4,21 @@
 #include "BasicTypes.h"
 
 //
+// Property Defaults
+//
+DEFINE_GET_DEFAULT_NULL( Source );
+
+//
 // Properties
 //
-CStaticProperty CImage::SourceProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None );
+CStaticProperty CImage::SourceProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None, &GET_DEFAULT( Source ), &INSTANCE_CHANGE_CALLBACK( CImage, OnSourceChanged ) );
 
-CImage::CImage() : m_Source(NULL),
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CImage, OnSourceChanged );
+
+CImage::CImage() : m_Source(this, &CImage::SourceProperty),
                    m_ImageVisual(NULL),
                    m_ImageBrush(NULL),
                    m_GeometryDirty(TRUE)
@@ -49,8 +59,6 @@ HRESULT CImage::Finalize()
         ReleaseObject(m_ImageVisual);
     }
 
-    ReleaseObject(m_Source);
-
     ReleaseObject(m_ImageBrush);
 
 Cleanup:
@@ -66,7 +74,7 @@ HRESULT CImage::SetSource(const WCHAR* pSource)
 
     IFC(CStringValue::Create(pSource, &pStringValue));
 
-    IFC(SetSource(pStringValue));
+    IFC(SetValue(&CImage::SourceProperty, pStringValue));
 
 Cleanup:
     ReleaseObject(pStringValue);
@@ -78,21 +86,33 @@ HRESULT CImage::SetSource(CObjectWithType* pSource)
 {
     HRESULT hr = S_OK;
 
-    IFC(InternalSetSource(pSource));
+    IFC(SetValue(&CImage::SourceProperty, pSource));
 
 Cleanup:
     return hr;
 }
 
-HRESULT CImage::InternalSetSource(CObjectWithType* pSource)
+HRESULT CImage::OnSourceChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;
 
-    IFC(m_ImageBrush->SetSource(pSource));
+    IFC(m_ImageBrush->SetSource(pNewValue));
 
     m_GeometryDirty = TRUE;
 
     IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CImage::GetEffectiveSource(CObjectWithType** ppSource)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppSource);
+
+    IFC(m_Source.GetEffectiveValue(GetProviders(), ppSource));
 
 Cleanup:
     return hr;
@@ -254,40 +274,21 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImage::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CImage::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
+    //TODO: Make this a lookup table rather than requiring a comparison per property.
     if(pProperty == &CImage::SourceProperty)
     {
-        IFC(InternalSetSource(pValue));
+        *ppLayeredValue = &m_Source;
     }
     else
     {
-        IFC(CFrameworkElement::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CImage::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CImage::SourceProperty)
-    {
-        IFC(E_NOTIMPL);
-    }
-    else
-    {
-        IFC(CFrameworkElement::GetValueInternal(pProperty, ppValue));
+        hr = CFrameworkElement::GetLayeredValue(pProperty, ppLayeredValue);
     }
 
 Cleanup:

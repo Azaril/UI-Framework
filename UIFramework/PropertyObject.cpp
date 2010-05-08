@@ -12,26 +12,44 @@ CPropertyObject::~CPropertyObject()
 HRESULT CPropertyObject::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
+    CObjectWithType* pOldValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
     if(pProperty->IsAttached())
     {
+        BOOL SetVal = FALSE;
+
         for(std::vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
         {
             if(It->GetProperty() == pProperty)
             {
+                IFC(It->GetValue(&pOldValue));
+
                 IFC(It->SetValue(pValue));
-                
-                goto Cleanup;
+
+                SetVal = TRUE;
+
+                break;
             }
         }
 
-        m_AttachedProperties.push_back(CAttachedPropertyHolder(pProperty, pValue));
+        if(!SetVal)
+        {
+            m_AttachedProperties.push_back(CAttachedPropertyHolder(pProperty, pValue));
+        }
+
+        IFC(pProperty->OnValueChanged(this, pOldValue, pValue));
+    }
+    else
+    {
+        IFC(E_FAIL);
     }
 
 Cleanup:
+    ReleaseObject(pOldValue);
+
     return hr;
 }
 

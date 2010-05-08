@@ -26,7 +26,7 @@
 
 #ifdef _DEBUG
 
-#define DEBUG_OUT_HR(expr, res) DebugOut(L"%s:%u) - %s\n", __WFILE__, __LINE__, L#expr);
+#define DEBUG_OUT_HR(expr, res) DebugOut(L"%s(%u): %s\n", __WFILE__, __LINE__, L#expr);
 
 #define IFC(expr) do{ hr = (expr); if(FAILED(hr)) { DEBUG_OUT_HR(expr, hr); goto Cleanup; } } while(FALSE);
 #define IFCPTR(ptr) if((ptr) == NULL) { hr = E_POINTER; DEBUG_OUT_HR((ptr) == NULL, hr); goto Cleanup; };

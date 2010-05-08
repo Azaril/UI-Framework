@@ -2,7 +2,6 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-
 CVisual::CVisual() : m_VisualAttached(FALSE)
 {
     m_VisualTransform = D2D1::Matrix3x2F::Identity();

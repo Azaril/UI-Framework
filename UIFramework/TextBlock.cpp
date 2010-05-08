@@ -5,14 +5,25 @@
 #include "BasicTypes.h"
 
 //
+// Property Defaults
+//
+DEFINE_GET_DEFAULT_NULL( Text );
+
+//
 // Properties
 // 
-CStaticProperty CTextBlock::TextProperty( L"Text", TypeIndex::String, StaticPropertyFlags::Content );
+CStaticProperty CTextBlock::TextProperty( L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT( Text ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnTextChanged ) );
+
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CTextBlock, OnTextChanged );
 
 CTextBlock::CTextBlock() : m_TextLayout(NULL),
                            m_TextFormat(NULL),
                            m_TextBrush(NULL),
-                           m_TextGraphicsBrush(NULL)
+                           m_TextGraphicsBrush(NULL),
+                           m_Text(this, &CTextBlock::TextProperty)
 {
 }
 
@@ -27,16 +38,17 @@ CTextBlock::~CTextBlock()
 HRESULT CTextBlock::SetText(const WCHAR* pText)
 {
     HRESULT hr = S_OK;
+    CStringValue* pString = NULL;
 
     IFCPTR(pText);
 
-    m_Text = pText;
+    IFC(CStringValue::Create(pText, &pString));
 
-    ReleaseObject(m_TextLayout);
-
-    IFC(InvalidateMeasure());
+    IFC(SetValue(&CTextBlock::TextProperty, pString));
 
 Cleanup:
+    ReleaseObject(pString);
+
     return hr;
 }
 
@@ -49,10 +61,13 @@ HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     CTextFormat* pTextFormat = NULL;
     RectF TextBounds = { 0 };
     SizeF SizeWithText = { 0 };
+    CStringValue* pText = NULL;
 
     IFC(CFrameworkElement::MeasureInternal(AvailableSize, BaseDesiredSize));
 
-    if(!m_Text.empty())
+    IFC(GetEffectiveText(&pText));
+
+    if(pText)
     {
         IFC(m_VisualContext.GetGraphicsDevice()->GetTextProvider(&pTextProvider));
 
@@ -68,7 +83,7 @@ HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
         if(m_TextLayout == NULL)
         {
-            IFC(pTextProvider->CreateTextLayout(m_Text.c_str(), m_Text.length(), pTextFormat, AvailableSize, &m_TextLayout));
+            IFC(pTextProvider->CreateTextLayout(pText->GetValue(), wcslen(pText->GetValue()), pTextFormat, AvailableSize, &m_TextLayout));
         }
         else
         {
@@ -91,6 +106,7 @@ Cleanup:
     ReleaseObject(pTextProvider);
     ReleaseObject(pTextLayoutMetrics);
     ReleaseObject(pTextFormat);
+    ReleaseObject(pText);
 
     return hr;
 }
@@ -177,45 +193,46 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextBlock::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CTextBlock::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
+    //TODO: Make this a lookup table rather than requiring a comparison per property.
     if(pProperty == &CTextBlock::TextProperty)
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
-
-        CStringValue* pText = (CStringValue*)pValue;
-
-        IFC(SetText(pText->GetValue()));
+        *ppLayeredValue = &m_Text;
     }
     else
     {
-        IFC(CFrameworkElement::SetValueInternal(pProperty, pValue));
+        hr = CFrameworkElement::GetLayeredValue(pProperty, ppLayeredValue);
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CTextBlock::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+HRESULT CTextBlock::OnTextChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue )
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
+    ReleaseObject(m_TextFormat);
 
-    if(pProperty == &CTextBlock::TextProperty)
-    {
-        IFC(E_NOTIMPL);
-    }
-    else
-    {
-        IFC(CFrameworkElement::GetValueInternal(pProperty, ppValue));
-    }
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CTextBlock::GetEffectiveText(CStringValue** ppText)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppText);
+
+    IFC(m_Text.GetTypedEffectiveValue(GetProviders(), ppText));
 
 Cleanup:
     return hr;

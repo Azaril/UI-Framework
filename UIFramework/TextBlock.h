@@ -25,15 +25,23 @@ class CTextBlock : public CFrameworkElement
         CTextBlock();
         virtual ~CTextBlock();
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
-
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT RenderTransformed( CRenderContext& Context );
 
-        std::wstring m_Text;
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
+
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnTextChanged );
+
+        HRESULT OnTextChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+
+        HRESULT GetEffectiveText( CStringValue** ppText );
+
+        CTypedLocalLayeredValue< CStringValue > m_Text;
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;
         CBrush* m_TextBrush;

@@ -182,7 +182,6 @@ class CUIElement : public CVisual
         virtual HRESULT RaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
 
         virtual HRESULT AddHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, connection* pConnection );
-        /*virtual HRESULT RemoveHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler );*/
 
         //
         // Properties
@@ -235,8 +234,6 @@ class CUIElement : public CVisual
         virtual HRESULT OnChildMeasureInvalidated( CChildMeasureInvalidatedNotification* pNotification );
         virtual HRESULT OnChildArrangeInvalidated( CChildArrangeInvalidatedNotification* pNotification );
 
-        virtual HRESULT InternalSetVisibility( Visibility::Value State );
-
         virtual HRESULT InternalRaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
         virtual HRESULT InternalRaiseBubbledEvent( CRoutedEventArgs* pRoutedEventArgs );
 
@@ -253,15 +250,6 @@ class CUIElement : public CVisual
 
         SizeF GetFinalSize();
 
-        HRESULT InternalSetWidth( FLOAT Width );
-        HRESULT InternalSetHeight( FLOAT Height );
-
-        HRESULT InternalSetMinimumWidth( FLOAT Width );
-        HRESULT InternalSetMinimumHeight( FLOAT Height );
-
-        HRESULT InternalSetMaximumWidth( FLOAT Width );
-        HRESULT InternalSetMaximumHeight( FLOAT Height );
-
         virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
         virtual void OnMouseDown( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
@@ -276,6 +264,25 @@ class CUIElement : public CVisual
         virtual void OnMouseMiddleButtonUp( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
         virtual void OnMouseMove( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnWidthChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnHeightChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnMinimumWidthChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnMinimumHeightChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnMaximumWidthChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnMaximumHeightChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnVisibilityChanged );
+
+        HRESULT OnWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnMinimumWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnMinimumHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnMaximumWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnMaximumHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnVisibilityChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
    
         CTypedLayeredValue< CFloatValue > m_Width;
         CTypedLayeredValue< CFloatValue > m_Height;

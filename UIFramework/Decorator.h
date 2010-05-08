@@ -23,10 +23,18 @@ class CDecorator : public CFrameworkElement
 
         HRESULT Initialize();
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        CUIElement* m_Child;
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnChildChanged );
+
+        HRESULT OnChildChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+
+        HRESULT GetEffectiveChild( CUIElement** ppChild );
+
+        CTypedLayeredValue< CUIElement > m_Child;
 };
 
 template< >

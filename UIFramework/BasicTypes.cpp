@@ -19,7 +19,7 @@ CStringValue::CStringValue() : m_Value(NULL)
 
 CStringValue::~CStringValue()
 {
-    delete m_Value;
+    delete [] m_Value;
 }
 
 HRESULT CStringValue::Initialize(const WCHAR* pValue)
@@ -70,4 +70,16 @@ BOOL CStringValue::Equals(CObjectWithType* pOther)
     }
 
     return FALSE;
+}
+
+HRESULT CStringValue::Clone(CStringValue** ppClone)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppClone);
+
+    IFC(CStringValue::Create(m_Value, ppClone));
+
+Cleanup:
+    return hr;
 }

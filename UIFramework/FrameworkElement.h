@@ -122,27 +122,42 @@ class CFrameworkElement : public CUIElement
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
-
         virtual HRESULT AddLogicalChild( CUIElement* pElement );
         virtual HRESULT RemoveLogicalChild( CUIElement* pElement );
 
         virtual VOID OnChildAdded( CUIElement* pElement );
         virtual VOID OnChildRemoved( CUIElement* pElement );
 
-        HRESULT SetNameInternal( const WCHAR* pName );
-        HRESULT SetStyleInternal( CStyle* pStyle );
-
         HRESULT EnsureStyle();
         virtual HRESULT ApplyStyle( CStyle* pStyle );
         virtual HRESULT OnStyleSetterResolved( CProperty* pProperty, CObjectWithType* pValue );
 
-        CUIElementCollection* m_Children;
-        std::wstring m_Name;
-        CResourceDictionary* m_Resources;
-        CStyle* m_Style;
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnNameChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnStyleChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnResourcesChanged );
+
+        HRESULT OnNameChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnStyleChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnResourcesChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+
+        HRESULT GetEffectiveName( CStringValue** ppName );
+        HRESULT GetEffectiveStyle( CStyle** ppStyle );
+        HRESULT GetEffectiveResources( CResourceDictionary** ppResources );
+
+        CUIElementCollection* GetChildCollection();
+
+        CTypedLocalLayeredValue< CStringValue > m_Name;
+        CTypedLocalLayeredValue< CResourceDictionary > m_Resources;
+        CTypedLocalLayeredValue< CStyle > m_Style;
+        CStringValue* m_RegisteredName;
+
         BOOL m_StyleDirty;
+
+    private:
+        CUIElementCollection* m_Children;
 
         class CChildrenSubscriber : public CUIElementCollection::SubscriberType
         {

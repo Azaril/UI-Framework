@@ -4,11 +4,6 @@
 #include "BasicTypes.h"
 
 //
-// Property Change Handlers
-//
-DEFINE_INSTANCE_CHANGE_CALLBACK( CBorder, OnBackgroundChanged );
-
-//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Background );
@@ -21,18 +16,27 @@ DEFINE_GET_DEFAULT( CornerRadius, CFloatValue, 0 );
 // Properties
 //
 CStaticProperty CBorder::BackgroundProperty( L"Background", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT(Background), &INSTANCE_CHANGE_CALLBACK( CBorder, OnBackgroundChanged ) );
-CStaticProperty CBorder::PaddingProperty( L"Padding", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT(Padding) );
-CStaticProperty CBorder::BorderThicknessProperty( L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(BorderThickness) );
-CStaticProperty CBorder::BorderBrushProperty( L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT(BorderBrush) );
-CStaticProperty CBorder::CornerRadiusProperty( L"CornerRadius", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(CornerRadius) );
+CStaticProperty CBorder::PaddingProperty( L"Padding", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT(Padding), &INSTANCE_CHANGE_CALLBACK( CBorder, OnPaddingChanged ) );
+CStaticProperty CBorder::BorderThicknessProperty( L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(BorderThickness), &INSTANCE_CHANGE_CALLBACK( CBorder, OnBorderThicknessChanged ) );
+CStaticProperty CBorder::BorderBrushProperty( L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT(BorderBrush), &INSTANCE_CHANGE_CALLBACK( CBorder, OnBorderBrushChanged ) );
+CStaticProperty CBorder::CornerRadiusProperty( L"CornerRadius", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(CornerRadius), &INSTANCE_CHANGE_CALLBACK( CBorder, OnCornerRadiusChanged ) );
+
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CBorder, OnBackgroundChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CBorder, OnPaddingChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CBorder, OnBorderThicknessChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CBorder, OnBorderBrushChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CBorder, OnCornerRadiusChanged );
 
 CBorder::CBorder() : m_BorderVisual(NULL),
                      m_GeometryDirty(TRUE),
-                     m_Background(&CBorder::BackgroundProperty),
-                     m_Padding(&CBorder::PaddingProperty),
-                     m_BorderThickness(&CBorder::BorderThicknessProperty),
-                     m_BorderBrush(&CBorder::BorderBrushProperty),
-                     m_CornerRadius(&CBorder::CornerRadiusProperty)
+                     m_Background(this, &CBorder::BackgroundProperty),
+                     m_Padding(this, &CBorder::PaddingProperty),
+                     m_BorderThickness(this, &CBorder::BorderThicknessProperty),
+                     m_BorderBrush(this, &CBorder::BorderBrushProperty),
+                     m_CornerRadius(this, &CBorder::CornerRadiusProperty)
 {
 }
 
@@ -252,18 +256,65 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBorder::OnBackgroundChanged()
+HRESULT CBorder::OnBackgroundChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;
     CBrush* pBrush = NULL;
 
-    IFC(GetEffectiveBackground(&pBrush));
+    IFC(CastType(pNewValue, &pBrush));
 
     IFC(m_BorderVisual->SetFillBrush(pBrush));
 
 Cleanup:
-    ReleaseObject(pBrush);
+    return hr;
+}
 
+HRESULT CBorder::OnPaddingChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+    
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::OnBorderThicknessChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pFloat = NULL;
+    
+    IFC(InvalidateMeasure());
+    IFC(InvalidateGeometry());
+
+    IFC(CastType(pNewValue, &pFloat));
+
+    IFC(m_BorderVisual->SetStrokeThickness((pFloat != NULL) ? pFloat->GetValue() : 0));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::OnBorderBrushChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+    CBrush* pBrush = NULL;
+
+    IFC(CastType(pNewValue, &pBrush));
+
+    IFC(m_BorderVisual->SetStrokeBrush(pBrush));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CBorder::OnCornerRadiusChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+    
+    IFC(InvalidateGeometry());
+
+Cleanup:
     return hr;
 }
 
@@ -273,7 +324,7 @@ HRESULT CBorder::GetEffectiveBackground(CBrush** ppBrush)
 
     IFCPTR(ppBrush);
 
-    IFC(m_Background.GetEffectiveValue(GetProviders(), ppBrush));
+    IFC(m_Background.GetTypedEffectiveValue(GetProviders(), ppBrush));
 
 Cleanup:
     return hr;
@@ -284,7 +335,7 @@ HRESULT CBorder::GetEffectivePadding(RectF* pPadding)
     HRESULT hr = S_OK;
     CRectFValue* pEffectiveValue = NULL;
 
-    IFC(m_Padding.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_Padding.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
 
     *pPadding = pEffectiveValue->GetValue();
 
@@ -299,7 +350,7 @@ HRESULT CBorder::GetEffectiveBorderThickness(FLOAT* pBorderThickness)
     HRESULT hr = S_OK;
     CFloatValue* pEffectiveValue = NULL;
 
-    IFC(m_BorderThickness.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_BorderThickness.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
 
     *pBorderThickness = pEffectiveValue->GetValue();
 
@@ -315,7 +366,7 @@ HRESULT CBorder::GetEffectiveBorderBrush(CBrush** ppBrush)
 
     IFCPTR(ppBrush);
 
-    IFC(m_BorderBrush.GetEffectiveValue(GetProviders(), ppBrush));
+    IFC(m_BorderBrush.GetTypedEffectiveValue(GetProviders(), ppBrush));
 
 Cleanup:
     return hr;
@@ -326,7 +377,7 @@ HRESULT CBorder::GetEffectiveCornerRadius(FLOAT* pCornerRadius)
     HRESULT hr = S_OK;
     CFloatValue* pEffectiveValue = NULL;
 
-    IFC(m_BorderThickness.GetEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_BorderThickness.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
 
     *pCornerRadius = pEffectiveValue->GetValue();
 
@@ -361,6 +412,7 @@ HRESULT CBorder::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     SizeF InternalSizeDesired = { 0 };
     RectF Padding = { 0 };
     FLOAT BorderThickness = 0;
+    CUIElement* pChild = NULL;
 
     IFC(CDecorator::MeasureInternal(AvailableSize, BaseSize));
 
@@ -370,25 +422,32 @@ HRESULT CBorder::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     InternalSize.width = max(AvailableSize.width - (BorderThickness * 2) - (Padding.left + Padding.right), 0);
     InternalSize.height = max(AvailableSize.height - (BorderThickness * 2) - (Padding.top + Padding.bottom), 0);
 
-    if(m_Child != NULL)
-    {
-        IFC(m_Child->Measure(InternalSize));
+    IFC(GetEffectiveChild(&pChild));
 
-        InternalSizeDesired = m_Child->GetDesiredSize();
+    if(pChild != NULL)
+    {
+        IFC(pChild->Measure(InternalSize));
+
+        InternalSizeDesired = pChild->GetDesiredSize();
     }
 
     DesiredSize.width = max(InternalSizeDesired.width + (BorderThickness * 2) + (Padding.left + Padding.right), BaseSize.width);
     DesiredSize.height = max(InternalSizeDesired.height + (BorderThickness * 2) + (Padding.top + Padding.bottom), BaseSize.height);
 
 Cleanup:
+    ReleaseObject(pChild);
+
     return hr;
 }
 
 HRESULT CBorder::ArrangeInternal(SizeF Size)
 {
     HRESULT hr = S_OK;
+    CUIElement* pChild = NULL;
 
-    if(m_Child != NULL)
+    IFC(GetEffectiveChild(&pChild));
+
+    if(pChild != NULL)
     {
         RectF Padding = { 0 };
         FLOAT BorderThickness = 0;
@@ -404,9 +463,9 @@ HRESULT CBorder::ArrangeInternal(SizeF Size)
         InternalSize.width = max(InternalSize.width, 0);
         InternalSize.height = max(InternalSize.height, 0);
 
-        IFC(m_Child->Arrange(InternalSize));
+        IFC(pChild->Arrange(InternalSize));
 
-        IFC(m_Child->SetVisualTransform(Transform));
+        IFC(pChild->SetVisualTransform(Transform));
     }
 
     IFC(CDecorator::ArrangeInternal(Size));
@@ -414,6 +473,8 @@ HRESULT CBorder::ArrangeInternal(SizeF Size)
     IFC(InvalidateGeometry());
       
 Cleanup:
+    ReleaseObject(pChild);
+
     return hr;
 }
 

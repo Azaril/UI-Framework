@@ -17,21 +17,27 @@ class CDockPanel : public CPanel
         static CStaticProperty DockProperty;
         static CStaticProperty LastChildFillProperty;
 
-    public:
+    protected:
         CDockPanel();
         virtual ~CDockPanel();
 
         HRESULT Initialize();
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
 
-        HRESULT SetFillLastChildInternal( BOOL Fill );
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnLastChildFillChanged );
 
-        BOOL m_FillLastChild;
+        HRESULT OnLastChildFillChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+
+        HRESULT GetEffectiveLastChildFill( BOOL* pLastChildFill );
+
+        CTypedLayeredValue< CBoolValue > m_LastChildFill;
 };
 
 template< >

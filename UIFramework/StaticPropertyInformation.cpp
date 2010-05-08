@@ -137,6 +137,11 @@ BOOL CStaticProperty::IsAttached()
     return (m_Flags & StaticPropertyFlags::Attached) ? TRUE : FALSE;
 }
 
+BOOL CStaticProperty::IsReadOnly()
+{
+    return (m_Flags & StaticPropertyFlags::ReadOnly) ? TRUE : FALSE;
+}
+
 HRESULT CStaticProperty::GetDefaultValue(CObjectWithType** ppObject)
 {
     HRESULT hr = S_OK;
@@ -151,7 +156,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStaticProperty::OnValueChanged(CPropertyObject* pObjectInstance)
+HRESULT CStaticProperty::OnValueChanged(CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;
 
@@ -159,7 +164,7 @@ HRESULT CStaticProperty::OnValueChanged(CPropertyObject* pObjectInstance)
 
     if(m_ValueChangeFunc)
     {
-        IFC(m_ValueChangeFunc(pObjectInstance));
+        IFC(m_ValueChangeFunc(pObjectInstance, pOldValue, pNewValue));
     }
 
 Cleanup:

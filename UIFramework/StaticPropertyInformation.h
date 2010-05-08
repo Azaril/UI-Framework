@@ -11,12 +11,13 @@ namespace StaticPropertyFlags
         Content     = 0x01,
         Collection  = 0x02,
         Dictionary  = 0x04,
-        Attached    = 0x08
+        Attached    = 0x08,
+        ReadOnly    = 0x10
     };
 }
 
 typedef HRESULT (*GetDefaultPropertyValueFunc)( CObjectWithType** ppObject );
-typedef HRESULT (*OnValueChangeFunc)( CPropertyObject* pObjectInstance );
+typedef HRESULT (*OnValueChangeFunc)( CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
 class CStaticProperty : public CProperty
 {
@@ -31,11 +32,12 @@ class CStaticProperty : public CProperty
         virtual BOOL IsCollection();
         virtual BOOL IsDictionary();
         virtual BOOL IsAttached();
-        BOOL IsContent();
+        virtual BOOL IsContent();
+        virtual BOOL IsReadOnly();
 
         virtual HRESULT GetDefaultValue( CObjectWithType** ppObject );
 
-        virtual HRESULT OnValueChanged( CPropertyObject* pObjectInstance );
+        virtual HRESULT OnValueChanged( CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
     protected:
         const WCHAR* m_Name;
@@ -98,7 +100,7 @@ Cleanup:    \
 #define GET_DEFAULT( name ) GetDefault##name
 
 #define DEFINE_INSTANCE_CHANGE_CALLBACK( type, name ) \
-HRESULT type::Static##name(CPropertyObject* pObjectInstance)    \
+HRESULT type::Static##name(CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue)    \
 {   \
     HRESULT hr = S_OK;  \
     type* pTypedInstance = NULL;    \
@@ -109,10 +111,13 @@ HRESULT type::Static##name(CPropertyObject* pObjectInstance)    \
     \
     pTypedInstance = (##type*)pObjectInstance;  \
     \
-    IFC(pTypedInstance->##name());  \
+    IFC(pTypedInstance->##name(pOldValue, pNewValue));  \
     \
 Cleanup:    \
     return hr;  \
 }
+
+#define DECLARE_INSTANCE_CHANGE_CALLBACK( name )    \
+static HRESULT Static##name(CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue);
 
 #define INSTANCE_CHANGE_CALLBACK( type, name ) type::Static##name

@@ -3,16 +3,33 @@
 #include "DelegatingPropertyInformation.h"
 
 //
+// Property Defaults
+//
+DEFINE_GET_DEFAULT_NULL( Children );
+
+//
 // Properties
 //
-CStaticProperty CPanel::ChildrenProperty( L"Children", TypeIndex::UIElement, StaticPropertyFlags::Content | StaticPropertyFlags::Collection );
+CStaticProperty CPanel::ChildrenProperty( L"Children", TypeIndex::UIElement, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( Children ) );
 
-CPanel::CPanel()
+CPanel::CPanel() : m_Children(this, &CPanel::ChildrenProperty)
 {
 }
 
 CPanel::~CPanel()
 {
+}
+
+HRESULT CPanel::Initialize()
+{
+    HRESULT hr = S_OK;
+
+    IFC(CFrameworkElement::Initialize());
+
+    IFC(m_Children.SetLocalValue(GetChildCollection(), GetProviders()));
+
+Cleanup:
+    return hr;
 }
 
 HRESULT CPanel::AddChild(CUIElement* pElement)
@@ -68,47 +85,21 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPanel::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CPanel::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
+    //TODO: Make this a lookup table rather than requiring a comparison per property.
     if(pProperty == &CPanel::ChildrenProperty)
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::UIElementCollection));
-
-        CUIElementCollection* pUIElementCollection = (CUIElementCollection*)pValue;
-
-        //TODO: Implement!
-        //IFC(SetChildren(pUIElementCollection));
-        __debugbreak();
+        *ppLayeredValue = &m_Children;
     }
     else
     {
-        IFC(CFrameworkElement::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CPanel::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CPanel::ChildrenProperty)
-    {
-        *ppValue = m_Children;
-        AddRefObject(m_Children);
-    }
-    else
-    {
-        IFC(CFrameworkElement::GetValueInternal(pProperty, ppValue));
+        hr = CFrameworkElement::GetLayeredValue(pProperty, ppLayeredValue);
     }
 
 Cleanup:

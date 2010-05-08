@@ -4,12 +4,22 @@
 #include "BasicTypes.h"
 
 //
+// Property Defaults
+//
+DEFINE_GET_DEFAULT( LastChildFill, CBoolValue, TRUE );
+
+//
 // Properties
 //
 CStaticProperty CDockPanel::DockProperty( L"Dock", TypeIndex::RectangleEdge, StaticPropertyFlags::Attached );
-CStaticProperty CDockPanel::LastChildFillProperty( L"LastChildFill", TypeIndex::Bool, StaticPropertyFlags::None );
+CStaticProperty CDockPanel::LastChildFillProperty( L"LastChildFill", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( LastChildFill ), &INSTANCE_CHANGE_CALLBACK( CDockPanel, OnLastChildFillChanged ) );
 
-CDockPanel::CDockPanel() : m_FillLastChild(TRUE)
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CDockPanel, OnLastChildFillChanged );
+
+CDockPanel::CDockPanel() : m_LastChildFill(this, &CDockPanel::LastChildFillProperty)
 {
 }
 
@@ -27,11 +37,26 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDockPanel::SetFillLastChildInternal(BOOL Fill)
+HRESULT CDockPanel::GetEffectiveLastChildFill(BOOL* pLastChildFill)
 {
     HRESULT hr = S_OK;
+    CBoolValue* pEffectiveValue = NULL;
 
-    m_FillLastChild = Fill;
+    IFCPTR(pLastChildFill);
+
+    IFC(m_LastChildFill.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pLastChildFill = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
+HRESULT CDockPanel::OnLastChildFillChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
 
     IFC(InvalidateMeasure());
     IFC(InvalidateArrange());
@@ -44,12 +69,16 @@ HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
     SizeF BaseDesiredSize = { 0 };
+    CUIElementCollection* pChildCollection = NULL;
 
     IFC(CPanel::MeasureInternal(AvailableSize, BaseDesiredSize));
 
-    for(UINT i = 0; i < m_Children->GetCount(); i++)
+    pChildCollection = GetChildCollection();
+    IFCPTR(pChildCollection);
+
+    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
     {
-        CUIElement* pElement = m_Children->GetAtIndex(i);
+        CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         IFC(pElement->Measure(AvailableSize));
     }
@@ -69,12 +98,21 @@ HRESULT CDockPanel::ArrangeInternal(SizeF Size)
     FLOAT RightSideOffset = 0;
     FLOAT TopSideOffset = 0;
     FLOAT BottomSideOffset = 0;
-    UINT32 ChildCount = m_Children->GetCount();
+    CUIElementCollection* pChildCollection = NULL;
+    UINT32 ChildCount = 0;
+    BOOL LastChildFill = FALSE;
+
+    pChildCollection = GetChildCollection();
+    IFCPTR(pChildCollection);
+
+    IFC(GetEffectiveLastChildFill(&LastChildFill));
+
+    ChildCount = pChildCollection->GetCount();
 
     for(UINT32 i = 0; i < ChildCount; i++)
     {
         BOOL LastChild = (i == ChildCount - 1);
-        CUIElement* pElement = m_Children->GetAtIndex(i);
+        CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
         SizeF ElementPosition = { 0 };
@@ -82,7 +120,7 @@ HRESULT CDockPanel::ArrangeInternal(SizeF Size)
 
         IFC(pElement->GetTypedValue(&DockProperty, &pDock));
 
-        if(m_FillLastChild && LastChild)
+        if(LastChildFill && LastChild)
         {
             ElementFinalSize.height = max(Size.height - (TopSideOffset + BottomSideOffset), 0);
             ElementFinalSize.width = max(Size.width - (LeftSideOffset + RightSideOffset), 0);
@@ -174,7 +212,8 @@ HRESULT CDockPanel::CreatePropertyInformation(CPropertyInformation** ppInformati
 
     CStaticProperty* Properties[] = 
     {
-        &DockProperty
+        &DockProperty,
+        &LastChildFillProperty
     };
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
@@ -192,44 +231,21 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDockPanel::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CDockPanel::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
+    //TODO: Make this a lookup table rather than requiring a comparison per property.
     if(pProperty == &CDockPanel::LastChildFillProperty)
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::Bool));
-
-        CBoolValue* pBool = (CBoolValue*)pValue;
-
-        IFC(SetFillLastChildInternal(pBool->GetValue()));
+        *ppLayeredValue = &m_LastChildFill;
     }
     else
     {
-        IFC(CPanel::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CDockPanel::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CDockPanel::LastChildFillProperty)
-    {
-        IFC(E_NOTIMPL);
-    }
-    else
-    {
-        IFC(CPanel::GetValueInternal(pProperty, ppValue));
+        hr = CPanel::GetLayeredValue(pProperty, ppLayeredValue);
     }
 
 Cleanup:
