@@ -12,3 +12,4 @@ HRESULT ConvertStringToRectangleEdge( CConversionContext* pContext, CObjectWithT
 HRESULT ConvertStringToBool( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToPoint2F( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToRoutedEvent( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToBrush( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );

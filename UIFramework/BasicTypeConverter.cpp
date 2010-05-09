@@ -3,6 +3,7 @@
 #include "TypeIndex.h"
 #include "BasicTypes.h"
 #include "RoutedEvent.h"
+#include "SolidColorBrush.h"
 
 StaticTypeConverter BasicConverters[] =
 {
@@ -13,7 +14,8 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::RectangleEdge, ConvertStringToRectangleEdge },
     { TypeIndex::String, TypeIndex::Bool, ConvertStringToBool },
     { TypeIndex::String, TypeIndex::Point2F, ConvertStringToPoint2F },
-    { TypeIndex::String, TypeIndex::RoutedEvent, ConvertStringToRoutedEvent }
+    { TypeIndex::String, TypeIndex::RoutedEvent, ConvertStringToRoutedEvent },
+    { TypeIndex::String, TypeIndex::Brush, ConvertStringToBrush }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -892,6 +894,47 @@ HRESULT ConvertStringToRoutedEvent(CConversionContext* pContext, CObjectWithType
 
 Cleanup:
     ReleaseObject(pRoutedEvent);
+
+    return hr;
+}
+
+HRESULT ConvertStringToBrush(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+    CBrush* pBrush = NULL;
+    CSolidColorBrush* pSolidColorBrush = NULL;
+    CObjectWithType* pColorValue = NULL;
+
+    IFCPTR(pContext);
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    if(SUCCEEDED(ConvertStringToColorF(pContext, pValue, &pColorValue)))
+    {
+        IFC(CSolidColorBrush::Create(&pSolidColorBrush));
+
+        IFC(pSolidColorBrush->SetValue(&CSolidColorBrush::ColorProperty, pColorValue));
+
+        pBrush = pSolidColorBrush;
+        pSolidColorBrush = NULL;
+    }
+    else
+    {
+        IFC(E_FAIL);
+    }
+
+    *ppConvertedValue = pBrush;
+    pBrush = NULL;
+
+Cleanup:
+    ReleaseObject(pColorValue);
+    ReleaseObject(pBrush);
+    ReleaseObject(pSolidColorBrush);
 
     return hr;
 }
