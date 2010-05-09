@@ -129,8 +129,9 @@ class CFrameworkElement : public CUIElement
         virtual VOID OnChildRemoved( CUIElement* pElement );
 
         HRESULT EnsureStyle();
+        HRESULT RevokeStyle();
         virtual HRESULT ApplyStyle( CStyle* pStyle );
-        virtual HRESULT OnStyleSetterResolved( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT SetStyleValue( CProperty* pProperty, CObjectWithType* pValue );
 
         //
         // Property Change Handlers
@@ -155,6 +156,7 @@ class CFrameworkElement : public CUIElement
         CStringValue* m_RegisteredName;
 
         BOOL m_StyleDirty;
+        CResolvedStyle* m_ResolvedStyle;
 
     private:
         CUIElementCollection* m_Children;
@@ -181,22 +183,22 @@ class CFrameworkElement : public CUIElement
 
         } m_ChildrenSubscriber;
 
-        class CSetterResolverCallback : public IResolvedStyleSetterCallback
+        class CStyleCallback : public IStyleCallback
         {
             public:
-                CSetterResolverCallback( CFrameworkElement& This ) : m_This(This)
+                CStyleCallback( CFrameworkElement& This ) : m_This(This)
                 {
                 }
 
-                virtual HRESULT OnResolvedSetter( CProperty* pProperty, CObjectWithType* pValue )
+                virtual HRESULT SetStyleValue( CProperty* pProperty, CObjectWithType* pValue )
                 {
-                    return m_This.OnStyleSetterResolved(pProperty, pValue);
+                    return m_This.SetStyleValue(pProperty, pValue);
                 }
 
             protected:
                 CFrameworkElement& m_This;
 
-        } m_SetterResolvedCallback;
+        } m_StyleCallback;
 };
 
 template< >

@@ -1,19 +1,23 @@
 #include "Style.h"
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
+#include "UIElement.h"
 
 //
 // Properties
 //
-CStaticProperty CStyle::SettersProperty( L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection );
+CStaticProperty CStyle::SettersProperty( L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly );
+CStaticProperty CStyle::TriggersProperty( L"Triggers", TypeIndex::Trigger, StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly );
 
-CStyle::CStyle() : m_Setters(NULL)
+CStyle::CStyle() : m_Setters(NULL),
+                   m_Triggers(NULL)
 {
 }
 
 CStyle::~CStyle()
 {
     ReleaseObject(m_Setters);
+    ReleaseObject(m_Triggers);
 }
 
 HRESULT CStyle::Initialize()
@@ -21,47 +25,87 @@ HRESULT CStyle::Initialize()
     HRESULT hr = S_OK;
 
     IFC(CSetterCollection::Create(&m_Setters));
+    IFC(CTriggerCollection::Create(&m_Triggers));
 
 Cleanup:
     return hr;
 }
 
-HRESULT CStyle::ResolveSetters(CPropertyObject* pObject, CProviders* pProviders, IResolvedStyleSetterCallback* pCallback)
+HRESULT CStyle::ResolveStyle(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedStyle** ppResolvedStyle)
 {
     HRESULT hr = S_OK;
-    CClassResolver* pClassResolver = NULL;
-    CPropertyInformation* pProperties = NULL;
-    CProperty* pProperty = NULL;
+    CResolvedSetters* pResolvedSetters = NULL;
+    CResolvedTriggers* pResolvedTriggers = NULL;
 
     IFCPTR(pObject);
     IFCPTR(pProviders);
     IFCPTR(pCallback);
 
-    pClassResolver = pProviders->GetClassResolver();
-    IFCPTR(pClassResolver);
+    IFC(ResolveSetters(pObject, pProviders, pCallback, &pResolvedSetters));
 
-    IFC(pClassResolver->ResolveProperties(pObject->GetType(), &pProperties));
+    IFC(ResolveTriggers(pObject, pProviders, pCallback, &pResolvedTriggers));
+
+    IFC(CResolvedStyle::Create(pResolvedSetters, pResolvedTriggers, ppResolvedStyle));
+
+    IFC(pResolvedSetters->Apply());
+
+Cleanup:
+    ReleaseObject(pResolvedSetters);
+    ReleaseObject(pResolvedTriggers);
+
+    return hr;
+}
+
+HRESULT CStyle::ResolveSetters(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedSetters** ppResolvedSetters)
+{
+    HRESULT hr = S_OK;
+    CResolvedSetters* pResolvedSetters = NULL;
+
+    IFCPTR(pObject);
+    IFCPTR(pProviders);
+    IFCPTR(ppResolvedSetters);
+
+    IFC(CResolvedSetters::Create(pObject, pProviders, pCallback, &pResolvedSetters));
 
     for(UINT32 i = 0; i < m_Setters->GetCount(); i++)
     {
         CSetter* pSetter = m_Setters->GetAtIndex(i);
 
-        const WCHAR* pName = pSetter->GetPropertyName();
-        IFCPTR(pName);
-
-        CObjectWithType* pValue = pSetter->GetPropertyValue();
-        IFCPTR(pValue);
-
-        IFC(pClassResolver->ResolveProperty(pName, pProperties, &pProperty));
-
-        IFC(pCallback->OnResolvedSetter(pProperty, pValue));
-
-        ReleaseObject(pProperty);
+        IFC(pResolvedSetters->AddSetter(pSetter));
     }
 
+    *ppResolvedSetters = pResolvedSetters;
+    pResolvedSetters = NULL;
+
 Cleanup:
-    ReleaseObject(pProperties);
-    ReleaseObject(pProperty);
+    ReleaseObject(pResolvedSetters);
+
+    return hr;
+}
+
+HRESULT CStyle::ResolveTriggers(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedTriggers** ppResolvedTriggers)
+{
+    HRESULT hr = S_OK;
+    CResolvedTriggers* pResolvedTriggers = NULL;
+
+    IFCPTR(pObject);
+    IFCPTR(pProviders);
+    IFCPTR(ppResolvedTriggers);
+
+    IFC(CResolvedTriggers::Create(pObject, pProviders, pCallback, &pResolvedTriggers));
+
+    for(UINT32 i = 0; i < m_Triggers->GetCount(); i++)
+    {
+        CTrigger* pTrigger = m_Triggers->GetAtIndex(i);
+
+        IFC(pResolvedTriggers->AddTrigger(pTrigger));
+    }
+
+    *ppResolvedTriggers = pResolvedTriggers;
+    pResolvedTriggers = NULL;
+
+Cleanup:
+    ReleaseObject(pResolvedTriggers);
 
     return hr;
 }
@@ -75,7 +119,8 @@ HRESULT CStyle::CreatePropertyInformation(CPropertyInformation **ppInformation)
 
     CStaticProperty* Properties[] = 
     {
-        &SettersProperty
+        &SettersProperty,
+        &TriggersProperty
     };
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
@@ -96,14 +141,14 @@ HRESULT CStyle::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    if(pProperty == &CStyle::SettersProperty)
-    {
-        IFC(E_NOTIMPL);
-    }
-    else
-    {
+    //if(pProperty == &CStyle::SettersProperty)
+    //{
+    //    IFC(E_NOTIMPL);
+    //}
+    //else
+    //{
         IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
-    }
+    //}
 
 Cleanup:
     return hr;
@@ -121,10 +166,47 @@ HRESULT CStyle::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
         *ppValue = m_Setters;
         AddRefObject(m_Setters);
     }
+    else if(pProperty == &CStyle::TriggersProperty)
+    {
+        *ppValue = m_Triggers;
+        AddRefObject(m_Triggers);
+    }
     else
     {
         IFC(CPropertyObject::GetValue(pProperty, ppValue));
     }
+
+Cleanup:
+    return hr;
+}
+
+
+
+
+
+CResolvedStyle::CResolvedStyle() : m_Setters(NULL),
+                                   m_Triggers(NULL)
+{
+}
+
+CResolvedStyle::~CResolvedStyle()
+{
+    ReleaseObject(m_Setters);
+    ReleaseObject(m_Triggers);
+}
+
+HRESULT CResolvedStyle::Initialize(CResolvedSetters* pSetters, CResolvedTriggers* pTriggers)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSetters);
+    IFCPTR(pTriggers);
+
+    m_Setters = pSetters;
+    AddRefObject(m_Setters);
+
+    m_Triggers = pTriggers;
+    AddRefObject(m_Triggers);
 
 Cleanup:
     return hr;

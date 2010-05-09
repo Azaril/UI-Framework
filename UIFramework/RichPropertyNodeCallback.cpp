@@ -83,7 +83,7 @@ HRESULT CRichPropertyNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, BOO
 
         if(m_ChildNode->IsComplete())
         {
-            IFC(AssignProperty(m_Parent, m_Property, m_ChildNode->GetObject(), m_Context->GetTypeConverter(), m_ChildNode->GetKey()));
+            IFC(AssignProperty(m_Parent, m_Property, m_ChildNode->GetObject(), m_Context, m_ChildNode->GetKey()));
 
             ReleaseObject(m_ChildNode);
         }
@@ -126,7 +126,7 @@ HRESULT CRichPropertyNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
 
         IFC(CStringValue::Create(pString, StringLength, &pStringValue));
 
-        IFC(AssignProperty(m_Parent, m_Property, pStringValue, m_Context->GetTypeConverter()))
+        IFC(AssignProperty(m_Parent, m_Property, pStringValue, m_Context));
 
         m_SetTextValue = TRUE;
 

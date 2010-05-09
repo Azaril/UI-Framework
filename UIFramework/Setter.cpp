@@ -1,6 +1,7 @@
 #include "Setter.h"
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
+#include "UIElement.h"
 
 //
 // Properties
@@ -61,6 +62,29 @@ HRESULT CSetter::SetPropertyValueInternal(CObjectWithType* pValue)
     AddRefObject(m_Value);
 
 Cleanup:
+    return hr;
+}
+
+HRESULT CSetter::ResolveSetter(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedSetter** ppResolvedSetter)
+{
+    HRESULT hr = S_OK;
+    CClassResolver* pClassResolver = NULL;
+    CProperty* pProperty = NULL;
+
+    IFCPTR(pObject);
+    IFCPTR(pProviders);
+    IFCPTR(ppResolvedSetter);
+
+    pClassResolver = pProviders->GetClassResolver();
+    IFCPTR(pClassResolver);
+
+    IFC(pClassResolver->ResolveProperty(GetPropertyName(), pObject->GetType(), &pProperty));
+
+    IFC(CResolvedSetter::Create(pProperty, m_Value, pCallback, ppResolvedSetter));
+
+Cleanup:
+    ReleaseObject(pProperty);
+
     return hr;
 }
 
@@ -135,6 +159,51 @@ HRESULT CSetter::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     {
         IFC(CPropertyObject::GetValue(pProperty, ppValue));
     }
+
+Cleanup:
+    return hr;
+}
+
+
+
+
+CResolvedSetter::CResolvedSetter() : m_Property(NULL),
+                                     m_Value(NULL),
+                                     m_Callback(NULL)
+{
+}
+
+CResolvedSetter::~CResolvedSetter()
+{
+    ReleaseObject(m_Property);
+    ReleaseObject(m_Value);
+}
+
+HRESULT CResolvedSetter::Initialize(CProperty* pProperty, CObjectWithType* pValue, IStyleCallback* pCallback)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+    IFCPTR(pCallback);
+
+    m_Property = pProperty;
+    AddRefObject(m_Property);
+
+    m_Value = pValue;
+    AddRefObject(m_Value);
+
+    m_Callback = pCallback;
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CResolvedSetter::Apply()
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_Callback->SetStyleValue(m_Property, m_Value));
 
 Cleanup:
     return hr;

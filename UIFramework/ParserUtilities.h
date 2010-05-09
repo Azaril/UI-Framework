@@ -14,4 +14,4 @@ HRESULT TextToParserCallback( CParseContext* pContext, CPropertyObject* pParent,
 
 HRESULT AttributeStringToValue( CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue );
 
-HRESULT AssignProperty( CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CTypeConverter* pTypeConverter, CObjectWithType* pKey = NULL );
+HRESULT AssignProperty( CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CParseContext* pContext, CObjectWithType* pKey = NULL );

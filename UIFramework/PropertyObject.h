@@ -36,6 +36,15 @@ class CPropertyInformation : public CRefCountedObject
         virtual HRESULT GetContentProperty( CProperty** ppProperty ) = 0;
 };
 
+//TODO: Add a base class to abstract routed events as they only make sense in the UI layer.
+class CRoutedEvent;
+
+class CEventInformation : public CRefCountedObject
+{
+    public:
+        virtual HRESULT GetEvent( const WCHAR* pEventName, CRoutedEvent** ppRoutedEvent ) = 0;
+};
+
 #define DECLARE_TYPE( type ) \
 virtual TypeIndex::Value GetType() { return type; } \
 virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type; }

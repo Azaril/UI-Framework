@@ -318,7 +318,7 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
                         IFC(ParseMarkupExtensionInternal(pContext, pParsePoint, (pValue + ValueLength) - pParsePoint, &pPropertyValue, &CharactersConsumed));
 
-                        IFC(AssignProperty(pExtension, pProperty, pPropertyValue, pContext->GetTypeConverter()));
+                        IFC(AssignProperty(pExtension, pProperty, pPropertyValue, pContext));
 
                         ReleaseObject(pPropertyValue);
 
@@ -364,7 +364,7 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
                         IFC(CStringValue::Create(PropertyValue, &pStringPropertyValue));
 
-                        IFC(AssignProperty(pExtension, pProperty, pStringPropertyValue, pContext->GetTypeConverter()));
+                        IFC(AssignProperty(pExtension, pProperty, pStringPropertyValue, pContext));
 
                         ReleaseObject(pStringPropertyValue);
 
@@ -448,7 +448,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CTypeConverter* pTypeConverter, CObjectWithType* pKey)
+HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CParseContext* pParseContext, CObjectWithType* pKey)
 {
     HRESULT hr = S_OK;
     CObjectWithType* pConvertedType = NULL;
@@ -456,10 +456,14 @@ HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectW
     CObjectCollection* pCollection = NULL;
     CObjectWithType* pDictionaryObject = NULL;
     CObjectDictionary* pDictionary = NULL;
+    CTypeConverter* pTypeConverter = NULL;
 
     IFCPTR(pElement);
     IFCPTR(pProperty);
     IFCPTR(pValue);
+
+    pTypeConverter = pParseContext->GetTypeConverter();
+    IFCPTR(pTypeConverter);
 
     if(pKey)
     {
@@ -473,9 +477,9 @@ HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectW
     }
     else
     {
-        IFCPTR(pTypeConverter);
+        CConversionContext Context(pElement, pProperty, pParseContext->GetClassResolver());
 
-        IFC(pTypeConverter->Convert(pValue, pProperty->GetType(), &pConvertedType));
+        IFC(pTypeConverter->Convert(&Context, pValue, &pConvertedType));
     }
 
     if(pProperty->IsDictionary())

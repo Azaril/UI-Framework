@@ -3,6 +3,7 @@
 #include "BasicTypes.h"
 #include "DelegatingPropertyInformation.h"
 #include "MouseInput.h"
+#include "RoutedEventInformation.h"
 
 //
 // Property Defaults
@@ -40,20 +41,20 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVisibilityChanged );
 //
 // Events
 //
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseButtonEvent;
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseButtonEvent(L"MouseButton");
 
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseDownEvent;
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseUpEvent;
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseDownEvent(L"MouseDown");
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseUpEvent(L"MouseUp");
 
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseLeftButtonDownEvent;
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseRightButtonDownEvent;
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseMiddleButtonDownEvent;
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseLeftButtonDownEvent(L"MouseLeftButtonDown");
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseRightButtonDownEvent(L"MouseRightButtonDown");
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseMiddleButtonDownEvent(L"MouseMiddleButtonDown");
 
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseLeftButtonUpEvent;
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseRightButtonUpEvent;
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseMiddleButtonUpEvent;
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseLeftButtonUpEvent(L"MouseLeftButtonUp");
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseRightButtonUpEvent(L"MouseRightButtonUp");
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseMiddleButtonUpEvent(L"MouseMiddleButtonUp");
 
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseMoveEvent;
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseMoveEvent(L"MouseMove");
 
 CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
@@ -643,6 +644,37 @@ Cleanup:
     ReleaseObject(pStaticInformation);
     ReleaseObject(pBaseInformation);
     ReleaseObject(pDelegatingProperyInformation);
+
+    return hr;
+}
+
+HRESULT CUIElement::CreateEventInformation(CEventInformation** ppInformation)
+{
+    HRESULT hr = S_OK;
+    CRoutedEventInformation* pEventInformation = NULL;
+
+    IFCPTR(ppInformation);
+
+    CRoutedEvent* Events[] = 
+    {
+        &MouseButtonEvent,
+        &MouseDownEvent,
+        &MouseLeftButtonDownEvent,
+        &MouseRightButtonDownEvent,
+        &MouseMiddleButtonDownEvent,
+        &MouseLeftButtonUpEvent,
+        &MouseRightButtonUpEvent,
+        &MouseMiddleButtonUpEvent,
+        &MouseMoveEvent
+    };
+
+    IFC(CRoutedEventInformation::Create(Events, ARRAYSIZE(Events), &pEventInformation));
+
+    *ppInformation = pEventInformation;
+    pEventInformation = NULL;
+
+Cleanup:
+    ReleaseObject(pEventInformation);
 
     return hr;
 }

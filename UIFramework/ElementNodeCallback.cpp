@@ -184,7 +184,7 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
 
             IFC(AttributeStringToValue(m_Context, pValueString, ValueStringLength, &pValue));
 
-            IFC(AssignProperty(m_Element, pProperty, pValue, m_Context->GetTypeConverter()));
+            IFC(AssignProperty(m_Element, pProperty, pValue, m_Context));
 
             Consumed = TRUE;
         }

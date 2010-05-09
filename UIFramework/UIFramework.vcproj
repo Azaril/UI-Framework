@@ -681,6 +681,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\RoutedEventInformation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\RoutedEventInformation.h"
+						>
+					</File>
+					<File
 						RelativePath=".\StaticPropertyInformation.cpp"
 						>
 					</File>
@@ -853,6 +861,30 @@
 					Name="Styling"
 					>
 					<File
+						RelativePath=".\EventTrigger.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\EventTrigger.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ResolvedSetters.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ResolvedSetters.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ResolvedTriggers.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ResolvedTriggers.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Setter.cpp"
 						>
 					</File>
@@ -866,6 +898,22 @@
 					</File>
 					<File
 						RelativePath=".\Style.h"
+						>
+					</File>
+					<File
+						RelativePath=".\StyleCallback.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StyleCallback.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Trigger.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Trigger.h"
 						>
 					</File>
 				</Filter>

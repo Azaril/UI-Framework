@@ -148,6 +148,7 @@ class CUIElement : public CVisual
         DECLARE_TYPE_WITH_BASE( TypeIndex::UIElement, CVisual );
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static HRESULT CreateEventInformation( CEventInformation** ppInformation );
 
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );

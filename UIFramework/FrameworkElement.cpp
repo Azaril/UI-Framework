@@ -25,13 +25,14 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnResourcesChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnStyleChanged );
 
 CFrameworkElement::CFrameworkElement() : m_ChildrenSubscriber(*this),
-                                         m_SetterResolvedCallback(*this),
+                                         m_StyleCallback(*this),
                                          m_StyleDirty(FALSE),
                                          m_Name(this, &CFrameworkElement::NameProperty),
                                          m_Resources(this, &CFrameworkElement::ResourcesProperty),
                                          m_Style(this, &CFrameworkElement::StyleProperty),
                                          m_Children(NULL),
-                                         m_RegisteredName(NULL)
+                                         m_RegisteredName(NULL),
+                                         m_ResolvedStyle(NULL)
 {
 }
 
@@ -39,6 +40,7 @@ CFrameworkElement::~CFrameworkElement()
 {
     ReleaseObject(m_Children);
     ReleaseObject(m_RegisteredName);
+    ReleaseObject(m_ResolvedStyle);
 }
 
 HRESULT CFrameworkElement::Initialize()
@@ -337,6 +339,8 @@ HRESULT CFrameworkElement::OnStyleChanged(CObjectWithType* pOldValue, CObjectWit
 
     m_StyleDirty = TRUE;
 
+    IFC(RevokeStyle());
+
     IFC(EnsureStyle());
 
 Cleanup:
@@ -352,16 +356,16 @@ HRESULT CFrameworkElement::EnsureStyle()
     {
         if(IsAttached())
         {
+            IFC(RevokeStyle());
+
             IFC(GetEffectiveStyle(&pStyle));
 
             if(pStyle)
             {
                 IFC(ApplyStyle(pStyle));
             }
-            else
-            {
-                m_StyleDirty = FALSE;
-            }
+
+            m_StyleDirty = FALSE;
         }
     }
 
@@ -371,38 +375,48 @@ Cleanup:
     return hr;
 }
 
+HRESULT CFrameworkElement::RevokeStyle()
+{
+    HRESULT hr = S_OK;
+
+    //TODO: Call revoke on the style?
+
+    ReleaseObject(m_ResolvedStyle);
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CFrameworkElement::ApplyStyle(CStyle* pStyle)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pStyle);
 
-    IFC(pStyle->ResolveSetters(this, GetProviders(), &m_SetterResolvedCallback));
+    IFCEXPECT(m_ResolvedStyle == NULL);
+
+    IFC(pStyle->ResolveStyle(this, GetProviders(), &m_StyleCallback, &m_ResolvedStyle));
+
+    //TODO: Call apply on the style?
 
 Cleanup:
     return hr;
 }
 
-HRESULT CFrameworkElement::OnStyleSetterResolved(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CFrameworkElement::SetStyleValue(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
-    CTypeConverter* pTypeConverter = NULL;
     CObjectWithType* pConvertedType = NULL;
     CLayeredValue* pLayeredValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    pTypeConverter = GetTypeConverter();
-    IFCPTR(pTypeConverter);
-
     IFC(GetLayeredValue(pProperty, &pLayeredValue));
 
     IFC(pLayeredValue->SetStyleValue(pValue, GetProviders()));
 
 Cleanup:
-    ReleaseObject(pConvertedType);
-
     return hr;
 }
 

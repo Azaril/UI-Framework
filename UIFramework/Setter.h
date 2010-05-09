@@ -5,6 +5,12 @@
 #include "Factory.h"
 #include "BasicTypes.h"
 #include "StaticPropertyInformation.h"
+#include "Collection.h"
+#include "Providers.h"
+#include "StyleCallback.h"
+
+class CResolvedSetter;
+class CUIElement;
 
 class CSetter : public CRefCountedObjectBase< CPropertyObject >
 {
@@ -19,6 +25,8 @@ class CSetter : public CRefCountedObjectBase< CPropertyObject >
 
         const WCHAR* GetPropertyName();
         CObjectWithType* GetPropertyValue();
+
+        virtual HRESULT ResolveSetter( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedSetter** ppResolvedSetter );
 
         //
         // Properties
@@ -45,4 +53,36 @@ template< >
 struct ObjectTypeTraits< CSetter >
 {
     static const TypeIndex::Value Type = TypeIndex::Setter;
+};
+
+class CSetterCollection : public CCollection< CSetter >
+{
+    public:
+        DECLARE_FACTORY( CSetterCollection );
+
+        DECLARE_TYPE_WITH_BASE( TypeIndex::SetterCollection, CCollection< CSetter > );
+};
+
+template< >
+struct ObjectTypeTraits< CSetterCollection >
+{
+    static const TypeIndex::Value Type = TypeIndex::SetterCollection;
+};
+
+class CResolvedSetter : public CRefCountedObject
+{
+    public:
+        DECLARE_FACTORY3( CResolvedSetter, CProperty*, CObjectWithType*, IStyleCallback* );
+
+        virtual HRESULT Apply();
+
+    protected:
+        CResolvedSetter();
+        virtual ~CResolvedSetter();
+
+        HRESULT Initialize( CProperty* pProperty, CObjectWithType* pValue, IStyleCallback* pCallback );
+
+        CProperty* m_Property;
+        CObjectWithType* m_Value;
+        IStyleCallback* m_Callback;
 };

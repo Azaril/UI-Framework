@@ -104,6 +104,8 @@ HRESULT CGeometryVisual::InternalSetFillBrush(CBrush* pBrush)
         ReleaseObject(m_FillBrush);
     }
 
+    ReleaseObject(m_FillGraphicsBrush);
+
     m_FillBrush = pBrush;
 
     if(m_FillBrush)
@@ -127,6 +129,8 @@ HRESULT CGeometryVisual::InternalSetStrokeBrush(CBrush* pBrush)
 
         ReleaseObject(m_StrokeBrush);
     }
+
+    ReleaseObject(m_StrokeGraphicsBrush);
 
     m_StrokeBrush = pBrush;
 

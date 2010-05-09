@@ -12,6 +12,7 @@
 #include "DynamicResource.h"
 #include "GradientStop.h"
 #include "LinearGradientBrush.h"
+#include "EventTrigger.h"
 
 template< typename FromType >
 class StaticClassFactory
@@ -40,13 +41,15 @@ class StaticClassFactory
 
 CStaticResolvedClass Classes[] =
 {
-    CStaticResolvedClass(L"Border", STATIC_CLASS_INFO(CBorder)),
-    CStaticResolvedClass(L"Canvas", STATIC_CLASS_INFO(CCanvas)),
-    //CStaticResolvedClass(L"Grid", STATIC_CLASS_INFO(CGrid)),
-    CStaticResolvedClass(L"Image", STATIC_CLASS_INFO(CImage)),
-    CStaticResolvedClass(L"StackPanel", STATIC_CLASS_INFO(CStackPanel)),
-    CStaticResolvedClass(L"DockPanel", STATIC_CLASS_INFO(CDockPanel)),
-    CStaticResolvedClass(L"TextBlock", STATIC_CLASS_INFO(CTextBlock)),
+    //TODO: Update event information providers.
+    CStaticResolvedClass(L"UIElement", ObjectTypeTraits< CUIElement >::Type, NULL, CUIElement::CreatePropertyInformation, CUIElement::CreateEventInformation),
+    CStaticResolvedClass(L"Border", STATIC_CLASS_INFO(CBorder), &CUIElement::CreateEventInformation),
+    CStaticResolvedClass(L"Canvas", STATIC_CLASS_INFO(CCanvas), &CUIElement::CreateEventInformation),
+    //CStaticResolvedClass(L"Grid", STATIC_CLASS_INFO(CGrid), &CUIElement::CreateEventInformation),
+    CStaticResolvedClass(L"Image", STATIC_CLASS_INFO(CImage), &CUIElement::CreateEventInformation),
+    CStaticResolvedClass(L"StackPanel", STATIC_CLASS_INFO(CStackPanel), &CUIElement::CreateEventInformation),
+    CStaticResolvedClass(L"DockPanel", STATIC_CLASS_INFO(CDockPanel), &CUIElement::CreateEventInformation),
+    CStaticResolvedClass(L"TextBlock", STATIC_CLASS_INFO(CTextBlock), &CUIElement::CreateEventInformation),
     CStaticResolvedClass(L"ImageBrush", STATIC_CLASS_INFO(CImageBrush)),
     CStaticResolvedClass(L"SolidColorBrush", STATIC_CLASS_INFO(CSolidColorBrush)),
     CStaticResolvedClass(L"Style", STATIC_CLASS_INFO(CStyle)),
@@ -54,6 +57,7 @@ CStaticResolvedClass Classes[] =
     CStaticResolvedClass(L"DynamicResource", STATIC_CLASS_INFO(CDynamicResource)),
     CStaticResolvedClass(L"LinearGradientBrush", STATIC_CLASS_INFO(CLinearGradientBrush)),
     CStaticResolvedClass(L"GradientStop", STATIC_CLASS_INFO(CGradientStop)),
+    CStaticResolvedClass(L"EventTrigger", STATIC_CLASS_INFO(CEventTrigger))
 };
 
 CStaticClassResolver::CStaticClassResolver()
@@ -216,18 +220,127 @@ Cleanup:
     return hr;
 }
 
+HRESULT CStaticClassResolver::ResolveEvent(const WCHAR* pEventName, TypeIndex::Value ImplicitClass, CRoutedEvent** ppRoutedEvent)
+{
+    HRESULT hr = S_OK;
+    CResolvedClass* pImplicitClass = NULL;
+    CEventInformation* pImplicitClassEvents = NULL;
 
-CStaticResolvedClass::CStaticResolvedClass(const WCHAR* pTypeName, TypeIndex::Value ClassType, CreateTypeFunc CreateFunc, GetPropertyInformationFunc GetPropertiesFunc) : m_Name(pTypeName),
-                                                                                                                                                                          m_ClassType(ClassType),
-                                                                                                                                                                          m_CreateFunc(CreateFunc),
-                                                                                                                                                                          m_GetPropertiesFunc(GetPropertiesFunc),
-                                                                                                                                                                          m_CachedProperties(NULL)
+    IFCPTR(pEventName);
+    IFCPTR(ppRoutedEvent);
+
+    IFC(ResolveType(ImplicitClass, &pImplicitClass));
+
+    if(FAILED((pImplicitClass->GetEventInformation(&pImplicitClassEvents))))
+    {
+        pImplicitClassEvents = NULL;
+    }
+
+    IFC(ResolveEvent(pEventName, pImplicitClassEvents, ppRoutedEvent));
+
+Cleanup:
+    ReleaseObject(pImplicitClassEvents);
+    ReleaseObject(pImplicitClass);
+
+    return hr;
+}
+
+HRESULT CStaticClassResolver::ResolveEvent(const WCHAR* pEventName, CEventInformation* pImplicitClassEvents, CRoutedEvent** ppRoutedEvent)
+{
+    HRESULT hr = S_OK;
+    WCHAR* pClassType = NULL;
+    UINT32 ClassTypeLength = 0;
+    CEventInformation* pResolvedClassEvents = NULL;
+    const WCHAR* pEventStart = NULL;
+
+    IFCPTR(pEventName);
+    IFCPTR(ppRoutedEvent);
+
+    pEventStart = wcschr(pEventName, L'.');
+    
+    if(pEventStart == NULL)
+    {
+        pEventStart = pEventName;
+
+        pResolvedClassEvents = pImplicitClassEvents;
+        AddRefObject(pImplicitClassEvents);
+    }
+    else
+    {
+        ClassTypeLength = (pEventStart - pEventName);
+
+        pClassType = new WCHAR[ClassTypeLength + 1];
+        IFCOOM(pClassType);
+
+        wcsncpy_s(pClassType, ClassTypeLength + 1, pEventName, ClassTypeLength);
+        pClassType[ClassTypeLength] = L'\0';
+
+        IFC(ResolveEvents(pClassType, &pResolvedClassEvents));
+
+        ++pEventStart;
+    }
+
+    IFCPTR(pResolvedClassEvents);
+
+    IFC(pResolvedClassEvents->GetEvent(pEventStart, ppRoutedEvent));
+
+Cleanup:
+    ReleaseObject(pResolvedClassEvents);
+    delete [] pClassType;
+
+    return hr;
+}
+
+HRESULT CStaticClassResolver::ResolveEvents(TypeIndex::Value ClassType, CEventInformation** ppEvents)
+{
+    HRESULT hr = S_OK;
+    CResolvedClass* pResolvedClass = NULL;
+
+    IFCPTR(ppEvents);
+
+    IFC(ResolveType(ClassType, &pResolvedClass));
+
+    IFC(pResolvedClass->GetEventInformation(ppEvents));
+
+Cleanup:
+    ReleaseObject(pResolvedClass);
+
+    return hr;
+}
+
+HRESULT CStaticClassResolver::ResolveEvents(const WCHAR* pTypeName, CEventInformation** ppEvents)
+{
+    HRESULT hr = S_OK;
+    CResolvedClass* pResolvedClass = NULL;
+
+    IFCPTR(pTypeName);
+    IFCPTR(ppEvents);
+
+    IFC(ResolveType(pTypeName, &pResolvedClass));
+
+    IFC(pResolvedClass->GetEventInformation(ppEvents));
+
+Cleanup:
+    ReleaseObject(pResolvedClass);
+
+    return hr;
+}
+
+
+CStaticResolvedClass::CStaticResolvedClass(const WCHAR* pTypeName, TypeIndex::Value ClassType, CreateTypeFunc CreateFunc, GetPropertyInformationFunc GetPropertiesFunc, GetEventInformationFunc GetEventsFunc) : m_Name(pTypeName),
+                                                                                                                                                                                                                 m_ClassType(ClassType),
+                                                                                                                                                                                                                 m_CreateFunc(CreateFunc),
+                                                                                                                                                                                                                 m_GetPropertiesFunc(GetPropertiesFunc),
+                                                                                                                                                                                                                 m_GetEventsFunc(GetEventsFunc),
+                                                                                                                                                                                                                 m_CachedProperties(NULL),
+                                                                                                                                                                                                                 m_CachedEvents(NULL)
 {
 }
 
 CStaticResolvedClass::~CStaticResolvedClass()
 {
     ReleaseObject(m_CachedProperties);
+    ReleaseObject(m_CachedEvents);
 }
 
 INT32 CStaticResolvedClass::AddRef()
@@ -275,6 +388,24 @@ HRESULT CStaticResolvedClass::GetPropertyInformation(CPropertyInformation** ppIn
 
     *ppInformation = m_CachedProperties;
     AddRefObject(m_CachedProperties);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CStaticResolvedClass::GetEventInformation(CEventInformation** ppInformation)
+{
+    HRESULT hr = S_OK;
+
+    if(m_CachedEvents == NULL)
+    {
+        IFCPTR(m_GetEventsFunc);
+
+        IFC(m_GetEventsFunc(&m_CachedEvents));
+    }
+
+    *ppInformation = m_CachedEvents;
+    AddRefObject(m_CachedEvents);
 
 Cleanup:
     return hr;

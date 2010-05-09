@@ -20,15 +20,17 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStaticTypeConverter::Convert(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+HRESULT CStaticTypeConverter::Convert(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
     TypeIndex::Value SourceType;
+    TypeIndex::Value TargetType;
 
     IFCPTR(pValue);
     IFCPTR(ppConvertedValue);
 
     SourceType = pValue->GetType();
+    TargetType = pContext->GetTargetType();
 
     if(SourceType == TargetType)
     {
@@ -41,7 +43,7 @@ HRESULT CStaticTypeConverter::Convert(CObjectWithType* pValue, TypeIndex::Value 
         {
             if(m_ConverterInformation->Converters[i].FromType == SourceType && m_ConverterInformation->Converters[i].ToType == TargetType)
             {
-                IFC(m_ConverterInformation->Converters[i].Convert(pValue, TargetType, ppConvertedValue));
+                IFC(m_ConverterInformation->Converters[i].Convert(pContext, pValue, ppConvertedValue));
 
                 goto Cleanup;
             }

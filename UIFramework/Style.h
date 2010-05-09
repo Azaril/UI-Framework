@@ -7,25 +7,11 @@
 #include "Setter.h"
 #include "Providers.h"
 #include "StaticPropertyInformation.h"
+#include "Trigger.h"
+#include "ResolvedTriggers.h"
+#include "ResolvedSetters.h"
 
-class CSetterCollection : public CCollection< CSetter >
-{
-    public:
-        DECLARE_FACTORY( CSetterCollection );
-
-        DECLARE_TYPE_WITH_BASE( TypeIndex::SetterCollection, CCollection< CSetter > );
-};
-
-template< >
-struct ObjectTypeTraits< CSetterCollection >
-{
-    static const TypeIndex::Value Type = TypeIndex::SetterCollection;
-};
-
-struct IResolvedStyleSetterCallback
-{
-    virtual HRESULT OnResolvedSetter( CProperty* pProperty, CObjectWithType* pValue ) = 0;
-};
+class CResolvedStyle;
 
 class CStyle : public CRefCountedObjectBase< CPropertyObject >
 {
@@ -38,12 +24,13 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
 
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
-        HRESULT ResolveSetters( CPropertyObject* pObject, CProviders* pProviders, IResolvedStyleSetterCallback* pCallback );
+        HRESULT ResolveStyle( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedStyle** ppResolvedStyle );
 
         //
         // Properties
         //
         static CStaticProperty SettersProperty;
+        static CStaticProperty TriggersProperty;
 
     protected:
         CStyle();
@@ -53,11 +40,30 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
+        HRESULT ResolveSetters( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedSetters** ppResolvedSetters );
+        HRESULT ResolveTriggers( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedTriggers** ppResolvedTriggers );
+
         CSetterCollection* m_Setters;
+        CTriggerCollection* m_Triggers;
 };
 
 template< >
 struct ObjectTypeTraits< CStyle >
 {
     static const TypeIndex::Value Type = TypeIndex::Style;
+};
+
+class CResolvedStyle : public CRefCountedObject
+{
+    public:
+        DECLARE_FACTORY2( CResolvedStyle, CResolvedSetters*, CResolvedTriggers* );
+        
+    protected:
+        CResolvedStyle();
+        virtual ~CResolvedStyle();
+
+        HRESULT Initialize( CResolvedSetters* pSetters, CResolvedTriggers* pTriggers );
+
+        CResolvedSetters* m_Setters;
+        CResolvedTriggers* m_Triggers;
 };

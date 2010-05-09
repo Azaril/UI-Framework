@@ -2,6 +2,7 @@
 #include "StaticTypeConverter.h"
 #include "TypeIndex.h"
 #include "BasicTypes.h"
+#include "RoutedEvent.h"
 
 StaticTypeConverter BasicConverters[] =
 {
@@ -11,7 +12,8 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::RectF, ConvertStringToRectF },
     { TypeIndex::String, TypeIndex::RectangleEdge, ConvertStringToRectangleEdge },
     { TypeIndex::String, TypeIndex::Bool, ConvertStringToBool },
-    { TypeIndex::String, TypeIndex::Point2F, ConvertStringToPoint2F }
+    { TypeIndex::String, TypeIndex::Point2F, ConvertStringToPoint2F },
+    { TypeIndex::String, TypeIndex::RoutedEvent, ConvertStringToRoutedEvent }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -38,7 +40,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToFloat(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+HRESULT ConvertStringToFloat(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
     FLOAT Value = 0;
@@ -65,7 +67,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToVisibility(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+HRESULT ConvertStringToVisibility(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -261,7 +263,7 @@ PredefinedColor PredefinedColors[] =
     PREDEFINED_COLOR( YellowGreen )
 };
 
-HRESULT ConvertStringToColorF(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+HRESULT ConvertStringToColorF(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -404,7 +406,7 @@ namespace RectFParseState
     };
 }
 
-HRESULT ConvertStringToRectF(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+HRESULT ConvertStringToRectF(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -595,7 +597,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToRectangleEdge(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+HRESULT ConvertStringToRectangleEdge(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
     RectangleEdge::Value Value;
@@ -641,7 +643,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToBool(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+HRESULT ConvertStringToBool(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
     bool Value;
@@ -689,7 +691,7 @@ namespace Point2FParseState
     };
 }
 
-HRESULT ConvertStringToPoint2F(CObjectWithType* pValue, TypeIndex::Value TargetType, CObjectWithType** ppConvertedValue)
+HRESULT ConvertStringToPoint2F(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -854,6 +856,42 @@ HRESULT ConvertStringToPoint2F(CObjectWithType* pValue, TypeIndex::Value TargetT
 
 Cleanup:
     ReleaseObject(pPoint2FValue);
+
+    return hr;
+}
+
+HRESULT ConvertStringToRoutedEvent(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+    const WCHAR* pEventName = NULL;
+    CClassResolver* pClassResolver = NULL;
+    CRoutedEvent* pRoutedEvent = NULL;
+    CObjectWithType* pTargetObject = NULL;
+
+    IFCPTR(pContext);
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    pEventName = pStringValue->GetValue();
+    IFCPTR(pEventName);
+
+    pClassResolver = pContext->GetClassResolver();
+    IFCPTR(pClassResolver);
+
+    pTargetObject = pContext->GetTargetObject();
+
+    IFC(pClassResolver->ResolveEvent(pEventName, pTargetObject->GetType(), &pRoutedEvent));
+
+    *ppConvertedValue = pRoutedEvent;
+    pRoutedEvent = NULL;
+
+Cleanup:
+    ReleaseObject(pRoutedEvent);
 
     return hr;
 }

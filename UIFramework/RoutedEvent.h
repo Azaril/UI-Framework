@@ -2,6 +2,7 @@
 
 #include "RefCounted.h"
 #include "Factory.h"
+#include "PropertyObject.h"
 
 namespace RoutingStrategy
 {
@@ -12,11 +13,17 @@ namespace RoutingStrategy
     };
 }
 
-class CRoutedEvent
+class CRoutedEvent : public CObjectWithType
 {
     public:
-        virtual INT32 AddRef() = 0;
-        virtual INT32 Release() = 0;
+        DECLARE_TYPE_WITH_BASE( TypeIndex::RoutedEvent, CObjectWithType );
 
+        virtual const WCHAR* GetName() = 0;
         virtual RoutingStrategy::Value GetRoutingStrategy() = 0;
+};
+
+template< >
+struct ObjectTypeTraits< CRoutedEvent >
+{
+    static const TypeIndex::Value Type = TypeIndex::RoutedEvent;
 };
