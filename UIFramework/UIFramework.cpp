@@ -114,13 +114,18 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     IFCEXPECT(hAccelTable != NULL);
 
     //
-    // Create Parser
-    // 
+    // Create providers
+    //
     IFC(CStaticClassResolver::Create(&pStaticClassResolver));
 
     IFC(CreateBasicTypeConverter(&pTypeConverter));
 
-    IFC(CParser::Create(pStaticClassResolver, pTypeConverter, &pParser));
+    IFC(CProviders::Create(pStaticClassResolver, pTypeConverter, &pProviders));
+
+    //
+    // Create Parser
+    // 
+    IFC(CParser::Create(pProviders, &pParser));
 
     IFC(pParser->LoadFromFile(L"c:\\testxml.xml", &pParsedRoot));
 
@@ -132,8 +137,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     IFC(pGraphicsDevice->CreateHWNDRenderTarget(hWnd, &pRenderTarget));
 
     g_RenderTarget = (CD2DHWNDRenderTarget*)pRenderTarget;
-
-    IFC(CProviders::Create(pStaticClassResolver, pTypeConverter, &pProviders));
 
     IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, pProviders, &pUIHost));
 

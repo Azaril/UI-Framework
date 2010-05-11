@@ -4,11 +4,12 @@
 #include "Factory.h"
 #include "ClassResolver.h"
 #include "TypeConverter.h"
+#include "Providers.h"
 
 class CParser : public CRefCountedObject
 {
     public:
-        DECLARE_FACTORY2( CParser, CClassResolver*, CTypeConverter* );
+        DECLARE_FACTORY1( CParser, CProviders* );
 
         HRESULT LoadFromFile( const WCHAR* pPath, CObjectWithType** ppRootObject );
 
@@ -42,8 +43,7 @@ class CParser : public CRefCountedObject
         CParser();
         virtual ~CParser();
 
-        HRESULT Initialize( CClassResolver* pResolver, CTypeConverter* pTypeConverter );
+        HRESULT Initialize( CProviders* pProviders );
 
-        CClassResolver* m_ClassResolver;
-        CTypeConverter* m_TypeConverter;
+        CProviders* m_Providers;
 };

@@ -11,10 +11,9 @@
 class CElementNodeCallback : public CParserNodeCallback
 {
     public:
-        DECLARE_FACTORY3( CElementNodeCallback, CParseContext*, CPropertyObject*, CXMLElementStart* );
+        DECLARE_FACTORY2( CElementNodeCallback, CParseContext*, CXMLElementStart* );
 
-        CPropertyObject* GetObject();
-        CObjectWithType* GetKey();
+        CStringValue* GetKey();
 
         virtual BOOL IsComplete();
 
@@ -27,12 +26,11 @@ class CElementNodeCallback : public CParserNodeCallback
         CElementNodeCallback();
         virtual ~CElementNodeCallback();
 
-        HRESULT Initialize( CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart );
+        HRESULT Initialize( CParseContext* pContext, CXMLElementStart* pXMLStart );
 
-        CPropertyObject* m_Element;
         CPropertyNodeCallback* m_ChildNode;
         CResolvedClass* m_ResolvedClass;
         CPropertyInformation* m_Properties;
         BOOL m_Complete;
-        CObjectWithType* m_Key;
+        CStringValue* m_KeyString;
 };

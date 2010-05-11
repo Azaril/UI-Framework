@@ -2,28 +2,23 @@
 #include "XMLReader.h"
 #include "ParserCallback.h"
 
-CParser::CParser() : m_ClassResolver(NULL),
-                     m_TypeConverter(NULL)
+CParser::CParser() : m_Providers(NULL)
 {
 }
 
 CParser::~CParser()
 {
-    ReleaseObject(m_ClassResolver);
-    ReleaseObject(m_TypeConverter);
+    ReleaseObject(m_Providers);
 }
 
-HRESULT CParser::Initialize(CClassResolver* pResolver, CTypeConverter* pTypeConverter)
+HRESULT CParser::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pResolver);
+    IFCPTR(pProviders);
 
-    m_ClassResolver = pResolver;
-    AddRefObject(m_ClassResolver);
-
-    m_TypeConverter = pTypeConverter;
-    AddRefObject(m_TypeConverter);
+    m_Providers = pProviders;
+    AddRefObject(m_Providers);
 
 Cleanup:
     return hr;
@@ -34,21 +29,31 @@ HRESULT CParser::LoadFromFile(const WCHAR* pPath, CObjectWithType** ppRootObject
     HRESULT hr = S_OK;
     CXMLReader* pXMLReader = NULL;
     CParserCallback* pCallback = NULL;
+    CParserCommandList* pCommandList = NULL;
+    CParseContext* pContext = NULL;
 
     IFCPTR(pPath);
     IFCPTR(ppRootObject);
 
-    IFC(CParserCallback::Create(m_ClassResolver, m_TypeConverter, &pCallback));
+    IFC(CParseContext::Create(m_Providers, &pContext));
+
+    IFC(CParserCallback::Create(pContext, &pCallback));
+
+    IFC(CParserCommandList::Create(m_Providers, &pCommandList));
+
+    IFC(pContext->PushCommandList(pCommandList));
 
     IFC(CreateXMLReader(&pXMLReader));
 
     IFC(pXMLReader->LoadFromFile(pPath, pCallback));
 
-    IFC(pCallback->GetRootObject(ppRootObject));
+    IFC(pCommandList->Execute(ppRootObject));
 
 Cleanup:
     ReleaseObject(pCallback);
     ReleaseObject(pXMLReader);
+    ReleaseObject(pCommandList);
+    ReleaseObject(pContext);
 
     return hr;
 }

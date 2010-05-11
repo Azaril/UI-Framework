@@ -2,6 +2,11 @@
 #include "RichPropertyNodeCallback.h"
 #include "ContentPropertyNodeCallback.h"
 #include "BasicTypes.h"
+#include "CreateObjectCommand.h"
+#include "PushObjectCommand.h"
+#include "AddToCollectionCommand.h"
+#include "AddToDictionaryCommand.h"
+#include "SetPropertyCommand.h"
 
 BOOL IsAttribute(const WCHAR* pText)
 {
@@ -16,27 +21,13 @@ BOOL IsAttribute(const WCHAR* pText)
 HRESULT ElementStartToParserCallback(CParseContext* pContext, CXMLElementStart* pStart, CElementNodeCallback** ppCallback)
 {
     HRESULT hr = S_OK;
-
-    IFCPTR(pContext);
-    IFCPTR(pStart);
-    IFCPTR(ppCallback);
-
-    IFC(ElementStartToParserCallback(pContext, NULL, pStart, ppCallback));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT ElementStartToParserCallback(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pStart, CElementNodeCallback** ppCallback)
-{
-    HRESULT hr = S_OK;
     CElementNodeCallback* pElementCallback = NULL;
 
     IFCPTR(pContext);
     IFCPTR(pStart);
     IFCPTR(ppCallback);
 
-    IFC(CElementNodeCallback::Create(pContext, pParent, pStart, &pElementCallback));
+    IFC(CElementNodeCallback::Create(pContext, pStart, &pElementCallback));
 
     *ppCallback = pElementCallback;
     pElementCallback = NULL;
@@ -47,7 +38,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT ElementStartToParserCallback(CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLElementStart* pStart, CPropertyNodeCallback** ppCallback)
+HRESULT ElementStartToParserCallback(CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLElementStart* pStart, CPropertyNodeCallback** ppCallback)
 {
     HRESULT hr = S_OK;
     CRichPropertyNodeCallback* pRichPropertyCallback = NULL;
@@ -56,7 +47,6 @@ HRESULT ElementStartToParserCallback(CParseContext* pContext, CPropertyObject* p
     UINT32 ElementNameLength = 0;
 
     IFCPTR(pStart);
-    IFCPTR(pParent);
     IFCPTR(pPropertyInformation);
     IFCPTR(ppCallback);
 
@@ -64,14 +54,14 @@ HRESULT ElementStartToParserCallback(CParseContext* pContext, CPropertyObject* p
 
     if(IsAttribute(pElementName))
     {
-        IFC(CRichPropertyNodeCallback::Create(pContext, pParent, pStart, &pRichPropertyCallback));
+        IFC(CRichPropertyNodeCallback::Create(pContext, pPropertyInformation, pStart, &pRichPropertyCallback));
 
         *ppCallback = pRichPropertyCallback;
         pRichPropertyCallback = NULL;
     }
     else
     {
-        IFC(CContentPropertyNodeCallback::Create(pContext, pParent, pPropertyInformation, pStart, &pContentPropertyCallback));
+        IFC(CContentPropertyNodeCallback::Create(pContext, pPropertyInformation, pStart, &pContentPropertyCallback));
 
         *ppCallback = pContentPropertyCallback;
         pContentPropertyCallback = NULL;
@@ -84,18 +74,17 @@ Cleanup:
     return hr;
 }
 
-HRESULT TextToParserCallback(CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLText* pText, CPropertyNodeCallback** ppCallback)
+HRESULT TextToParserCallback(CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLText* pText, CPropertyNodeCallback** ppCallback)
 {
     HRESULT hr = S_OK;
     CContentPropertyNodeCallback* pContentPropertyCallback = NULL;
 
     IFCPTR(pContext);
-    IFCPTR(pParent);
     IFCPTR(pPropertyInformation);
     IFCPTR(pText);
     IFCPTR(ppCallback);
 
-    IFC(CContentPropertyNodeCallback::Create(pContext, pParent, pPropertyInformation, pText, &pContentPropertyCallback));
+    IFC(CContentPropertyNodeCallback::Create(pContext, pPropertyInformation, pText, &pContentPropertyCallback));
 
     *ppCallback = pContentPropertyCallback;
     pContentPropertyCallback = NULL;
@@ -122,7 +111,7 @@ namespace MarkupExtensionParseState
     };
 }
 
-HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue, UINT32* pCharactersConsumed)
+HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, UINT32* pCharactersConsumed)
 {
     HRESULT hr = S_OK;
     const WCHAR* pParsePoint = NULL;
@@ -132,20 +121,17 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
     WCHAR MarkupType[256] = { 0 };
     CClassResolver* pClassResolver = NULL;
     CResolvedClass* pResolvedClass = NULL;
-    CPropertyObject* pExtension = NULL;
     UINT32 PropertyNameCharacters = 0;
     WCHAR PropertyName[256] = { 0 };    
     UINT32 PropertyValueCharacters = 0;
     WCHAR PropertyValue[256] = { 0 };    
     CPropertyInformation* pProperties = NULL;
     CProperty* pProperty = NULL;
-    CObjectWithType* pPropertyValue = NULL;
     CStringValue* pStringPropertyValue = NULL;
 
     IFCPTR(pContext);
     IFCPTR(pValue);
     IFCEXPECT(ValueLength > 0);
-    IFCPTR(ppValue);
     IFCPTR(pCharactersConsumed);
 
     pClassResolver = pContext->GetClassResolver();
@@ -215,7 +201,7 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
                     IFC(pClassResolver->ResolveType(MarkupType, &pResolvedClass));
 
-                    IFC(pResolvedClass->CreateInstance(&pExtension));
+                    IFC(AddCreateObjectCommand(pContext, pResolvedClass));
 
                     IFC(pResolvedClass->GetPropertyInformation(&pProperties));
 
@@ -316,11 +302,11 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
                     {
                         UINT32 CharactersConsumed = 0;
 
-                        IFC(ParseMarkupExtensionInternal(pContext, pParsePoint, (pValue + ValueLength) - pParsePoint, &pPropertyValue, &CharactersConsumed));
+                        IFC(ParseMarkupExtensionInternal(pContext, pParsePoint, (pValue + ValueLength) - pParsePoint, &CharactersConsumed));
 
-                        IFC(AssignProperty(pExtension, pProperty, pPropertyValue, pContext));
+                        IFC(AddSetPropertyCommand(pContext, pProperty));
 
-                        ReleaseObject(pPropertyValue);
+                        ReleaseObject(pProperty);
 
                         pParsePoint += CharactersConsumed;
 
@@ -364,7 +350,11 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
                         IFC(CStringValue::Create(PropertyValue, &pStringPropertyValue));
 
-                        IFC(AssignProperty(pExtension, pProperty, pStringPropertyValue, pContext));
+                        IFC(AddPushValueCommand(pContext, pStringPropertyValue));
+
+                        IFC(AddSetPropertyCommand(pContext, pProperty));
+
+                        ReleaseObject(pProperty);
 
                         ReleaseObject(pStringPropertyValue);
 
@@ -380,9 +370,6 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
             case MarkupExtensionParseState::Complete:
                 {
-                    *ppValue = pExtension;
-                    pExtension = NULL;
-
                     *pCharactersConsumed = pParsePoint - pValue;
 
                     Continue = FALSE;
@@ -394,16 +381,14 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
 Cleanup:
     ReleaseObject(pResolvedClass);
-    ReleaseObject(pExtension);
     ReleaseObject(pProperty);
     ReleaseObject(pProperties);
-    ReleaseObject(pPropertyValue);
     ReleaseObject(pStringPropertyValue);
 
     return hr;
 }
 
-HRESULT ParseMarkupExtension(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue)
+HRESULT ParseMarkupExtension(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength)
 {
     HRESULT hr = S_OK;
     UINT32 ConsumedCharacters = 0;
@@ -411,9 +396,8 @@ HRESULT ParseMarkupExtension(CParseContext* pContext, const WCHAR* pValue, UINT3
     IFCPTR(pContext);
     IFCPTR(pValue);
     IFCEXPECT(ValueLength > 0);
-    IFCPTR(ppValue);
 
-    IFC(ParseMarkupExtensionInternal(pContext, pValue, ValueLength, ppValue, &ConsumedCharacters));
+    IFC(ParseMarkupExtensionInternal(pContext, pValue, ValueLength, &ConsumedCharacters));
 
     IFCEXPECT(ConsumedCharacters == ValueLength);
 
@@ -421,25 +405,94 @@ Cleanup:
     return hr;
 }
 
-HRESULT AttributeStringToValue(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue)
+HRESULT AddPushValueCommand(CParseContext* pContext, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CPushObjectCommand* pPushObjectCommand = NULL;
+
+    IFCPTR(pContext);
+    IFCPTR(pValue);
+
+    IFC(CPushObjectCommand::Create(pValue, &pPushObjectCommand));
+
+    IFC(pContext->AddCommand(pPushObjectCommand));
+
+Cleanup:
+    ReleaseObject(pPushObjectCommand);
+
+    return hr;
+}
+
+HRESULT AddSetPropertyCommand(CParseContext* pContext, CProperty* pProperty, CStringValue* pKeyString)
+{
+    HRESULT hr = S_OK;
+    CAddToDictionaryCommand* pAddToDictionaryCommand = NULL;
+    CAddToCollectionCommand* pAddToCollectionCommand = NULL;
+    CSetPropertyCommand* pSetPropertyCommand = NULL;
+
+    IFCPTR(pContext);
+    IFCPTR(pProperty);
+
+    if(pProperty->IsDictionary())
+    {
+        IFCPTR(pKeyString);
+
+        IFC(EvaluateAndAddAttribute(pContext, pKeyString->GetValue(), pKeyString->GetLength()));
+
+        IFC(CAddToDictionaryCommand::Create(pProperty, &pAddToDictionaryCommand));
+
+        IFC(pContext->AddCommand(pAddToDictionaryCommand));
+    }
+    else if(pProperty->IsCollection())
+    {
+        IFCEXPECT(pKeyString == NULL);
+
+        IFC(CAddToCollectionCommand::Create(pProperty, &pAddToCollectionCommand));
+
+        IFC(pContext->AddCommand(pAddToCollectionCommand));
+    }
+    else
+    {
+        IFCEXPECT(pKeyString == NULL);
+
+        IFC(CSetPropertyCommand::Create(pProperty, &pSetPropertyCommand));
+
+        IFC(pContext->AddCommand(pSetPropertyCommand));
+    }
+
+Cleanup:
+    ReleaseObject(pAddToDictionaryCommand);
+    ReleaseObject(pAddToCollectionCommand);
+    ReleaseObject(pSetPropertyCommand);
+
+    return hr;
+}
+
+BOOL IsMarkupExtension(const WCHAR* pValue, UINT32 ValueLength)
+{
+    if(ValueLength > 0 && pValue)
+    {
+        //TODO: This should be more robust and support escaping.
+        return pValue[0] == L'{';
+    }
+
+    return FALSE;
+}
+
+HRESULT EvaluateAndAddAttribute(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
 
-    IFCPTR(pContext);
-    IFCPTR(pValue);
-    IFCPTR(ppValue);
-
-    if(SUCCEEDED(ParseMarkupExtension(pContext, pValue, ValueLength, ppValue)))
+    if(IsMarkupExtension(pValue, ValueLength))
     {
-        goto Cleanup;
+        IFC(ParseMarkupExtension(pContext, pValue, ValueLength));
     }
     else
     {
         IFC(CStringValue::Create(pValue, ValueLength, &pStringValue));
 
-        *ppValue = pStringValue;
-        pStringValue = NULL;
+        IFC(AddPushValueCommand(pContext, pStringValue));
     }
 
 Cleanup:
@@ -448,75 +501,20 @@ Cleanup:
     return hr;
 }
 
-HRESULT AssignProperty(CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CParseContext* pParseContext, CObjectWithType* pKey)
+HRESULT AddCreateObjectCommand(CParseContext* pContext, CResolvedClass* pClass)
 {
     HRESULT hr = S_OK;
-    CObjectWithType* pConvertedType = NULL;
-    CObjectWithType* pCollectionObject = NULL;
-    CObjectCollection* pCollection = NULL;
-    CObjectWithType* pDictionaryObject = NULL;
-    CObjectDictionary* pDictionary = NULL;
-    CTypeConverter* pTypeConverter = NULL;
+    CCreateObjectCommand* pCreateObjectCommand = NULL;
 
-    IFCPTR(pElement);
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(pContext);
+    IFCPTR(pClass);
 
-    pTypeConverter = pParseContext->GetTypeConverter();
-    IFCPTR(pTypeConverter);
+    IFC(CCreateObjectCommand::Create(pClass, &pCreateObjectCommand));
 
-    if(pKey)
-    {
-        IFCEXPECT(pProperty->IsDictionary());
-    }
-
-    if(pValue->IsTypeOf(pProperty->GetType()) || pValue->IsTypeOf(TypeIndex::Binding))
-    {
-        pConvertedType = pValue;
-        AddRefObject(pConvertedType);
-    }
-    else
-    {
-        CConversionContext Context(pElement, pProperty, pParseContext->GetClassResolver());
-
-        IFC(pTypeConverter->Convert(&Context, pValue, &pConvertedType));
-    }
-
-    if(pProperty->IsDictionary())
-    {
-        IFCPTR(pKey);
-
-        IFC(pElement->GetValue(pProperty, &pDictionaryObject));
-
-        IFCPTR(pDictionaryObject);
-
-        IFCEXPECT(pDictionaryObject->IsTypeOf(TypeIndex::Dictionary));
-
-        pDictionary = (CObjectDictionary*)pDictionaryObject;
-
-        IFC(pDictionary->AddObject(pKey, pConvertedType));
-    }
-    else if(pProperty->IsCollection())
-    {
-        IFC(pElement->GetValue(pProperty, &pCollectionObject));
-
-        IFCPTR(pCollectionObject);
-
-        IFCEXPECT(pCollectionObject->IsTypeOf(TypeIndex::Collection));
-
-        pCollection = (CObjectCollection*)pCollectionObject;
-
-        IFC(pCollection->AddObject(pConvertedType));
-    }
-    else
-    {
-        IFC(pElement->SetValue(pProperty, pConvertedType));
-    }
+    IFC(pContext->AddCommand(pCreateObjectCommand));
 
 Cleanup:
-    ReleaseObject(pConvertedType);
-    ReleaseObject(pCollectionObject);
-    ReleaseObject(pDictionaryObject);
+    ReleaseObject(pCreateObjectCommand);
 
     return hr;
 }

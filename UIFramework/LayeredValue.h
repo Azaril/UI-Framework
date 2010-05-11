@@ -213,7 +213,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
                     pTypeConverter = pProviders->GetTypeConverter();
                     IFCPTR(pTypeConverter);
 
-                    CConversionContext Context(m_Owner, m_Property, pProviders->GetClassResolver());
+                    CConversionContext Context(m_Owner, m_Property, pProviders);
 
                     hr = pTypeConverter->Convert(&Context, pValue, &pConvertedType);
 
@@ -271,7 +271,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
 
                             pTypeConverter = pProviders->GetTypeConverter();
 
-                            CConversionContext Context(m_Owner, m_Property, pProviders->GetClassResolver());
+                            CConversionContext Context(m_Owner, m_Property, pProviders);
 
                             hr = pTypeConverter->Convert(&Context, pBoundValue, ppEffectiveValue);
                         }

@@ -4,20 +4,22 @@
 #include "PropertyObject.h"
 #include "ClassResolver.h"
 
+class CProviders;
+
 class CConversionContext
 {
     public:
-        CConversionContext( CPropertyObject* pTargetObject, CProperty* pTargetProperty, CClassResolver* pClassResolver );
+        CConversionContext( CPropertyObject* pTargetObject, CProperty* pTargetProperty, CProviders* pProviders );
 
         CPropertyObject* GetTargetObject();
         CProperty* GetTargetProperty();
-        CClassResolver* GetClassResolver();
+        CProviders* GetProviders();
         TypeIndex::Value GetTargetType();
 
     protected:
         CPropertyObject* m_TargetObject;
         CProperty* m_TargetProperty;
-        CClassResolver* m_ClassResolver;
+        CProviders* m_Providers;
 };
 
 class CTypeConverter : public CRefCountedObject

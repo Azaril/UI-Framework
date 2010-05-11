@@ -12,8 +12,8 @@
 class CContentPropertyNodeCallback : public CPropertyNodeCallback
 {
     public:
-        DECLARE_FACTORY4( CContentPropertyNodeCallback, CParseContext*, CPropertyObject*, CPropertyInformation*, CXMLElementStart* );
-        DECLARE_FACTORY4( CContentPropertyNodeCallback, CParseContext*, CPropertyObject*, CPropertyInformation*, CXMLText* );
+        DECLARE_FACTORY3( CContentPropertyNodeCallback, CParseContext*, CPropertyInformation*, CXMLElementStart* );
+        DECLARE_FACTORY3( CContentPropertyNodeCallback, CParseContext*, CPropertyInformation*, CXMLText* );
 
         virtual BOOL IsComplete();
 
@@ -26,16 +26,14 @@ class CContentPropertyNodeCallback : public CPropertyNodeCallback
         CContentPropertyNodeCallback();
         virtual ~CContentPropertyNodeCallback();
 
-        HRESULT Initialize( CParseContext* pParseContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation );
-        HRESULT Initialize( CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLElementStart* pXMLStart );
-        HRESULT Initialize( CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLText* pXMLText );
+        HRESULT Initialize( CParseContext* pParseContext, CPropertyInformation* pPropertyInformation );
+        HRESULT Initialize( CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLElementStart* pXMLStart );
+        HRESULT Initialize( CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLText* pXMLText );
 
-        CPropertyObject* m_Parent;
         BOOL m_Complete;
         BOOL m_SetTextValue;
         BOOL m_SetObjectValue;
         CElementNodeCallback* m_ChildNode;
         CProperty* m_Property;
-        CResolvedClass* m_ResolvedClass;
         CPropertyInformation* m_Properties;
 };

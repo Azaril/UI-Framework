@@ -8,10 +8,13 @@
 #include "PropertyObject.h"
 
 HRESULT ElementStartToParserCallback( CParseContext* pContext, CXMLElementStart* pStart, CElementNodeCallback** ppCallback );
-HRESULT ElementStartToParserCallback( CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pStart, CElementNodeCallback** ppCallback );
-HRESULT ElementStartToParserCallback( CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLElementStart* pStart, CPropertyNodeCallback** ppCallback );
-HRESULT TextToParserCallback( CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLText* pText, CPropertyNodeCallback** ppCallback );
+HRESULT ElementStartToParserCallback( CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLElementStart* pStart, CPropertyNodeCallback** ppCallback );
+HRESULT TextToParserCallback( CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLText* pText, CPropertyNodeCallback** ppCallback );
 
 HRESULT AttributeStringToValue( CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue );
 
-HRESULT AssignProperty( CPropertyObject* pElement, CProperty* pProperty, CObjectWithType* pValue, CParseContext* pContext, CObjectWithType* pKey = NULL );
+HRESULT AddCreateObjectCommand( CParseContext* pContext, CResolvedClass* pClass );
+HRESULT AddPushValueCommand( CParseContext* pContext, CObjectWithType* pValue );
+HRESULT AddSetPropertyCommand( CParseContext* pContext, CProperty* pProperty, CStringValue* pKeyString = NULL );
+
+HRESULT EvaluateAndAddAttribute( CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength );

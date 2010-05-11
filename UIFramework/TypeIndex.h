@@ -18,6 +18,7 @@ namespace TypeIndex
                             Decorator,
                                 Border,
                             TextBlock,
+                            Control,
                 Brush,
                     ImageBrush,
                     SolidColorBrush,
@@ -53,6 +54,7 @@ namespace TypeIndex
             RoutedEventArgs,
                 InputEventArgs,
                     MouseEventArgs,
-                        MouseButtonEventArgs
+                        MouseButtonEventArgs,
+            ControlTemplate
     };
 }

@@ -1,8 +1,8 @@
 #include "TypeConverter.h"
 
-CConversionContext::CConversionContext(CPropertyObject* pTargetObject, CProperty* pTargetProperty, CClassResolver* pClassResolver) : m_TargetObject(pTargetObject),
-                                                                                                                                     m_TargetProperty(pTargetProperty),
-                                                                                                                                     m_ClassResolver(pClassResolver)
+CConversionContext::CConversionContext(CPropertyObject* pTargetObject, CProperty* pTargetProperty, CProviders* pProviders) : m_TargetObject(pTargetObject),
+                                                                                                                             m_TargetProperty(pTargetProperty),
+                                                                                                                             m_Providers(pProviders)
 {
 }
 
@@ -16,9 +16,9 @@ CProperty* CConversionContext::GetTargetProperty()
     return m_TargetProperty;
 }
 
-CClassResolver* CConversionContext::GetClassResolver()
+CProviders* CConversionContext::GetProviders()
 {
-    return m_ClassResolver;
+    return m_Providers;
 }
 
 TypeIndex::Value CConversionContext::GetTargetType()

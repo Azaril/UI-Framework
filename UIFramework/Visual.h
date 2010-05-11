@@ -16,7 +16,7 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
     typedef std::vector< CVisualResource* > VisualResourceCollection;
 
     public:
-        DECLARE_TYPE_WITH_BASE( TypeIndex::Visual, CObjectWithType );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Visual, CPropertyObject );
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 

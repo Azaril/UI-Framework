@@ -185,12 +185,13 @@ HRESULT CStaticClassResolver::ResolveProperty(const WCHAR* pPropertyName, CPrope
 
     IFCPTR(pPropertyName);
     IFCPTR(ppProperty);
-    IFCPTR(pImplicitClassProperties);
 
     pPropertyStart = wcschr(pPropertyName, L'.');
     
     if(pPropertyStart == NULL)
     {
+        IFCPTR(pImplicitClassProperties);
+
         pPropertyStart = pPropertyName;
 
         pResolvedClassProperties = pImplicitClassProperties;

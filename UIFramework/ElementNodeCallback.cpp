@@ -1,26 +1,26 @@
 #include "ElementNodeCallback.h"
 #include "ParserUtilities.h"
 #include "BasicTypes.h"
+#include "ParserCommand.h"
+#include "CreateObjectCommand.h"
 
-CElementNodeCallback::CElementNodeCallback() : m_Element(NULL),
-                                               m_ChildNode(NULL),
+CElementNodeCallback::CElementNodeCallback() : m_ChildNode(NULL),
                                                m_ResolvedClass(NULL),
                                                m_Properties(NULL),
                                                m_Complete(FALSE),
-                                               m_Key(NULL)
+                                               m_KeyString(NULL)
 {
 }
 
 CElementNodeCallback::~CElementNodeCallback()
 {
-    ReleaseObject(m_Element);
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_ResolvedClass);
     ReleaseObject(m_Properties);
-    ReleaseObject(m_Key);
+    ReleaseObject(m_KeyString);
 }
 
-HRESULT CElementNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart)
+HRESULT CElementNodeCallback::Initialize(CParseContext* pContext, CXMLElementStart* pXMLStart)
 {
     HRESULT hr = S_OK;
     const WCHAR* pElementName = NULL;
@@ -35,7 +35,7 @@ HRESULT CElementNodeCallback::Initialize(CParseContext* pContext, CPropertyObjec
 
     IFC(m_Context->GetClassResolver()->ResolveType(pElementName, &m_ResolvedClass));
 
-    IFC(m_ResolvedClass->CreateInstance(&m_Element));
+    IFC(AddCreateObjectCommand(pContext, m_ResolvedClass));
 
     IFC(m_ResolvedClass->GetPropertyInformation(&m_Properties));
 
@@ -43,14 +43,9 @@ Cleanup:
     return hr;
 }
 
-CPropertyObject* CElementNodeCallback::GetObject()
+CStringValue* CElementNodeCallback::GetKey()
 {
-    return m_Element;
-}
-
-CObjectWithType* CElementNodeCallback::GetKey()
-{
-    return m_Key;
+    return m_KeyString;
 }
 
 HRESULT CElementNodeCallback::OnElementStart(CXMLElementStart* pElementStart, BOOL& Consumed)
@@ -67,7 +62,7 @@ HRESULT CElementNodeCallback::OnElementStart(CXMLElementStart* pElementStart, BO
     }
     else
     {
-        IFC(ElementStartToParserCallback(m_Context, m_Element, m_Properties, pElementStart, &m_ChildNode));
+        IFC(ElementStartToParserCallback(m_Context, m_Properties, pElementStart, &m_ChildNode));
 
         Consumed = TRUE;
     }
@@ -119,7 +114,7 @@ HRESULT CElementNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
     }
     else
     {
-        IFC(TextToParserCallback(m_Context, m_Element, m_Properties, pText, &m_ChildNode));
+        IFC(TextToParserCallback(m_Context, m_Properties, pText, &m_ChildNode));
 
         Consumed = TRUE;
     }
@@ -134,7 +129,7 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
     CProperty* pProperty = NULL;
     WCHAR* pClassType = NULL;
     UINT32 ClassTypeLength = 0;
-    CObjectWithType* pValue = NULL;
+    CStringValue* pAttributeValue = NULL;
 
     IFCPTR(pAttribute);
 
@@ -169,7 +164,7 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
         {
             if(wcscmp(pNameString, L"Key") == 0)
             {
-                IFC(AttributeStringToValue(m_Context, pValueString, ValueStringLength, &m_Key));
+                IFC(CStringValue::Create(pValueString, ValueStringLength, &m_KeyString));
             }
             else
             {
@@ -182,9 +177,11 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
         {
             IFC(m_Context->GetClassResolver()->ResolveProperty(pNameString, m_Properties, &pProperty));
 
-            IFC(AttributeStringToValue(m_Context, pValueString, ValueStringLength, &pValue));
+            IFC(CStringValue::Create(pValueString, ValueStringLength, &pAttributeValue));
 
-            IFC(AssignProperty(m_Element, pProperty, pValue, m_Context));
+            IFC(EvaluateAndAddAttribute(m_Context, pValueString, ValueStringLength));
+
+            IFC(AddSetPropertyCommand(m_Context, pProperty));
 
             Consumed = TRUE;
         }
@@ -192,7 +189,7 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
 
 Cleanup:
     ReleaseObject(pProperty);
-    ReleaseObject(pValue);
+    ReleaseObject(pAttributeValue);
     delete [] pClassType;
 
     return hr;

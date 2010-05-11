@@ -130,6 +130,12 @@ class CPropertyObject : public CObjectWithType
         std::vector< CAttachedPropertyHolder > m_AttachedProperties;
 };
 
+template< >
+struct ObjectTypeTraits< CPropertyObject >
+{
+    static const TypeIndex::Value Type = TypeIndex::PropertyObject;
+};
+
 class CObjectCollection : public CObjectWithType
 {
     public:

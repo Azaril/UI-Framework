@@ -13,32 +13,14 @@ CParserCallback::~CParserCallback()
     ReleaseObject(m_ParseContext);
 }
 
-HRESULT CParserCallback::Initialize(CClassResolver* pClassResolver, CTypeConverter* pTypeConverter)
+HRESULT CParserCallback::Initialize(CParseContext* pContext)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pClassResolver);
+    IFCPTR(pContext);
 
-    IFC(CParseContext::Create(pClassResolver, pTypeConverter, &m_ParseContext));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CParserCallback::GetRootObject(CObjectWithType** ppRootObject)
-{
-    HRESULT hr = S_OK;
-    CObjectWithType* pObject = NULL;
-
-    IFCPTR(ppRootObject);
-
-    IFCEXPECT(m_ChildNode != NULL);
-
-    pObject = m_ChildNode->GetObject();
-    IFCPTR(pObject);
-
-    *ppRootObject = pObject;
-    AddRefObject(pObject);
+    m_ParseContext = pContext;
+    AddRefObject(m_ParseContext);
 
 Cleanup:
     return hr;

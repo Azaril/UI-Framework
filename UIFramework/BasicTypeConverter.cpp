@@ -4,6 +4,7 @@
 #include "BasicTypes.h"
 #include "RoutedEvent.h"
 #include "SolidColorBrush.h"
+#include "Providers.h"
 
 StaticTypeConverter BasicConverters[] =
 {
@@ -882,7 +883,7 @@ HRESULT ConvertStringToRoutedEvent(CConversionContext* pContext, CObjectWithType
     pEventName = pStringValue->GetValue();
     IFCPTR(pEventName);
 
-    pClassResolver = pContext->GetClassResolver();
+    pClassResolver = pContext->GetProviders()->GetClassResolver();
     IFCPTR(pClassResolver);
 
     pTargetObject = pContext->GetTargetObject();

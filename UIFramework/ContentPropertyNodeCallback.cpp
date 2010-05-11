@@ -4,40 +4,29 @@
 
 CContentPropertyNodeCallback::CContentPropertyNodeCallback() : m_ChildNode(NULL),
                                                                m_Complete(FALSE),
-                                                               m_Parent(NULL),
                                                                m_Property(NULL),
                                                                m_SetTextValue(FALSE),
-                                                               m_SetObjectValue(FALSE),
-                                                               m_Properties(NULL)
+                                                               m_SetObjectValue(FALSE)
 {
 }
 
 CContentPropertyNodeCallback::~CContentPropertyNodeCallback()
 {
-    ReleaseObject(m_Parent);
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_Property);
-    ReleaseObject(m_Properties);
 }
 
-HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation)
+HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyInformation* pPropertyInformation)
 {
     HRESULT hr = S_OK;
     CPropertyInformation* pProperties = NULL;
 
     IFCPTR(pContext);
-    IFCPTR(pParent);
     IFCPTR(pPropertyInformation);
 
     IFC(CParserNodeCallback::Initialize(pContext));
 
-    m_Properties = pPropertyInformation;
-    AddRefObject(m_Properties);
-
     IFC(pPropertyInformation->GetContentProperty(&m_Property));
-
-    m_Parent = pParent;
-    AddRefObject(m_Parent);
 
 Cleanup:
     ReleaseObject(pProperties);
@@ -45,15 +34,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLElementStart* pXMLStart)
+HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLElementStart* pXMLStart)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pContext);
-    IFCPTR(pParent);
     IFCPTR(pXMLStart);
 
-    IFC(Initialize(pContext, pParent, pPropertyInformation));
+    IFC(Initialize(pContext, pPropertyInformation));
 
     IFC(ElementStartToParserCallback(pContext, pXMLStart, &m_ChildNode));
 
@@ -63,16 +51,15 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CPropertyInformation* pPropertyInformation, CXMLText* pXMLText)
+HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLText* pXMLText)
 {
     HRESULT hr = S_OK;
     BOOL Consumed = FALSE;
 
     IFCPTR(pContext);
-    IFCPTR(pParent);
     IFCPTR(pXMLText);
 
-    IFC(Initialize(pContext, pParent, pPropertyInformation));
+    IFC(Initialize(pContext, pPropertyInformation));
 
     IFC(OnText(pXMLText, Consumed));
 
@@ -121,7 +108,7 @@ HRESULT CContentPropertyNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, 
 
         if(m_ChildNode->IsComplete())
         {
-            IFC(AssignProperty(m_Parent, m_Property, m_ChildNode->GetObject(), m_Context, m_ChildNode->GetKey()));
+            IFC(AddSetPropertyCommand(m_Context, m_Property, m_ChildNode->GetKey()));
 
             ReleaseObject(m_ChildNode);
         }
@@ -167,7 +154,9 @@ HRESULT CContentPropertyNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
 
         IFC(CStringValue::Create(pString, StringLength, &pStringValue));
 
-        IFC(AssignProperty(m_Parent, m_Property, pStringValue, m_Context))
+        IFC(AddPushValueCommand(m_Context, pStringValue));
+
+        IFC(AddSetPropertyCommand(m_Context, m_Property));
 
         m_SetTextValue = TRUE;
 

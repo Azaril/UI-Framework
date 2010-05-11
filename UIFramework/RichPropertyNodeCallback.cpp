@@ -2,8 +2,7 @@
 #include "ParserUtilities.h"
 #include "BasicTypes.h"
 
-CRichPropertyNodeCallback::CRichPropertyNodeCallback() : m_Parent(NULL),
-                                                         m_Complete(FALSE),
+CRichPropertyNodeCallback::CRichPropertyNodeCallback() : m_Complete(FALSE),
                                                          m_ChildNode(NULL),
                                                          m_Property(NULL),
                                                          m_SetTextValue(FALSE),
@@ -13,29 +12,24 @@ CRichPropertyNodeCallback::CRichPropertyNodeCallback() : m_Parent(NULL),
 
 CRichPropertyNodeCallback::~CRichPropertyNodeCallback()
 {
-    ReleaseObject(m_Parent);
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_Property);
 }
 
-HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyObject* pParent, CXMLElementStart* pXMLStart)
+HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyInformation* pProperties, CXMLElementStart* pXMLStart)
 {
     HRESULT hr = S_OK;
     const WCHAR* pElementName = NULL;
     UINT32 ElementNameLength = 0;
 
     IFCPTR(pContext);
-    IFCPTR(pParent);
     IFCPTR(pXMLStart);
 
     IFC(CParserNodeCallback::Initialize(pContext));
 
-    m_Parent = pParent;
-    AddRefObject(m_Parent);
-
     IFC(pXMLStart->GetName(&pElementName, &ElementNameLength));
 
-    IFC(m_Context->GetClassResolver()->ResolveProperty(pElementName, pParent->GetType(), &m_Property));
+    IFC(m_Context->GetClassResolver()->ResolveProperty(pElementName, pProperties, &m_Property));
 
 Cleanup:
 
@@ -58,7 +52,7 @@ HRESULT CRichPropertyNodeCallback::OnElementStart(CXMLElementStart* pElementStar
     {
         IFCEXPECT(!m_SetTextValue);
 
-        IFC(ElementStartToParserCallback(m_Context, m_Parent, pElementStart, &m_ChildNode));
+        IFC(ElementStartToParserCallback(m_Context, pElementStart, &m_ChildNode));
 
         m_SetObjectValue = TRUE;
 
@@ -83,7 +77,7 @@ HRESULT CRichPropertyNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, BOO
 
         if(m_ChildNode->IsComplete())
         {
-            IFC(AssignProperty(m_Parent, m_Property, m_ChildNode->GetObject(), m_Context, m_ChildNode->GetKey()));
+            IFC(AddSetPropertyCommand(m_Context, m_Property, m_ChildNode->GetKey()));
 
             ReleaseObject(m_ChildNode);
         }
@@ -126,7 +120,9 @@ HRESULT CRichPropertyNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
 
         IFC(CStringValue::Create(pString, StringLength, &pStringValue));
 
-        IFC(AssignProperty(m_Parent, m_Property, pStringValue, m_Context));
+        IFC(AddPushValueCommand(m_Context, pStringValue));
+
+        IFC(AddSetPropertyCommand(m_Context, m_Property));
 
         m_SetTextValue = TRUE;
 

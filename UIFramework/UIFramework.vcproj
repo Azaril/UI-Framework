@@ -643,6 +643,18 @@
 								>
 							</File>
 						</Filter>
+						<Filter
+							Name="Controls"
+							>
+							<File
+								RelativePath=".\Control.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\Control.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 				</Filter>
 				<Filter
@@ -957,6 +969,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Templating"
+					>
+					<File
+						RelativePath=".\ControlTemplate.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ControlTemplate.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Text"
@@ -1152,6 +1176,74 @@
 							>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="Commands"
+					>
+					<File
+						RelativePath=".\AddToCollectionCommand.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\AddToCollectionCommand.h"
+						>
+					</File>
+					<File
+						RelativePath=".\AddToDictionaryCommand.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\AddToDictionaryCommand.h"
+						>
+					</File>
+					<File
+						RelativePath=".\CreateObjectCommand.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CreateObjectCommand.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ParserCommand.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ParserCommand.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ParserCommandContext.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ParserCommandContext.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ParserCommandList.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ParserCommandList.h"
+						>
+					</File>
+					<File
+						RelativePath=".\PushObjectCommand.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\PushObjectCommand.h"
+						>
+					</File>
+					<File
+						RelativePath=".\SetPropertyCommand.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SetPropertyCommand.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>
