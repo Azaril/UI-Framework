@@ -10,6 +10,9 @@ class CControl : public CFrameworkElement
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
+        virtual HRESULT OnAttach( CUIAttachContext& Context );
+        virtual HRESULT OnDetach( CUIDetachContext& Context );
+
         //
         // Properties
         //
@@ -20,6 +23,9 @@ class CControl : public CFrameworkElement
         virtual ~CControl();
 
         HRESULT Initialize();
+
+        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+        virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
@@ -36,6 +42,9 @@ class CControl : public CFrameworkElement
         HRESULT EnsureTemplate();
         HRESULT ApplyTemplate( CControlTemplate* pTemplate );
 
+        HRESULT GetTemplateChild( CUIElement** ppChild );
+
+    private:
         CTypedLayeredValue< CControlTemplate > m_Template;
         BOOL m_TemplateDirty;
         CUIElement* m_TemplateChild;

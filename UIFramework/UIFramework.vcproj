@@ -654,6 +654,34 @@
 								RelativePath=".\Control.h"
 								>
 							</File>
+							<Filter
+								Name="ContentControls"
+								>
+								<File
+									RelativePath=".\Button.cpp"
+									>
+								</File>
+								<File
+									RelativePath=".\Button.h"
+									>
+								</File>
+								<File
+									RelativePath=".\ButtonBase.cpp"
+									>
+								</File>
+								<File
+									RelativePath=".\ButtonBase.h"
+									>
+								</File>
+								<File
+									RelativePath=".\ContentControl.cpp"
+									>
+								</File>
+								<File
+									RelativePath=".\ContentControl.h"
+									>
+								</File>
+							</Filter>
 						</Filter>
 					</Filter>
 				</Filter>

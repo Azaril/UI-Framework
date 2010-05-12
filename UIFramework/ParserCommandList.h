@@ -3,10 +3,12 @@
 #include "ParserCommand.h"
 #include "Providers.h"
 
-class CParserCommandList : public CRefCountedObject
+class CParserCommandList : public CRefCountedObjectBase< CObjectWithType >
 {
     public:
         DECLARE_FACTORY1( CParserCommandList, CProviders* );
+
+        DECLARE_TYPE_WITH_BASE( TypeIndex::ParserCommandList, CObjectWithType );
 
         virtual HRESULT Execute( CObjectWithType** ppObject );
         virtual HRESULT AddCommand( CParserCommand* pCommand );

@@ -301,6 +301,7 @@ class CUIElement : public CVisual
         BOOL m_Attached;
 
         SizeF m_LastMeasureSize;
+        SizeF m_LastArrangeSize;
         SizeF m_DesiredSize;
         SizeF m_FinalSize;
 

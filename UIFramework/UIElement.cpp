@@ -74,6 +74,9 @@ CUIElement::CUIElement() : m_Attached(FALSE),
     m_LastMeasureSize.width = 0;
     m_LastMeasureSize.height = 0;
 
+    m_LastArrangeSize.width = 0;
+    m_LastArrangeSize.height = 0;
+
     m_FinalSize.width = 0;
     m_FinalSize.height = 0;
 }
@@ -432,23 +435,46 @@ HRESULT CUIElement::Arrange(SizeF Size)
     IFCEXPECT(Size.width >= 0);
     IFCEXPECT(Size.height >= 0);
 
-    if(m_ArrangeDirty || Size.width != m_FinalSize.width || Size.height != m_FinalSize.width)
+    if(m_ArrangeDirty || Size.width != m_LastArrangeSize.width || Size.height != m_LastArrangeSize.width)
     {
+        m_LastArrangeSize = Size;
+        SizeF FinalSize = { 0 };
+
         Visibility::Value EffectiveVisibility = Visibility::Visible;
 
         IFC(GetEffectiveVisibility(&EffectiveVisibility))
 
         if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
-            m_FinalSize = Size;
+            FLOAT Width = 0;
+            FLOAT Height = 0;
+            FLOAT MinimumWidth = 0;
+            FLOAT MinimumHeight = 0;
+            FLOAT MaximumWidth = 0;
+            FLOAT MaximumHeight = 0;
 
-            IFC(ArrangeInternal(Size));
+            IFCEXPECT(Size.width >= 0);
+            IFCEXPECT(Size.height >= 0);
+
+            FinalSize = Size;
+
+            IFC(GetEffectiveWidth(&Width));
+            IFC(GetEffectiveHeight(&Height));
+            IFC(GetEffectiveMinimumWidth(&MinimumWidth));
+            IFC(GetEffectiveMinimumHeight(&MinimumHeight));
+            IFC(GetEffectiveMaximumWidth(&MaximumWidth));
+            IFC(GetEffectiveMaximumHeight(&MaximumHeight));
+
+            FinalSize.width = max(FinalSize.width, MinimumWidth);
+            FinalSize.height = max(FinalSize.height, MinimumHeight);
+
+            FinalSize.width = min(FinalSize.width, MaximumWidth);
+            FinalSize.height = min(FinalSize.height, MaximumHeight);
+
+            IFC(ArrangeInternal(FinalSize));
         }
-        else
-        {
-            m_FinalSize.width = 0;
-            m_FinalSize.height = 0;
-        }
+
+        m_FinalSize = FinalSize;
 
         m_ArrangeDirty = FALSE;
     }

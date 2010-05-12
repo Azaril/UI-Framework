@@ -36,4 +36,6 @@ class CContentPropertyNodeCallback : public CPropertyNodeCallback
         CElementNodeCallback* m_ChildNode;
         CProperty* m_Property;
         CPropertyInformation* m_Properties;
+        BOOL m_IsTemplate;
+        CParserCommandList* m_ChildCommandList;
 };

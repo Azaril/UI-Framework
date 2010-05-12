@@ -19,6 +19,9 @@ namespace TypeIndex
                                 Border,
                             TextBlock,
                             Control,
+                                ContentControl,
+                                    ButtonBase,
+                                        Button,
                 Brush,
                     ImageBrush,
                     SolidColorBrush,
@@ -55,6 +58,7 @@ namespace TypeIndex
                 InputEventArgs,
                     MouseEventArgs,
                         MouseButtonEventArgs,
+            ParserCommandList,
             ControlTemplate
     };
 }

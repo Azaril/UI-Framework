@@ -39,6 +39,28 @@ Cleanup:
     return hr;
 }
 
+HRESULT CControl::OnAttach(CUIAttachContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    IFC(CFrameworkElement::OnAttach(Context));
+
+    IFC(EnsureTemplate());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CControl::OnDetach(CUIDetachContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    IFC(CFrameworkElement::OnDetach(Context));
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CControl::OnTemplateChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;
@@ -99,10 +121,24 @@ Cleanup:
 HRESULT CControl::ApplyTemplate(CControlTemplate* pTemplate)
 {
     HRESULT hr = S_OK;
+    CObjectWithType* pRootObject = NULL;
 
     IFCPTR(pTemplate);
 
+    IFC(pTemplate->LoadContent(&pRootObject));
+
+    IFCPTR(pRootObject);
+
+    IFCEXPECT(pRootObject->IsTypeOf(TypeIndex::UIElement));
+
+    m_TemplateChild = (CUIElement*)pRootObject;
+    pRootObject = NULL;
+
+    IFC(AddLogicalChild(m_TemplateChild));
+
 Cleanup:
+    ReleaseObject(pRootObject);
+
     return hr;
 }
 
@@ -163,6 +199,67 @@ HRESULT CControl::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayere
     {
         hr = CUIElement::GetLayeredValue(pProperty, ppLayeredValue);
     }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CControl::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+{
+    HRESULT hr = S_OK;
+    SizeF InternalSize = { 0 };
+    SizeF BaseSize = { 0 };
+    SizeF ChildSizeDesired = { 0 };
+    CUIElement* pChild = NULL;
+
+    IFC(CFrameworkElement::MeasureInternal(AvailableSize, BaseSize));
+
+    IFC(GetTemplateChild(&pChild));
+
+    if(pChild != NULL)
+    {
+        IFC(pChild->Measure(AvailableSize));
+
+        ChildSizeDesired = pChild->GetDesiredSize();
+    }
+
+    DesiredSize.width = max(ChildSizeDesired.width, BaseSize.width);
+    DesiredSize.height = max(ChildSizeDesired.height, BaseSize.height);
+
+Cleanup:
+    ReleaseObject(pChild);
+
+    return hr;
+}
+
+HRESULT CControl::ArrangeInternal(SizeF Size)
+{
+    HRESULT hr = S_OK;
+    CUIElement* pChild = NULL;
+
+    IFC(GetTemplateChild(&pChild));
+
+    if(pChild != NULL)
+    {
+        IFC(pChild->Arrange(Size));
+    }
+
+    IFC(CFrameworkElement::ArrangeInternal(Size));
+      
+Cleanup:
+    ReleaseObject(pChild);
+
+    return hr;
+}
+
+HRESULT CControl::GetTemplateChild(CUIElement** ppChild)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppChild);
+
+    *ppChild = m_TemplateChild;
+    AddRefObject(m_TemplateChild);
 
 Cleanup:
     return hr;

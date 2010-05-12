@@ -6,7 +6,9 @@ CRichPropertyNodeCallback::CRichPropertyNodeCallback() : m_Complete(FALSE),
                                                          m_ChildNode(NULL),
                                                          m_Property(NULL),
                                                          m_SetTextValue(FALSE),
-                                                         m_SetObjectValue(FALSE)
+                                                         m_SetObjectValue(FALSE),
+                                                         m_IsTemplate(FALSE),
+                                                         m_ChildCommandList(NULL)
 {
 }
 
@@ -14,6 +16,7 @@ CRichPropertyNodeCallback::~CRichPropertyNodeCallback()
 {
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_Property);
+    ReleaseObject(m_ChildCommandList);
 }
 
 HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyInformation* pProperties, CXMLElementStart* pXMLStart)
@@ -31,8 +34,16 @@ HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CProperty
 
     IFC(m_Context->GetClassResolver()->ResolveProperty(pElementName, pProperties, &m_Property));
 
-Cleanup:
+    m_IsTemplate = (m_Property->GetType() == TypeIndex::ParserCommandList);
 
+    if(m_IsTemplate)
+    {
+        IFC(CParserCommandList::Create(pContext->GetProviders(), &m_ChildCommandList));
+
+        IFC(pContext->PushCommandList(m_ChildCommandList))
+    }
+
+Cleanup:
     return hr;
 }
 
@@ -51,6 +62,7 @@ HRESULT CRichPropertyNodeCallback::OnElementStart(CXMLElementStart* pElementStar
     else
     {
         IFCEXPECT(!m_SetTextValue);
+        IFCEXPECT(!m_SetObjectValue || m_Property->IsCollection() || m_Property->IsDictionary());
 
         IFC(ElementStartToParserCallback(m_Context, pElementStart, &m_ChildNode));
 
@@ -77,6 +89,13 @@ HRESULT CRichPropertyNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, BOO
 
         if(m_ChildNode->IsComplete())
         {
+            if(m_IsTemplate)
+            {
+                IFC(m_Context->PopCommandList());
+
+                IFC(AddPushValueCommand(m_Context, m_ChildCommandList));
+            }
+
             IFC(AddSetPropertyCommand(m_Context, m_Property, m_ChildNode->GetKey()));
 
             ReleaseObject(m_ChildNode);

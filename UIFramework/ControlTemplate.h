@@ -1,18 +1,42 @@
 #pragma once
 
 #include "PropertyObject.h"
+#include "RefCounted.h"
+#include "Factory.h"
+#include "ParserCommandList.h"
+#include "StaticPropertyInformation.h"
 
-class CControlTemplate : public CPropertyObject
+class CControlTemplate : public CRefCountedObjectBase< CPropertyObject >
 {
     public:
+        DECLARE_FACTORY( CControlTemplate );
+
+        DECLARE_TYPE_WITH_BASE( TypeIndex::ControlTemplate, CPropertyObject );
+
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
+        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+
+        HRESULT LoadContent( CObjectWithType** ppObject );
+
+       //
+        // Properties
+        //
+        static CStaticProperty TemplateProperty;
 
     protected:
         CControlTemplate();
         virtual ~CControlTemplate();
+
+        HRESULT Initialize();
+
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+
+        CParserCommandList* m_TemplateCommandList;
 };
 
 template< >
 struct ObjectTypeTraits< CControlTemplate >
 {
-    static const TypeIndex::Value Type = TypeIndex::Control;
+    static const TypeIndex::Value Type = TypeIndex::ControlTemplate;
 };

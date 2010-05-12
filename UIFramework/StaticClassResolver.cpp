@@ -13,6 +13,8 @@
 #include "GradientStop.h"
 #include "LinearGradientBrush.h"
 #include "EventTrigger.h"
+#include "ControlTemplate.h"
+#include "Button.h"
 
 template< typename FromType >
 class StaticClassFactory
@@ -57,7 +59,9 @@ CStaticResolvedClass Classes[] =
     CStaticResolvedClass(L"DynamicResource", STATIC_CLASS_INFO(CDynamicResource)),
     CStaticResolvedClass(L"LinearGradientBrush", STATIC_CLASS_INFO(CLinearGradientBrush)),
     CStaticResolvedClass(L"GradientStop", STATIC_CLASS_INFO(CGradientStop)),
-    CStaticResolvedClass(L"EventTrigger", STATIC_CLASS_INFO(CEventTrigger))
+    CStaticResolvedClass(L"EventTrigger", STATIC_CLASS_INFO(CEventTrigger)),
+    CStaticResolvedClass(L"ControlTemplate", STATIC_CLASS_INFO(CControlTemplate)),
+    CStaticResolvedClass(L"Button", STATIC_CLASS_INFO(CButton))
 };
 
 CStaticClassResolver::CStaticClassResolver()
