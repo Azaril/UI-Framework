@@ -37,11 +37,11 @@ CLinearGradientBrush::~CLinearGradientBrush()
 {
 }
 
-HRESULT CLinearGradientBrush::Initialize()
+HRESULT CLinearGradientBrush::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CGradientBrush::Initialize());
+    IFC(CGradientBrush::Initialize(pProviders));
 
 Cleanup:
     return hr;

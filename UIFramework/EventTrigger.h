@@ -11,7 +11,7 @@
 class CEventTrigger : public CTrigger
 {
     public:
-        DECLARE_FACTORY( CEventTrigger );
+        DECLARE_FACTORY1( CEventTrigger, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::EventTrigger, CTrigger );
 
@@ -19,7 +19,7 @@ class CEventTrigger : public CTrigger
 
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
-        virtual HRESULT ResolveTrigger( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedTrigger** pResolvedTrigger );
+        virtual HRESULT ResolveTrigger( CUIElement* pObject, IStyleCallback* pCallback, CResolvedTrigger** pResolvedTrigger );
 
         //
         // Properties
@@ -31,10 +31,11 @@ class CEventTrigger : public CTrigger
         CEventTrigger();
         virtual ~CEventTrigger();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
+        CProviders* m_Providers;
         CRoutedEvent* m_RoutedEvent;
         CSetterCollection* m_Setters;
 };

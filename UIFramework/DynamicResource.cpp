@@ -14,30 +14,35 @@ CDynamicResource::CDynamicResource() : m_ResourceKey(NULL)
 
 CDynamicResource::~CDynamicResource()
 {
+    m_TargetAttachedConnection.disconnect();
+    m_TargetDetachedConnection.disconnect();
+
     ReleaseObject(m_ResourceKey);
 }
 
-HRESULT CDynamicResource::Initialize()
+HRESULT CDynamicResource::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
+
+    IFC(CBinding::Initialize(pProviders));
 
 Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::GetBoundValue(CObjectWithType* pTarget, CProperty* pTargetProperty, CObjectWithType** ppValue)
+HRESULT CDynamicResource::GetBoundValue( CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pTarget);
-    IFCPTR(pTargetProperty);
     IFCPTR(ppValue);
 
     IFCPTR(m_ResourceKey);
 
-    if(pTarget->IsTypeOf(TypeIndex::FrameworkElement))
+    IFCPTR(m_Target);
+
+    if(m_Target->IsTypeOf(TypeIndex::FrameworkElement))
     {
-        CFrameworkElement* pElement = (CFrameworkElement*)pTarget;
+        CFrameworkElement* pElement = (CFrameworkElement*)m_Target;
 
         if(FAILED(pElement->FindResource(m_ResourceKey, ppValue)))
         {
@@ -123,4 +128,64 @@ HRESULT CDynamicResource::GetValue(CProperty* pProperty, CObjectWithType** ppVal
 
 Cleanup:
     return hr;
+}
+
+HRESULT CDynamicResource::SetTarget(CPropertyObject* pTarget, CProperty* pTargetProperty)
+{
+    HRESULT hr = S_OK;
+    CUIElement* pTargetElement = NULL;
+
+    IFCPTR(pTarget);
+
+    //TODO: Fix this, as currently you can only bind a template binding to a UI element.
+    IFCEXPECT(pTarget->IsTypeOf(TypeIndex::UIElement));
+
+    IFC(CBinding::SetTarget(pTarget, pTargetProperty));
+
+    pTargetElement = (CUIElement*)pTarget;
+
+    IFC(pTargetElement->AddHandler(&CUIElement::AttachedEvent, bind(&CDynamicResource::OnTargetAttached, this, _1, _2), &m_TargetAttachedConnection));
+    IFC(pTargetElement->AddHandler(&CUIElement::DetachedEvent, bind(&CDynamicResource::OnTargetDetached, this, _1, _2), &m_TargetDetachedConnection));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CDynamicResource::ClearTarget()
+{
+    HRESULT hr = S_OK;
+
+    IFC(CBinding::ClearTarget());
+
+    m_TargetAttachedConnection.disconnect();
+    m_TargetDetachedConnection.disconnect();
+
+Cleanup:
+    return hr;
+}
+
+void CDynamicResource::OnTargetAttached(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+    IFC(InvalidateBinding());
+
+Cleanup:
+    ;
+}
+
+void CDynamicResource::OnTargetDetached(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+    IFC(InvalidateBinding());
+
+Cleanup:
+    ;
 }

@@ -3,7 +3,7 @@
 class CDockPanel : public CPanel
 {
     public:
-        DECLARE_FACTORY( CDockPanel );
+        DECLARE_FACTORY1( CDockPanel, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::DockPanel, CPanel );
 
@@ -21,7 +21,7 @@ class CDockPanel : public CPanel
         CDockPanel();
         virtual ~CDockPanel();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 

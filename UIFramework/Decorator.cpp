@@ -25,16 +25,6 @@ CDecorator::~CDecorator()
 {
 }
 
-HRESULT CDecorator::Initialize()
-{
-    HRESULT hr = S_OK;
-
-    IFC(CFrameworkElement::Initialize());
-
-Cleanup:
-    return hr;
-}
-
 HRESULT CDecorator::SetChild(CUIElement* pChild)
 {
     HRESULT hr = S_OK;

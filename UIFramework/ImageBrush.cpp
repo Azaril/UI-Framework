@@ -17,7 +17,7 @@ CImageBrush::~CImageBrush()
     ReleaseObject(m_Source);
 }
 
-HRESULT CImageBrush::Initialize()
+HRESULT CImageBrush::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 

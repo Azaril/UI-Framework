@@ -30,17 +30,17 @@ CImage::~CImage()
     Finalize();
 }
 
-HRESULT CImage::Initialize()
+HRESULT CImage::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CFrameworkElement::Initialize());
+    IFC(CFrameworkElement::Initialize(pProviders));
 
     IFC(CGeometryVisual::Create(&m_ImageVisual));
 
     IFC(AddChildVisual(m_ImageVisual));
 
-    IFC(CImageBrush::Create(&m_ImageBrush));
+    IFC(CImageBrush::Create(pProviders, &m_ImageBrush));
 
     IFC(m_ImageVisual->SetFillBrush(m_ImageBrush));
 

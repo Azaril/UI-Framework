@@ -3,14 +3,15 @@
 #include "Binding.h"
 #include "Factory.h"
 #include "StaticPropertyInformation.h"
+#include "BasicTypes.h"
 #include "RoutedEventArgs.h"
 
-class CDynamicResource : public CBinding
+class CTemplateBinding : public CBinding
 {
     public:
-        DECLARE_FACTORY1( CDynamicResource, CProviders* );
+        DECLARE_FACTORY1( CTemplateBinding, CProviders* );
 
-        DECLARE_TYPE_WITH_BASE( TypeIndex::DynamicResource, CBinding );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::TemplateBinding, CBinding );
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
@@ -24,11 +25,11 @@ class CDynamicResource : public CBinding
         //
         // Properties
         //
-        static CStaticProperty ResourceKeyProperty;
+        static CStaticProperty PropertyProperty;
 
     protected:
-        CDynamicResource();
-        virtual ~CDynamicResource();
+        CTemplateBinding();
+        virtual ~CTemplateBinding();
 
         HRESULT Initialize( CProviders* pProviders );
 
@@ -39,11 +40,11 @@ class CDynamicResource : public CBinding
 
         connection m_TargetAttachedConnection;
         connection m_TargetDetachedConnection;
-        CObjectWithType* m_ResourceKey;
+        CStringValue* m_Property;
 };
 
 template< >
-struct ObjectTypeTraits< CDynamicResource >
+struct ObjectTypeTraits< CTemplateBinding >
 {
-    static const TypeIndex::Value Type = TypeIndex::DynamicResource;
+    static const TypeIndex::Value Type = TypeIndex::TemplateBinding;
 };

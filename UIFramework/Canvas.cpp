@@ -19,11 +19,11 @@ CCanvas::~CCanvas()
 {
 }
 
-HRESULT CCanvas::Initialize()
+HRESULT CCanvas::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CPanel::Initialize());
+    IFC(CPanel::Initialize(pProviders));
 
 Cleanup:
     return hr;

@@ -45,11 +45,11 @@ CBorder::~CBorder()
     Finalize();
 }
 
-HRESULT CBorder::Initialize()
+HRESULT CBorder::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CDecorator::Initialize());
+    IFC(CDecorator::Initialize(pProviders));
 
     IFC(CGeometryVisual::Create(&m_BorderVisual));
 
@@ -188,7 +188,7 @@ HRESULT CBorder::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
 
-    IFC(CFrameworkElement::OnAttach(Context));
+    IFC(CDecorator::OnAttach(Context));
 
     IFC(InvalidateGeometry());
 
@@ -202,7 +202,7 @@ HRESULT CBorder::OnDetach(CUIDetachContext& Context)
 
     IFC(ReleaseGeometry());
 
-    IFC(CFrameworkElement::OnDetach(Context));
+    IFC(CDecorator::OnDetach(Context));
 
 Cleanup:
     return hr;

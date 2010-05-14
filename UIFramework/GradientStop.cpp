@@ -30,7 +30,7 @@ CGradientStop::~CGradientStop()
 {
 }
 
-HRESULT CGradientStop::Initialize()
+HRESULT CGradientStop::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 

@@ -3,13 +3,15 @@
 #include "RefCounted.h"
 #include "PropertyObject.h"
 
+class CProviders;
+
 class CResolvedClass
 {
     public:
         virtual INT32 AddRef() = 0;
         virtual INT32 Release() = 0;
 
-        virtual HRESULT CreateInstance( CPropertyObject** ppObject ) = 0;
+        virtual HRESULT CreateInstance( CProviders* pProviders, CPropertyObject** ppObject ) = 0;
         virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation ) = 0;
         virtual HRESULT GetEventInformation( CEventInformation** ppEventInformation ) = 0;
 };

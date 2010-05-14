@@ -10,7 +10,8 @@ CStaticProperty CStyle::SettersProperty( L"Setters", TypeIndex::Setter, StaticPr
 CStaticProperty CStyle::TriggersProperty( L"Triggers", TypeIndex::Trigger, StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly );
 
 CStyle::CStyle() : m_Setters(NULL),
-                   m_Triggers(NULL)
+                   m_Triggers(NULL),
+                   m_Providers(NULL)
 {
 }
 
@@ -18,11 +19,17 @@ CStyle::~CStyle()
 {
     ReleaseObject(m_Setters);
     ReleaseObject(m_Triggers);
+    ReleaseObject(m_Providers);
 }
 
-HRESULT CStyle::Initialize()
+HRESULT CStyle::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
+
+    IFCPTR(pProviders);
+
+    m_Providers = pProviders;
+    AddRefObject(pProviders);
 
     IFC(CSetterCollection::Create(&m_Setters));
     IFC(CTriggerCollection::Create(&m_Triggers));
@@ -31,19 +38,18 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::ResolveStyle(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedStyle** ppResolvedStyle)
+HRESULT CStyle::ResolveStyle(CUIElement* pObject, IStyleCallback* pCallback, CResolvedStyle** ppResolvedStyle)
 {
     HRESULT hr = S_OK;
     CResolvedSetters* pResolvedSetters = NULL;
     CResolvedTriggers* pResolvedTriggers = NULL;
 
     IFCPTR(pObject);
-    IFCPTR(pProviders);
     IFCPTR(pCallback);
 
-    IFC(ResolveSetters(pObject, pProviders, pCallback, &pResolvedSetters));
+    IFC(ResolveSetters(pObject, pCallback, &pResolvedSetters));
 
-    IFC(ResolveTriggers(pObject, pProviders, pCallback, &pResolvedTriggers));
+    IFC(ResolveTriggers(pObject, pCallback, &pResolvedTriggers));
 
     IFC(CResolvedStyle::Create(pResolvedSetters, pResolvedTriggers, ppResolvedStyle));
 
@@ -56,16 +62,15 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::ResolveSetters(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedSetters** ppResolvedSetters)
+HRESULT CStyle::ResolveSetters(CUIElement* pObject, IStyleCallback* pCallback, CResolvedSetters** ppResolvedSetters)
 {
     HRESULT hr = S_OK;
     CResolvedSetters* pResolvedSetters = NULL;
 
     IFCPTR(pObject);
-    IFCPTR(pProviders);
     IFCPTR(ppResolvedSetters);
 
-    IFC(CResolvedSetters::Create(pObject, pProviders, pCallback, &pResolvedSetters));
+    IFC(CResolvedSetters::Create(pObject, m_Providers, pCallback, &pResolvedSetters));
 
     for(UINT32 i = 0; i < m_Setters->GetCount(); i++)
     {
@@ -83,16 +88,15 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::ResolveTriggers(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedTriggers** ppResolvedTriggers)
+HRESULT CStyle::ResolveTriggers(CUIElement* pObject, IStyleCallback* pCallback, CResolvedTriggers** ppResolvedTriggers)
 {
     HRESULT hr = S_OK;
     CResolvedTriggers* pResolvedTriggers = NULL;
 
     IFCPTR(pObject);
-    IFCPTR(pProviders);
     IFCPTR(ppResolvedTriggers);
 
-    IFC(CResolvedTriggers::Create(pObject, pProviders, pCallback, &pResolvedTriggers));
+    IFC(CResolvedTriggers::Create(pObject, m_Providers, pCallback, &pResolvedTriggers));
 
     for(UINT32 i = 0; i < m_Triggers->GetCount(); i++)
     {

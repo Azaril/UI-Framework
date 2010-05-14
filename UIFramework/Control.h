@@ -2,6 +2,7 @@
 
 #include "FrameworkElement.h"
 #include "ControlTemplate.h"
+#include "Brush.h"
 
 class CControl : public CFrameworkElement
 {
@@ -17,17 +18,21 @@ class CControl : public CFrameworkElement
         // Properties
         //
         static CStaticProperty TemplateProperty;
+        static CStaticProperty BackgroundProperty;
+        static CStaticProperty BorderBrushProperty;
 
     protected:
         CControl();
         virtual ~CControl();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
+
+        virtual CUIElement* GetTemplateParentForChildren();
 
         //
         // Property Change Handlers
@@ -46,6 +51,8 @@ class CControl : public CFrameworkElement
 
     private:
         CTypedLayeredValue< CControlTemplate > m_Template;
+        CTypedLayeredValue< CBrush > m_Background;
+        CTypedLayeredValue< CBrush > m_BorderBrush;
         BOOL m_TemplateDirty;
         CUIElement* m_TemplateChild;
 };

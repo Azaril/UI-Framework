@@ -10,11 +10,11 @@ CStackPanel::~CStackPanel()
 {
 }
 
-HRESULT CStackPanel::Initialize()
+HRESULT CStackPanel::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CPanel::Initialize());
+    IFC(CPanel::Initialize(pProviders));
 
 Cleanup:
     return hr;

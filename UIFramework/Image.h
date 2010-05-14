@@ -7,7 +7,7 @@
 class CImage : public CFrameworkElement
 {
     public:
-        DECLARE_FACTORY( CImage );
+        DECLARE_FACTORY1( CImage, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Image, CFrameworkElement );
 
@@ -30,7 +30,7 @@ class CImage : public CFrameworkElement
         CImage();
         virtual ~CImage();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
         HRESULT Finalize();
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );

@@ -19,7 +19,7 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     IFCPTR(pRenderTarget);
     IFCPTR(pProviders);
 
-    IFC(CFrameworkElement::Initialize());
+    IFC(CFrameworkElement::Initialize(pProviders));
 
     IFC(CNamescope::Create(&m_Namescope));
 
@@ -33,7 +33,7 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     }
 
     {
-        CUIAttachContext UIContext(NULL, m_Providers);
+        CUIAttachContext UIContext(NULL, NULL);
 
         IFC(OnAttach(UIContext));
     }

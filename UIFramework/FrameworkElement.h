@@ -118,7 +118,7 @@ class CFrameworkElement : public CUIElement
         CFrameworkElement();
         virtual ~CFrameworkElement();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
@@ -132,6 +132,8 @@ class CFrameworkElement : public CUIElement
         HRESULT RevokeStyle();
         virtual HRESULT ApplyStyle( CStyle* pStyle );
         virtual HRESULT SetStyleValue( CProperty* pProperty, CObjectWithType* pValue );
+
+        virtual CUIElement* GetTemplateParentForChildren();
 
         //
         // Property Change Handlers

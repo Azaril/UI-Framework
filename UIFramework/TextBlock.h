@@ -6,7 +6,7 @@
 class CTextBlock : public CFrameworkElement
 {
     public:
-        DECLARE_FACTORY( CTextBlock );
+        DECLARE_FACTORY1( CTextBlock, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::TextBlock, CFrameworkElement );
 

@@ -11,7 +11,8 @@ CStaticProperty CEventTrigger::RoutedEventProperty( L"RoutedEvent", TypeIndex::R
 CStaticProperty CEventTrigger::SettersProperty( L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly );
 
 CEventTrigger::CEventTrigger() : m_RoutedEvent(NULL),
-                                 m_Setters(NULL)
+                                 m_Setters(NULL),
+                                 m_Providers(NULL)
 {
 }
 
@@ -19,11 +20,17 @@ CEventTrigger::~CEventTrigger()
 {
     ReleaseObject(m_RoutedEvent);
     ReleaseObject(m_Setters);
+    ReleaseObject(m_Providers);
 }
 
-HRESULT CEventTrigger::Initialize()
+HRESULT CEventTrigger::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
+
+    IFCPTR(pProviders);
+
+    m_Providers = pProviders;
+    AddRefObject(m_Providers);
 
     IFC(CSetterCollection::Create(&m_Setters));
 
@@ -31,16 +38,15 @@ Cleanup:
     return hr;
 }
 
-HRESULT CEventTrigger::ResolveTrigger(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedTrigger** ppResolvedTrigger)
+HRESULT CEventTrigger::ResolveTrigger(CUIElement* pObject, IStyleCallback* pCallback, CResolvedTrigger** ppResolvedTrigger)
 {
     HRESULT hr = S_OK;
     CResolvedEventTrigger* pResolvedEventTrigger = NULL;
 
     IFCPTR(pObject);
-    IFCPTR(pProviders);
     IFCPTR(ppResolvedTrigger);
 
-    IFC(CResolvedEventTrigger::Create(pObject, m_RoutedEvent, pProviders, pCallback, &pResolvedEventTrigger));
+    IFC(CResolvedEventTrigger::Create(pObject, m_RoutedEvent, m_Providers, pCallback, &pResolvedEventTrigger));
 
     for(UINT32 i = 0; i < m_Setters->GetCount(); i++)
     {

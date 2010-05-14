@@ -20,7 +20,7 @@ class CPanel : public CFrameworkElement
         CPanel();
         virtual ~CPanel();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 

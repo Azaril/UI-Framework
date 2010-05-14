@@ -5,7 +5,7 @@
 class CCanvas : public CPanel
 {
     public:
-        DECLARE_FACTORY( CCanvas );
+        DECLARE_FACTORY1( CCanvas, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Canvas, CPanel );
 
@@ -22,7 +22,7 @@ class CCanvas : public CPanel
         CCanvas();
         virtual ~CCanvas();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );

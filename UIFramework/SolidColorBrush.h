@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Brush.h"
+#include "Providers.h"
 
 class CSolidColorBrush : public CBrush
 {
     public:
-        DECLARE_FACTORY( CSolidColorBrush );
+        DECLARE_FACTORY1( CSolidColorBrush, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::SolidColorBrush, CBrush );
 
@@ -24,7 +25,7 @@ class CSolidColorBrush : public CBrush
         CSolidColorBrush();
         virtual ~CSolidColorBrush();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 

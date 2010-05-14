@@ -21,8 +21,6 @@ class CDecorator : public CFrameworkElement
         CDecorator();
         virtual ~CDecorator();
 
-        HRESULT Initialize();
-
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         //

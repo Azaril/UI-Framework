@@ -88,16 +88,19 @@ namespace   \
 }
 
 #define DEFINE_GET_DEFAULT_NULL( name ) \
-HRESULT GetDefault##name(CObjectWithType** ppObject)    \
+namespace   \
 {   \
-    HRESULT hr = S_OK;  \
-    \
-    IFCPTR(ppObject);   \
-    \
-    *ppObject = NULL; \
-    \
-Cleanup:    \
-    return hr;  \
+    HRESULT GetDefault##name(CObjectWithType** ppObject)    \
+    {   \
+        HRESULT hr = S_OK;  \
+        \
+        IFCPTR(ppObject);   \
+        \
+        *ppObject = NULL; \
+        \
+    Cleanup:    \
+        return hr;  \
+    }   \
 }
 
 #define GET_DEFAULT( name ) GetDefault##name

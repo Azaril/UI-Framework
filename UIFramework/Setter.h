@@ -15,7 +15,7 @@ class CUIElement;
 class CSetter : public CRefCountedObjectBase< CPropertyObject >
 {
     public:
-        DECLARE_FACTORY( CSetter );
+        DECLARE_FACTORY1( CSetter, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Setter, CPropertyObject );
 
@@ -26,7 +26,7 @@ class CSetter : public CRefCountedObjectBase< CPropertyObject >
         const WCHAR* GetPropertyName();
         CObjectWithType* GetPropertyValue();
 
-        virtual HRESULT ResolveSetter( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedSetter** ppResolvedSetter );
+        virtual HRESULT ResolveSetter( CUIElement* pObject, IStyleCallback* pCallback, CResolvedSetter** ppResolvedSetter );
 
         //
         // Properties
@@ -38,13 +38,14 @@ class CSetter : public CRefCountedObjectBase< CPropertyObject >
         CSetter();
         virtual ~CSetter();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
         HRESULT SetPropertyInternal( const WCHAR* pProperty );
         HRESULT SetPropertyValueInternal( CObjectWithType* pValue );
 
+        CProviders* m_Providers;
         CStringValue* m_Property;
         CObjectWithType* m_Value;
 };

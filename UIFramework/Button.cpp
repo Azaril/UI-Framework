@@ -8,11 +8,11 @@ CButton::~CButton()
 {
 }
 
-HRESULT CButton::Initialize()
+HRESULT CButton::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CButtonBase::Initialize());
+    IFC(CButtonBase::Initialize(pProviders));
 
 Cleanup:
     return hr;

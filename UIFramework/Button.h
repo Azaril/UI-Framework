@@ -5,7 +5,7 @@
 class CButton : public CButtonBase
 {
     public:
-        DECLARE_FACTORY( CButton );
+        DECLARE_FACTORY1( CButton, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Button, CButtonBase );
 
@@ -15,7 +15,7 @@ class CButton : public CButtonBase
         CButton();
         virtual ~CButton();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 };
 
 template< >

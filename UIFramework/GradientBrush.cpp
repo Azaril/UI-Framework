@@ -27,7 +27,7 @@ CGradientBrush::~CGradientBrush()
     ReleaseObject(m_GradientStops);
 }
 
-HRESULT CGradientBrush::Initialize()
+HRESULT CGradientBrush::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 

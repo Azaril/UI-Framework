@@ -3,6 +3,7 @@
 #include "Brush.h"
 #include "BitmapSource.h"
 #include "Factory.h"
+#include "Providers.h"
 
 //class CImageBrushRenderContext : public CRefCountedObject
 //{
@@ -65,7 +66,7 @@ class CImageBrush : public CBrush
     typedef std::vector< CImageBrushContext* > ContextCollection;
 
     public:
-        DECLARE_FACTORY( CImageBrush );
+        DECLARE_FACTORY1( CImageBrush, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::ImageBrush, CBrush );
 
@@ -91,7 +92,7 @@ class CImageBrush : public CBrush
         CImageBrush();
         virtual ~CImageBrush();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 

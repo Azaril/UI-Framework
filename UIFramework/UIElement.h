@@ -23,12 +23,12 @@ class CUIAttachContext
 {
     public:
         CUIAttachContext() : m_Parent(NULL),
-                             m_Providers(NULL)
+                             m_TemplateParent(NULL)
         {
         }
 
-        CUIAttachContext( CUIElement* pParent, CProviders* pProviders ) : m_Parent(pParent),
-                                                                          m_Providers(pProviders)
+        CUIAttachContext( CUIElement* pParent, CUIElement* pTemplateParent ) : m_Parent(pParent),
+                                                                               m_TemplateParent(pTemplateParent)
         {
         }
     
@@ -37,20 +37,20 @@ class CUIAttachContext
             return m_Parent;
         }
 
-        CProviders* GetProviders()
+        CUIElement* GetTemplateParent()
         {
-            return m_Providers;
+            return m_TemplateParent;
         }
 
         void Reset()
         {
             m_Parent = NULL;
-            m_Providers = NULL;
+            m_TemplateParent = NULL;
         }
     
     protected:
         CUIElement* m_Parent;
-        CProviders* m_Providers;
+        CUIElement* m_TemplateParent;
 };
 
 class CUIDetachContext
@@ -154,6 +154,7 @@ class CUIElement : public CVisual
         virtual HRESULT Render( CRenderContext& Context );
 
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual HRESULT GetEffectiveValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
@@ -174,6 +175,7 @@ class CUIElement : public CVisual
         BOOL IsArrangeDirty();
 
         virtual CUIElement* GetParent();
+        virtual CUIElement* GetTemplateParent();
         CProviders* GetProviders();
         CTypeConverter* GetTypeConverter();
 
@@ -197,6 +199,9 @@ class CUIElement : public CVisual
         //
         // Events
         //
+        static CStaticRoutedEvent< RoutingStrategy::Direct > AttachedEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Direct > DetachedEvent;
+
         static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseButtonEvent;
 
         static CStaticRoutedEvent< RoutingStrategy::Direct > MouseDownEvent;
@@ -216,7 +221,7 @@ class CUIElement : public CVisual
         CUIElement();
         virtual ~CUIElement();
     
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
@@ -238,7 +243,6 @@ class CUIElement : public CVisual
         virtual HRESULT InternalRaiseBubbledEvent( CRoutedEventArgs* pRoutedEventArgs );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
-        virtual HRESULT GetEffectiveValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         HRESULT GetEffectiveWidth( FLOAT* pWidth );
         HRESULT GetEffectiveHeight( FLOAT* pHeight );
@@ -298,6 +302,7 @@ class CUIElement : public CVisual
         CPropertyInformation* m_PropertyInformation;
 
     private:
+        CProviders* m_Providers;
         BOOL m_Attached;
 
         SizeF m_LastMeasureSize;

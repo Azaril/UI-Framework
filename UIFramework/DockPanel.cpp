@@ -27,11 +27,11 @@ CDockPanel::~CDockPanel()
 {
 }
 
-HRESULT CDockPanel::Initialize()
+HRESULT CDockPanel::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CPanel::Initialize());
+    IFC(CPanel::Initialize(pProviders));
 
 Cleanup:
     return hr;

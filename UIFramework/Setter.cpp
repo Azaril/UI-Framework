@@ -10,7 +10,8 @@ CStaticProperty CSetter::PropertyProperty( L"Property", TypeIndex::String, Stati
 CStaticProperty CSetter::ValueProperty( L"Value", TypeIndex::Object, StaticPropertyFlags::Content );
 
 CSetter::CSetter() : m_Property(NULL),
-                     m_Value(NULL)
+                     m_Value(NULL),
+                     m_Providers(NULL)
 {
 }
 
@@ -18,12 +19,19 @@ CSetter::~CSetter()
 {
     ReleaseObject(m_Property);
     ReleaseObject(m_Value);
+    ReleaseObject(m_Providers);
 }
 
-HRESULT CSetter::Initialize()
+HRESULT CSetter::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
+    IFCPTR(pProviders);
+
+    m_Providers = pProviders;
+    AddRefObject(m_Providers);
+
+Cleanup:
     return hr;
 }
 
@@ -65,17 +73,16 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSetter::ResolveSetter(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedSetter** ppResolvedSetter)
+HRESULT CSetter::ResolveSetter(CUIElement* pObject, IStyleCallback* pCallback, CResolvedSetter** ppResolvedSetter)
 {
     HRESULT hr = S_OK;
     CClassResolver* pClassResolver = NULL;
     CProperty* pProperty = NULL;
 
     IFCPTR(pObject);
-    IFCPTR(pProviders);
     IFCPTR(ppResolvedSetter);
 
-    pClassResolver = pProviders->GetClassResolver();
+    pClassResolver = m_Providers->GetClassResolver();
     IFCPTR(pClassResolver);
 
     IFC(pClassResolver->ResolveProperty(GetPropertyName(), pObject->GetType(), &pProperty));

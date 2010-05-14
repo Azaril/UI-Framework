@@ -20,11 +20,11 @@ CPanel::~CPanel()
 {
 }
 
-HRESULT CPanel::Initialize()
+HRESULT CPanel::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CFrameworkElement::Initialize());
+    IFC(CFrameworkElement::Initialize(pProviders));
 
     IFC(m_Children.SetLocalValue(GetChildCollection(), GetProviders()));
 

@@ -32,7 +32,7 @@ CSolidColorBrush::~CSolidColorBrush()
 {
 }
 
-HRESULT CSolidColorBrush::Initialize()
+HRESULT CSolidColorBrush::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 

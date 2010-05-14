@@ -3,6 +3,7 @@
 #include "Brush.h"
 #include "GradientStop.h"
 #include "Collection.h"
+#include "Providers.h"
 
 class CGradientStopCollection : public CCollection< CGradientStop >
 {
@@ -36,7 +37,7 @@ class CGradientBrush : public CBrush
         CGradientBrush();
         virtual ~CGradientBrush();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 

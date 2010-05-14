@@ -7,11 +7,15 @@
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Template );
+DEFINE_GET_DEFAULT_NULL( Background );
+DEFINE_GET_DEFAULT_NULL( BorderBrush );
 
 //
 // Properties
 //
 CStaticProperty CControl::TemplateProperty( L"Template", TypeIndex::ControlTemplate, StaticPropertyFlags::None, &GET_DEFAULT( Template ), &INSTANCE_CHANGE_CALLBACK( CControl, OnTemplateChanged ) );
+CStaticProperty CControl::BackgroundProperty( L"Background", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Background ) );
+CStaticProperty CControl::BorderBrushProperty( L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( BorderBrush ) );
 
 //
 // Property Change Handlers
@@ -19,6 +23,8 @@ CStaticProperty CControl::TemplateProperty( L"Template", TypeIndex::ControlTempl
 DEFINE_INSTANCE_CHANGE_CALLBACK( CControl, OnTemplateChanged );
 
 CControl::CControl() : m_Template(this, &CControl::TemplateProperty),
+                       m_Background(this, &CControl::BackgroundProperty),
+                       m_BorderBrush(this, &CControl::BorderBrushProperty),
                        m_TemplateDirty(TRUE),
                        m_TemplateChild(NULL)
 {
@@ -29,14 +35,19 @@ CControl::~CControl()
     ReleaseObject(m_TemplateChild);
 }
 
-HRESULT CControl::Initialize()
+HRESULT CControl::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CFrameworkElement::Initialize());
+    IFC(CFrameworkElement::Initialize(pProviders));
 
 Cleanup:
     return hr;
+}
+
+CUIElement* CControl::GetTemplateParentForChildren()
+{
+    return this;
 }
 
 HRESULT CControl::OnAttach(CUIAttachContext& Context)
@@ -165,7 +176,9 @@ HRESULT CControl::CreatePropertyInformation(CPropertyInformation **ppInformation
 
     CStaticProperty* Properties[] = 
     {
-        &TemplateProperty
+        &TemplateProperty,
+        &BackgroundProperty,
+        &BorderBrushProperty
     };
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
@@ -195,9 +208,17 @@ HRESULT CControl::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayere
     {
         *ppLayeredValue = &m_Template;
     }
+    else if(pProperty == &CControl::BackgroundProperty)
+    {
+        *ppLayeredValue = &m_Background;
+    }
+    else if(pProperty == &CControl::BorderBrushProperty)
+    {
+        *ppLayeredValue = &m_BorderBrush;
+    }
     else
     {
-        hr = CUIElement::GetLayeredValue(pProperty, ppLayeredValue);
+        hr = CFrameworkElement::GetLayeredValue(pProperty, ppLayeredValue);
     }
 
 Cleanup:

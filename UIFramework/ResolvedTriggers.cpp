@@ -45,7 +45,7 @@ HRESULT CResolvedTriggers::AddTrigger(CTrigger* pTrigger)
 
     IFCPTR(pTrigger);
 
-    if(SUCCEEDED(pTrigger->ResolveTrigger(m_Owner, m_Providers, m_Callback, &pResolvedTrigger)))
+    if(SUCCEEDED(pTrigger->ResolveTrigger(m_Owner, m_Callback, &pResolvedTrigger)))
     {
         m_Triggers.push_back(pResolvedTrigger);
 

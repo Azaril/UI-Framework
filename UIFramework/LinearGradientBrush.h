@@ -6,7 +6,7 @@
 class CLinearGradientBrush : public CGradientBrush
 {
     public:
-        DECLARE_FACTORY( CLinearGradientBrush );
+        DECLARE_FACTORY1( CLinearGradientBrush, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::LinearGradientBrush, CGradientBrush );
 
@@ -26,7 +26,7 @@ class CLinearGradientBrush : public CGradientBrush
         CLinearGradientBrush();
         virtual ~CLinearGradientBrush();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 

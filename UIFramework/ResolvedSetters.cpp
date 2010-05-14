@@ -44,7 +44,7 @@ HRESULT CResolvedSetters::AddSetter(CSetter* pSetter)
 
     IFCPTR(pSetter);
 
-    if(SUCCEEDED(pSetter->ResolveSetter(m_Owner, m_Providers, m_Callback, &pResolvedSetter)))
+    if(SUCCEEDED(pSetter->ResolveSetter(m_Owner, m_Callback, &pResolvedSetter)))
     {
         m_Setters.push_back(pResolvedSetter);
 

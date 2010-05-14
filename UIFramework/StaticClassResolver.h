@@ -2,8 +2,9 @@
 
 #include "ClassResolver.h"
 #include "Factory.h"
+#include "Providers.h"
 
-typedef HRESULT (*CreateTypeFunc)( CPropertyObject** ppObject );
+typedef HRESULT (*CreateTypeFunc)( CProviders* pProviders, CPropertyObject** ppObject );
 typedef HRESULT (*GetPropertyInformationFunc)( CPropertyInformation** ppPropertyInformation );
 typedef HRESULT (*GetEventInformationFunc)( CEventInformation** ppEventInformation );
 
@@ -18,7 +19,7 @@ class CStaticResolvedClass : public CResolvedClass
 
         const WCHAR* GetName();
         TypeIndex::Value GetType();
-        virtual HRESULT CreateInstance( CPropertyObject** ppObject );
+        virtual HRESULT CreateInstance( CProviders* pProviders, CPropertyObject** ppObject );
         virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
         virtual HRESULT GetEventInformation( CEventInformation** ppEventInformation );
 

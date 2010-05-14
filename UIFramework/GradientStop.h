@@ -3,11 +3,12 @@
 #include "PropertyObject.h"
 #include "Factory.h"
 #include "StaticPropertyInformation.h"
+#include "Providers.h"
 
 class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
 {
     public:
-        DECLARE_FACTORY( CGradientStop );
+        DECLARE_FACTORY1( CGradientStop, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::GradientStop, CPropertyObject );
 
@@ -28,7 +29,7 @@ class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
         CGradientStop();
         virtual ~CGradientStop();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 

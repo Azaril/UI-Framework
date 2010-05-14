@@ -14,7 +14,7 @@ CControlTemplate::~CControlTemplate()
     ReleaseObject(m_TemplateCommandList);
 }
 
-HRESULT CControlTemplate::Initialize()
+HRESULT CControlTemplate::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 

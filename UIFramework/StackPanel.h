@@ -14,7 +14,7 @@ namespace Orientation
 class CStackPanel : public CPanel
 {
     public:
-        DECLARE_FACTORY( CStackPanel );
+        DECLARE_FACTORY1( CStackPanel, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::StackPanel, CPanel );
 
@@ -26,7 +26,7 @@ class CStackPanel : public CPanel
         CStackPanel();
         virtual ~CStackPanel();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF Size );

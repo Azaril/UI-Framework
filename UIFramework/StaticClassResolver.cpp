@@ -15,19 +15,20 @@
 #include "EventTrigger.h"
 #include "ControlTemplate.h"
 #include "Button.h"
+#include "TemplateBinding.h"
 
 template< typename FromType >
 class StaticClassFactory
 {
     public:
-        static HRESULT Create(CPropertyObject** ppObject)
+        static HRESULT Create(CProviders* pProviders, CPropertyObject** ppObject)
         {
             HRESULT hr = S_OK;
             FromType* pNewObject = NULL;
 
             IFCPTR(ppObject);
 
-            IFC(FromType::Create(&pNewObject));
+            IFC(FromType::Create(pProviders, &pNewObject));
 
             *ppObject = pNewObject;
             pNewObject = NULL;
@@ -61,7 +62,8 @@ CStaticResolvedClass Classes[] =
     CStaticResolvedClass(L"GradientStop", STATIC_CLASS_INFO(CGradientStop)),
     CStaticResolvedClass(L"EventTrigger", STATIC_CLASS_INFO(CEventTrigger)),
     CStaticResolvedClass(L"ControlTemplate", STATIC_CLASS_INFO(CControlTemplate)),
-    CStaticResolvedClass(L"Button", STATIC_CLASS_INFO(CButton))
+    CStaticResolvedClass(L"Button", STATIC_CLASS_INFO(CButton)),
+    CStaticResolvedClass(L"TemplateBinding", STATIC_CLASS_INFO(CTemplateBinding)),
 };
 
 CStaticClassResolver::CStaticClassResolver()
@@ -368,13 +370,13 @@ TypeIndex::Value CStaticResolvedClass::GetType()
     return m_ClassType;
 }
 
-HRESULT CStaticResolvedClass::CreateInstance(CPropertyObject** ppObject)
+HRESULT CStaticResolvedClass::CreateInstance(CProviders* pProviders, CPropertyObject** ppObject)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(m_CreateFunc);
 
-    IFC(m_CreateFunc(ppObject));
+    IFC(m_CreateFunc(pProviders, ppObject));
 
 Cleanup:
     return hr;

@@ -917,7 +917,7 @@ HRESULT ConvertStringToBrush(CConversionContext* pContext, CObjectWithType* pVal
 
     if(SUCCEEDED(ConvertStringToColorF(pContext, pValue, &pColorValue)))
     {
-        IFC(CSolidColorBrush::Create(&pSolidColorBrush));
+        IFC(CSolidColorBrush::Create(pContext->GetProviders(), &pSolidColorBrush));
 
         IFC(pSolidColorBrush->SetValue(&CSolidColorBrush::ColorProperty, pColorValue));
 

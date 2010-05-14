@@ -43,12 +43,12 @@ CFrameworkElement::~CFrameworkElement()
     ReleaseObject(m_ResolvedStyle);
 }
 
-HRESULT CFrameworkElement::Initialize()
+HRESULT CFrameworkElement::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
     CResourceDictionary* pResources = NULL;
 
-    IFC(CUIElement::Initialize());
+    IFC(CUIElement::Initialize(pProviders));
 
     IFC(CResourceDictionary::Create(&pResources));
 
@@ -84,18 +84,21 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
         IFC(pName->Clone(&m_RegisteredName));
     }
 
-    IFC(EnsureStyle());
-
     {
-        CUIAttachContext ChildContext(this, GetProviders());
+        CUIAttachContext ChildContext(this, GetTemplateParentForChildren());
 
         for(UINT i = 0; i < m_Children->GetCount(); i++)
         {
             CUIElement* pElement = m_Children->GetAtIndex(i);
 
-            IFC(pElement->OnAttach(ChildContext));
+            if(!pElement->IsAttached())
+            {
+                IFC(pElement->OnAttach(ChildContext));
+            }
         }
     }
+
+    IFC(EnsureStyle());
 
 Cleanup:
     ReleaseObject(pName);
@@ -205,6 +208,11 @@ Cleanup:
     return hr;
 }
 
+CUIElement* CFrameworkElement::GetTemplateParentForChildren()
+{
+    return GetTemplateParent();
+}
+
 HRESULT CFrameworkElement::AddLogicalChild(CUIElement* pElement)
 {
     HRESULT hr = S_OK;
@@ -244,7 +252,7 @@ VOID CFrameworkElement::OnChildAdded(CUIElement* pElement)
 
     if(IsAttached())
     {
-        CUIAttachContext ChildContext(this, GetProviders());
+        CUIAttachContext ChildContext(this, GetTemplateParentForChildren());
 
         IFC(pElement->OnAttach(ChildContext));
     }
@@ -395,7 +403,7 @@ HRESULT CFrameworkElement::ApplyStyle(CStyle* pStyle)
 
     IFCEXPECT(m_ResolvedStyle == NULL);
 
-    IFC(pStyle->ResolveStyle(this, GetProviders(), &m_StyleCallback, &m_ResolvedStyle));
+    IFC(pStyle->ResolveStyle(this, &m_StyleCallback, &m_ResolvedStyle));
 
     //TODO: Call apply on the style?
 

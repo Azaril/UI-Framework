@@ -29,7 +29,7 @@ HRESULT CCreateObjectCommand::Execute(CParserCommandContext& Context)
     HRESULT hr = S_OK;
     CPropertyObject* pObject = NULL;
 
-    IFC(m_ResolvedClass->CreateInstance(&pObject));
+    IFC(m_ResolvedClass->CreateInstance(Context.GetProviders(), &pObject));
 
     IFC(Context.PushObject(pObject));
 

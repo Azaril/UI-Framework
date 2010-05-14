@@ -6,7 +6,7 @@
 class CBorder : public CDecorator
 {
     public:
-        DECLARE_FACTORY( CBorder );
+        DECLARE_FACTORY1( CBorder, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Border, CDecorator );
 
@@ -41,7 +41,7 @@ class CBorder : public CDecorator
         CBorder();
         virtual ~CBorder();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
         HRESULT Finalize();
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );

@@ -31,6 +31,7 @@ namespace TypeIndex
                 Setter,
                 Binding,
                     DynamicResource,
+                    TemplateBinding,
                 Trigger,
                     EventTrigger,
             Collection,

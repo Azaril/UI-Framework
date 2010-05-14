@@ -41,6 +41,9 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVisibilityChanged );
 //
 // Events
 //
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::AttachedEvent(L"Attached");
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::DetachedEvent(L"Detached");
+
 CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseButtonEvent(L"MouseButton");
 
 CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseDownEvent(L"MouseDown");
@@ -102,11 +105,18 @@ CUIElement::~CUIElement()
     }
 
     m_EventHandlers.clear();
+
+    ReleaseObject(m_Providers);
 }
 
-HRESULT CUIElement::Initialize()
+HRESULT CUIElement::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
+
+    IFCPTR(pProviders);
+
+    m_Providers = pProviders;
+    AddRefObject(m_Providers);
 
     IFC(CVisual::Initialize());
 
@@ -184,6 +194,7 @@ Cleanup:
 HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
+    CRoutedEventArgs* pAttachedEventArgs = NULL;
 
     IFCEXPECT(!IsAttached());
 
@@ -192,14 +203,21 @@ HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
 
     IFC(InvalidateMeasure());
     IFC(InvalidateArrange());
+
+    IFC(CRoutedEventArgs::Create(&CUIElement::AttachedEvent, &pAttachedEventArgs));
+
+    IFC(RaiseEvent(pAttachedEventArgs));
     
 Cleanup:
+    ReleaseObject(pAttachedEventArgs);
+
     return hr;
 }
 
 HRESULT CUIElement::OnDetach(CUIDetachContext& Context)
 {
     HRESULT hr = S_OK;
+    CRoutedEventArgs* pDetachedEventArgs = NULL;
 
     IFCEXPECT(IsAttached());
 
@@ -207,7 +225,13 @@ HRESULT CUIElement::OnDetach(CUIDetachContext& Context)
 
     m_Context.Reset();
     
+    IFC(CRoutedEventArgs::Create(&CUIElement::DetachedEvent, &pDetachedEventArgs));
+
+    IFC(RaiseEvent(pDetachedEventArgs));
+    
 Cleanup:
+    ReleaseObject(pDetachedEventArgs);
+
     return hr;
 }
 
@@ -545,14 +569,19 @@ CUIElement* CUIElement::GetParent()
     return m_Context.GetParent();
 }
 
+CUIElement* CUIElement::GetTemplateParent()
+{
+    return m_Context.GetTemplateParent();
+}
+
 CProviders* CUIElement::GetProviders()
 {
-    return m_Context.GetProviders();
+    return m_Providers;
 }
 
 CTypeConverter* CUIElement::GetTypeConverter()
 {
-    return (m_Context.GetProviders() != NULL) ? m_Context.GetProviders()->GetTypeConverter() : NULL;
+    return GetProviders()->GetTypeConverter();
 }
 
 HRESULT CUIElement::NotifyParent(CUINotification* pNotification)

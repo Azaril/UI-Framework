@@ -9,7 +9,7 @@
 class CControlTemplate : public CRefCountedObjectBase< CPropertyObject >
 {
     public:
-        DECLARE_FACTORY( CControlTemplate );
+        DECLARE_FACTORY1( CControlTemplate, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::ControlTemplate, CPropertyObject );
 
@@ -28,7 +28,7 @@ class CControlTemplate : public CRefCountedObjectBase< CPropertyObject >
         CControlTemplate();
         virtual ~CControlTemplate();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 

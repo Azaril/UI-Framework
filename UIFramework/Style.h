@@ -16,7 +16,7 @@ class CResolvedStyle;
 class CStyle : public CRefCountedObjectBase< CPropertyObject >
 {
     public:
-        DECLARE_FACTORY( CStyle );
+        DECLARE_FACTORY1( CStyle, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Style, CPropertyObject );
 
@@ -24,7 +24,7 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
 
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
-        HRESULT ResolveStyle( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedStyle** ppResolvedStyle );
+        HRESULT ResolveStyle( CUIElement* pObject, IStyleCallback* pCallback, CResolvedStyle** ppResolvedStyle );
 
         //
         // Properties
@@ -36,13 +36,14 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
         CStyle();
         virtual ~CStyle();
 
-        HRESULT Initialize();
+        HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
-        HRESULT ResolveSetters( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedSetters** ppResolvedSetters );
-        HRESULT ResolveTriggers( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback, CResolvedTriggers** ppResolvedTriggers );
+        HRESULT ResolveSetters( CUIElement* pObject, IStyleCallback* pCallback, CResolvedSetters** ppResolvedSetters );
+        HRESULT ResolveTriggers( CUIElement* pObject, IStyleCallback* pCallback, CResolvedTriggers** ppResolvedTriggers );
 
+        CProviders* m_Providers;
         CSetterCollection* m_Setters;
         CTriggerCollection* m_Triggers;
 };
