@@ -192,54 +192,87 @@ HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
     SizeU ImageSize = { 0 };
-    SizeF BaseSize = { 0 };
-    FLOAT Width = 0;
-    FLOAT Height = 0;
+    CFloatValue* pWidth = NULL;
+    CFloatValue* pHeight = NULL;
 
-    IFC(GetEffectiveWidth(&Width));
-    IFC(GetEffectiveHeight(&Height));
-
-    IFC(CFrameworkElement::MeasureInternal(AvailableSize, BaseSize));
+    IFC(m_Width.GetTypedEffectiveValue(GetProviders(), &pWidth));
+    IFC(m_Height.GetTypedEffectiveValue(GetProviders(), &pHeight));
 
     if(m_ImageBrush != NULL)
     {
         IFC(m_ImageBrush->GetSize(&ImageSize));
     }
 
-    if(Width == 0 && Height == 0)
+    if(pWidth == NULL && pHeight == NULL)
     {
-        DesiredSize.width = max((FLOAT)ImageSize.width, BaseSize.width);
-        DesiredSize.height = max((FLOAT)ImageSize.height, BaseSize.height);
+        DesiredSize.width = ImageSize.width;
+        DesiredSize.height = ImageSize.height;
     }
-    else if(Width == 0 && Height != 0 && ImageSize.height != 0)
+    else if(pWidth == NULL && pHeight != NULL && ImageSize.height != 0)
     {
-        FLOAT Ratio = Height / ImageSize.height;
+        FLOAT Ratio = pHeight->GetValue() / ImageSize.height;
 
         DesiredSize.width = ImageSize.width * Ratio;
-        DesiredSize.height = Height;
+        DesiredSize.height = pHeight->GetValue();
     }
-    else if(Width != 0 && Height == 0 && ImageSize.width != 0)
+    else if(pWidth != NULL && pHeight == NULL && ImageSize.width != 0)
     {
-        FLOAT Ratio = Width / ImageSize.width;
+        FLOAT Ratio = pWidth->GetValue() / ImageSize.width;
 
-        DesiredSize.width = Width;
+        DesiredSize.width = pWidth->GetValue();
         DesiredSize.height = ImageSize.height * Ratio;
     }
     else
     {
-        DesiredSize.width = BaseSize.width;
-        DesiredSize.height = BaseSize.height;
+        DesiredSize.width = 0;
+        DesiredSize.height = 0;
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CImage::ArrangeInternal(SizeF Size)
+HRESULT CImage::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
+    SizeU ImageSize = { 0 };
+    CFloatValue* pWidth = NULL;
+    CFloatValue* pHeight = NULL;
 
-    IFC(CFrameworkElement::ArrangeInternal(Size));
+    IFC(m_Width.GetTypedEffectiveValue(GetProviders(), &pWidth));
+    IFC(m_Height.GetTypedEffectiveValue(GetProviders(), &pHeight));
+
+    if(m_ImageBrush != NULL)
+    {
+        IFC(m_ImageBrush->GetSize(&ImageSize));
+    }
+
+    //TODO: Implement image scaling options.
+
+    if(pWidth == NULL && pHeight == NULL)
+    {
+        UsedSize.width = ImageSize.width;
+        UsedSize.height = ImageSize.height;
+    }
+    else if(pWidth == NULL && pHeight != NULL && ImageSize.height != 0)
+    {
+        FLOAT Ratio = pHeight->GetValue() / ImageSize.height;
+
+        UsedSize.width = ImageSize.width * Ratio;
+        UsedSize.height = pHeight->GetValue();
+    }
+    else if(pWidth != NULL && pHeight == NULL && ImageSize.width != 0)
+    {
+        FLOAT Ratio = pWidth->GetValue() / ImageSize.width;
+
+        UsedSize.width = pWidth->GetValue();
+        UsedSize.height = ImageSize.height * Ratio;
+    }
+    else
+    {
+        UsedSize.width = 0;
+        UsedSize.height = 0;
+    }
 
     m_GeometryDirty = TRUE;
 

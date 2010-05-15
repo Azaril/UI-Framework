@@ -39,3 +39,25 @@ namespace RectangleEdge
         Bottom
     };
 }
+
+namespace HorizontalAlignment
+{
+    enum Value
+    {
+        Left,
+        Center,
+        Right,
+        Stretch
+    };
+}
+
+namespace VerticalAlignment
+{
+    enum Value
+    {
+        Top,
+        Center,
+        Bottom,
+        Stretch
+    };
+}

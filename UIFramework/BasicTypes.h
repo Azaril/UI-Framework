@@ -98,6 +98,22 @@ struct ObjectTypeTraits< CPoint2FValue >
     static const TypeIndex::Value Type = TypeIndex::Point2F;
 };
 
+typedef CBasicValue< HorizontalAlignment::Value, TypeIndex::HorizontalAlignment > CHorizontalAlignmentValue;
+
+template< >
+struct ObjectTypeTraits< CHorizontalAlignmentValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::HorizontalAlignment;
+};
+
+typedef CBasicValue< VerticalAlignment::Value, TypeIndex::VerticalAlignment > CVerticalAlignmentValue;
+
+template< >
+struct ObjectTypeTraits< CVerticalAlignmentValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::VerticalAlignment;
+};
+
 class CStringValue : public CRefCountedObjectBase< CObjectWithType >
 {
     public:

@@ -49,6 +49,8 @@ namespace TypeIndex
             Visibility,
             Bool,
             RectangleEdge,
+            HorizontalAlignment,
+            VerticalAlignment,
             BitmapSource,
             GradientStop,
             Geometry,

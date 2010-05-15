@@ -57,15 +57,12 @@ Cleanup:
 HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF BaseDesiredSize = { 0 };
     CTextProvider* pTextProvider = NULL;
     CTextLayoutMetrics* pTextLayoutMetrics = NULL;
     CTextFormat* pTextFormat = NULL;
     RectF TextBounds = { 0 };
     SizeF SizeWithText = { 0 };
     CStringValue* pText = NULL;
-
-    IFC(CFrameworkElement::MeasureInternal(AvailableSize, BaseDesiredSize));
 
     IFC(GetEffectiveText(&pText));
 
@@ -96,12 +93,13 @@ HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
         IFC(pTextLayoutMetrics->GetBounds(&TextBounds));
 
-        DesiredSize.width = max(TextBounds.right - TextBounds.left, BaseDesiredSize.width);
-        DesiredSize.height = max(TextBounds.bottom - TextBounds.top, BaseDesiredSize.height);
+        DesiredSize.width = TextBounds.right - TextBounds.left;
+        DesiredSize.height = TextBounds.bottom - TextBounds.top;
     }
     else
     {
-        DesiredSize = BaseDesiredSize;
+        DesiredSize.width = 0;
+        DesiredSize.height = 0;
     }
 
 Cleanup:
@@ -113,18 +111,27 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextBlock::ArrangeInternal(SizeF Size)
+HRESULT CTextBlock::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
+    CTextLayoutMetrics* pMetrics = NULL;
+    RectF TextBounds = { 0 };
 
     if(m_TextLayout != NULL)
     {
-        IFC(m_TextLayout->SetMaxSize(Size));
+        IFC(m_TextLayout->SetMaxSize(AvailableSize));
+
+        IFC(m_TextLayout->GetMetrics(&pMetrics));
+
+        IFC(pMetrics->GetBounds(&TextBounds));
     }
 
-    IFC(CFrameworkElement::ArrangeInternal(Size));
+    UsedSize.width = TextBounds.right - TextBounds.left;
+    UsedSize.height = TextBounds.bottom - TextBounds.top;
 
 Cleanup:
+    ReleaseObject(pMetrics);
+
     return hr;
 }
 
@@ -147,6 +154,11 @@ HRESULT CTextBlock::PreRenderInternal(CPreRenderContext& Context)
             {
                 m_ForegroundGraphicsBrush = NULL;
             }
+        }
+
+        if(m_ForegroundGraphicsBrush == NULL)
+        {
+            IFC(pRenderTarget->GetDefaultBrush(DefaultBrush::TextForeground, &m_ForegroundGraphicsBrush));
         }
     }
 

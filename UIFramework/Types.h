@@ -31,6 +31,11 @@ inline bool operator==( const RectF& Val1, const RectF& Val2 )
     return (Val1.left == Val2.left && Val1.top == Val2.top && Val1.right == Val2.right && Val1.bottom == Val2.bottom);
 }
 
+inline bool operator!=( const RectF& Val1, const RectF& Val2 )
+{
+    return (Val1.left != Val2.left || Val1.top != Val2.top || Val1.right != Val2.right || Val1.bottom == Val2.bottom);
+}
+
 inline bool operator==( const ColorF& Val1, const ColorF& Val2 )
 {
     return (Val1.r == Val2.r && Val1.g == Val2.g && Val1.b == Val2.b && Val1.a == Val2.a);
@@ -39,6 +44,20 @@ inline bool operator==( const ColorF& Val1, const ColorF& Val2 )
 inline bool operator==( const Point2F& Val1, const Point2F& Val2 )
 {
     return (Val1.x == Val2.x && Val1.y == Val2.y);
+}
+
+inline RectF MakeRect(SizeF Coords, SizeF Size)
+{
+    RectF Val = { Coords.width, Coords.height, Coords.width + Size.width, Coords.height + Size.height };
+
+    return Val;
+}
+
+inline RectF MakeRect(SizeF Size)
+{
+    RectF Val = { 0, 0, Size.width, Size.height };
+
+    return Val;
 }
 
 #else

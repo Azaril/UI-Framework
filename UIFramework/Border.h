@@ -45,7 +45,7 @@ class CBorder : public CDecorator
         HRESULT Finalize();
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF Size );
+        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
 

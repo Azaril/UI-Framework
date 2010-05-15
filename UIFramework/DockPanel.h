@@ -26,7 +26,7 @@ class CDockPanel : public CPanel
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF Size );
+        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
 
         //
         // Property Change Handlers

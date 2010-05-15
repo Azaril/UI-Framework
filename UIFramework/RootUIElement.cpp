@@ -143,16 +143,16 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::ArrangeInternal(SizeF Size)
+HRESULT CRootUIElement::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
 
-    IFC(CFrameworkElement::ArrangeInternal(Size));
-
     if(m_Child)
     {
-        IFC(m_Child->Arrange(Size));
+        IFC(m_Child->Arrange(MakeRect(AvailableSize)));
     }
+
+    UsedSize = AvailableSize;
 
 Cleanup:
     return hr;

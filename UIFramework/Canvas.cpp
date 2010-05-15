@@ -32,18 +32,8 @@ Cleanup:
 HRESULT CCanvas::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF BaseDesiredSize = { 0 };
     SizeF MaxSize = { FLT_MAX, FLT_MAX };
-    SizeF MaxSizeNeeded = { 0, 0 };
-    CFloatValue* pLeft = NULL;
-    CFloatValue* pTop = NULL;
-    CFloatValue* pRight = NULL;
-    CFloatValue* pBottom = NULL;
     CUIElementCollection* pChildCollection = NULL;
-
-    IFC(CPanel::MeasureInternal(AvailableSize, BaseDesiredSize));
-
-    MaxSizeNeeded = BaseDesiredSize;
 
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
@@ -53,62 +43,16 @@ HRESULT CCanvas::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         IFC(pElement->Measure(MaxSize));
-
-        IFC(pElement->GetTypedValue(&LeftProperty, &pLeft));
-        IFC(pElement->GetTypedValue(&TopProperty, &pTop));
-        IFC(pElement->GetTypedValue(&RightProperty, &pRight));
-        IFC(pElement->GetTypedValue(&BottomProperty, &pBottom));
-
-        SizeF ElementDesiredSize = pElement->GetDesiredSize();
-        SizeF ElementExtentNeeded = { 0 };
-
-        if(pLeft)
-        {
-            ElementExtentNeeded.width = pLeft->GetValue() + ElementDesiredSize.width;
-        }
-        else if(pRight)
-        {
-            ElementExtentNeeded.width = pRight->GetValue();
-        }
-        else
-        {
-            ElementExtentNeeded.width = ElementDesiredSize.width;
-        }
-
-        if(pTop)
-        {
-            ElementExtentNeeded.height = pTop->GetValue() + ElementDesiredSize.height;
-        }
-        else if(pBottom)
-        {
-            ElementExtentNeeded.height = pBottom->GetValue();
-        }
-        else
-        {
-            ElementExtentNeeded.height = ElementDesiredSize.height;
-        }
-
-        MaxSizeNeeded.width = max(MaxSizeNeeded.width, ElementExtentNeeded.width);
-        MaxSizeNeeded.height = max(MaxSizeNeeded.height, ElementExtentNeeded.height);
-
-        ReleaseObject(pLeft);
-        ReleaseObject(pTop);
-        ReleaseObject(pRight);
-        ReleaseObject(pBottom);
     }
 
-    DesiredSize = MaxSizeNeeded;
+    DesiredSize.width = 0;
+    DesiredSize.height = 0;
 
 Cleanup:
-    ReleaseObject(pLeft);
-    ReleaseObject(pTop);
-    ReleaseObject(pRight);
-    ReleaseObject(pBottom);
-
     return hr;
 }
 
-HRESULT CCanvas::ArrangeInternal(SizeF Size)
+HRESULT CCanvas::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
     CFloatValue* pLeft = NULL;
@@ -125,6 +69,7 @@ HRESULT CCanvas::ArrangeInternal(SizeF Size)
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
+        SizeF ElementFinalSize = { 0 };
         SizeF ElementPosition = { 0 };
 
         IFC(pElement->GetTypedValue(&LeftProperty, &pLeft));
@@ -150,11 +95,11 @@ HRESULT CCanvas::ArrangeInternal(SizeF Size)
             ElementPosition.height = pBottom->GetValue() - ElementDesiredSize.height;
         }
 
-        Matrix3X2 VisualTransform = D2D1::Matrix3x2F::Translation(ElementPosition);
-        
-        IFC(pElement->SetVisualTransform(VisualTransform));
+        RectF ElementBounds = { ElementPosition.width, ElementPosition.height, ElementPosition.width + ElementDesiredSize.width, ElementPosition.height + ElementDesiredSize.height };
 
-        IFC(pElement->Arrange(ElementDesiredSize));
+        IFC(pElement->Arrange(ElementBounds));
+
+        ElementFinalSize = pElement->GetFinalSize();
 
         ReleaseObject(pLeft);
         ReleaseObject(pTop);
@@ -162,7 +107,7 @@ HRESULT CCanvas::ArrangeInternal(SizeF Size)
         ReleaseObject(pBottom);
     }
 
-    IFC(CPanel::ArrangeInternal(Size));
+    UsedSize = AvailableSize;
 
 Cleanup:
     ReleaseObject(pLeft);

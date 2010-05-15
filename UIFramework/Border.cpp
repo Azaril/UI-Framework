@@ -410,13 +410,10 @@ HRESULT CBorder::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
     SizeF InternalSize = { 0 };
-    SizeF BaseSize = { 0 };
     SizeF InternalSizeDesired = { 0 };
     RectF Padding = { 0 };
     FLOAT BorderThickness = 0;
     CUIElement* pChild = NULL;
-
-    IFC(CDecorator::MeasureInternal(AvailableSize, BaseSize));
 
     IFC(GetEffectiveBorderThickness(&BorderThickness));
     IFC(GetEffectivePadding(&Padding));
@@ -433,8 +430,8 @@ HRESULT CBorder::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         InternalSizeDesired = pChild->GetDesiredSize();
     }
 
-    DesiredSize.width = max(InternalSizeDesired.width + (BorderThickness * 2) + (Padding.left + Padding.right), BaseSize.width);
-    DesiredSize.height = max(InternalSizeDesired.height + (BorderThickness * 2) + (Padding.top + Padding.bottom), BaseSize.height);
+    DesiredSize.width = InternalSizeDesired.width + (BorderThickness * 2) + (Padding.left + Padding.right);
+    DesiredSize.height = InternalSizeDesired.height + (BorderThickness * 2) + (Padding.top + Padding.bottom);
 
 Cleanup:
     ReleaseObject(pChild);
@@ -442,37 +439,35 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBorder::ArrangeInternal(SizeF Size)
+HRESULT CBorder::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
     CUIElement* pChild = NULL;
+    RectF Padding = { 0 };
+    FLOAT BorderThickness = 0;
+    SizeF ChildSize = { 0 };
+
+    IFC(GetEffectiveBorderThickness(&BorderThickness));
+    IFC(GetEffectivePadding(&Padding));
 
     IFC(GetEffectiveChild(&pChild));
 
     if(pChild != NULL)
     {
-        RectF Padding = { 0 };
-        FLOAT BorderThickness = 0;
-
-        IFC(GetEffectiveBorderThickness(&BorderThickness));
-        IFC(GetEffectivePadding(&Padding));
-
-        SizeF InternalSize = { Size.width - (BorderThickness * 2) - (Padding.left + Padding.right), 
-                               Size.height - (BorderThickness * 2) - (Padding.top + Padding.bottom) };
-
-        Matrix3X2 Transform = D2D1::Matrix3x2F::Translation(Padding.left + BorderThickness, Padding.top + BorderThickness);
+        SizeF InternalSize = { AvailableSize.width - (BorderThickness * 2) - (Padding.left + Padding.right), 
+                               AvailableSize.height - (BorderThickness * 2) - (Padding.top + Padding.bottom) };
         
         InternalSize.width = max(InternalSize.width, 0);
         InternalSize.height = max(InternalSize.height, 0);
 
-        IFC(pChild->Arrange(InternalSize));
+        SizeF Position = { (AvailableSize.width - InternalSize.width) / 2.0, (AvailableSize.height - InternalSize.height) / 2.0 };
 
-        IFC(pChild->SetVisualTransform(Transform));
+        IFC(pChild->Arrange(MakeRect(Position, InternalSize)));
     }
 
-    IFC(CDecorator::ArrangeInternal(Size));
-
     IFC(InvalidateGeometry());
+
+    UsedSize = AvailableSize;
       
 Cleanup:
     ReleaseObject(pChild);

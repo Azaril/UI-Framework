@@ -29,8 +29,9 @@ class CStackPanel : public CPanel
         HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF Size );
+        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
 
+        //TODO: Change to layered value.
         Orientation::Value m_Orientation;
 };
 

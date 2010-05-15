@@ -94,7 +94,6 @@ class CPropertyObject : public CObjectWithType
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-        /*virtual HRESULT InvalidateValue( CProperty* pProperty );*/
 
         template< typename T >
         HRESULT GetTypedValue( CProperty* pProperty, T** ppValue )

@@ -233,8 +233,6 @@ HRESULT CControl::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     SizeF ChildSizeDesired = { 0 };
     CUIElement* pChild = NULL;
 
-    IFC(CFrameworkElement::MeasureInternal(AvailableSize, BaseSize));
-
     IFC(GetTemplateChild(&pChild));
 
     if(pChild != NULL)
@@ -253,7 +251,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CControl::ArrangeInternal(SizeF Size)
+HRESULT CControl::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
     CUIElement* pChild = NULL;
@@ -262,10 +260,15 @@ HRESULT CControl::ArrangeInternal(SizeF Size)
 
     if(pChild != NULL)
     {
-        IFC(pChild->Arrange(Size));
-    }
+        IFC(pChild->Arrange(MakeRect(AvailableSize)));
 
-    IFC(CFrameworkElement::ArrangeInternal(Size));
+        UsedSize = pChild->GetFinalSize();
+    }
+    else
+    {
+        UsedSize.width = 0;
+        UsedSize.height = 0;
+    }
       
 Cleanup:
     ReleaseObject(pChild);

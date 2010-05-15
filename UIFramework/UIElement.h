@@ -166,7 +166,8 @@ class CUIElement : public CVisual
         virtual HRESULT Measure( SizeF Size );
         virtual SizeF GetDesiredSize();
 
-        virtual HRESULT Arrange( SizeF Size );
+        virtual HRESULT Arrange( RectF Bounds );
+        SizeF GetFinalSize();
 
         virtual HRESULT InvalidateMeasure();
         virtual HRESULT InvalidateArrange();
@@ -195,6 +196,8 @@ class CUIElement : public CVisual
         static CStaticProperty MaximumWidthProperty;
         static CStaticProperty MaximumHeightProperty;
         static CStaticProperty VisibilityProperty;
+        static CStaticProperty HorizontalAlignmentProperty;
+        static CStaticProperty VerticalAlignmentProperty;
 
         //
         // Events
@@ -230,7 +233,7 @@ class CUIElement : public CVisual
         virtual HRESULT RenderInternal( CRenderContext& Context );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF AvailableSize );
+        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
 
         virtual HRESULT NotifyParent( CUINotification* pNotification );
 
@@ -251,8 +254,8 @@ class CUIElement : public CVisual
         HRESULT GetEffectiveMinimumHeight( FLOAT* pMinimumHeight );
         HRESULT GetEffectiveMaximumWidth( FLOAT* pMaximumWidth );
         HRESULT GetEffectiveMaximumHeight( FLOAT* pMaximumHeight );
-
-        SizeF GetFinalSize();
+        HRESULT GetEffectiveHorizontalAlignment( HorizontalAlignment::Value* pAlignment );
+        HRESULT GetEffectiveVerticalAlignment( VerticalAlignment::Value* pAlignment );
 
         virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
@@ -269,6 +272,9 @@ class CUIElement : public CVisual
 
         virtual void OnMouseMove( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
+        HRESULT GetMinMaxSize( SizeF& MinimumSize, SizeF& MaximumSize );
+        HRESULT ComputeAlignmentOffset( SizeF ClientSize, SizeF RenderSize, SizeF Offset );
+
         //
         // Property Change Handlers
         //
@@ -279,6 +285,8 @@ class CUIElement : public CVisual
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnMaximumWidthChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnMaximumHeightChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnVisibilityChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnHorizontalAlignmentChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnVerticalAlignmentChanged );
 
         HRESULT OnWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
@@ -287,6 +295,8 @@ class CUIElement : public CVisual
         HRESULT OnMaximumWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnMaximumHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnVisibilityChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnHorizontalAlignmentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnVerticalAlignmentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
    
         CTypedLayeredValue< CFloatValue > m_Width;
         CTypedLayeredValue< CFloatValue > m_Height;
@@ -295,6 +305,8 @@ class CUIElement : public CVisual
         CTypedLayeredValue< CFloatValue > m_MaximumWidth;
         CTypedLayeredValue< CFloatValue > m_MaximumHeight;
         CTypedLayeredValue< CVisibilityValue > m_Visibility;
+        CTypedLayeredValue< CVerticalAlignmentValue > m_VerticalAlignment;
+        CTypedLayeredValue< CHorizontalAlignmentValue > m_HorizontalAlignment;
 
         BOOL m_MeasureDirty;
         BOOL m_ArrangeDirty;
@@ -306,8 +318,9 @@ class CUIElement : public CVisual
         BOOL m_Attached;
 
         SizeF m_LastMeasureSize;
-        SizeF m_LastArrangeSize;
+        RectF m_LastArrangeBounds;
         SizeF m_DesiredSize;
+        SizeF m_UnclippedDesiredSize;
         SizeF m_FinalSize;
 
         CUIAttachContext m_Context;

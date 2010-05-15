@@ -996,6 +996,14 @@
 						RelativePath=".\DynamicResource.h"
 						>
 					</File>
+					<File
+						RelativePath=".\TemplateBinding.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\TemplateBinding.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Templating"

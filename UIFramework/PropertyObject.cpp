@@ -101,16 +101,6 @@ Cleanup:
     return hr;
 }
 
-//HRESULT CPropertyObject::InvalidateValue(CProperty* pProperty)
-//{
-//    HRESULT hr = S_OK;
-//
-//    IFCPTR(pProperty);
-//
-//Cleanup:
-//    return hr;
-//}
-
 
 
 CAttachedPropertyHolder::CAttachedPropertyHolder(const CAttachedPropertyHolder& Other) : m_Property(Other.m_Property),

@@ -32,15 +32,22 @@ HRESULT CStackPanel::SetOrientation(Orientation::Value Direction)
 HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF BaseDesiredSize = { 0 };
     SizeF ChildrenSize = { 0 };
     SizeF MaxSize = { FLT_MAX, FLT_MAX };
     CUIElementCollection* pChildCollection = NULL;
 
-    IFC(CPanel::MeasureInternal(AvailableSize, BaseDesiredSize));
-
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
+
+    //TODO: Change to GetEffectiveOrientation
+    if(m_Orientation == Orientation::Horizontal)
+    {
+        MaxSize.height = AvailableSize.height;
+    }
+    else
+    {
+        MaxSize.width = AvailableSize.width;
+    }
 
     for(UINT i = 0; i < pChildCollection->GetCount(); i++)
     {
@@ -62,14 +69,14 @@ HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         }
     }
 
-    DesiredSize.width = max(ChildrenSize.width, BaseDesiredSize.width);
-    DesiredSize.height = max(ChildrenSize.height, BaseDesiredSize.height);
+    DesiredSize.width = ChildrenSize.width;
+    DesiredSize.height = ChildrenSize.height;
 
 Cleanup:
     return hr;
 }
 
-HRESULT CStackPanel::ArrangeInternal(SizeF Size)
+HRESULT CStackPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
     Point2F LayoutPoint = { 0 };
@@ -83,12 +90,9 @@ HRESULT CStackPanel::ArrangeInternal(SizeF Size)
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
+        RectF ElementBounds = { LayoutPoint.x, LayoutPoint.y, LayoutPoint.x + ElementDesiredSize.width, LayoutPoint.y + ElementDesiredSize.height };
 
-        IFC(pElement->Arrange(ElementDesiredSize));
-
-        Matrix3X2 VisualTransform = D2D1::Matrix3x2F::Translation(LayoutPoint.x, LayoutPoint.y);
-        
-        IFC(pElement->SetVisualTransform(VisualTransform));        
+        IFC(pElement->Arrange(ElementBounds));
 
         if(m_Orientation == Orientation::Vertical)
         {
@@ -100,7 +104,7 @@ HRESULT CStackPanel::ArrangeInternal(SizeF Size)
         }
     }
 
-    IFC(CPanel::ArrangeInternal(Size));
+    UsedSize = AvailableSize;
 
 Cleanup:
     return hr;

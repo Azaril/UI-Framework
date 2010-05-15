@@ -68,29 +68,71 @@ Cleanup:
 HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF BaseDesiredSize = { 0 };
+    CRectangleEdgeValue* pDock = NULL;
+    FLOAT ParentWidth = 0;
+    FLOAT ParentHeight = 0;
+    FLOAT AccumulatedWidth = 0;
+    FLOAT AccumulatedHeight = 0;
     CUIElementCollection* pChildCollection = NULL;
-
-    IFC(CPanel::MeasureInternal(AvailableSize, BaseDesiredSize));
+    UINT32 ChildCount = 0;
+    BOOL LastChildFill = FALSE;
 
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
 
-    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
+    IFC(GetEffectiveLastChildFill(&LastChildFill));
+
+    ChildCount = pChildCollection->GetCount();
+
+    for(UINT32 i = 0; i < ChildCount; i++)
     {
+        BOOL LastChild = (i == ChildCount - 1);
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
-        IFC(pElement->Measure(AvailableSize));
+        SizeF ElementAvailableSize = { max(0.0, AvailableSize.width - AccumulatedWidth), max(0.0, AvailableSize.height - AccumulatedHeight) };
+
+        IFC(pElement->Measure(ElementAvailableSize));
+
+        SizeF ElementDesiredSize = pElement->GetDesiredSize();
+
+        IFC(pElement->GetTypedValue(&DockProperty, &pDock));
+
+        RectangleEdge::Value DockEdge = (pDock != NULL) ? pDock->GetValue() : RectangleEdge::Left;
+
+        switch(DockEdge)
+        {
+            case RectangleEdge::Left:
+            case RectangleEdge::Right:
+                {
+                    ParentHeight = max(ParentHeight, AccumulatedHeight + ElementDesiredSize.height);
+                    AccumulatedWidth += ElementDesiredSize.width;
+
+                    break;
+                }
+
+            case RectangleEdge::Top:
+            case RectangleEdge::Bottom:
+                {
+                    ParentWidth = max(ParentWidth, AccumulatedWidth + ElementDesiredSize.width);
+                    AccumulatedHeight += ElementDesiredSize.height;
+
+                    break;
+                }
+        }
+
+        ReleaseObject(pDock);
     }
 
-    //TODO: Is it correct for a dock panel to always consume the available size?
-    DesiredSize = AvailableSize;
+    DesiredSize.width = max(ParentWidth, AccumulatedWidth);
+    DesiredSize.height = max(ParentHeight, AccumulatedHeight);
 
 Cleanup:
+    ReleaseObject(pDock);
+
     return hr;
 }
 
-HRESULT CDockPanel::ArrangeInternal(SizeF Size)
+HRESULT CDockPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
     CRectangleEdgeValue* pDock = NULL;
@@ -116,72 +158,76 @@ HRESULT CDockPanel::ArrangeInternal(SizeF Size)
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
         SizeF ElementPosition = { 0 };
-        SizeF ElementFinalSize = { 0 };
+        SizeF ElementAvailableSize = { 0 };
 
         IFC(pElement->GetTypedValue(&DockProperty, &pDock));
 
         if(LastChildFill && LastChild)
         {
-            ElementFinalSize.height = max(Size.height - (TopSideOffset + BottomSideOffset), 0);
-            ElementFinalSize.width = max(Size.width - (LeftSideOffset + RightSideOffset), 0);
+            ElementAvailableSize.height = max(AvailableSize.height - (TopSideOffset + BottomSideOffset), 0);
+            ElementAvailableSize.width = max(AvailableSize.width - (LeftSideOffset + RightSideOffset), 0);
 
             ElementPosition.width = LeftSideOffset;
             ElementPosition.height = TopSideOffset;
+
+            IFC(pElement->Arrange(MakeRect(ElementPosition, ElementAvailableSize)));
         }
         else
         {
             if(pDock == NULL || pDock->GetValue() == RectangleEdge::Left)
             {
-                ElementFinalSize.height = max(Size.height - (TopSideOffset + BottomSideOffset), 0);
-                ElementFinalSize.width = ElementDesiredSize.width;
+                ElementAvailableSize.height = max(AvailableSize.height - (TopSideOffset + BottomSideOffset), 0);
+                ElementAvailableSize.width = ElementDesiredSize.width;
 
                 ElementPosition.width = LeftSideOffset;
                 ElementPosition.height = TopSideOffset;
 
-                LeftSideOffset += ElementFinalSize.width;
+                IFC(pElement->Arrange(MakeRect(ElementPosition, ElementAvailableSize)));
+
+                LeftSideOffset += ElementDesiredSize.width;
             }
             else if(pDock->GetValue() == RectangleEdge::Right)
             {
-                ElementFinalSize.height = max(Size.height - (TopSideOffset + BottomSideOffset), 0);
-                ElementFinalSize.width = ElementDesiredSize.width;
+                ElementAvailableSize.height = max(AvailableSize.height - (TopSideOffset + BottomSideOffset), 0);
+                ElementAvailableSize.width = ElementDesiredSize.width;
 
-                ElementPosition.width = (Size.width - RightSideOffset) - ElementFinalSize.width;
+                ElementPosition.width = (AvailableSize.width - RightSideOffset) - ElementDesiredSize.width;
                 ElementPosition.height = TopSideOffset;
 
-                RightSideOffset += ElementFinalSize.width;
+                IFC(pElement->Arrange(MakeRect(ElementPosition, ElementAvailableSize)));
+
+                RightSideOffset += ElementDesiredSize.width;
             }
             else if(pDock->GetValue() == RectangleEdge::Top)
             {
-                ElementFinalSize.height = ElementDesiredSize.height;
-                ElementFinalSize.width = max(Size.width - (LeftSideOffset + RightSideOffset), 0);
+                ElementAvailableSize.height = ElementDesiredSize.height;
+                ElementAvailableSize.width = max(AvailableSize.width - (LeftSideOffset + RightSideOffset), 0);
 
                 ElementPosition.width = LeftSideOffset;
                 ElementPosition.height = TopSideOffset;
 
-                TopSideOffset += ElementFinalSize.height;
+                IFC(pElement->Arrange(MakeRect(ElementPosition, ElementAvailableSize)));
+
+                TopSideOffset += ElementDesiredSize.height;
             }
             else 
             {
-                ElementFinalSize.height = ElementDesiredSize.height;
-                ElementFinalSize.width = max(Size.width - (LeftSideOffset + RightSideOffset), 0);
+                ElementAvailableSize.height = ElementDesiredSize.height;
+                ElementAvailableSize.width = max(AvailableSize.width - (LeftSideOffset + RightSideOffset), 0);
 
                 ElementPosition.width = LeftSideOffset;
-                ElementPosition.height = (Size.height - BottomSideOffset) - ElementFinalSize.height;
+                ElementPosition.height = (AvailableSize.height - BottomSideOffset) - ElementDesiredSize.height;
 
-                BottomSideOffset += ElementFinalSize.height;
+                IFC(pElement->Arrange(MakeRect(ElementPosition, ElementAvailableSize)));
+
+                BottomSideOffset += ElementDesiredSize.height;
             }
         }
-
-        Matrix3X2 VisualTransform = D2D1::Matrix3x2F::Translation(ElementPosition);
-        
-        IFC(pElement->SetVisualTransform(VisualTransform));
-
-        IFC(pElement->Arrange(ElementFinalSize));
 
         ReleaseObject(pDock);
     }
 
-    IFC(CPanel::ArrangeInternal(Size));
+    UsedSize = AvailableSize;
 
 Cleanup:
     ReleaseObject(pDock);

@@ -8,13 +8,15 @@
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( Width, CFloatValue, 0 );
-DEFINE_GET_DEFAULT( Height, CFloatValue, 0 );
+DEFINE_GET_DEFAULT_NULL( Width );
+DEFINE_GET_DEFAULT_NULL( Height );
 DEFINE_GET_DEFAULT( MinimumWidth, CFloatValue, 0 );
 DEFINE_GET_DEFAULT( MinimumHeight, CFloatValue, 0 );
 DEFINE_GET_DEFAULT( MaximumWidth, CFloatValue, FLT_MAX );
 DEFINE_GET_DEFAULT( MaximumHeight, CFloatValue, FLT_MAX );
 DEFINE_GET_DEFAULT( Visibility, CVisibilityValue, Visibility::Visible );
+DEFINE_GET_DEFAULT( HorizontalAlignment, CHorizontalAlignmentValue, HorizontalAlignment::Stretch );
+DEFINE_GET_DEFAULT( VerticalAlignment, CVerticalAlignmentValue, VerticalAlignment::Stretch );
 
 //
 // Properties
@@ -26,6 +28,8 @@ CStaticProperty CUIElement::MinimumHeightProperty( L"MinimumHeight", TypeIndex::
 CStaticProperty CUIElement::MaximumWidthProperty( L"MaximumWidth", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MaximumWidth ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMaximumWidthChanged ) );
 CStaticProperty CUIElement::MaximumHeightProperty( L"MaximumHeight", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MaximumHeight ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMaximumHeightChanged ) );
 CStaticProperty CUIElement::VisibilityProperty( L"Visibility", TypeIndex::Visibility, StaticPropertyFlags::None, &GET_DEFAULT( Visibility ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVisibilityChanged ) );
+CStaticProperty CUIElement::HorizontalAlignmentProperty( L"HorizontalAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( HorizontalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged ) );
+CStaticProperty CUIElement::VerticalAlignmentProperty( L"VerticalAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( VerticalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged ) );
 
 //
 // Property Change Handlers
@@ -37,6 +41,8 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnMinimumHeightChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnMaximumWidthChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnMaximumHeightChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVisibilityChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged );
 
 //
 // Events
@@ -69,7 +75,9 @@ CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MinimumHeight(this, &CUIElement::MinimumHeightProperty),
                            m_MaximumWidth(this, &CUIElement::MaximumWidthProperty),
                            m_MaximumHeight(this, &CUIElement::MaximumHeightProperty),
-                           m_Visibility(this, &CUIElement::VisibilityProperty)
+                           m_Visibility(this, &CUIElement::VisibilityProperty),
+                           m_VerticalAlignment(this, &CUIElement::VerticalAlignmentProperty),
+                           m_HorizontalAlignment(this, &CUIElement::HorizontalAlignmentProperty)
 {
     m_DesiredSize.width = 0;
     m_DesiredSize.height = 0;
@@ -77,8 +85,10 @@ CUIElement::CUIElement() : m_Attached(FALSE),
     m_LastMeasureSize.width = 0;
     m_LastMeasureSize.height = 0;
 
-    m_LastArrangeSize.width = 0;
-    m_LastArrangeSize.height = 0;
+    m_LastArrangeBounds.left = 0;
+    m_LastArrangeBounds.top = 0;
+    m_LastArrangeBounds.right = 0;
+    m_LastArrangeBounds.bottom = 0;
 
     m_FinalSize.width = 0;
     m_FinalSize.height = 0;
@@ -251,6 +261,53 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::GetMinMaxSize(SizeF& MinimumSize, SizeF& MaximumSize)
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pHeight = NULL;
+    CFloatValue* pWidth = NULL;
+
+    IFC(m_Height.GetTypedEffectiveValue(GetProviders(), &pHeight));
+
+    FLOAT MaxHeight = 0;
+    FLOAT MinHeight = 0;
+
+    IFC(GetEffectiveMaximumHeight(&MaxHeight));
+    IFC(GetEffectiveMinimumHeight(&MinHeight));
+
+    FLOAT Height = (pHeight != NULL) ? pHeight->GetValue() : FLT_MAX;
+    MaxHeight = max(min(Height, MaxHeight), MinHeight);
+
+    Height = (pHeight != NULL) ? pHeight->GetValue() : 0;
+    MinHeight = max(min(MaxHeight, Height), MinHeight);
+
+    FLOAT MaxWidth = 0;
+    FLOAT MinWidth = 0;
+
+    IFC(GetEffectiveMaximumWidth(&MaxWidth));
+    IFC(GetEffectiveMinimumWidth(&MinWidth));
+
+    IFC(m_Width.GetTypedEffectiveValue(GetProviders(), &pWidth));
+
+    FLOAT Width = (pWidth != NULL) ? pWidth->GetValue() : FLT_MAX;
+    MaxWidth = max(min(Width, MaxWidth), MinWidth);
+
+    Width = (pWidth != NULL) ? pWidth->GetValue() : 0;
+    MinWidth = max(min(MaxWidth, Width), MinWidth);
+
+    MinimumSize.width = MinWidth;
+    MinimumSize.height = MinHeight;
+
+    MaximumSize.width = MaxWidth;
+    MaximumSize.height = MaxHeight;
+
+Cleanup:
+    ReleaseObject(pWidth);
+    ReleaseObject(pHeight);
+
+    return hr;
+}
+
 HRESULT CUIElement::Measure(SizeF AvailableSize)
 {
     HRESULT hr = S_OK;
@@ -263,33 +320,57 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
 
         if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
-            SizeF NewSize = { 0 };
-            FLOAT MinimumWidth = 0;
-            FLOAT MinimumHeight = 0;
-            FLOAT MaximumWidth = 0;
-            FLOAT MaximumHeight = 0;
+            SizeF ElementAvailableSize = { max(AvailableSize.width /* - MarginWidth */, 0), max(AvailableSize.height /* - MarginHeight */, 0) };
+            SizeF MinSize = { 0 };
+            SizeF MaxSize = { 0 };
 
-            IFC(GetEffectiveMinimumWidth(&MinimumWidth));
-            IFC(GetEffectiveMinimumHeight(&MinimumHeight));
-            IFC(GetEffectiveMaximumWidth(&MaximumWidth));
-            IFC(GetEffectiveMaximumHeight(&MaximumHeight));
+            IFC(GetMinMaxSize(MinSize, MaxSize));
 
-            IFC(MeasureInternal(AvailableSize, NewSize));
+            ElementAvailableSize.width = max(MinSize.width, min(ElementAvailableSize.width, MaxSize.width));
+            ElementAvailableSize.height = max(MinSize.height, min(ElementAvailableSize.height, MaxSize.height));
 
-            m_LastMeasureSize = AvailableSize;
+            SizeF ElementDesiredSize = { 0 };
 
-            NewSize.width = max(NewSize.width, MinimumWidth);
-            NewSize.height = max(NewSize.height, MinimumHeight);
+            IFC(MeasureInternal(ElementAvailableSize, ElementDesiredSize));            
 
-            NewSize.width = min(NewSize.width, MaximumWidth);
-            NewSize.height = min(NewSize.height, MaximumHeight);
+            ElementDesiredSize.width = max(ElementDesiredSize.width, MinSize.width);
+            ElementDesiredSize.height = max(ElementDesiredSize.height, MinSize.height);
 
-            if(NewSize.width != m_DesiredSize.width || NewSize.height != m_DesiredSize.width)
+            m_UnclippedDesiredSize = ElementDesiredSize;
+
+            BOOL Clipped = FALSE;
+
+            if(ElementDesiredSize.width > MaxSize.width)
             {
-                m_DesiredSize = NewSize;
-
-                IFC(InvalidateArrange());
+                ElementDesiredSize.width = MaxSize.width;
+                Clipped = TRUE;
             }
+
+            if(ElementDesiredSize.height > MaxSize.height)
+            {
+                ElementDesiredSize.height = MaxSize.height;
+                Clipped = TRUE;
+            }
+
+            FLOAT ClippedDesiredWidth = ElementDesiredSize.width /*+ MarginWidth */;
+            FLOAT ClippedDesiredHeight = ElementDesiredSize.height /*+ MarginHeight*/;
+
+            if (ClippedDesiredWidth > AvailableSize.width)
+            {
+                ClippedDesiredWidth = AvailableSize.width;
+                Clipped = TRUE;
+            }
+
+            if (ClippedDesiredHeight > AvailableSize.height)
+            {
+                ClippedDesiredHeight = AvailableSize.height;
+                Clipped = TRUE;
+            }
+
+            m_DesiredSize.width = max(0, ClippedDesiredWidth);
+            m_DesiredSize.height = max(0, ClippedDesiredHeight);
+
+            IFC(InvalidateArrange());
         }
         else
         {
@@ -307,17 +388,9 @@ Cleanup:
 HRESULT CUIElement::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    FLOAT Width = 0;
-    FLOAT Height = 0;
 
-    IFCEXPECT(AvailableSize.width >= 0);
-    IFCEXPECT(AvailableSize.height >= 0);
-
-    IFC(GetEffectiveWidth(&Width));
-    IFC(GetEffectiveHeight(&Height));
-
-    DesiredSize.width = min(AvailableSize.width, Width);
-    DesiredSize.height = min(AvailableSize.height, Height);
+    DesiredSize.width = 0;
+    DesiredSize.height = 0;
 
 Cleanup:
     return hr;
@@ -442,6 +515,40 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::GetEffectiveHorizontalAlignment(HorizontalAlignment::Value* pAlignment)
+{
+    HRESULT hr = S_OK;
+    CHorizontalAlignmentValue* pEffectiveValue = NULL;
+
+    IFCPTR(pAlignment);
+
+    IFC(m_HorizontalAlignment.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pAlignment = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
+HRESULT CUIElement::GetEffectiveVerticalAlignment(VerticalAlignment::Value* pAlignment)
+{
+    HRESULT hr = S_OK;
+    CVerticalAlignmentValue* pEffectiveValue = NULL;
+
+    IFCPTR(pAlignment);
+
+    IFC(m_VerticalAlignment.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pAlignment = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
 SizeF CUIElement::GetDesiredSize()
 {
     return m_DesiredSize;
@@ -452,17 +559,16 @@ SizeF CUIElement::GetFinalSize()
     return m_FinalSize;
 }
 
-HRESULT CUIElement::Arrange(SizeF Size)
+HRESULT CUIElement::Arrange(RectF Bounds)
 {
     HRESULT hr = S_OK;
 
-    IFCEXPECT(Size.width >= 0);
-    IFCEXPECT(Size.height >= 0);
-
-    if(m_ArrangeDirty || Size.width != m_LastArrangeSize.width || Size.height != m_LastArrangeSize.width)
+    if(m_ArrangeDirty || Bounds != m_LastArrangeBounds)
     {
-        m_LastArrangeSize = Size;
-        SizeF FinalSize = { 0 };
+        HorizontalAlignment::Value HorzAlign;
+        VerticalAlignment::Value VertAlign;
+
+        m_LastArrangeBounds = Bounds;
 
         Visibility::Value EffectiveVisibility = Visibility::Visible;
 
@@ -470,46 +576,157 @@ HRESULT CUIElement::Arrange(SizeF Size)
 
         if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
-            FLOAT Width = 0;
-            FLOAT Height = 0;
-            FLOAT MinimumWidth = 0;
-            FLOAT MinimumHeight = 0;
-            FLOAT MaximumWidth = 0;
-            FLOAT MaximumHeight = 0;
+            BOOL NeedsClipBounds = FALSE;
 
-            IFCEXPECT(Size.width >= 0);
-            IFCEXPECT(Size.height >= 0);
+            SizeF ArrangeSize = { Bounds.right - Bounds.left, Bounds.bottom - Bounds.top };
 
-            FinalSize = Size;
+            FLOAT MarginWidth = 0; /*margin.Left + margin.Right;*/
+            FLOAT MarginHeight = 0; /*margin.Top + margin.Bottom;*/
 
-            IFC(GetEffectiveWidth(&Width));
-            IFC(GetEffectiveHeight(&Height));
-            IFC(GetEffectiveMinimumWidth(&MinimumWidth));
-            IFC(GetEffectiveMinimumHeight(&MinimumHeight));
-            IFC(GetEffectiveMaximumWidth(&MaximumWidth));
-            IFC(GetEffectiveMaximumHeight(&MaximumHeight));
+            ArrangeSize.width = max(0, ArrangeSize.width - MarginWidth);
+            ArrangeSize.height = max(0, ArrangeSize.height - MarginHeight);
 
-            FinalSize.width = max(FinalSize.width, MinimumWidth);
-            FinalSize.height = max(FinalSize.height, MinimumHeight);
+            if(ArrangeSize.width < m_UnclippedDesiredSize.width)
+            {
+                NeedsClipBounds = TRUE;
+                ArrangeSize.width = m_UnclippedDesiredSize.width;
+            }
 
-            FinalSize.width = min(FinalSize.width, MaximumWidth);
-            FinalSize.height = min(FinalSize.height, MaximumHeight);
+            if(ArrangeSize.height < m_UnclippedDesiredSize.height)
+            {
+                NeedsClipBounds = TRUE;
+                ArrangeSize.height = m_UnclippedDesiredSize.height;
+            }
 
-            IFC(ArrangeInternal(FinalSize));
+            IFC(GetEffectiveHorizontalAlignment(&HorzAlign));
+            IFC(GetEffectiveVerticalAlignment(&VertAlign));
+
+            if (HorzAlign != HorizontalAlignment::Stretch)
+            {
+                ArrangeSize.width = m_UnclippedDesiredSize.width;
+            }
+
+            if (VertAlign != VerticalAlignment::Stretch)
+            {
+                ArrangeSize.height = m_UnclippedDesiredSize.height;
+            }
+
+            SizeF MinSize = { 0 };
+            SizeF MaxSize = { 0 };
+
+            IFC(GetMinMaxSize(MinSize, MaxSize));      
+
+            FLOAT EffectiveMaxWidth = max(m_UnclippedDesiredSize.width, MaxSize.width);
+
+            if(EffectiveMaxWidth < ArrangeSize.width)
+            {
+                NeedsClipBounds = TRUE;
+                ArrangeSize.width = EffectiveMaxWidth;
+            }
+
+            FLOAT EffectiveMaxHeight = max(m_UnclippedDesiredSize.height, MaxSize.height);
+
+            if(EffectiveMaxHeight < ArrangeSize.height)
+            {
+                NeedsClipBounds = true;
+                ArrangeSize.height = EffectiveMaxHeight;
+            }
+
+            SizeF UsedArrangeSize = { 0 };
+
+            IFC(ArrangeInternal(ArrangeSize, UsedArrangeSize));
+
+            SizeF ClippedSize = { min(UsedArrangeSize.width, MaxSize.width), min(UsedArrangeSize.height, MaxSize.height) };
+
+            NeedsClipBounds |= (ClippedSize.width < UsedArrangeSize.width) ||  (ClippedSize.height < UsedArrangeSize.height);
+
+            SizeF ClientSize = { max(0, ArrangeSize.width - MarginWidth), max(0, ArrangeSize.height - MarginHeight) };
+
+            NeedsClipBounds |= (ClientSize.width < ClippedSize.width) || (ClientSize.height < ClippedSize.height);
+
+            SizeF Offset = { 0 };
+
+            IFC(ComputeAlignmentOffset(ClientSize, ClippedSize, Offset));
+
+            Offset.width += Bounds.left /*+ margin.Left*/;
+            Offset.height += Bounds.top /*+ margin.Top*/;
+
+            Matrix3X2 VisualTransform = D2D1::Matrix3x2F::Translation(Offset);
+            
+            //TODO: Use something other than visual transform?
+            IFC(SetVisualTransform(VisualTransform));
+
+            m_FinalSize = ClippedSize;
+
+            m_ArrangeDirty = FALSE;
         }
-
-        m_FinalSize = FinalSize;
-
-        m_ArrangeDirty = FALSE;
+        else
+        {
+            m_FinalSize.width = 0;
+            m_FinalSize.height = 0;
+        }
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::ArrangeInternal(SizeF Size)
+HRESULT CUIElement::ComputeAlignmentOffset(SizeF ClientSize, SizeF RenderSize, SizeF Offset)
 {
     HRESULT hr = S_OK;
+
+    HorizontalAlignment::Value HorzAlign;
+    VerticalAlignment::Value VertAlign;
+
+    IFC(GetEffectiveHorizontalAlignment(&HorzAlign));
+    IFC(GetEffectiveVerticalAlignment(&VertAlign));
+
+    if(HorzAlign == HorizontalAlignment::Stretch && RenderSize.width > ClientSize.width)
+    {
+        HorzAlign = HorizontalAlignment::Left;
+    }
+
+    if(VertAlign == VerticalAlignment::Stretch && RenderSize.height > ClientSize.height)
+    {
+        VertAlign = VerticalAlignment::Top;
+    }
+
+    if(HorzAlign == HorizontalAlignment::Center ||  HorzAlign == HorizontalAlignment::Stretch)
+    {
+        Offset.width = (ClientSize.width - RenderSize.width) * 0.5;
+    }
+    else if(HorzAlign == HorizontalAlignment::Right)
+    {
+        Offset.width = ClientSize.width - RenderSize.width;
+    }
+    else
+    {
+        Offset.width = 0;
+    }
+
+    if(VertAlign == VerticalAlignment::Center ||  VertAlign == VerticalAlignment::Stretch)
+    {
+        Offset.height = (ClientSize.height - RenderSize.height) * 0.5;
+    }
+    else if(VertAlign == VerticalAlignment::Bottom)
+    {
+        Offset.height = ClientSize.height - RenderSize.height;
+    }
+    else
+    {
+        Offset.height = 0;
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+{
+    HRESULT hr = S_OK;
+
+    UsedSize.width = 0;
+    UsedSize.height = 0;
 
     return hr;
 }
@@ -685,7 +902,9 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
         &MinimumHeightProperty,
         &MaximumWidthProperty,
         &MaximumHeightProperty,
-        &VisibilityProperty
+        &VisibilityProperty,
+        &HorizontalAlignmentProperty,
+        &VerticalAlignmentProperty,
     };
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
@@ -769,6 +988,14 @@ HRESULT CUIElement::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
     else if(pProperty == &CUIElement::VisibilityProperty)
     {
         *ppLayeredValue = &m_Visibility;
+    }
+    else if(pProperty == &CUIElement::HorizontalAlignmentProperty)
+    {
+        *ppLayeredValue = &m_HorizontalAlignment;
+    }
+    else if(pProperty == &CUIElement::VerticalAlignmentProperty)
+    {
+        *ppLayeredValue = &m_VerticalAlignment;
     }
     else
     {
@@ -946,6 +1173,26 @@ HRESULT CUIElement::OnVisibilityChanged(CObjectWithType* pOldValue, CObjectWithT
     HRESULT hr = S_OK;
     
     IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::OnHorizontalAlignmentChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InvalidateArrange());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::OnVerticalAlignmentChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InvalidateArrange());
 
 Cleanup:
     return hr;

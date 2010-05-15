@@ -67,7 +67,7 @@ HRESULT CUIHost::EnsureLayout()
 
     if(m_RootElement->IsArrangeDirty())
     {
-        IFC(m_RootElement->Arrange(AvailableSize));
+        IFC(m_RootElement->Arrange(MakeRect(AvailableSize)));
     }
 
 Cleanup:
