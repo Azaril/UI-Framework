@@ -22,6 +22,7 @@ namespace TypeIndex
                                 ContentControl,
                                     ButtonBase,
                                         Button,
+                            ContentPresenter,
                 Brush,
                     ImageBrush,
                     SolidColorBrush,

@@ -38,9 +38,13 @@ class CTemplateBinding : public CBinding
         void OnTargetAttached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
         void OnTargetDetached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
+        void OnSourcePropertyChanged( CPropertyObject* pObject, CProperty* pProperty );
+
         connection m_TargetAttachedConnection;
         connection m_TargetDetachedConnection;
         CStringValue* m_Property;
+        CProperty* m_ResolvedProperty;
+        connection m_PropertyChangedConnection;
 };
 
 template< >

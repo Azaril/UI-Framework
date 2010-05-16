@@ -87,6 +87,9 @@ class CAttachedPropertyHolder
         CObjectWithType* m_Value;
 };
 
+typedef signal< void ( CPropertyObject*, CProperty* ) > PropertyChangedSignal;
+typedef PropertyChangedSignal::slot_type PropertyChangedHandler;
+
 class CPropertyObject : public CObjectWithType
 {
     public:
@@ -94,6 +97,8 @@ class CPropertyObject : public CObjectWithType
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+
+        HRESULT AddPropertyChangeListener( const PropertyChangedHandler& Handler, connection* pConnection );
 
         template< typename T >
         HRESULT GetTypedValue( CProperty* pProperty, T** ppValue )
@@ -127,7 +132,10 @@ class CPropertyObject : public CObjectWithType
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
+        HRESULT RaisePropertyChanged( CProperty* pProperty );
+
         std::vector< CAttachedPropertyHolder > m_AttachedProperties;
+        PropertyChangedSignal m_PropertyChangedSignal;
 };
 
 template< >

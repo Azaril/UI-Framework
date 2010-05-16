@@ -1,0 +1,58 @@
+#pragma once
+
+#include "FrameworkElement.h"
+
+class CContentPresenter : public CFrameworkElement
+{
+    public:
+        DECLARE_FACTORY1( CContentPresenter, CProviders* );
+
+        DECLARE_TYPE_WITH_BASE( TypeIndex::ContentPresenter, CFrameworkElement );
+
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
+        virtual HRESULT OnAttach( CUIAttachContext& Context );
+        virtual HRESULT OnDetach( CUIDetachContext& Context );
+
+        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
+
+        //
+        // Properties
+        //
+        static CStaticProperty ContentProperty;
+
+    protected:
+        CContentPresenter();
+        virtual ~CContentPresenter();
+
+        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
+
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
+
+        virtual CUIElement* GetTemplateParentForChildren();
+
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnContentChanged );
+
+        HRESULT OnContentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+
+        HRESULT GetUIForContent( CUIElement** ppContentUI );
+        
+        HRESULT RevokeContentUI();
+        HRESULT EnsureContentUI();
+
+        HRESULT GetContentChild( CUIElement** ppChild );
+
+        CTypedLayeredValue< CObjectWithType > m_Content;
+        BOOL m_ContentDirty;
+        CUIElement* m_ContentChild;
+};
+
+template< >
+struct ObjectTypeTraits< CContentPresenter >
+{
+    static const TypeIndex::Value Type = TypeIndex::ContentPresenter;
+};

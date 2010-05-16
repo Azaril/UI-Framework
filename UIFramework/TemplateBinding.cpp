@@ -11,16 +11,20 @@ DEFINE_GET_DEFAULT_NULL( Property );
 //
 CStaticProperty CTemplateBinding::PropertyProperty( L"Property", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Property ) );
 
-CTemplateBinding::CTemplateBinding() : m_Property(NULL)
+CTemplateBinding::CTemplateBinding() : m_Property(NULL),
+                                       m_ResolvedProperty(NULL)
 {
 }
 
 CTemplateBinding::~CTemplateBinding()
 {
+    m_PropertyChangedConnection.disconnect();
+
     m_TargetAttachedConnection.disconnect();
     m_TargetDetachedConnection.disconnect();
 
     ReleaseObject(m_Property);
+    ReleaseObject(m_ResolvedProperty);
 }
 
 HRESULT CTemplateBinding::Initialize(CProviders* pProviders)
@@ -166,6 +170,8 @@ HRESULT CTemplateBinding::ClearTarget()
 {
     HRESULT hr = S_OK;
 
+    ReleaseObject(m_ResolvedProperty);
+
     IFC(CBinding::ClearTarget());
 
     m_TargetAttachedConnection.disconnect();
@@ -178,9 +184,27 @@ Cleanup:
 void CTemplateBinding::OnTargetAttached(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
 {
     HRESULT hr = S_OK;
+    CUIElement* pTargetElement = NULL;
+    CUIElement* pTemplateParent = NULL;
+    CClassResolver* pClassResolver = NULL;
 
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
+
+    //TODO: Fix this, as currently you can only bind a template binding to a UI element.
+    IFC(CastType(m_Target, &pTargetElement));
+
+    pTemplateParent = pTargetElement->GetTemplateParent();
+
+    IFCPTR(m_Property);
+    IFCPTR(pTemplateParent);
+
+    pClassResolver = m_Providers->GetClassResolver();
+    IFCPTR(pClassResolver);
+
+    IFC(pClassResolver->ResolveProperty(m_Property->GetValue(), pTemplateParent->GetType(), &m_ResolvedProperty));
+
+    IFC(pTemplateParent->AddPropertyChangeListener(bind(&CTemplateBinding::OnSourcePropertyChanged, this, _1, _2), &m_PropertyChangedConnection));
 
     IFC(InvalidateBinding());
 
@@ -195,7 +219,25 @@ void CTemplateBinding::OnTargetDetached(CObjectWithType* pSender, CRoutedEventAr
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
 
+    m_PropertyChangedConnection.disconnect();
+
     IFC(InvalidateBinding());
+
+Cleanup:
+    ;
+}
+
+void CTemplateBinding::OnSourcePropertyChanged(CPropertyObject* pObject, CProperty* pProperty)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pObject);
+    IFCPTR(pProperty);
+
+    if(pProperty == m_ResolvedProperty)
+    {
+        IFC(InvalidateBinding());
+    }
 
 Cleanup:
     ;

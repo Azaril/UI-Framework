@@ -228,8 +228,6 @@ Cleanup:
 HRESULT CControl::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF InternalSize = { 0 };
-    SizeF BaseSize = { 0 };
     SizeF ChildSizeDesired = { 0 };
     CUIElement* pChild = NULL;
 
@@ -242,8 +240,8 @@ HRESULT CControl::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         ChildSizeDesired = pChild->GetDesiredSize();
     }
 
-    DesiredSize.width = max(ChildSizeDesired.width, BaseSize.width);
-    DesiredSize.height = max(ChildSizeDesired.height, BaseSize.height);
+    DesiredSize.width = ChildSizeDesired.width;
+    DesiredSize.height = ChildSizeDesired.height;
 
 Cleanup:
     ReleaseObject(pChild);

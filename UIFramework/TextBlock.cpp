@@ -300,7 +300,16 @@ HRESULT CTextBlock::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult
 
     IFCPTR(ppHitTestResult);
 
-    *ppHitTestResult = NULL;
+    SizeF RenderSize = GetFinalSize();
+
+    if(LocalPoint.x >= 0 && LocalPoint.y >= 0 && LocalPoint.x <= RenderSize.width && LocalPoint.y <= RenderSize.height)
+    {
+        IFC(CHitTestResult::Create(this, ppHitTestResult));
+    }
+    else
+    {
+        *ppHitTestResult = NULL;
+    }
 
 Cleanup:
     return hr;

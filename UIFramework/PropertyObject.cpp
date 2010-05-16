@@ -21,6 +21,9 @@ HRESULT CPropertyObject::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 
     IFC(SetValueInternal(pProperty, pValue));
 
+    //TODO: Resolve this with style set values.
+    IFC(RaisePropertyChanged(pProperty));
+
 Cleanup:
     ReleaseObject(pOldValue);
 
@@ -101,7 +104,29 @@ Cleanup:
     return hr;
 }
 
+HRESULT CPropertyObject::AddPropertyChangeListener(const PropertyChangedHandler& Handler, connection* pConnection)
+{
+    HRESULT hr = S_OK;
 
+    IFCPTR(pConnection);
+
+    *pConnection = m_PropertyChangedSignal.connect(Handler);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CPropertyObject::RaisePropertyChanged(CProperty* pProperty)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+
+    m_PropertyChangedSignal(this, pProperty);
+
+Cleanup:
+    return hr;
+}
 
 CAttachedPropertyHolder::CAttachedPropertyHolder(const CAttachedPropertyHolder& Other) : m_Property(Other.m_Property),
                                                                                          m_Value(Other.m_Value)

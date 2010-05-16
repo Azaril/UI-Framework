@@ -540,6 +540,14 @@
 						Name="Elements"
 						>
 						<File
+							RelativePath=".\ContentPresenter.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ContentPresenter.h"
+							>
+						</File>
+						<File
 							RelativePath=".\FrameworkElement.cpp"
 							>
 						</File>

@@ -16,6 +16,7 @@
 #include "ControlTemplate.h"
 #include "Button.h"
 #include "TemplateBinding.h"
+#include "ContentPresenter.h"
 
 template< typename FromType >
 class StaticClassFactory
@@ -53,6 +54,7 @@ CStaticResolvedClass Classes[] =
     CStaticResolvedClass(L"StackPanel", STATIC_CLASS_INFO(CStackPanel), &CUIElement::CreateEventInformation),
     CStaticResolvedClass(L"DockPanel", STATIC_CLASS_INFO(CDockPanel), &CUIElement::CreateEventInformation),
     CStaticResolvedClass(L"TextBlock", STATIC_CLASS_INFO(CTextBlock), &CUIElement::CreateEventInformation),
+    CStaticResolvedClass(L"ContentPresenter", STATIC_CLASS_INFO(CContentPresenter), &CUIElement::CreateEventInformation),
     CStaticResolvedClass(L"ImageBrush", STATIC_CLASS_INFO(CImageBrush)),
     CStaticResolvedClass(L"SolidColorBrush", STATIC_CLASS_INFO(CSolidColorBrush)),
     CStaticResolvedClass(L"Style", STATIC_CLASS_INFO(CStyle)),

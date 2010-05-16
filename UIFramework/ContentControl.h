@@ -7,9 +7,27 @@ class CContentControl : public CControl
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::ContentControl, CControl );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
+        //
+        // Properties
+        //
+        static CStaticProperty ContentProperty;
+
     protected:
         CContentControl();
         virtual ~CContentControl();
+
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
+
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnContentChanged );
+
+        HRESULT OnContentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+
+        CTypedLayeredValue< CObjectWithType > m_Content;
 };
 
 template< >

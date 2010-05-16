@@ -242,12 +242,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
 
             if(pValue)
             {
-                if(pValue->IsTypeOf(ObjectTypeTraits< T >::Type))
-                {
-                    Layer.Value = (T*)pValue;
-                    AddRefObject(pValue);
-                }
-                else if(pValue->IsTypeOf(TypeIndex::Binding))
+                if(pValue->IsTypeOf(TypeIndex::Binding))
                 {
                     CBinding* pBinding = (CBinding*)pValue;
 
@@ -257,6 +252,11 @@ class CTypedLocalLayeredValue : public CLayeredValue
                     IFC(pBinding->SetTarget(m_Owner, m_Property));
 
                     IFC(pBinding->AddChangeListener(bind(&CTypedLocalLayeredValue< T >::OnBindingInvalidated, this, ValueType, pProviders, _1), &Layer.BindingInvalidationConnection));
+                }
+                else if(pValue->IsTypeOf(ObjectTypeTraits< T >::Type))
+                {
+                    Layer.Value = (T*)pValue;
+                    AddRefObject(pValue);
                 }
                 else 
                 {
@@ -285,6 +285,8 @@ class CTypedLocalLayeredValue : public CLayeredValue
 
             if(IsEffectiveValue)
             {
+                ReleaseObject(m_EffectiveValueObject);
+
                 m_IsInvalidated = TRUE;
 
                 IFC(GetEffectiveValue(pProviders, &pNewValue));
@@ -309,12 +311,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
 
             if(Layer.Value)
             {
-                if(Layer.Value->IsTypeOf(ObjectTypeTraits< T >::Type))
-                {
-                    *ppEffectiveValue = Layer.Value;
-                    AddRefObject(Layer.Value);
-                }
-                else if(Layer.Value->IsTypeOf(TypeIndex::Binding))
+                if(Layer.Value->IsTypeOf(TypeIndex::Binding))
                 {
                     CBinding* pBinding = (CBinding*)Layer.Value;
 
@@ -340,6 +337,11 @@ class CTypedLocalLayeredValue : public CLayeredValue
                             hr = pTypeConverter->Convert(&Context, pBoundValue, ppEffectiveValue);
                         }
                     }
+                }
+                else if(Layer.Value->IsTypeOf(ObjectTypeTraits< T >::Type))
+                {
+                    *ppEffectiveValue = Layer.Value;
+                    AddRefObject(Layer.Value);
                 }
                 else
                 {

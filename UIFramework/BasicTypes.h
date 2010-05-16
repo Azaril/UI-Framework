@@ -6,13 +6,13 @@
 #include "PropertyObject.h"
 #include "Enums.h"
 
-template< typename T, TypeIndex::Value Type >
+template< typename T, TypeIndex::Value TypeID >
 class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
 {
     public:
         DECLARE_FACTORY1( CBasicValue, T );
 
-        DECLARE_TYPE_WITH_BASE( Type, CObjectWithType );
+        DECLARE_TYPE_WITH_BASE( TypeID, CObjectWithType );
 
         virtual T GetValue()
         {
@@ -23,7 +23,7 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
         {
             if(pOther && pOther->GetType() == GetType())
             {
-                CBasicValue< T, Type >* pTypedOther = (CBasicValue< T, Type >*)pOther;
+                CBasicValue< T, TypeID >* pTypedOther = (CBasicValue< T, TypeID >*)pOther;
 
                 return pTypedOther->GetValue() == m_Value;
             }
@@ -74,7 +74,7 @@ struct ObjectTypeTraits< CRectFValue >
     static const TypeIndex::Value Type = TypeIndex::RectF;
 };
 
-typedef CBasicValue< RectangleEdge::Value, TypeIndex::RectF > CRectangleEdgeValue;
+typedef CBasicValue< RectangleEdge::Value, TypeIndex::RectangleEdge > CRectangleEdgeValue;
 
 template< >
 struct ObjectTypeTraits< CRectangleEdgeValue >

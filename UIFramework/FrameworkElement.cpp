@@ -424,6 +424,9 @@ HRESULT CFrameworkElement::SetStyleValue(CProperty* pProperty, CObjectWithType* 
 
     IFC(pLayeredValue->SetStyleValue(pValue, GetProviders()));
 
+    //TODO: Resolve this for layered properties.
+    IFC(RaisePropertyChanged(pProperty));
+
 Cleanup:
     return hr;
 }
