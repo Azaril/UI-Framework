@@ -337,7 +337,8 @@ HRESULT CFrameworkElement::OnResourcesChanged(CObjectWithType* pOldValue, CObjec
 {
     HRESULT hr = S_OK;
 
-Cleanup:
+    //TODO: Handle resource being replaced? Currently the property is marked as read only so this shouldn't happen.
+
     return hr;
 }
 
@@ -387,11 +388,10 @@ HRESULT CFrameworkElement::RevokeStyle()
 {
     HRESULT hr = S_OK;
 
-    //TODO: Call revoke on the style?
+    //TODO: Call revoke on the style or clear properties style values.
 
     ReleaseObject(m_ResolvedStyle);
 
-Cleanup:
     return hr;
 }
 
@@ -404,8 +404,6 @@ HRESULT CFrameworkElement::ApplyStyle(CStyle* pStyle)
     IFCEXPECT(m_ResolvedStyle == NULL);
 
     IFC(pStyle->ResolveStyle(this, &m_StyleCallback, &m_ResolvedStyle));
-
-    //TODO: Call apply on the style?
 
 Cleanup:
     return hr;

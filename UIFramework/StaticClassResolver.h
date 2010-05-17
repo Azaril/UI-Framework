@@ -18,8 +18,10 @@ class CStaticResolvedClass : public CResolvedClass
         virtual INT32 Release();
 
         const WCHAR* GetName();
-        TypeIndex::Value GetType();
+        virtual TypeIndex::Value GetType();
+
         virtual HRESULT CreateInstance( CProviders* pProviders, CPropertyObject** ppObject );
+
         virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation );
         virtual HRESULT GetEventInformation( CEventInformation** ppEventInformation );
 

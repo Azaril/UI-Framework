@@ -6,6 +6,7 @@ namespace TypeIndex
     {
         Object,
             PropertyObject,
+                Type,
                 Visual,
                     UIElement,
                         FrameworkElement,
@@ -63,6 +64,8 @@ namespace TypeIndex
                     MouseEventArgs,
                         MouseButtonEventArgs,
             ParserCommandList,
-            ControlTemplate
+            ControlTemplate,
+            MarkupExtension,
+            TypeMarkupExtension
     };
 }

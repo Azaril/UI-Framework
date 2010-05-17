@@ -17,7 +17,7 @@ DEFINE_GET_DEFAULT( MaximumHeight, CFloatValue, FLT_MAX );
 DEFINE_GET_DEFAULT( Visibility, CVisibilityValue, Visibility::Visible );
 DEFINE_GET_DEFAULT( HorizontalAlignment, CHorizontalAlignmentValue, HorizontalAlignment::Stretch );
 DEFINE_GET_DEFAULT( VerticalAlignment, CVerticalAlignmentValue, VerticalAlignment::Stretch );
-
+DEFINE_GET_DEFAULT( Margin, CRectFValue, D2D1::RectF(0, 0, 0, 0) );
 //
 // Properties
 //
@@ -30,6 +30,7 @@ CStaticProperty CUIElement::MaximumHeightProperty( L"MaximumHeight", TypeIndex::
 CStaticProperty CUIElement::VisibilityProperty( L"Visibility", TypeIndex::Visibility, StaticPropertyFlags::None, &GET_DEFAULT( Visibility ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVisibilityChanged ) );
 CStaticProperty CUIElement::HorizontalAlignmentProperty( L"HorizontalAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( HorizontalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged ) );
 CStaticProperty CUIElement::VerticalAlignmentProperty( L"VerticalAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( VerticalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged ) );
+CStaticProperty CUIElement::MarginProperty( L"Margin", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT( Margin ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged ) );
 
 //
 // Property Change Handlers
@@ -43,6 +44,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnMaximumHeightChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVisibilityChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged );
 
 //
 // Events
@@ -77,7 +79,8 @@ CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MaximumHeight(this, &CUIElement::MaximumHeightProperty),
                            m_Visibility(this, &CUIElement::VisibilityProperty),
                            m_VerticalAlignment(this, &CUIElement::VerticalAlignmentProperty),
-                           m_HorizontalAlignment(this, &CUIElement::HorizontalAlignmentProperty)
+                           m_HorizontalAlignment(this, &CUIElement::HorizontalAlignmentProperty),
+                           m_Margin(this, &CUIElement::MarginProperty)
 {
     m_DesiredSize.width = 0;
     m_DesiredSize.height = 0;
@@ -320,7 +323,14 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
 
         if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
-            SizeF ElementAvailableSize = { max(AvailableSize.width /* - MarginWidth */, 0), max(AvailableSize.height /* - MarginHeight */, 0) };
+            RectF Margin = { 0 };
+
+            IFC(GetEffectiveMargin(&Margin));
+
+            FLOAT MarginWidth = Margin.left + Margin.right;
+            FLOAT MarginHeight = Margin.top + Margin.bottom;
+
+            SizeF ElementAvailableSize = { max(AvailableSize.width - MarginWidth, 0), max(AvailableSize.height - MarginHeight, 0) };
             SizeF MinSize = { 0 };
             SizeF MaxSize = { 0 };
 
@@ -352,8 +362,8 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
                 Clipped = TRUE;
             }
 
-            FLOAT ClippedDesiredWidth = ElementDesiredSize.width /*+ MarginWidth */;
-            FLOAT ClippedDesiredHeight = ElementDesiredSize.height /*+ MarginHeight*/;
+            FLOAT ClippedDesiredWidth = ElementDesiredSize.width + MarginWidth;
+            FLOAT ClippedDesiredHeight = ElementDesiredSize.height + MarginHeight;
 
             if (ClippedDesiredWidth > AvailableSize.width)
             {
@@ -393,40 +403,6 @@ HRESULT CUIElement::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     DesiredSize.height = 0;
 
 Cleanup:
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveWidth(FLOAT* pWidth)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pWidth);
-
-    IFC(m_Width.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
-
-    *pWidth = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveHeight(FLOAT* pHeight)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pHeight);
-
-    IFC(m_Height.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
-
-    *pHeight = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
     return hr;
 }
 
@@ -549,6 +525,21 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::GetEffectiveMargin(RectF* pMargin)
+{
+    HRESULT hr = S_OK;
+    CRectFValue* pEffectiveValue = NULL;
+
+    IFC(m_Margin.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pMargin = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
 SizeF CUIElement::GetDesiredSize()
 {
     return m_DesiredSize;
@@ -580,8 +571,12 @@ HRESULT CUIElement::Arrange(RectF Bounds)
 
             SizeF ArrangeSize = { Bounds.right - Bounds.left, Bounds.bottom - Bounds.top };
 
-            FLOAT MarginWidth = 0; /*margin.Left + margin.Right;*/
-            FLOAT MarginHeight = 0; /*margin.Top + margin.Bottom;*/
+            RectF Margin = { 0 };
+            
+            IFC(GetEffectiveMargin(&Margin));
+
+            FLOAT MarginWidth = Margin.left + Margin.right;
+            FLOAT MarginHeight = Margin.top + Margin.bottom;
 
             ArrangeSize.width = max(0, ArrangeSize.width - MarginWidth);
             ArrangeSize.height = max(0, ArrangeSize.height - MarginHeight);
@@ -648,8 +643,8 @@ HRESULT CUIElement::Arrange(RectF Bounds)
 
             IFC(ComputeAlignmentOffset(ClientSize, ClippedSize, Offset));
 
-            Offset.width += Bounds.left /*+ margin.Left*/;
-            Offset.height += Bounds.top /*+ margin.Top*/;
+            Offset.width += Bounds.left + Margin.left;
+            Offset.height += Bounds.top + Margin.top;
 
             Matrix3X2 VisualTransform = D2D1::Matrix3x2F::Translation(Offset);
             
@@ -1193,6 +1188,16 @@ HRESULT CUIElement::OnVerticalAlignmentChanged(CObjectWithType* pOldValue, CObje
     HRESULT hr = S_OK;
 
     IFC(InvalidateArrange());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::OnMarginChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InvalidateMeasure());
 
 Cleanup:
     return hr;

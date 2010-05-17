@@ -278,7 +278,6 @@ HRESULT CTextBlock::OnForegroundChanged(CObjectWithType* pOldValue, CObjectWithT
 
     ReleaseObject(m_ForegroundGraphicsBrush);
 
-Cleanup:
     return hr;
 }
 
@@ -297,10 +296,11 @@ Cleanup:
 HRESULT CTextBlock::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
 {
     HRESULT hr = S_OK;
+    SizeF RenderSize = { 0 };
 
     IFCPTR(ppHitTestResult);
 
-    SizeF RenderSize = GetFinalSize();
+    RenderSize = GetFinalSize();
 
     if(LocalPoint.x >= 0 && LocalPoint.y >= 0 && LocalPoint.x <= RenderSize.width && LocalPoint.y <= RenderSize.height)
     {

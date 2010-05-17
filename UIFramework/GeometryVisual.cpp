@@ -76,7 +76,6 @@ HRESULT CGeometryVisual::SetFillBrushTransform(const Matrix3X2& Transform)
 
     m_FillBrushTransform = Transform;
 
-Cleanup:
     return hr;
 }
 

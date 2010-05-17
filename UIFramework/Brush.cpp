@@ -15,7 +15,6 @@ HRESULT CBrush::OnVisualAttach(CVisualAttachContext& Context)
 {
     HRESULT hr = S_OK;
 
-Cleanup:
     return hr;
 }
 
@@ -23,7 +22,6 @@ HRESULT CBrush::OnVisualDetach(CVisualDetachContext& Context)
 {
     HRESULT hr = S_OK;
 
-Cleanup:
     return hr;
 }
 

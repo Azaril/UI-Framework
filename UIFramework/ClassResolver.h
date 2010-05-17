@@ -11,7 +11,10 @@ class CResolvedClass
         virtual INT32 AddRef() = 0;
         virtual INT32 Release() = 0;
 
+        virtual TypeIndex::Value GetType() = 0;
+
         virtual HRESULT CreateInstance( CProviders* pProviders, CPropertyObject** ppObject ) = 0;
+
         virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation ) = 0;
         virtual HRESULT GetEventInformation( CEventInformation** ppEventInformation ) = 0;
 };

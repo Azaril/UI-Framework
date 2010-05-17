@@ -198,6 +198,7 @@ class CUIElement : public CVisual
         static CStaticProperty VisibilityProperty;
         static CStaticProperty HorizontalAlignmentProperty;
         static CStaticProperty VerticalAlignmentProperty;
+        static CStaticProperty MarginProperty;
 
         //
         // Events
@@ -247,8 +248,6 @@ class CUIElement : public CVisual
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        HRESULT GetEffectiveWidth( FLOAT* pWidth );
-        HRESULT GetEffectiveHeight( FLOAT* pHeight );
         HRESULT GetEffectiveVisibility( Visibility::Value* pVisibility );
         HRESULT GetEffectiveMinimumWidth( FLOAT* pMinimumWidth );
         HRESULT GetEffectiveMinimumHeight( FLOAT* pMinimumHeight );
@@ -256,6 +255,7 @@ class CUIElement : public CVisual
         HRESULT GetEffectiveMaximumHeight( FLOAT* pMaximumHeight );
         HRESULT GetEffectiveHorizontalAlignment( HorizontalAlignment::Value* pAlignment );
         HRESULT GetEffectiveVerticalAlignment( VerticalAlignment::Value* pAlignment );
+        HRESULT GetEffectiveMargin( RectF* pMargin );
 
         virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
@@ -287,6 +287,7 @@ class CUIElement : public CVisual
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnVisibilityChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnHorizontalAlignmentChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnVerticalAlignmentChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnMarginChanged );
 
         HRESULT OnWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
@@ -297,6 +298,7 @@ class CUIElement : public CVisual
         HRESULT OnVisibilityChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnHorizontalAlignmentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnVerticalAlignmentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnMarginChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
    
         CTypedLayeredValue< CFloatValue > m_Width;
         CTypedLayeredValue< CFloatValue > m_Height;
@@ -307,6 +309,7 @@ class CUIElement : public CVisual
         CTypedLayeredValue< CVisibilityValue > m_Visibility;
         CTypedLayeredValue< CVerticalAlignmentValue > m_VerticalAlignment;
         CTypedLayeredValue< CHorizontalAlignmentValue > m_HorizontalAlignment;
+        CTypedLayeredValue< CRectFValue > m_Margin;
 
         BOOL m_MeasureDirty;
         BOOL m_ArrangeDirty;

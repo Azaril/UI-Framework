@@ -205,8 +205,8 @@ HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
     if(pWidth == NULL && pHeight == NULL)
     {
-        DesiredSize.width = ImageSize.width;
-        DesiredSize.height = ImageSize.height;
+        DesiredSize.width = (FLOAT)ImageSize.width;
+        DesiredSize.height = (FLOAT)ImageSize.height;
     }
     else if(pWidth == NULL && pHeight != NULL && ImageSize.height != 0)
     {
@@ -251,8 +251,8 @@ HRESULT CImage::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 
     if(pWidth == NULL && pHeight == NULL)
     {
-        UsedSize.width = ImageSize.width;
-        UsedSize.height = ImageSize.height;
+        UsedSize.width = (FLOAT)ImageSize.width;
+        UsedSize.height = (FLOAT)ImageSize.height;
     }
     else if(pWidth == NULL && pHeight != NULL && ImageSize.height != 0)
     {

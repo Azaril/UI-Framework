@@ -17,6 +17,7 @@
 #include "Button.h"
 #include "TemplateBinding.h"
 #include "ContentPresenter.h"
+#include "TypeMarkupExtension.h"
 
 template< typename FromType >
 class StaticClassFactory
@@ -66,6 +67,7 @@ CStaticResolvedClass Classes[] =
     CStaticResolvedClass(L"ControlTemplate", STATIC_CLASS_INFO(CControlTemplate)),
     CStaticResolvedClass(L"Button", STATIC_CLASS_INFO(CButton)),
     CStaticResolvedClass(L"TemplateBinding", STATIC_CLASS_INFO(CTemplateBinding)),
+    CStaticResolvedClass(L"Type", STATIC_CLASS_INFO(CTypeMarkupExtension)),
 };
 
 CStaticClassResolver::CStaticClassResolver()

@@ -7,6 +7,7 @@
 #include "AddToCollectionCommand.h"
 #include "AddToDictionaryCommand.h"
 #include "SetPropertyCommand.h"
+#include "EvaluateMarkupExtensionCommand.h"
 
 BOOL IsAttribute(const WCHAR* pText)
 {
@@ -370,6 +371,8 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
             case MarkupExtensionParseState::Complete:
                 {
+                    IFC(AddEvaluateMarkupExtensionCommand(pContext));
+
                     *pCharactersConsumed = pParsePoint - pValue;
 
                     Continue = FALSE;
@@ -515,6 +518,23 @@ HRESULT AddCreateObjectCommand(CParseContext* pContext, CResolvedClass* pClass)
 
 Cleanup:
     ReleaseObject(pCreateObjectCommand);
+
+    return hr;
+}
+
+HRESULT AddEvaluateMarkupExtensionCommand(CParseContext* pContext)
+{
+    HRESULT hr = S_OK;
+    CEvaluateMarkupExtensionCommand* pEvaluateCommand = NULL;
+
+    IFCPTR(pContext);
+
+    IFC(CEvaluateMarkupExtensionCommand::Create(&pEvaluateCommand));
+
+    IFC(pContext->AddCommand(pEvaluateCommand));
+
+Cleanup:
+    ReleaseObject(pEvaluateCommand);
 
     return hr;
 }

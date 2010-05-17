@@ -16,5 +16,6 @@ HRESULT AttributeStringToValue( CParseContext* pContext, const WCHAR* pValue, UI
 HRESULT AddCreateObjectCommand( CParseContext* pContext, CResolvedClass* pClass );
 HRESULT AddPushValueCommand( CParseContext* pContext, CObjectWithType* pValue );
 HRESULT AddSetPropertyCommand( CParseContext* pContext, CProperty* pProperty, CStringValue* pKeyString = NULL );
+HRESULT AddEvaluateMarkupExtensionCommand( CParseContext* pContext );
 
 HRESULT EvaluateAndAddAttribute( CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength );
