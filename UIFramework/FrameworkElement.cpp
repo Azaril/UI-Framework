@@ -98,6 +98,8 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
         }
     }
 
+    m_StyleDirty = TRUE;
+
     IFC(EnsureStyle());
 
 Cleanup:
@@ -360,6 +362,7 @@ HRESULT CFrameworkElement::EnsureStyle()
 {
     HRESULT hr = S_OK;
     CStyle* pStyle = NULL;
+    CTypeValue* pTypeValue = NULL;
 
     if(m_StyleDirty)
     {
@@ -368,6 +371,17 @@ HRESULT CFrameworkElement::EnsureStyle()
             IFC(RevokeStyle());
 
             IFC(GetEffectiveStyle(&pStyle));
+
+            if(pStyle == NULL)
+            {
+                //Find the default template for this type.
+                IFC(CTypeValue::Create(GetType(), &pTypeValue));
+
+                if(FAILED(FindResource(pTypeValue, &pStyle)))
+                {
+                    pStyle = NULL;
+                }
+            }
 
             if(pStyle)
             {
@@ -380,6 +394,7 @@ HRESULT CFrameworkElement::EnsureStyle()
 
 Cleanup:
     ReleaseObject(pStyle);
+    ReleaseObject(pTypeValue);
 
     return hr;
 }
