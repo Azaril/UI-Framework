@@ -2,7 +2,8 @@
 #include "MouseInput.h"
 
 CUIHost::CUIHost() : m_RenderTarget(NULL),
-                     m_RootElement(NULL)
+                     m_RootElement(NULL),
+                     m_MouseController(NULL)
 {
     m_LastLayoutSize.width = 0;
     m_LastLayoutSize.height = 0;
@@ -10,6 +11,7 @@ CUIHost::CUIHost() : m_RenderTarget(NULL),
 
 CUIHost::~CUIHost()
 {
+    ReleaseObject(m_MouseController);
     ReleaseObject(m_RootElement);
     ReleaseObject(m_RenderTarget);
 }
@@ -27,6 +29,8 @@ HRESULT CUIHost::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRe
 
     IFC(CRootUIElement::Create(pGraphicsDevice, pRenderTarget, pProviders, &m_RootElement));
 
+    IFC(CMouseController::Create(m_RootElement, &m_MouseController));
+
 Cleanup:
     return hr;
 }
@@ -39,6 +43,19 @@ HRESULT CUIHost::GetRootElement(CRootUIElement** ppElement)
 
     *ppElement = m_RootElement;
     AddRefObject(m_RootElement);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIHost::GetMouseController(CMouseController** ppController)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppController);
+
+    *ppController = m_MouseController;
+    AddRefObject(m_MouseController);
 
 Cleanup:
     return hr;
@@ -91,32 +108,6 @@ HRESULT CUIHost::Render()
             IFC(PreRenderContext.RenderRoots(RenderContext));
         }
     }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CUIHost::InjectMouseButton(MouseButton::Value Button, MouseButtonState::Value State, Point2F Point)
-{
-    HRESULT hr = S_OK;
-
-    CMouseInputHitTestFilter Filter;
-    CMouseButtonHitTestCallback Callback(Point, Button, State);
-
-    IFC(HitTestTree(m_RootElement, Point, &Filter, &Callback));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CUIHost::InjectMouseMove(Point2F Point)
-{
-    HRESULT hr = S_OK;
-
-    CMouseInputHitTestFilter Filter;
-    CMouseMoveHitTestCallback Callback(Point);
-
-    IFC(HitTestTree(m_RootElement, Point, &Filter, &Callback));
 
 Cleanup:
     return hr;

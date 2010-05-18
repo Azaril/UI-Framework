@@ -829,6 +829,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\MouseController.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\MouseController.h"
+						>
+					</File>
+					<File
 						RelativePath=".\MouseInput.cpp"
 						>
 					</File>

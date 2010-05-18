@@ -4,6 +4,7 @@
 #include "RefCounted.h"
 #include "RenderTarget.h"
 #include "RootUIElement.h"
+#include "MouseController.h"
 
 class CUIHost : public CRefCountedObject
 {
@@ -14,8 +15,7 @@ class CUIHost : public CRefCountedObject
 
         HRESULT Render();
 
-        HRESULT InjectMouseButton( MouseButton::Value Button, MouseButtonState::Value State, Point2F Point );
-        HRESULT InjectMouseMove( Point2F Point );
+        HRESULT GetMouseController( CMouseController** ppController );
 
     protected:
         CUIHost();
@@ -28,4 +28,5 @@ class CUIHost : public CRefCountedObject
         CRenderTarget* m_RenderTarget;
         CRootUIElement* m_RootElement;
         SizeF m_LastLayoutSize;
+        CMouseController* m_MouseController;
 };

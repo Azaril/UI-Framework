@@ -67,6 +67,9 @@ CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseMiddleButtonUpEve
 
 CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseMoveEvent(L"MouseMove");
 
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseEnterEvent(L"MouseEnter");
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseLeaveEvent(L"MouseLeave");
+
 CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
                            m_ArrangeDirty(TRUE),
@@ -934,7 +937,9 @@ HRESULT CUIElement::CreateEventInformation(CEventInformation** ppInformation)
         &MouseLeftButtonUpEvent,
         &MouseRightButtonUpEvent,
         &MouseMiddleButtonUpEvent,
-        &MouseMoveEvent
+        &MouseMoveEvent,
+        &MouseEnterEvent,
+        &MouseLeaveEvent
     };
 
     IFC(CRoutedEventInformation::Create(Events, ARRAYSIZE(Events), &pEventInformation));

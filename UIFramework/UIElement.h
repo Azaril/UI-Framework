@@ -220,6 +220,10 @@ class CUIElement : public CVisual
         static CStaticRoutedEvent< RoutingStrategy::Direct > MouseMiddleButtonUpEvent;
 
         static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseMoveEvent;
+
+        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseEnterEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseLeaveEvent;
+
     
     protected:
         CUIElement();

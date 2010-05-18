@@ -35,6 +35,7 @@ LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
 CD2DHWNDRenderTarget* g_RenderTarget = NULL;
 CUIHost* g_UIHost = NULL;
+CMouseController* g_MouseController = NULL;
 
 const WCHAR* ImageSources[] =
 {
@@ -84,6 +85,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CImage* pImage1 = NULL;
     CBrush* pWhiteBrush = NULL;
     CProviders* pProviders = NULL;
+    CMouseController* pMouseController = NULL;
     connection ImageLeftButtonDownConnection;
 
 #ifdef _DEBUG
@@ -142,20 +144,24 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     g_UIHost = pUIHost;
 
+    IFC(pUIHost->GetMouseController(&pMouseController));
+
+    g_MouseController = pMouseController;
+
     IFC(pUIHost->GetRootElement(&pRootElement));
 
     IFC(pRootElement->SetChild(pParsedRoot));
 
-    IFC(pRootElement->FindName(L"TextBlock1", &pTextBlock1));
+    //IFC(pRootElement->FindName(L"TextBlock1", &pTextBlock1));
 
-    IFC(pRootElement->FindName(L"Image1", &pImage1));
+    //IFC(pRootElement->FindName(L"Image1", &pImage1));
 
-    //IFC(pImage1->FindResource(L"WhiteBrush", &pWhiteBrush));
+    ////IFC(pImage1->FindResource(L"WhiteBrush", &pWhiteBrush));
 
-    if(pImage1)
-    {
-        pImage1->AddHandler(&CUIElement::MouseLeftButtonDownEvent, bind(&OnImageLeftMouseDown, _1, _2), &ImageLeftButtonDownConnection);
-    }
+    //if(pImage1)
+    //{
+    //    pImage1->AddHandler(&CUIElement::MouseLeftButtonDownEvent, bind(&OnImageLeftMouseDown, _1, _2), &ImageLeftButtonDownConnection);
+    //}
 
     //
     // Message pump
@@ -181,6 +187,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 
 Cleanup:
+    ReleaseObject(pMouseController);
     ReleaseObject(pWhiteBrush);
     ReleaseObject(pTextBlock1);
     ReleaseObject(pImage1);
@@ -297,7 +304,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
 
-            g_UIHost->InjectMouseMove(Point);
+            g_MouseController->InjectMouseMove(Point);
 
             break;
         }
@@ -306,7 +313,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
 
-            g_UIHost->InjectMouseButton(MouseButton::Left, MouseButtonState::Down, Point);
+            g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Down, Point);
 
             break;
         }
@@ -315,7 +322,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
 
-            g_UIHost->InjectMouseButton(MouseButton::Left, MouseButtonState::Up, Point);
+            g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Up, Point);
 
             break;
         }

@@ -1,5 +1,6 @@
 #include "MouseInput.h"
 #include "UIElement.h"
+#include "MouseController.h"
 
 HRESULT CMouseInputHitTestFilter::Filter(CVisual* pVisual, HitTestFilterBehavior::Value* pFilterBehavior)
 {
@@ -20,16 +21,16 @@ Cleanup:
     return hr;
 }
 
-CMouseButtonHitTestCallback::CMouseButtonHitTestCallback(Point2F MouseLocation, MouseButton::Value Button, MouseButtonState::Value State) : m_Button(Button),
-                                                                                                                                            m_ButtonState(State),
-                                                                                                                                            m_Location(MouseLocation)
+CMouseButtonHitTestCallback::CMouseButtonHitTestCallback(CMouseController* pController, Point2F MouseLocation, MouseButton::Value Button, MouseButtonState::Value State) : m_Controller(pController),
+                                                                                                                                                                           m_Button(Button),
+                                                                                                                                                                           m_ButtonState(State),
+                                                                                                                                                                           m_Location(MouseLocation)
 {
 }
 
 HRESULT CMouseButtonHitTestCallback::ItemHit(CVisual* pVisual, HitTestResultBehavior::Value* pResultBehavior)
 {
     HRESULT hr = S_OK;
-    CMouseButtonEventArgs* pEventArgs = NULL;
 
     IFCPTR(pVisual);
     IFCPTR(pResultBehavior);
@@ -38,9 +39,7 @@ HRESULT CMouseButtonHitTestCallback::ItemHit(CVisual* pVisual, HitTestResultBeha
     {
         CUIElement* pElement = (CUIElement*)pVisual;
 
-        IFC(CMouseButtonEventArgs::Create(&CUIElement::MouseButtonEvent, m_Location, m_Button, m_ButtonState, &pEventArgs));
-
-        IFC(pElement->RaiseEvent(pEventArgs));
+        IFC(m_Controller->RaiseMouseButton(m_Location, m_Button, m_ButtonState));
 
         *pResultBehavior = HitTestResultBehavior::Stop;
     }
@@ -50,22 +49,20 @@ HRESULT CMouseButtonHitTestCallback::ItemHit(CVisual* pVisual, HitTestResultBeha
     }
 
 Cleanup:
-    ReleaseObject(pEventArgs);
-
     return hr;
 }
 
 
 
 
-CMouseMoveHitTestCallback::CMouseMoveHitTestCallback(Point2F MouseLocation) : m_Location(MouseLocation)
+CMouseMoveHitTestCallback::CMouseMoveHitTestCallback(CMouseController* pController, Point2F MouseLocation) : m_Controller(pController),
+                                                                                                             m_Location(MouseLocation)
 {
 }
 
 HRESULT CMouseMoveHitTestCallback::ItemHit(CVisual* pVisual, HitTestResultBehavior::Value* pResultBehavior)
 {
     HRESULT hr = S_OK;
-    CMouseEventArgs* pEventArgs = NULL;
 
     IFCPTR(pVisual);
     IFCPTR(pResultBehavior);
@@ -74,9 +71,9 @@ HRESULT CMouseMoveHitTestCallback::ItemHit(CVisual* pVisual, HitTestResultBehavi
     {
         CUIElement* pElement = (CUIElement*)pVisual;
 
-        IFC(CMouseEventArgs::Create(&CUIElement::MouseMoveEvent, m_Location, &pEventArgs));
+        IFC(m_Controller->SetMouseOverElement(pElement, m_Location));
 
-        IFC(pElement->RaiseEvent(pEventArgs));
+        IFC(m_Controller->RaiseMouseMove(m_Location));
 
         *pResultBehavior = HitTestResultBehavior::Stop;
     }
@@ -86,7 +83,5 @@ HRESULT CMouseMoveHitTestCallback::ItemHit(CVisual* pVisual, HitTestResultBehavi
     }
 
 Cleanup:
-    ReleaseObject(pEventArgs);
-
     return hr;
 }
