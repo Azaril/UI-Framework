@@ -821,11 +821,35 @@
 					Name="Input"
 					>
 					<File
+						RelativePath=".\FocusManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\FocusManager.h"
+						>
+					</File>
+					<File
 						RelativePath=".\InputEventArgs.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\InputEventArgs.h"
+						>
+					</File>
+					<File
+						RelativePath=".\KeyboardController.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\KeyboardController.h"
+						>
+					</File>
+					<File
+						RelativePath=".\KeyboardEventArgs.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\KeyboardEventArgs.h"
 						>
 					</File>
 					<File
@@ -850,6 +874,14 @@
 					</File>
 					<File
 						RelativePath=".\MouseInputEventArgs.h"
+						>
+					</File>
+					<File
+						RelativePath=".\TextEventArgs.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\TextEventArgs.h"
 						>
 					</File>
 				</Filter>
@@ -1038,6 +1070,22 @@
 				Name="Text"
 				>
 				<File
+					RelativePath=".\EditableTextLayout.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\EditableTextLayout.h"
+					>
+				</File>
+				<File
+					RelativePath=".\TextEditor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TextEditor.h"
+					>
+				</File>
+				<File
 					RelativePath=".\TextFormat.cpp"
 					>
 				</File>
@@ -1072,6 +1120,14 @@
 				<Filter
 					Name="DirectWrite"
 					>
+					<File
+						RelativePath=".\DirectWriteEditableTextLayout.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DirectWriteEditableTextLayout.h"
+						>
+					</File>
 					<File
 						RelativePath=".\DirectWriteLayoutMetrics.cpp"
 						>

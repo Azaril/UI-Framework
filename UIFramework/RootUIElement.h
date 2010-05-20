@@ -6,7 +6,7 @@ class CRootUIElement : public CFrameworkElement,
                        public IRenderRoot
 {
     public:
-        DECLARE_FACTORY3( CRootUIElement, CGraphicsDevice*, CRenderTarget*, CProviders* );
+        DECLARE_FACTORY4( CRootUIElement, CGraphicsDevice*, CRenderTarget*, CProviders*, CFocusManager* );
 
         virtual HRESULT RenderRoot( CRenderContext& Context );
 
@@ -20,7 +20,7 @@ class CRootUIElement : public CFrameworkElement,
         CRootUIElement();
         virtual ~CRootUIElement();
 
-        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders );
+        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders, CFocusManager* pFocusManager );
         HRESULT Finalize();
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );

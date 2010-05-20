@@ -34,7 +34,6 @@ HRESULT CGradientStop::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-Cleanup:
     return hr;
 }
 
@@ -54,7 +53,6 @@ HRESULT CGradientStop::OnColorChanged(CObjectWithType* pOldValue, CObjectWithTyp
 
     //TODO: Invalidate parent?
 
-Cleanup:
     return hr;
 }
 
@@ -64,7 +62,6 @@ HRESULT CGradientStop::OnOffsetChanged(CObjectWithType* pOldValue, CObjectWithTy
 
     //TODO: Invalidate parent?
 
-Cleanup:
     return hr;
 }
 

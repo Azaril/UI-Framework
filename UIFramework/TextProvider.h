@@ -2,6 +2,7 @@
 
 #include "TextFormat.h"
 #include "TextLayout.h"
+#include "EditableTextLayout.h"
 
 class CTextProvider : public CRefCountedObject
 {
@@ -10,4 +11,5 @@ class CTextProvider : public CRefCountedObject
         virtual HRESULT GetDefaultFormat( CTextFormat** ppTextFormat ) = 0;
 
         virtual HRESULT CreateTextLayout( const WCHAR* pText, UINT32 CharacterCount, CTextFormat* pTextFormat, const SizeF& Size, CTextLayout** ppTextLayout ) = 0;
+        virtual HRESULT CreateEditableTextLayout( const SizeF& Size, CEditableTextLayout** ppEditableTextLayout ) = 0;
 };

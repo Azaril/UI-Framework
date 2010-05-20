@@ -15,6 +15,7 @@ class CDirectWriteTextProvider : public CTextProvider
         virtual HRESULT GetDefaultFormat( CTextFormat** ppTextFormat );
 
         virtual HRESULT CreateTextLayout( const WCHAR* pText, UINT32 CharacterCount, CTextFormat* pTextFormat, const SizeF& Size, CTextLayout** ppTextLayout );
+        virtual HRESULT CreateEditableTextLayout( const SizeF& Size, CEditableTextLayout** ppEditableTextLayout );
 
     protected:
         CDirectWriteTextProvider();

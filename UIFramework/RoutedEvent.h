@@ -9,7 +9,8 @@ namespace RoutingStrategy
     enum Value
     {
         Direct,
-        Bubbling
+        Bubbling,
+        Tunneled
     };
 }
 

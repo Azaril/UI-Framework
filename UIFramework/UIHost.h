@@ -5,6 +5,8 @@
 #include "RenderTarget.h"
 #include "RootUIElement.h"
 #include "MouseController.h"
+#include "KeyboardController.h"
+#include "FocusManager.h"
 
 class CUIHost : public CRefCountedObject
 {
@@ -16,6 +18,7 @@ class CUIHost : public CRefCountedObject
         HRESULT Render();
 
         HRESULT GetMouseController( CMouseController** ppController );
+        HRESULT GetKeyboardController( CKeyboardController** ppController );
 
     protected:
         CUIHost();
@@ -28,5 +31,7 @@ class CUIHost : public CRefCountedObject
         CRenderTarget* m_RenderTarget;
         CRootUIElement* m_RootElement;
         SizeF m_LastLayoutSize;
+        CFocusManager* m_FocusManager;
         CMouseController* m_MouseController;
+        CKeyboardController* m_KeyboardController;
 };

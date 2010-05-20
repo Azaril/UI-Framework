@@ -23,9 +23,17 @@ Cleanup:
     return hr;
 }
 
-IDWriteTextLayout* CDirectWriteTextLayout::GetDirectWriteTextLayout()
+HRESULT CDirectWriteTextLayout::GetDirectWriteTextLayout(IDWriteTextLayout** ppLayout)
 {
-    return m_Layout;
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppLayout);
+
+    *ppLayout = m_Layout;
+    AddRefObject(m_Layout);
+
+Cleanup:
+    return hr;
 }
 
 HRESULT CDirectWriteTextLayout::SetMaxSize(const SizeF &Size)

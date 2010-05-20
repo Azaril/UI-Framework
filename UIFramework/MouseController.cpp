@@ -2,7 +2,8 @@
 
 CMouseController::CMouseController() : m_RootElement(NULL),
                                        m_MouseOverElement(NULL),
-                                       m_CaptureElement(NULL)
+                                       m_CaptureElement(NULL),
+                                       m_FocusManager(NULL)
 {
 }
 
@@ -11,13 +12,18 @@ CMouseController::~CMouseController()
     ReleaseObject(m_RootElement);
     ReleaseObject(m_MouseOverElement);
     ReleaseObject(m_CaptureElement);
+    ReleaseObject(m_FocusManager);
 }
 
-HRESULT CMouseController::Initialize(CUIElement* pRootElement)
+HRESULT CMouseController::Initialize(CFocusManager* pFocusManager, CUIElement* pRootElement)
 {
     HRESULT hr = S_OK;
 
+    IFCPTR(pFocusManager);
     IFCPTR(pRootElement);
+
+    m_FocusManager = pFocusManager;
+    AddRefObject(m_FocusManager);
 
     m_RootElement = pRootElement;
     AddRefObject(m_RootElement);

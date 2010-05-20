@@ -1,6 +1,7 @@
 #include "DirectWriteTextProvider.h"
 #include "DirectWriteTextFormat.h"
 #include "DirectWriteTextLayout.h"
+#include "DirectWriteEditableTextLayout.h"
 
 typedef HRESULT (WINAPI *DWriteCreateFactoryFunc)( __in DWRITE_FACTORY_TYPE factoryType, __in REFIID iid, __out IUnknown **factory );
 
@@ -100,6 +101,24 @@ HRESULT CDirectWriteTextProvider::CreateTextLayout(const WCHAR* pText, UINT32 Ch
 Cleanup:
     ReleaseObject(pDirectWriteTextLayout);
     ReleaseObject(pTextLayout);
+
+    return hr;
+}
+
+HRESULT CDirectWriteTextProvider::CreateEditableTextLayout(const SizeF& Size, CEditableTextLayout** ppEditableTextLayout)
+{
+    HRESULT hr = S_OK;
+    CDirectWriteEditableTextLayout* pDirectWriteEditableTextLayout = NULL;
+
+    IFCPTR(ppEditableTextLayout);
+
+    IFC(CDirectWriteEditableTextLayout::Create(this, Size, &pDirectWriteEditableTextLayout));
+
+    *ppEditableTextLayout = pDirectWriteEditableTextLayout;
+    pDirectWriteEditableTextLayout = NULL;
+
+Cleanup:
+    ReleaseObject(pDirectWriteEditableTextLayout);
 
     return hr;
 }

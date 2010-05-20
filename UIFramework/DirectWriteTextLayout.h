@@ -10,7 +10,7 @@ class CDirectWriteTextLayout : public CTextLayout
     public:
         DECLARE_FACTORY1( CDirectWriteTextLayout, IDWriteTextLayout* );
 
-        IDWriteTextLayout* GetDirectWriteTextLayout();
+        HRESULT GetDirectWriteTextLayout( IDWriteTextLayout** ppLayout );
 
         virtual HRESULT SetMaxSize( const SizeF& Size );
         virtual HRESULT GetMetrics( CTextLayoutMetrics** ppMetrics );

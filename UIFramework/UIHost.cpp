@@ -3,7 +3,9 @@
 
 CUIHost::CUIHost() : m_RenderTarget(NULL),
                      m_RootElement(NULL),
-                     m_MouseController(NULL)
+                     m_MouseController(NULL),
+                     m_KeyboardController(NULL),
+                     m_FocusManager(NULL)
 {
     m_LastLayoutSize.width = 0;
     m_LastLayoutSize.height = 0;
@@ -11,6 +13,8 @@ CUIHost::CUIHost() : m_RenderTarget(NULL),
 
 CUIHost::~CUIHost()
 {
+    ReleaseObject(m_FocusManager);
+    ReleaseObject(m_KeyboardController);
     ReleaseObject(m_MouseController);
     ReleaseObject(m_RootElement);
     ReleaseObject(m_RenderTarget);
@@ -27,9 +31,13 @@ HRESULT CUIHost::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRe
     m_RenderTarget = pRenderTarget;
     AddRefObject(m_RenderTarget);
 
-    IFC(CRootUIElement::Create(pGraphicsDevice, pRenderTarget, pProviders, &m_RootElement));
+    IFC(CFocusManager::Create(&m_FocusManager));
 
-    IFC(CMouseController::Create(m_RootElement, &m_MouseController));
+    IFC(CRootUIElement::Create(pGraphicsDevice, pRenderTarget, pProviders, m_FocusManager, &m_RootElement));
+
+    IFC(CMouseController::Create(m_FocusManager, m_RootElement, &m_MouseController));
+
+    IFC(CKeyboardController::Create(m_FocusManager, m_RootElement, &m_KeyboardController));
 
 Cleanup:
     return hr;
@@ -56,6 +64,19 @@ HRESULT CUIHost::GetMouseController(CMouseController** ppController)
 
     *ppController = m_MouseController;
     AddRefObject(m_MouseController);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIHost::GetKeyboardController(CKeyboardController** ppController)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppController);
+
+    *ppController = m_KeyboardController;
+    AddRefObject(m_KeyboardController);
 
 Cleanup:
     return hr;

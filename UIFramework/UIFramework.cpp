@@ -36,6 +36,7 @@ LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 CD2DHWNDRenderTarget* g_RenderTarget = NULL;
 CUIHost* g_UIHost = NULL;
 CMouseController* g_MouseController = NULL;
+CKeyboardController* g_KeyboardController = NULL;
 
 const WCHAR* ImageSources[] =
 {
@@ -86,6 +87,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CBrush* pWhiteBrush = NULL;
     CProviders* pProviders = NULL;
     CMouseController* pMouseController = NULL;
+    CKeyboardController* pKeyboardController = NULL;
     connection ImageLeftButtonDownConnection;
 
 #ifdef _DEBUG
@@ -148,6 +150,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     g_MouseController = pMouseController;
 
+    IFC(pUIHost->GetKeyboardController(&pKeyboardController));
+
+    g_KeyboardController = pKeyboardController;
+
     IFC(pUIHost->GetRootElement(&pRootElement));
 
     IFC(pRootElement->SetChild(pParsedRoot));
@@ -188,6 +194,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 Cleanup:
     ReleaseObject(pMouseController);
+    ReleaseObject(pKeyboardController);
     ReleaseObject(pWhiteBrush);
     ReleaseObject(pTextBlock1);
     ReleaseObject(pImage1);
@@ -271,82 +278,106 @@ Cleanup:
    return hr;
 }
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND	- process the application menu
-//  WM_PAINT	- Paint the main window
-//  WM_DESTROY	- post a quit message and return
-//
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	int wmId, wmEvent;
-	PAINTSTRUCT ps;
-	HDC hdc;
+    HRESULT hr = S_OK;
+    LRESULT Result = 0;
+    BOOL Handled = FALSE;
 
 	switch (message)
 	{
-    case WM_SIZE:
-        {
-            //if(wParam == SIZE_RESTORED)
-            //{
-                ID2D1HwndRenderTarget* pRenderTarget = g_RenderTarget->GetD2DHWNDRenderTarget();
-                
-                pRenderTarget->Resize(D2D1::SizeU(LOWORD(lParam), HIWORD(lParam)));
-            //}
-            break;
-        }
+        case WM_SIZE:
+            {
+                //if(wParam == SIZE_RESTORED)
+                //{
+                    ID2D1HwndRenderTarget* pRenderTarget = g_RenderTarget->GetD2DHWNDRenderTarget();
+                    
+                    IFC(pRenderTarget->Resize(D2D1::SizeU(LOWORD(lParam), HIWORD(lParam))));
+                //}
+                break;
+            }
 
-    case WM_MOUSEMOVE:
-        {
-            Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+        case WM_MOUSEMOVE:
+            {
+                Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
 
-            g_MouseController->InjectMouseMove(Point);
+                IFC(g_MouseController->InjectMouseMove(Point));
 
-            break;
-        }
+                Handled = TRUE;
 
-    case WM_LBUTTONDOWN:
-        {
-            Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+                break;
+            }
 
-            g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Down, Point);
+        case WM_LBUTTONDOWN:
+            {
+                Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
 
-            break;
-        }
+                IFC(g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Down, Point));
 
-    case WM_LBUTTONUP:
-        {
-            Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+                Handled = TRUE;
 
-            g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Up, Point);
+                break;
+            }
 
-            break;
-        }
+        case WM_LBUTTONUP:
+            {
+                Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
 
-	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
-		wmEvent = HIWORD(wParam);
-		// Parse the menu selections:
-		//switch (wmId)
-		//{
-		//default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-		//}
-		break;
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		// TODO: Add any drawing code here...
-		EndPaint(hWnd, &ps);
-		break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
+                IFC(g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Up, Point));
+
+                Handled = TRUE;
+
+                break;
+            }
+
+        case WM_KEYDOWN:
+            {
+                BOOL Consumed = FALSE;
+
+                IFC(g_KeyboardController->InjectKey(wParam, KeyState::Down, &Consumed));
+
+                Handled = Consumed;
+
+                break;
+            }
+
+        case WM_KEYUP:
+            {
+                BOOL Consumed = FALSE;
+
+                IFC(g_KeyboardController->InjectKey(wParam, KeyState::Up, &Consumed));
+
+                Handled = Consumed;
+
+                break;
+            }
+
+        case WM_CHAR:
+            {
+                BOOL Consumed = FALSE;
+
+                IFC(g_KeyboardController->InjectCharacter(wParam, &Consumed));
+
+                Handled = Consumed;
+
+                break;
+            }
+
+	    case WM_DESTROY:
+            {
+		        PostQuitMessage(0);
+
+                Handled = TRUE;
+
+		        break;
+            }
 	}
-	return 0;
+
+Cleanup:
+    if(!Handled)
+    {
+        Result = DefWindowProc(hWnd, message, wParam, lParam);
+    }
+
+	return Result;
 }

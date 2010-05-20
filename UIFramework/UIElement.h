@@ -18,17 +18,20 @@
 #include "StaticPropertyInformation.h"
 
 class CUIElement;
+class CFocusManager;
 
 class CUIAttachContext
 {
     public:
         CUIAttachContext() : m_Parent(NULL),
-                             m_TemplateParent(NULL)
+                             m_TemplateParent(NULL),
+                             m_FocusManager(NULL)
         {
         }
 
-        CUIAttachContext( CUIElement* pParent, CUIElement* pTemplateParent ) : m_Parent(pParent),
-                                                                               m_TemplateParent(pTemplateParent)
+        CUIAttachContext( CUIElement* pParent, CUIElement* pTemplateParent, CFocusManager* pFocusManager ) : m_Parent(pParent),
+                                                                                                             m_TemplateParent(pTemplateParent),
+                                                                                                             m_FocusManager(pFocusManager)
         {
         }
     
@@ -42,15 +45,22 @@ class CUIAttachContext
             return m_TemplateParent;
         }
 
+        CFocusManager* GetFocusManager()
+        {
+            return m_FocusManager;
+        }
+
         void Reset()
         {
             m_Parent = NULL;
             m_TemplateParent = NULL;
+            m_FocusManager = NULL;
         }
     
     protected:
         CUIElement* m_Parent;
         CUIElement* m_TemplateParent;
+        CFocusManager* m_FocusManager;
 };
 
 class CUIDetachContext
@@ -177,6 +187,7 @@ class CUIElement : public CVisual
 
         virtual CUIElement* GetParent();
         virtual CUIElement* GetTemplateParent();
+        CFocusManager* GetFocusManager();
         CProviders* GetProviders();
         CTypeConverter* GetTypeConverter();
 
@@ -185,6 +196,8 @@ class CUIElement : public CVisual
         virtual HRESULT RaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
 
         virtual HRESULT AddHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, connection* pConnection );
+
+        HRESULT Focus( BOOL* pSetFocus );
 
         //
         // Properties
@@ -199,6 +212,7 @@ class CUIElement : public CVisual
         static CStaticProperty HorizontalAlignmentProperty;
         static CStaticProperty VerticalAlignmentProperty;
         static CStaticProperty MarginProperty;
+        static CStaticProperty FocusableProperty;
 
         //
         // Events
@@ -223,6 +237,16 @@ class CUIElement : public CVisual
 
         static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseEnterEvent;
         static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseLeaveEvent;
+
+        static CStaticRoutedEvent< RoutingStrategy::Tunneled > PreviewGotFocusEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Bubbling > GotFocusEvent;
+
+        static CStaticRoutedEvent< RoutingStrategy::Tunneled > PreviewLostFocusEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Bubbling > LostFocusEvent;
+
+        static CStaticRoutedEvent< RoutingStrategy::Bubbling > KeyEvent;
+
+        static CStaticRoutedEvent< RoutingStrategy::Bubbling > TextEvent;
 
     
     protected:
@@ -249,6 +273,7 @@ class CUIElement : public CVisual
 
         virtual HRESULT InternalRaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
         virtual HRESULT InternalRaiseBubbledEvent( CRoutedEventArgs* pRoutedEventArgs );
+        virtual HRESULT InternalRaiseTunneledEvent( CRoutedEventArgs* pRoutedEventArgs );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
@@ -260,6 +285,7 @@ class CUIElement : public CVisual
         HRESULT GetEffectiveHorizontalAlignment( HorizontalAlignment::Value* pAlignment );
         HRESULT GetEffectiveVerticalAlignment( VerticalAlignment::Value* pAlignment );
         HRESULT GetEffectiveMargin( RectF* pMargin );
+        HRESULT GetEffectiveFocusable( BOOL* pFocusable );
 
         virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
@@ -292,6 +318,7 @@ class CUIElement : public CVisual
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnHorizontalAlignmentChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnVerticalAlignmentChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnMarginChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnFocusableChanged );
 
         HRESULT OnWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
@@ -303,6 +330,7 @@ class CUIElement : public CVisual
         HRESULT OnHorizontalAlignmentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnVerticalAlignmentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnMarginChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnFocusableChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
    
         CTypedLayeredValue< CFloatValue > m_Width;
         CTypedLayeredValue< CFloatValue > m_Height;
@@ -314,6 +342,7 @@ class CUIElement : public CVisual
         CTypedLayeredValue< CVerticalAlignmentValue > m_VerticalAlignment;
         CTypedLayeredValue< CHorizontalAlignmentValue > m_HorizontalAlignment;
         CTypedLayeredValue< CRectFValue > m_Margin;
+        CTypedLayeredValue< CBoolValue > m_Focusable;
 
         BOOL m_MeasureDirty;
         BOOL m_ArrangeDirty;

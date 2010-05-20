@@ -7,6 +7,7 @@
 #include "D2DLinearGradientBrush.h"
 #include "ErrorChecking.h"
 #include "DirectWriteTextLayout.h"
+#include "DirectWriteEditableTextLayout.h"
 #include "WICBitmapSource.h"
 
 CD2DRenderTarget::CD2DRenderTarget() : m_RenderTarget(NULL)
@@ -180,29 +181,48 @@ Cleanup:
     return hr;
 }
 
-//HRESULT CD2DRenderTarget::CreateCompatibleRenderTarget()
-//{
-    //HRESULT hr = S_OK;
-
-//Cleanup:
-    //return hr;
-//}
-
 HRESULT CD2DRenderTarget::RenderTextLayout(const Point2F& Origin, CTextLayout* pTextLayout, CGraphicsBrush* pBrush)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
-    CDirectWriteTextLayout* pDirectWriteTextLayout = NULL;
+    IDWriteTextLayout* pInternalTextLayout = NULL;
 
     IFCPTR(pTextLayout);
     IFCPTR(pBrush);
 
     pD2DBrush = (CD2DBrush*)pBrush;
-    pDirectWriteTextLayout = (CDirectWriteTextLayout*)pTextLayout;
 
-    m_RenderTarget->DrawTextLayout(Origin, pDirectWriteTextLayout->GetDirectWriteTextLayout(), pD2DBrush->GetD2DBrush());
+    switch(pTextLayout->GetType())
+    {
+        case TypeIndex::TextLayout:
+            {
+                CDirectWriteTextLayout* pDWLayout = (CDirectWriteTextLayout*)pTextLayout;
+
+                IFC(pDWLayout->GetDirectWriteTextLayout(&pInternalTextLayout))
+
+                break;
+            }
+
+        case TypeIndex::EditableTextLayout:
+            {
+                CDirectWriteEditableTextLayout* pDWLayout = (CDirectWriteEditableTextLayout*)pTextLayout;
+
+                IFC(pDWLayout->GetDirectWriteTextLayout(&pInternalTextLayout))
+
+                break;
+            }
+
+        default:
+            {
+                IFC(E_UNEXPECTED);
+            }
+    }
+
+    m_RenderTarget->DrawTextLayout(Origin, pInternalTextLayout, pD2DBrush->GetD2DBrush());
 
 Cleanup:
+    ReleaseObject(pInternalTextLayout);
+
     return hr;
 }
 
@@ -291,7 +311,7 @@ HRESULT CD2DRenderTarget::FillGeometry(CGeometry* pGeometry, CGraphicsBrush* pBr
 
         default:
             {
-                IFC(E_FAIL);
+                IFC(E_UNEXPECTED);
             }
     }
 

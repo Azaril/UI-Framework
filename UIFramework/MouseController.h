@@ -3,11 +3,12 @@
 #include "RefCounted.h"
 #include "UIElement.h"
 #include "MouseInput.h"
+#include "FocusManager.h"
 
 class CMouseController : public CRefCountedObject
 {
     public:
-        DECLARE_FACTORY1( CMouseController, CUIElement* );
+        DECLARE_FACTORY2( CMouseController, CFocusManager*, CUIElement* );
 
         HRESULT InjectMouseButton( MouseButton::Value Button, MouseButtonState::Value State, Point2F Location );
         HRESULT InjectMouseMove( Point2F Location );
@@ -20,8 +21,9 @@ class CMouseController : public CRefCountedObject
         CMouseController();
         virtual ~CMouseController();
 
-        HRESULT Initialize( CUIElement* pRootElement );
+        HRESULT Initialize( CFocusManager* pFocusManager, CUIElement* pRootElement );
 
+        CFocusManager* m_FocusManager;
         CUIElement* m_RootElement;
         CUIElement* m_MouseOverElement;
         CUIElement* m_CaptureElement;

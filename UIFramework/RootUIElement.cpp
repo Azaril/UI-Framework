@@ -11,13 +11,14 @@ CRootUIElement::~CRootUIElement()
     Finalize();
 }
 
-HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders)
+HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders, CFocusManager* pFocusManager)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pGraphicsDevice);
     IFCPTR(pRenderTarget);
     IFCPTR(pProviders);
+    IFCPTR(pFocusManager);
 
     IFC(CFrameworkElement::Initialize(pProviders));
 
@@ -33,7 +34,7 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     }
 
     {
-        CUIAttachContext UIContext(NULL, NULL);
+        CUIAttachContext UIContext(NULL, NULL, pFocusManager);
 
         IFC(OnAttach(UIContext));
     }

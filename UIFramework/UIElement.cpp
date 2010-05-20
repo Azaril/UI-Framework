@@ -4,6 +4,7 @@
 #include "DelegatingPropertyInformation.h"
 #include "MouseInput.h"
 #include "RoutedEventInformation.h"
+#include "FocusManager.h"
 
 //
 // Property Defaults
@@ -18,6 +19,8 @@ DEFINE_GET_DEFAULT( Visibility, CVisibilityValue, Visibility::Visible );
 DEFINE_GET_DEFAULT( HorizontalAlignment, CHorizontalAlignmentValue, HorizontalAlignment::Stretch );
 DEFINE_GET_DEFAULT( VerticalAlignment, CVerticalAlignmentValue, VerticalAlignment::Stretch );
 DEFINE_GET_DEFAULT( Margin, CRectFValue, D2D1::RectF(0, 0, 0, 0) );
+DEFINE_GET_DEFAULT( Focusable, CBoolValue, FALSE );
+
 //
 // Properties
 //
@@ -31,6 +34,7 @@ CStaticProperty CUIElement::VisibilityProperty( L"Visibility", TypeIndex::Visibi
 CStaticProperty CUIElement::HorizontalAlignmentProperty( L"HorizontalAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( HorizontalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged ) );
 CStaticProperty CUIElement::VerticalAlignmentProperty( L"VerticalAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( VerticalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged ) );
 CStaticProperty CUIElement::MarginProperty( L"Margin", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT( Margin ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged ) );
+CStaticProperty CUIElement::FocusableProperty( L"Focusable", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( Focusable ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnFocusableChanged ) );
 
 //
 // Property Change Handlers
@@ -45,6 +49,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVisibilityChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnFocusableChanged );
 
 //
 // Events
@@ -70,6 +75,16 @@ CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseMoveEvent(L"Mou
 CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseEnterEvent(L"MouseEnter");
 CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseLeaveEvent(L"MouseLeave");
 
+CStaticRoutedEvent< RoutingStrategy::Tunneled > CUIElement::PreviewGotFocusEvent(L"PreviewGotFocus");
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::GotFocusEvent(L"GotFocus");
+
+CStaticRoutedEvent< RoutingStrategy::Tunneled > CUIElement::PreviewLostFocusEvent(L"PreviewLostFocus");
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::LostFocusEvent(L"LostFocus");
+
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::KeyEvent(L"KeyEvent");
+
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::TextEvent(L"TextEvent");
+
 CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
                            m_ArrangeDirty(TRUE),
@@ -83,7 +98,8 @@ CUIElement::CUIElement() : m_Attached(FALSE),
                            m_Visibility(this, &CUIElement::VisibilityProperty),
                            m_VerticalAlignment(this, &CUIElement::VerticalAlignmentProperty),
                            m_HorizontalAlignment(this, &CUIElement::HorizontalAlignmentProperty),
-                           m_Margin(this, &CUIElement::MarginProperty)
+                           m_Margin(this, &CUIElement::MarginProperty),
+                           m_Focusable(this, &CUIElement::FocusableProperty)
 {
     m_DesiredSize.width = 0;
     m_DesiredSize.height = 0;
@@ -543,6 +559,21 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::GetEffectiveFocusable(BOOL* pFocusable)
+{
+    HRESULT hr = S_OK;
+    CBoolValue* pEffectiveValue = NULL;
+
+    IFC(m_Focusable.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pFocusable = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
 SizeF CUIElement::GetDesiredSize()
 {
     return m_DesiredSize;
@@ -789,6 +820,11 @@ CUIElement* CUIElement::GetTemplateParent()
     return m_Context.GetTemplateParent();
 }
 
+CFocusManager* CUIElement::GetFocusManager()
+{
+    return m_Context.GetFocusManager();
+}
+
 CProviders* CUIElement::GetProviders()
 {
     return m_Providers;
@@ -939,7 +975,13 @@ HRESULT CUIElement::CreateEventInformation(CEventInformation** ppInformation)
         &MouseMiddleButtonUpEvent,
         &MouseMoveEvent,
         &MouseEnterEvent,
-        &MouseLeaveEvent
+        &MouseLeaveEvent,
+        &PreviewGotFocusEvent,
+        &GotFocusEvent,
+        &PreviewLostFocusEvent,
+        &LostFocusEvent,
+        &KeyEvent,
+        &TextEvent
     };
 
     IFC(CRoutedEventInformation::Create(Events, ARRAYSIZE(Events), &pEventInformation));
@@ -1208,6 +1250,28 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::OnFocusableChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::Focus(BOOL* pSetFocus)
+{
+    HRESULT hr = S_OK;
+    CFocusManager* pFocusManager = NULL;
+
+    pFocusManager = GetFocusManager();
+    IFCPTR(pFocusManager);
+
+    IFC(pFocusManager->SetFocus(this, pSetFocus));
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CUIElement::RaiseEvent(CRoutedEventArgs* pRoutedEventArgs)
 {
     HRESULT hr = S_OK;
@@ -1230,6 +1294,13 @@ HRESULT CUIElement::RaiseEvent(CRoutedEventArgs* pRoutedEventArgs)
         case RoutingStrategy::Bubbling:
             {
                 IFC(InternalRaiseBubbledEvent(pRoutedEventArgs));
+
+                break;
+            }
+
+        case RoutingStrategy::Tunneled:
+            {
+                IFC(InternalRaiseTunneledEvent(pRoutedEventArgs));
 
                 break;
             }
@@ -1283,6 +1354,29 @@ HRESULT CUIElement::InternalRaiseBubbledEvent(CRoutedEventArgs* pRoutedEventArgs
         {
             IFC(pParent->InternalRaiseBubbledEvent(pRoutedEventArgs));
         }
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::InternalRaiseTunneledEvent(CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+    CUIElement* pParent = NULL;
+
+    IFCPTR(pRoutedEventArgs);
+
+    pParent = GetParent();
+
+    if(pParent)
+    {
+        IFC(pParent->InternalRaiseTunneledEvent(pRoutedEventArgs));
+    }
+
+    if(!pRoutedEventArgs->IsHandled())
+    {
+        IFC(InternalRaiseEvent(pRoutedEventArgs));
     }
 
 Cleanup:
@@ -1379,6 +1473,7 @@ void CUIElement::OnMouseDown(CObjectWithType* pSender, CRoutedEventArgs* pRouted
     HRESULT hr = S_OK;
     CMouseButtonEventArgs* pMouseButtonEventArgs = NULL;
     CMouseButtonEventArgs* pNewEventArgs = NULL;
+    BOOL SetFocus = FALSE;
 
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
@@ -1386,6 +1481,14 @@ void CUIElement::OnMouseDown(CObjectWithType* pSender, CRoutedEventArgs* pRouted
     IFCEXPECT(pRoutedEventArgs->IsTypeOf(TypeIndex::MouseButtonEventArgs));
 
     pMouseButtonEventArgs = (CMouseButtonEventArgs*)pRoutedEventArgs;
+
+    // Set focus to the element if it's focusable.
+    IFC(Focus(&SetFocus));
+
+    if(SetFocus)
+    {
+        pMouseButtonEventArgs->SetHandled(TRUE);
+    }
 
     if(!pMouseButtonEventArgs->IsHandled())
     {

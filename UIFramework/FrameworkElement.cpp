@@ -85,7 +85,7 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
     }
 
     {
-        CUIAttachContext ChildContext(this, GetTemplateParentForChildren());
+        CUIAttachContext ChildContext(this, GetTemplateParentForChildren(), GetFocusManager());
 
         for(UINT i = 0; i < m_Children->GetCount(); i++)
         {
@@ -254,7 +254,7 @@ VOID CFrameworkElement::OnChildAdded(CUIElement* pElement)
 
     if(IsAttached())
     {
-        CUIAttachContext ChildContext(this, GetTemplateParentForChildren());
+        CUIAttachContext ChildContext(this, GetTemplateParentForChildren(), GetFocusManager());
 
         IFC(pElement->OnAttach(ChildContext));
     }
