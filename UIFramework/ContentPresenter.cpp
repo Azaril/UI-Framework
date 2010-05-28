@@ -60,7 +60,14 @@ HRESULT CContentPresenter::SetContent(CObjectWithType* pContent)
 {
     HRESULT hr = S_OK;
 
-    IFC(SetValue(&CContentPresenter::ContentProperty, pContent));
+    if(pContent)
+    {
+        IFC(SetValue(&CContentPresenter::ContentProperty, pContent));
+    }
+    else
+    {
+        IFC(ClearValue(&CContentPresenter::ContentProperty));
+    }
 
 Cleanup:
     return hr;

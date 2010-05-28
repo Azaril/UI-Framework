@@ -62,7 +62,7 @@ HRESULT CTextBox::OnAttach(CUIAttachContext& Context)
 
     if(pText)
     {
-        IFC(m_TextLayout->SetText(pText->GetValue(), pText->GetLength()));
+        IFC(m_TextEditor->SetText(pText->GetValue(), pText->GetLength()));
     }
 
     IFC(GetTemplateChild(L"PART_TextHost", &m_TextHostControl));

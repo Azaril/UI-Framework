@@ -11,6 +11,7 @@ class CLayeredValue
         virtual HRESULT SetStyleValue( CObjectWithType* pObject, CProviders* pProviders ) = 0;
         virtual HRESULT SetLocalValue( CObjectWithType* pObject, CProviders* pProviders ) = 0;
         virtual HRESULT GetLocalValue( CProviders* pProviders, CObjectWithType** ppValue ) = 0;
+        virtual HRESULT ClearLocalValue( CProviders* pProviders ) = 0;
         virtual HRESULT GetEffectiveValue( CProviders* pProviders, CObjectWithType** ppValue ) = 0;
 };
 
@@ -89,6 +90,16 @@ class CTypedLocalLayeredValue : public CLayeredValue
             HRESULT hr = S_OK;
  
             IFC(SetValueToLayer(m_LocalLayer, EffectiveValue::Local, pObject, pProviders));
+
+        Cleanup:
+            return hr;
+        }
+
+        virtual HRESULT ClearLocalValue( CProviders* pProviders )
+        {
+            HRESULT hr = S_OK;
+
+            IFC(ClearLayer(m_LocalLayer, EffectiveValue::Local, pProviders));
 
         Cleanup:
             return hr;
@@ -208,6 +219,47 @@ class CTypedLocalLayeredValue : public CLayeredValue
 
         Cleanup:
             ReleaseObject(pDefaultValue);
+
+            return hr;
+        }
+
+        HRESULT ClearLayer( ValueLayer& Layer, EffectiveValue::Value ValueType, CProviders* pProviders )
+        {
+            HRESULT hr = S_OK;
+            BOOL IsEffectiveValue = (m_ActualEffectiveValue <= ValueType);
+            CObjectWithType* pOldValue = NULL;
+            CObjectWithType* pNewValue = NULL;
+
+            if(IsEffectiveValue)
+            {
+                pOldValue = m_EffectiveValueObject;
+                m_EffectiveValueObject = NULL;
+            }
+
+            if(Layer.Value && Layer.Value->IsTypeOf(TypeIndex::Binding))
+            {
+                CBinding* pOldBinding = (CBinding*)Layer.Value;
+
+                IFC(pOldBinding->ClearTarget());
+            }
+
+            ReleaseObject(Layer.Value);
+            Layer.BindingInvalidationConnection.disconnect();
+
+            m_EffectiveValue = (EffectiveValue::Value)(m_EffectiveValue & (~ValueType));
+
+            if(IsEffectiveValue)
+            {
+                m_IsInvalidated = TRUE;
+
+                IFC(GetEffectiveValue(pProviders, &pNewValue));
+
+                IFC(RaiseValueChanged(pOldValue, pNewValue));
+            }
+
+        Cleanup:
+            ReleaseObject(pOldValue);
+            ReleaseObject(pNewValue);
 
             return hr;
         }

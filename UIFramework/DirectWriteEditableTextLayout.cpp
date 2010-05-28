@@ -38,7 +38,7 @@ UINT32 CDirectWriteEditableTextLayout::GetStartPosition()
 
 UINT32 CDirectWriteEditableTextLayout::GetEndPosition()
 {
-    return m_Text.size();
+    return m_Text.length();
 }
 
 HRESULT CDirectWriteEditableTextLayout::SetText(const WCHAR* pText, UINT32 TextLength)
@@ -89,7 +89,7 @@ HRESULT CDirectWriteEditableTextLayout::RemoveText(UINT32 Position, UINT32 Lengt
 {
     HRESULT hr = S_OK;
 
-    IFCEXPECT(Position >= GetStartPosition() && Position <= GetEndPosition());
+    IFCEXPECT(Position >= GetStartPosition() && Position + Length <= GetEndPosition());
 
     if(Length > 0)
     {
@@ -129,7 +129,7 @@ HRESULT CDirectWriteEditableTextLayout::EnsureLayout()
 
     if(m_TextLayout == NULL)
     {
-        IFC(m_TextProvider->CreateTextLayout(m_Text.c_str(), m_Text.size(), pTextFormat, m_MaxSize, &m_TextLayout));
+        IFC(m_TextProvider->CreateTextLayout(m_Text.c_str(), m_Text.length(), pTextFormat, m_MaxSize, &m_TextLayout));
     }
 
 Cleanup:

@@ -24,6 +24,22 @@ Cleanup:
     return hr;
 }
 
+HRESULT CKeyEventArgs::Initialize(CRoutedEvent* pRoutedEvent, CKeyEventArgs* pSourceArgs)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pRoutedEvent);
+    IFCPTR(pSourceArgs);
+
+    IFC(CInputEventArgs::Initialize(pRoutedEvent));
+
+    m_Key = pSourceArgs->GetKey();
+    m_State = pSourceArgs->GetState();
+
+Cleanup:
+    return hr;
+}
+
 UINT32 CKeyEventArgs::GetKey()
 {
     return m_Key;

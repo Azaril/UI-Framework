@@ -175,6 +175,7 @@ class CUIElement : public CVisual
 
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
         virtual HRESULT GetEffectiveValue( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual HRESULT ClearValue( CProperty* pProperty );
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
@@ -256,6 +257,8 @@ class CUIElement : public CVisual
         static CStaticRoutedEvent< RoutingStrategy::Bubbling > LostFocusEvent;
 
         static CStaticRoutedEvent< RoutingStrategy::Bubbling > KeyEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Direct > KeyDownEvent;
+        static CStaticRoutedEvent< RoutingStrategy::Direct > KeyUpEvent;
 
         static CStaticRoutedEvent< RoutingStrategy::Bubbling > TextEvent;
 
@@ -312,6 +315,8 @@ class CUIElement : public CVisual
         virtual void OnMouseMiddleButtonUp( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
         virtual void OnMouseMove( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+
+        virtual void OnKey( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
         HRESULT GetMinMaxSize( SizeF& MinimumSize, SizeF& MaximumSize );
         HRESULT ComputeAlignmentOffset( SizeF ClientSize, SizeF RenderSize, SizeF Offset );
@@ -384,6 +389,7 @@ class CUIElement : public CVisual
         connection m_MouseRightButtonUpConnection;
         connection m_MouseMiddleButtonUpConnection;
         connection m_MouseMoveConnection;
+        connection m_KeyConnection;
 };
 
 template< >

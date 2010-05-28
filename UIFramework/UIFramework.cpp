@@ -176,8 +176,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     {
         if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+	        TranslateMessage(&msg);
+            DispatchMessage(&msg);
         }
         else
         {
@@ -338,6 +338,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                 Handled = Consumed;
 
+                if(Consumed)
+                {
+                    Result = 0;
+                }
+
                 break;
             }
 
@@ -349,16 +354,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                 Handled = Consumed;
 
+                if(Consumed)
+                {
+                    Result = 0;
+                }
+
                 break;
             }
 
         case WM_CHAR:
             {
-                BOOL Consumed = FALSE;
+                if(iswprint(wParam))
+                {
+                    BOOL Consumed = FALSE;
 
-                IFC(g_KeyboardController->InjectCharacter(wParam, &Consumed));
+                    IFC(g_KeyboardController->InjectCharacter(wParam, &Consumed));
 
-                Handled = Consumed;
+                    Handled = Consumed;
+                    
+                    if(Consumed)
+                    {
+                        Result = 0;
+                    }
+                }
 
                 break;
             }

@@ -5,6 +5,7 @@
 #include "MouseInput.h"
 #include "RoutedEventInformation.h"
 #include "FocusManager.h"
+#include "KeyboardEventArgs.h"
 
 //
 // Property Defaults
@@ -81,9 +82,11 @@ CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::GotFocusEvent(L"GotF
 CStaticRoutedEvent< RoutingStrategy::Tunneled > CUIElement::PreviewLostFocusEvent(L"PreviewLostFocus");
 CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::LostFocusEvent(L"LostFocus");
 
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::KeyEvent(L"KeyEvent");
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::KeyEvent(L"Key");
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::KeyDownEvent(L"KeyDown");
+CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::KeyUpEvent(L"KeyUp");
 
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::TextEvent(L"TextEvent");
+CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::TextEvent(L"Text");
 
 CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
@@ -128,6 +131,7 @@ CUIElement::~CUIElement()
     m_MouseRightButtonUpConnection.disconnect();
     m_MouseMiddleButtonUpConnection.disconnect();
     m_MouseMoveConnection.disconnect();
+    m_KeyConnection.disconnect();
 
     ReleaseObject(m_PropertyInformation);
 
@@ -166,6 +170,8 @@ HRESULT CUIElement::Initialize(CProviders* pProviders)
     IFC(AddHandler(&MouseMiddleButtonUpEvent, boost::bind(&CUIElement::OnMouseMiddleButtonUp, this, _1, _2), &m_MouseMiddleButtonUpConnection));
 
     IFC(AddHandler(&MouseMoveEvent, boost::bind(&CUIElement::OnMouseMove, this, _1, _2), &m_MouseMoveConnection));
+
+    IFC(AddHandler(&KeyEvent, boost::bind(&CUIElement::OnKey, this, _1, _2), &m_KeyConnection));
     
 Cleanup:
     return hr;
@@ -988,6 +994,8 @@ HRESULT CUIElement::CreateEventInformation(CEventInformation** ppInformation)
         &PreviewLostFocusEvent,
         &LostFocusEvent,
         &KeyEvent,
+        &KeyDownEvent,
+        &KeyUpEvent,
         &TextEvent
     };
 
@@ -1161,7 +1169,21 @@ HRESULT CUIElement::GetEffectiveValue(CProperty* pProperty, CObjectWithType** pp
     }
 
 Cleanup:
+    return hr;
+}
 
+HRESULT CUIElement::ClearValue(CProperty* pProperty)
+{
+    HRESULT hr = S_OK;
+    CLayeredValue* pLayeredValue = NULL;
+
+    IFCPTR(pProperty);
+
+    IFC(GetLayeredValue(pProperty, &pLayeredValue));
+
+    IFC(pLayeredValue->ClearLocalValue(GetProviders()));
+
+Cleanup:
     return hr;
 }
 
@@ -1427,7 +1449,6 @@ HRESULT CUIElement::AddHandler(CRoutedEvent* pRoutedEvent, const RoutedEventHand
     IFC(pHandlerChain->AddHandler(Handler, pConnection));
 
 Cleanup:
-
     return hr;
 }
 
@@ -1480,7 +1501,6 @@ void CUIElement::OnMouseButton(CObjectWithType* pSender, CRoutedEventArgs* pRout
 
 Cleanup:
     ReleaseObject(pNewEventArgs);
-    ;
 }
 
 void CUIElement::OnMouseDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
@@ -1555,7 +1575,6 @@ void CUIElement::OnMouseDown(CObjectWithType* pSender, CRoutedEventArgs* pRouted
 
 Cleanup:
     ReleaseObject(pNewEventArgs);
-    ;
 }
 
 
@@ -1623,7 +1642,6 @@ void CUIElement::OnMouseUp(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEv
 
 Cleanup:
     ReleaseObject(pNewEventArgs);
-    ;
 }
 
 void CUIElement::OnMouseLeftButtonDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
@@ -1701,6 +1719,49 @@ void CUIElement::OnMouseMove(CObjectWithType* pSender, CRoutedEventArgs* pRouted
 
 Cleanup:
     ;
+}
+
+void CUIElement::OnKey(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+    CKeyEventArgs* pKeyEventArgs = NULL;
+    CKeyEventArgs* pNewEventArgs = NULL;
+
+    IFCPTR(pSender);
+    IFCPTR(pRoutedEventArgs);
+
+    IFCEXPECT(pRoutedEventArgs->IsTypeOf(TypeIndex::KeyEventArgs));
+
+    pKeyEventArgs = (CKeyEventArgs*)pRoutedEventArgs;
+
+    if(!pKeyEventArgs->IsHandled())
+    {
+        if(pKeyEventArgs->GetState() == KeyState::Down)
+        {
+            IFC(CKeyEventArgs::Create(&KeyDownEvent, pKeyEventArgs, &pNewEventArgs));
+
+            IFC(RaiseEvent(pNewEventArgs));
+
+            if(pNewEventArgs->IsHandled())
+            {
+                pKeyEventArgs->SetHandled();
+            }
+        }
+        else
+        {
+            IFC(CKeyEventArgs::Create(&KeyUpEvent, pKeyEventArgs, &pNewEventArgs));
+
+            IFC(RaiseEvent(pNewEventArgs));
+
+            if(pNewEventArgs->IsHandled())
+            {
+                pKeyEventArgs->SetHandled();
+            }
+        }
+    }
+
+Cleanup:
+    ReleaseObject(pNewEventArgs);
 }
 
 CEventHandlerChain::CEventHandlerChain() : m_RoutedEvent(NULL)
