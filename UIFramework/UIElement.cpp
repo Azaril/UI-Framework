@@ -825,6 +825,11 @@ CFocusManager* CUIElement::GetFocusManager()
     return m_Context.GetFocusManager();
 }
 
+CNamescope* CUIElement::GetNamescope()
+{
+    return m_Context.GetNamescope();
+}
+
 CProviders* CUIElement::GetProviders()
 {
     return m_Providers;
@@ -939,6 +944,8 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
         &VisibilityProperty,
         &HorizontalAlignmentProperty,
         &VerticalAlignmentProperty,
+        &MarginProperty,
+        &FocusableProperty
     };
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
@@ -1038,6 +1045,14 @@ HRESULT CUIElement::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
     else if(pProperty == &CUIElement::VerticalAlignmentProperty)
     {
         *ppLayeredValue = &m_VerticalAlignment;
+    }
+    else if(pProperty == &CUIElement::MarginProperty)
+    {
+        *ppLayeredValue = &m_Margin;
+    }
+    else if(pProperty == &CUIElement::FocusableProperty)
+    {
+        *ppLayeredValue = &m_Focusable;
     }
     else
     {

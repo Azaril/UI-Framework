@@ -14,6 +14,31 @@ class CControl : public CFrameworkElement
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
+        HRESULT GetTemplateChild( const WCHAR* pName, CObjectWithType** ppObject );
+
+        template< typename T >
+        HRESULT GetTemplateChild( const WCHAR* pName, T** ppObject )
+        {
+            HRESULT hr = S_OK;
+            CObjectWithType* pChildObject = NULL;
+            T* pVal = NULL;
+
+            IFCPTR(ppObject);
+
+            IFC(GetTemplateChild(pName, &pChildObject));
+
+            IFC(CastType(pChildObject, &pVal));
+
+            *ppObject = pVal;
+            pChildObject = NULL;
+            pVal = NULL;
+
+        Cleanup:
+            ReleaseObject(pChildObject);
+
+            return hr;
+        }
+
         //
         // Properties
         //
@@ -33,6 +58,7 @@ class CControl : public CFrameworkElement
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         virtual CUIElement* GetTemplateParentForChildren();
+        virtual CNamescope* GetNamescopeForChildren();
 
         //
         // Property Change Handlers
@@ -55,6 +81,7 @@ class CControl : public CFrameworkElement
         CTypedLayeredValue< CBrush > m_BorderBrush;
         BOOL m_TemplateDirty;
         CUIElement* m_TemplateChild;
+        CNamescope* m_TemplateNamescope;
 };
 
 template< >

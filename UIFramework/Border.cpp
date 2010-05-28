@@ -488,6 +488,10 @@ HRESULT CBorder::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
     {
         IFC(CHitTestResult::Create(this, ppHitTestResult));
     }
+    else
+    {
+        *ppHitTestResult = NULL;
+    }
 
 Cleanup:
     ReleaseObject(pVisualHitTestResult);

@@ -2,6 +2,7 @@
 
 #include "FrameworkElement.h"
 #include "Brush.h"
+#include "TextVisual.h"
 
 class CTextBlock : public CFrameworkElement
 {
@@ -26,11 +27,10 @@ class CTextBlock : public CFrameworkElement
         CTextBlock();
         virtual ~CTextBlock();
 
+        HRESULT Initialize( CProviders* pProviders );
+
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
-
-        virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
-        virtual HRESULT RenderTransformed( CRenderContext& Context );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
@@ -46,11 +46,14 @@ class CTextBlock : public CFrameworkElement
         HRESULT GetEffectiveText( CStringValue** ppText );
         HRESULT GetEffectiveForeground( CBrush** ppBrush );
 
+        HRESULT GetTextLayout( CTextLayout** ppTextLayout );
+        HRESULT InvalidateTextLayout();
+
         CTypedLayeredValue< CStringValue > m_Text;
         CTypedLayeredValue< CBrush > m_Foreground;
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;
-        CGraphicsBrush* m_ForegroundGraphicsBrush;
+        CTextVisual* m_TextVisual;
 };
 
 template< >

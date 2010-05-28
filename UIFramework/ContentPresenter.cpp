@@ -56,6 +56,16 @@ Cleanup:
     return hr;
 }
 
+HRESULT CContentPresenter::SetContent(CObjectWithType* pContent)
+{
+    HRESULT hr = S_OK;
+
+    IFC(SetValue(&CContentPresenter::ContentProperty, pContent));
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CContentPresenter::OnContentChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;

@@ -14,6 +14,11 @@ class CTextEditor : public CRefCountedObject
 
         HRESULT Initialize( CUIElement* pElement, CEditableTextLayout* pLayout );
 
+        void OnText( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+
+        HRESULT InsertText( const WCHAR* pText, UINT32 TextLength );
+
         CUIElement* m_Host;
         CEditableTextLayout* m_Layout;
+        connection m_TextConnection;
 };

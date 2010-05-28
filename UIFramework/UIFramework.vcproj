@@ -505,6 +505,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\TextVisual.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\TextVisual.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Visual.cpp"
 						>
 					</File>
@@ -577,6 +585,14 @@
 						</File>
 						<File
 							RelativePath=".\TextBlock.h"
+							>
+						</File>
+						<File
+							RelativePath=".\TextHost.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\TextHost.h"
 							>
 						</File>
 						<File
@@ -660,6 +676,14 @@
 							</File>
 							<File
 								RelativePath=".\Control.h"
+								>
+							</File>
+							<File
+								RelativePath=".\TextBox.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\TextBox.h"
 								>
 							</File>
 							<Filter

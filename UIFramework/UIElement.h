@@ -19,19 +19,22 @@
 
 class CUIElement;
 class CFocusManager;
+class CNamescope;
 
 class CUIAttachContext
 {
     public:
         CUIAttachContext() : m_Parent(NULL),
                              m_TemplateParent(NULL),
-                             m_FocusManager(NULL)
+                             m_FocusManager(NULL),
+                             m_Namescope(NULL)
         {
         }
 
-        CUIAttachContext( CUIElement* pParent, CUIElement* pTemplateParent, CFocusManager* pFocusManager ) : m_Parent(pParent),
-                                                                                                             m_TemplateParent(pTemplateParent),
-                                                                                                             m_FocusManager(pFocusManager)
+        CUIAttachContext( CUIElement* pParent, CUIElement* pTemplateParent, CFocusManager* pFocusManager, CNamescope* pNamescope ) : m_Parent(pParent),
+                                                                                                                                     m_TemplateParent(pTemplateParent),
+                                                                                                                                     m_FocusManager(pFocusManager),
+                                                                                                                                     m_Namescope(pNamescope)
         {
         }
     
@@ -50,17 +53,24 @@ class CUIAttachContext
             return m_FocusManager;
         }
 
+        CNamescope* GetNamescope()
+        {
+            return m_Namescope;
+        }
+
         void Reset()
         {
             m_Parent = NULL;
             m_TemplateParent = NULL;
             m_FocusManager = NULL;
+            m_Namescope = NULL;
         }
     
     protected:
         CUIElement* m_Parent;
         CUIElement* m_TemplateParent;
         CFocusManager* m_FocusManager;
+        CNamescope* m_Namescope;
 };
 
 class CUIDetachContext
@@ -188,6 +198,7 @@ class CUIElement : public CVisual
         virtual CUIElement* GetParent();
         virtual CUIElement* GetTemplateParent();
         CFocusManager* GetFocusManager();
+        virtual CNamescope* GetNamescope();
         CProviders* GetProviders();
         CTypeConverter* GetTypeConverter();
 

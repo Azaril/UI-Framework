@@ -26,13 +26,15 @@ CControl::CControl() : m_Template(this, &CControl::TemplateProperty),
                        m_Background(this, &CControl::BackgroundProperty),
                        m_BorderBrush(this, &CControl::BorderBrushProperty),
                        m_TemplateDirty(TRUE),
-                       m_TemplateChild(NULL)
+                       m_TemplateChild(NULL),
+                       m_TemplateNamescope(NULL)
 {
 }
 
 CControl::~CControl()
 {
     ReleaseObject(m_TemplateChild);
+    ReleaseObject(m_TemplateNamescope);
 }
 
 HRESULT CControl::Initialize(CProviders* pProviders)
@@ -41,6 +43,8 @@ HRESULT CControl::Initialize(CProviders* pProviders)
 
     IFC(CFrameworkElement::Initialize(pProviders));
 
+    IFC(CNamescope::Create(&m_TemplateNamescope));
+
 Cleanup:
     return hr;
 }
@@ -48,6 +52,11 @@ Cleanup:
 CUIElement* CControl::GetTemplateParentForChildren()
 {
     return this;
+}
+
+CNamescope* CControl::GetNamescopeForChildren()
+{
+    return m_TemplateNamescope;
 }
 
 HRESULT CControl::OnAttach(CUIAttachContext& Context)
@@ -66,6 +75,8 @@ HRESULT CControl::OnDetach(CUIDetachContext& Context)
 {
     HRESULT hr = S_OK;
 
+    IFC(RevokeTemplate());
+
     IFC(CFrameworkElement::OnDetach(Context));
 
 Cleanup:
@@ -81,6 +92,21 @@ HRESULT CControl::OnTemplateChanged(CObjectWithType* pOldValue, CObjectWithType*
     IFC(RevokeTemplate());
 
     IFC(EnsureTemplate());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CControl::GetTemplateChild(const WCHAR* pName, CObjectWithType** ppObject)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pName);
+    IFCPTR(ppObject);
+
+    IFC(EnsureTemplate());
+
+    IFC(m_TemplateNamescope->FindName(pName, ppObject));
 
 Cleanup:
     return hr;

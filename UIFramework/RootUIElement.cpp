@@ -34,7 +34,7 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     }
 
     {
-        CUIAttachContext UIContext(NULL, NULL, pFocusManager);
+        CUIAttachContext UIContext(NULL, NULL, pFocusManager, m_Namescope);
 
         IFC(OnAttach(UIContext));
     }
@@ -65,11 +65,6 @@ Cleanup:
     ReleaseObject(m_Providers);
 
     return hr;
-}
-
-CNamescope* CRootUIElement::GetNamescope()
-{
-    return m_Namescope;
 }
 
 HRESULT CRootUIElement::SetChild(CUIElement* pChild)

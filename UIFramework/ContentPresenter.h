@@ -11,6 +11,8 @@ class CContentPresenter : public CFrameworkElement
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
+        HRESULT SetContent( CObjectWithType* pContent );
+
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 

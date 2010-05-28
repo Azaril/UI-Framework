@@ -41,15 +41,43 @@ UINT32 CDirectWriteEditableTextLayout::GetEndPosition()
     return m_Text.size();
 }
 
+HRESULT CDirectWriteEditableTextLayout::SetText(const WCHAR* pText, UINT32 TextLength)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pText);
+
+    m_Text.assign(pText, TextLength);
+
+    IFC(InvalidateLayout());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CDirectWriteEditableTextLayout::ClearText()
+{
+    HRESULT hr = S_OK;
+
+    m_Text.clear();
+
+    IFC(InvalidateLayout());
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CDirectWriteEditableTextLayout::InsertText(UINT32 Position, const WCHAR* pText, UINT32 TextLength)
 {
     HRESULT hr = S_OK;
 
     IFCEXPECT(Position >= GetStartPosition() && Position <= GetEndPosition());
     IFCPTR(pText);
-    IFCEXPECT(TextLength > 0);
 
-    m_Text.insert(Position, pText, TextLength);
+    if(TextLength > 0)
+    {
+        m_Text.insert(Position, pText, TextLength);
+    }
 
     IFC(InvalidateLayout());
 

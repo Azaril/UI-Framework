@@ -13,6 +13,8 @@ HRESULT CTextEventArgs::Initialize(CRoutedEvent* pRoutedEvent, const WCHAR* pTex
 {
     HRESULT hr = S_OK;
 
+    IFC(CInputEventArgs::Initialize(pRoutedEvent));
+
     IFC(CStringValue::Create(pText, TextLength, &m_Text));
 
 Cleanup:

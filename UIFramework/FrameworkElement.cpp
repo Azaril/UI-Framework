@@ -85,7 +85,7 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
     }
 
     {
-        CUIAttachContext ChildContext(this, GetTemplateParentForChildren(), GetFocusManager());
+        CUIAttachContext ChildContext(this, GetTemplateParentForChildren(), GetFocusManager(), GetNamescopeForChildren());
 
         for(UINT i = 0; i < m_Children->GetCount(); i++)
         {
@@ -176,23 +176,6 @@ Cleanup:
     return hr;
 }
 
-CNamescope* CFrameworkElement::GetNamescope()
-{
-    CNamescope* pNamescope = NULL;
-    CUIElement* pParent = NULL;
-
-    pParent = GetParent();
-
-    if(pParent != NULL && pParent->IsTypeOf(TypeIndex::FrameworkElement))
-    {
-        CFrameworkElement* pParentFrameworkElement = (CFrameworkElement*)pParent;
-
-        pNamescope = pParentFrameworkElement->GetNamescope();
-    }
-
-    return pNamescope;
-}
-
 HRESULT CFrameworkElement::FindName(const WCHAR* pName, CObjectWithType** ppObject)
 {
     HRESULT hr = S_OK;
@@ -213,6 +196,11 @@ Cleanup:
 CUIElement* CFrameworkElement::GetTemplateParentForChildren()
 {
     return GetTemplateParent();
+}
+
+CNamescope* CFrameworkElement::GetNamescopeForChildren()
+{
+    return GetNamescope();
 }
 
 HRESULT CFrameworkElement::AddLogicalChild(CUIElement* pElement)
@@ -254,7 +242,7 @@ VOID CFrameworkElement::OnChildAdded(CUIElement* pElement)
 
     if(IsAttached())
     {
-        CUIAttachContext ChildContext(this, GetTemplateParentForChildren(), GetFocusManager());
+        CUIAttachContext ChildContext(this, GetTemplateParentForChildren(), GetFocusManager(), GetNamescopeForChildren());
 
         IFC(pElement->OnAttach(ChildContext));
     }

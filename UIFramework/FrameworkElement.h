@@ -36,8 +36,6 @@ class CFrameworkElement : public CUIElement
 
         HRESULT SetName( const WCHAR* pName );
 
-        virtual CNamescope* GetNamescope();
-
         HRESULT FindName( const WCHAR* pName, CObjectWithType** ppObject );
 
         template< typename T >
@@ -134,6 +132,7 @@ class CFrameworkElement : public CUIElement
         virtual HRESULT SetStyleValue( CProperty* pProperty, CObjectWithType* pValue );
 
         virtual CUIElement* GetTemplateParentForChildren();
+        virtual CNamescope* GetNamescopeForChildren();
 
         //
         // Property Change Handlers

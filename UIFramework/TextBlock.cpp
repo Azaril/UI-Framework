@@ -24,7 +24,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CTextBlock, OnForegroundChanged );
 
 CTextBlock::CTextBlock() : m_TextLayout(NULL),
                            m_TextFormat(NULL),
-                           m_ForegroundGraphicsBrush(NULL),
+                           m_TextVisual(NULL),
                            m_Text(this, &CTextBlock::TextProperty),
                            m_Foreground(this, &CTextBlock::ForegroundProperty)
 {
@@ -34,7 +34,21 @@ CTextBlock::~CTextBlock()
 {
     ReleaseObject(m_TextLayout);
     ReleaseObject(m_TextFormat);
-    ReleaseObject(m_ForegroundGraphicsBrush);
+    ReleaseObject(m_TextVisual);
+}
+
+HRESULT CTextBlock::Initialize(CProviders* pProviders)
+{
+    HRESULT hr = S_OK;
+
+    IFC(CFrameworkElement::Initialize(pProviders));
+
+    IFC(CTextVisual::Create(&m_TextVisual));
+
+    IFC(AddChildVisual(m_TextVisual));
+
+Cleanup:
+    return hr;
 }
 
 HRESULT CTextBlock::SetText(const WCHAR* pText)
@@ -54,20 +68,31 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+HRESULT CTextBlock::InvalidateTextLayout()
+{
+    HRESULT hr = S_OK;
+
+    ReleaseObject(m_TextLayout);
+
+    IFC(m_TextVisual->SetTextLayout(NULL));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CTextBlock::GetTextLayout(CTextLayout** ppLayout)
 {
     HRESULT hr = S_OK;
     CTextProvider* pTextProvider = NULL;
-    CTextLayoutMetrics* pTextLayoutMetrics = NULL;
-    CTextFormat* pTextFormat = NULL;
-    RectF TextBounds = { 0 };
-    SizeF SizeWithText = { 0 };
     CStringValue* pText = NULL;
+    CTextFormat* pTextFormat = NULL;
 
-    IFC(GetEffectiveText(&pText));
+    IFCPTR(ppLayout);
 
-    if(pText)
+    if(m_TextLayout == NULL)
     {
+        IFC(GetEffectiveText(&pText));
+
         IFC(m_VisualContext.GetGraphicsDevice()->GetTextProvider(&pTextProvider));
 
         if(m_TextFormat == NULL)
@@ -80,33 +105,52 @@ HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
             AddRefObject(m_TextFormat);
         }
 
-        if(m_TextLayout == NULL)
+        if(pText != NULL)
         {
-            IFC(pTextProvider->CreateTextLayout(pText->GetValue(), wcslen(pText->GetValue()), pTextFormat, AvailableSize, &m_TextLayout));
+            IFC(pTextProvider->CreateTextLayout(pText->GetValue(), wcslen(pText->GetValue()), pTextFormat, GetDesiredSize(), &m_TextLayout));
         }
         else
         {
-            IFC(m_TextLayout->SetMaxSize(AvailableSize));
+            IFC(pTextProvider->CreateTextLayout(NULL, 0, pTextFormat, GetDesiredSize(), &m_TextLayout));
         }
 
-        IFC(m_TextLayout->GetMetrics(&pTextLayoutMetrics));
-
-        IFC(pTextLayoutMetrics->GetBounds(&TextBounds));
-
-        DesiredSize.width = TextBounds.right - TextBounds.left;
-        DesiredSize.height = TextBounds.bottom - TextBounds.top;
+        IFC(m_TextVisual->SetTextLayout(m_TextLayout));
     }
-    else
-    {
-        DesiredSize.width = 0;
-        DesiredSize.height = 0;
-    }
+
+    *ppLayout = m_TextLayout;
+    AddRefObject(m_TextLayout);
 
 Cleanup:
-    ReleaseObject(pTextProvider);
-    ReleaseObject(pTextLayoutMetrics);
-    ReleaseObject(pTextFormat);
     ReleaseObject(pText);
+    ReleaseObject(pTextFormat);
+    ReleaseObject(pTextProvider);
+
+    return hr;
+}
+
+HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+{
+    HRESULT hr = S_OK;
+    CTextLayout* pTextLayout = NULL;
+    CTextLayoutMetrics* pTextLayoutMetrics = NULL;
+    
+    RectF TextBounds = { 0 };
+    SizeF SizeWithText = { 0 };
+
+    IFC(GetTextLayout(&pTextLayout));
+
+    IFC(pTextLayout->SetMaxSize(AvailableSize));
+
+    IFC(pTextLayout->GetMetrics(&pTextLayoutMetrics));
+
+    IFC(pTextLayoutMetrics->GetBounds(&TextBounds));
+
+    DesiredSize.width = TextBounds.right - TextBounds.left;
+    DesiredSize.height = TextBounds.bottom - TextBounds.top;
+
+Cleanup:
+    ReleaseObject(pTextLayout);
+    ReleaseObject(pTextLayoutMetrics);
 
     return hr;
 }
@@ -114,81 +158,24 @@ Cleanup:
 HRESULT CTextBlock::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
+    CTextLayout* pTextLayout = NULL;
     CTextLayoutMetrics* pMetrics = NULL;
     RectF TextBounds = { 0 };
 
-    if(m_TextLayout != NULL)
-    {
-        IFC(m_TextLayout->SetMaxSize(AvailableSize));
+    IFC(GetTextLayout(&pTextLayout));
 
-        IFC(m_TextLayout->GetMetrics(&pMetrics));
+    IFC(pTextLayout->SetMaxSize(AvailableSize));
 
-        IFC(pMetrics->GetBounds(&TextBounds));
-    }
+    IFC(pTextLayout->GetMetrics(&pMetrics));
+
+    IFC(pMetrics->GetBounds(&TextBounds));
 
     UsedSize.width = TextBounds.right - TextBounds.left;
     UsedSize.height = TextBounds.bottom - TextBounds.top;
 
 Cleanup:
+    ReleaseObject(pTextLayout);
     ReleaseObject(pMetrics);
-
-    return hr;
-}
-
-HRESULT CTextBlock::PreRenderInternal(CPreRenderContext& Context)
-{
-    HRESULT hr = S_OK;
-    CRenderTarget* pRenderTarget = NULL;
-    CBrush* pBrush = NULL;
-
-    pRenderTarget = Context.GetRenderTarget();
-    IFCPTR(pRenderTarget);
-
-    if(m_ForegroundGraphicsBrush == NULL)
-    {
-        IFC(GetEffectiveForeground(&pBrush));
-
-        if(pBrush)
-        {
-            if(FAILED(pBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_ForegroundGraphicsBrush)))
-            {
-                m_ForegroundGraphicsBrush = NULL;
-            }
-        }
-
-        if(m_ForegroundGraphicsBrush == NULL)
-        {
-            IFC(pRenderTarget->GetDefaultBrush(DefaultBrush::TextForeground, &m_ForegroundGraphicsBrush));
-        }
-    }
-
-    IFC(CFrameworkElement::PreRenderInternal(Context));
-
-Cleanup:
-    ReleaseObject(pBrush);
-
-    return hr;
-}
-
-HRESULT CTextBlock::RenderTransformed(CRenderContext& Context)
-{
-    HRESULT hr = S_OK;
-    CRenderTarget* pRenderTarget = NULL;
-    Point2F TextOrigin = { 0 };
-    CGraphicsBrush* pTextBrush = NULL;
-
-    pRenderTarget = Context.GetRenderTarget();
-    IFCPTR(pRenderTarget);
-
-    IFC(CFrameworkElement::RenderTransformed(Context));
-
-    if(m_TextLayout != NULL && m_ForegroundGraphicsBrush != NULL)
-    {
-        IFC(pRenderTarget->RenderTextLayout(TextOrigin, m_TextLayout, m_ForegroundGraphicsBrush));  
-    }
-
-Cleanup:
-    ReleaseObject(pTextBrush);
 
     return hr;
 }
@@ -252,7 +239,7 @@ HRESULT CTextBlock::OnTextChanged( CObjectWithType* pOldValue, CObjectWithType* 
 {
     HRESULT hr = S_OK;
 
-    ReleaseObject(m_TextFormat);
+    IFC(InvalidateTextLayout());
 
     IFC(InvalidateMeasure());
 
@@ -275,9 +262,13 @@ Cleanup:
 HRESULT CTextBlock::OnForegroundChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;
+    CBrush* pBrush = NULL;
 
-    ReleaseObject(m_ForegroundGraphicsBrush);
+    IFC(CastType(pNewValue, &pBrush));
 
+    IFC(m_TextVisual->SetForegroundBrush(pBrush));
+
+Cleanup:
     return hr;
 }
 

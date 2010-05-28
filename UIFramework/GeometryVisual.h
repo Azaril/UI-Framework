@@ -9,6 +9,8 @@ class CGeometryVisual : public CVisual
     public:
         DECLARE_FACTORY( CGeometryVisual );
 
+        DECLARE_TYPE_WITH_BASE( TypeIndex::GeometryVisual, CVisual );
+
         HRESULT SetGeometry( CGeometry* pGeometry );
         HRESULT SetFillBrush( CBrush* pBrush );
         HRESULT SetStrokeBrush( CBrush* pBrush );
