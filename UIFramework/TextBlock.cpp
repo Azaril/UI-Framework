@@ -134,8 +134,8 @@ HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     CTextLayout* pTextLayout = NULL;
     CTextLayoutMetrics* pTextLayoutMetrics = NULL;
     
-    RectF TextBounds = { 0 };
-    SizeF SizeWithText = { 0 };
+    RectF TextBounds;
+    SizeF SizeWithText;
 
     IFC(GetTextLayout(&pTextLayout));
 
@@ -160,7 +160,7 @@ HRESULT CTextBlock::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     HRESULT hr = S_OK;
     CTextLayout* pTextLayout = NULL;
     CTextLayoutMetrics* pMetrics = NULL;
-    RectF TextBounds = { 0 };
+    RectF TextBounds;
 
     IFC(GetTextLayout(&pTextLayout));
 
@@ -187,13 +187,13 @@ HRESULT CTextBlock::CreatePropertyInformation(CPropertyInformation** ppInformati
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &TextProperty,
         &ForegroundProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
@@ -287,7 +287,7 @@ Cleanup:
 HRESULT CTextBlock::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
 {
     HRESULT hr = S_OK;
-    SizeF RenderSize = { 0 };
+    SizeF RenderSize;
 
     IFCPTR(ppHitTestResult);
 

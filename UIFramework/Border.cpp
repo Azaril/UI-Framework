@@ -7,7 +7,7 @@
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Background );
-DEFINE_GET_DEFAULT( Padding, CRectFValue, D2D1::RectF(0, 0, 0, 0) );
+DEFINE_GET_DEFAULT( Padding, CRectFValue, RectF(0, 0, 0, 0) );
 DEFINE_GET_DEFAULT( BorderThickness, CFloatValue, 0 );
 DEFINE_GET_DEFAULT_NULL( BorderBrush );
 DEFINE_GET_DEFAULT( CornerRadius, CFloatValue, 0 );
@@ -216,7 +216,7 @@ HRESULT CBorder::RebuildGeometry()
     SizeF FinalSize = GetFinalSize();
     FLOAT BorderThickness = 0;
     FLOAT CornerRadius = 0;
-    RectF Rectangle = { 0 };
+    RectF Rectangle;
 
     IFC(GetEffectiveBorderThickness(&BorderThickness));
     IFC(GetEffectiveCornerRadius(&CornerRadius));
@@ -239,7 +239,7 @@ HRESULT CBorder::RebuildGeometry()
         IFC(m_BorderVisual->SetGeometry(pRoundedRectangleGeometry));
     }
 
-    IFC(m_BorderVisual->SetFillBrushTransform(D2D1::Matrix3x2F::Scale(Rectangle.right - Rectangle.left, Rectangle.bottom - Rectangle.top)));
+    IFC(m_BorderVisual->SetFillBrushTransform(Matrix3X2::Scale(Rectangle.right - Rectangle.left, Rectangle.bottom - Rectangle.top)));
 
 Cleanup:
     ReleaseObject(pRectangleGeometry);
@@ -409,17 +409,17 @@ Cleanup:
 HRESULT CBorder::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF InternalSize = { 0 };
-    SizeF InternalSizeDesired = { 0 };
-    RectF Padding = { 0 };
+    SizeF InternalSize;
+    SizeF InternalSizeDesired;
+    RectF Padding;
     FLOAT BorderThickness = 0;
     CUIElement* pChild = NULL;
 
     IFC(GetEffectiveBorderThickness(&BorderThickness));
     IFC(GetEffectivePadding(&Padding));
 
-    InternalSize.width = max(AvailableSize.width - (BorderThickness * 2) - (Padding.left + Padding.right), 0);
-    InternalSize.height = max(AvailableSize.height - (BorderThickness * 2) - (Padding.top + Padding.bottom), 0);
+    InternalSize.width = std::max(AvailableSize.width - (BorderThickness * 2) - (Padding.left + Padding.right), 0.0f);
+    InternalSize.height = std::max(AvailableSize.height - (BorderThickness * 2) - (Padding.top + Padding.bottom), 0.0f);
 
     IFC(GetEffectiveChild(&pChild));
 
@@ -443,9 +443,9 @@ HRESULT CBorder::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
     CUIElement* pChild = NULL;
-    RectF Padding = { 0 };
+    RectF Padding;
     FLOAT BorderThickness = 0;
-    SizeF ChildSize = { 0 };
+    SizeF ChildSize;
 
     IFC(GetEffectiveBorderThickness(&BorderThickness));
     IFC(GetEffectivePadding(&Padding));
@@ -454,13 +454,13 @@ HRESULT CBorder::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 
     if(pChild != NULL)
     {
-        SizeF InternalSize = { AvailableSize.width - (BorderThickness * 2) - (Padding.left + Padding.right), 
-                               AvailableSize.height - (BorderThickness * 2) - (Padding.top + Padding.bottom) };
+        SizeF InternalSize(AvailableSize.width - (BorderThickness * 2) - (Padding.left + Padding.right), 
+                           AvailableSize.height - (BorderThickness * 2) - (Padding.top + Padding.bottom));
         
-        InternalSize.width = max(InternalSize.width, 0);
-        InternalSize.height = max(InternalSize.height, 0);
+        InternalSize.width = std::max(InternalSize.width, 0.0f);
+        InternalSize.height = std::max(InternalSize.height, 0.0f);
 
-        SizeF Position = { (AvailableSize.width - InternalSize.width) / 2.0, (AvailableSize.height - InternalSize.height) / 2.0 };
+        SizeF Position((AvailableSize.width - InternalSize.width) / 2.0, (AvailableSize.height - InternalSize.height) / 2.0 );
 
         IFC(pChild->Arrange(MakeRect(Position, InternalSize)));
     }
@@ -506,8 +506,6 @@ HRESULT CBorder::CreatePropertyInformation(CPropertyInformation** ppInformation)
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &BackgroundProperty,
@@ -516,6 +514,8 @@ HRESULT CBorder::CreatePropertyInformation(CPropertyInformation** ppInformation)
         &BorderBrushProperty,
         &CornerRadiusProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CDecorator::CreatePropertyInformation(&pBaseInformation));

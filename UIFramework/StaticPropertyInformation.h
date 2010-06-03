@@ -75,7 +75,7 @@ namespace   \
         \
         IFCPTR(ppObject);   \
         \
-        IFC(##type::Create(value, &pValue));    \
+        IFC( type::Create(value, &pValue) );    \
         \
         *ppObject = pValue; \
         pValue = NULL;  \
@@ -115,9 +115,9 @@ HRESULT type::Static##name(CPropertyObject* pObjectInstance, CObjectWithType* pO
     \
     IFCEXPECT(pObjectInstance->IsTypeOf(ObjectTypeTraits< type >::Type));   \
     \
-    pTypedInstance = (##type*)pObjectInstance;  \
+    pTypedInstance = (type*)pObjectInstance;  \
     \
-    IFC(pTypedInstance->##name(pOldValue, pNewValue));  \
+    IFC(pTypedInstance->name(pOldValue, pNewValue));  \
     \
 Cleanup:    \
     return hr;  \

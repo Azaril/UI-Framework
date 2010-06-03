@@ -123,8 +123,8 @@ class CFrameworkElement : public CUIElement
         virtual HRESULT AddLogicalChild( CUIElement* pElement );
         virtual HRESULT RemoveLogicalChild( CUIElement* pElement );
 
-        virtual VOID OnChildAdded( CUIElement* pElement );
-        virtual VOID OnChildRemoved( CUIElement* pElement );
+        virtual void OnChildAdded( CUIElement* pElement );
+        virtual void OnChildRemoved( CUIElement* pElement );
 
         HRESULT EnsureStyle();
         HRESULT RevokeStyle();

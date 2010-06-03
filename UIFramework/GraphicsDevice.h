@@ -10,7 +10,9 @@ class CRenderTarget;
 class CGraphicsDevice : public CRefCountedObject
 {
 	public:
+#ifdef __WIN32__
 		virtual HRESULT CreateHWNDRenderTarget( HWND Window, CRenderTarget** ppRenderTarget ) = 0;
+#endif
         //virtual HRESULT CreateRenderTarget( const SizeF& Size, CRenderTarget** ppRenderTarget ) = 0;
 
         virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider ) = 0;

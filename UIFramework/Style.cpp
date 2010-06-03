@@ -119,13 +119,13 @@ HRESULT CStyle::CreatePropertyInformation(CPropertyInformation **ppInformation)
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &SettersProperty,
         &TriggersProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
 

@@ -136,7 +136,7 @@ void CTextEditor::OnKeyDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedE
         switch(pKeyEventArgs->GetKey())
         {
             //TODO: Switch to key enumeration.
-            case VK_BACK:
+            /* case VK_BACK:
                 {
                     IFC(HandleBackspace());
 
@@ -144,6 +144,7 @@ void CTextEditor::OnKeyDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedE
 
                     break;
                 }
+             */
         }
     }
 

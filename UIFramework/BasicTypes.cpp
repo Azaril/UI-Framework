@@ -1,5 +1,4 @@
 #include "BasicTypes.h"
-#include <strsafe.h>
 
 //HRESULT CFloatValue::Initialize(FLOAT Value)
 //{
@@ -52,7 +51,7 @@ HRESULT CStringValue::Initialize(const WCHAR* pValue, UINT32 Length)
     m_Value = new WCHAR[BufferSize];
     IFCOOM(m_Value);
 
-    IFC(StringCchCopyN(m_Value, BufferSize, pValue, Length));
+    wcsncpy(m_Value, pValue, Length);
 
 Cleanup:
     return hr;

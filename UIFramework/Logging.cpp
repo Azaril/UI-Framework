@@ -1,25 +1,28 @@
 #include "Logging.h"
-#include <atlstr.h>
 
-VOID InternalDebugOutCallbackA(LPCSTR strText)
+void InternalDebugOutCallbackA(const CHAR* strText)
 {
+#ifdef __WIN32__    
     OutputDebugStringA(strText);
+#endif
 }
 
-VOID InternalDebugOutCallbackW(LPCWSTR strText)
+void InternalDebugOutCallbackW(const WCHAR* strText)
 {
+#ifdef __WIN32__
     OutputDebugStringW(strText);
+#endif
 }
 
 DebugOutCallbackFuncA g_DebugOutCallbackA = InternalDebugOutCallbackA;
 DebugOutCallbackFuncW g_DebugOutCallbackW = InternalDebugOutCallbackW;
 
-VOID SetDebugOutCallback(DebugOutCallbackFuncA Func)
+void SetDebugOutCallback(DebugOutCallbackFuncA Func)
 {
     g_DebugOutCallbackA = Func;
 }
 
-VOID SetDebugOutCallback(DebugOutCallbackFuncW Func)
+void SetDebugOutCallback(DebugOutCallbackFuncW Func)
 {
     g_DebugOutCallbackW = Func;
 }
@@ -34,7 +37,7 @@ DebugOutCallbackFuncW GetDebugOutCallbackW()
     return g_DebugOutCallbackW;
 }
 
-VOID InternalDebugOut(LPCSTR strText)
+void InternalDebugOut(const CHAR* strText)
 {
     if(g_DebugOutCallbackA != NULL)
     {
@@ -42,7 +45,7 @@ VOID InternalDebugOut(LPCSTR strText)
     }
 }
 
-VOID InternalDebugOut(LPCWSTR strText)
+void InternalDebugOut(const WCHAR* strText)
 {
     if(g_DebugOutCallbackW != NULL)
     {
@@ -50,8 +53,9 @@ VOID InternalDebugOut(LPCWSTR strText)
     }
 }
 
-VOID DebugOut(LPCSTR pFormat, ...)
+void DebugOut(const CHAR* pFormat, ...)
 {
+#ifdef __WIN32__    
     CStringA FormattedString;
 
     va_list args;
@@ -62,10 +66,11 @@ VOID DebugOut(LPCSTR pFormat, ...)
     va_end(args);
 
     InternalDebugOut(FormattedString);
+#endif
 }
-
-VOID DebugOut(LPCWSTR pFormat, ...)
+void DebugOut(const WCHAR* pFormat, ...)
 {
+#ifdef __WIN32__    
     CStringW FormattedString;
 
     va_list args;
@@ -76,10 +81,12 @@ VOID DebugOut(LPCWSTR pFormat, ...)
     va_end(args);
 
     InternalDebugOut(FormattedString);
+#endif
 }
 
-VOID ZoneOut(LPCSTR pZone, LPCSTR pFormat, ...)
+void ZoneOut(const CHAR* pZone, const CHAR* pFormat, ...)
 {
+#ifdef __WIN32__    
     CStringA FormattedString;
 
     va_list args;
@@ -94,10 +101,12 @@ VOID ZoneOut(LPCSTR pZone, LPCSTR pFormat, ...)
 	ZoneFormat.Format("[ %s ] - %s", pZone, (LPCSTR)FormattedString);
 
     InternalDebugOut(ZoneFormat);
+#endif
 }
 
-VOID ZoneOut(LPCWSTR pZone, LPCWSTR pFormat, ...)
+void ZoneOut(const WCHAR* pZone, const WCHAR* pFormat, ...)
 {
+#ifdef __WIN32__
     CStringW FormattedString;
 
     va_list args;
@@ -112,10 +121,12 @@ VOID ZoneOut(LPCWSTR pZone, LPCWSTR pFormat, ...)
 	ZoneFormat.Format(L"[ %s ] - %s", pZone, (LPCWSTR)FormattedString);
 
     InternalDebugOut(ZoneFormat);
+#endif
 }
 
-VOID ZoneLevelOut(DWORD Level, LPCSTR pZone, LPCSTR pFormat, ...)
+void ZoneLevelOut(UINT32 Level, const CHAR* pZone, const CHAR* pFormat, ...)
 {
+#ifdef __WIN32__
     CStringA FormattedString;
 
     va_list args;
@@ -135,10 +146,12 @@ VOID ZoneLevelOut(DWORD Level, LPCSTR pZone, LPCSTR pFormat, ...)
 	ZoneFormat.Format("%s[ %s ] - %s", LoggingLevelText[Level], pZone, (LPCSTR)FormattedString);
 
     InternalDebugOut(ZoneFormat);
+#endif
 }
 
-VOID ZoneLevelOut(DWORD Level, LPCWSTR pZone, LPCWSTR pFormat, ...)
+void ZoneLevelOut(UINT32 Level, const WCHAR* pZone, const WCHAR* pFormat, ...)
 {
+#ifdef __WIN32__
     CStringW FormattedString;
 
     va_list args;
@@ -158,4 +171,5 @@ VOID ZoneLevelOut(DWORD Level, LPCWSTR pZone, LPCWSTR pFormat, ...)
 	ZoneFormat.Format(L"%s[ %s ] - %s", LoggingLevelText[Level], pZone, (LPCWSTR)FormattedString);
 
     InternalDebugOut(ZoneFormat);
+#endif
 }

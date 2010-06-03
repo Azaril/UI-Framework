@@ -31,8 +31,8 @@ class CTextEditor : public CRefCountedObject
 
         CUIElement* m_Host;
         CEditableTextLayout* m_Layout;
-        connection m_TextConnection;
-        connection m_KeyDownConnection;
-        connection m_KeyUpConnection;
+        events::signals::connection m_TextConnection;
+        events::signals::connection m_KeyDownConnection;
+        events::signals::connection m_KeyUpConnection;
         UINT32 m_CaretPosition;
 };

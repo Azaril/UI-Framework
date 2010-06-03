@@ -15,8 +15,6 @@ HRESULT CMatrixTransform::TransformPoint(const Point2F& Point, Point2F* pTransfo
 
     IFCPTR(pTransformedPoint);
 
-    using namespace D2D1;
-
     *pTransformedPoint = Point * m_Transform;
 
 Cleanup:

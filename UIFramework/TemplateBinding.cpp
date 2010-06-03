@@ -42,12 +42,12 @@ HRESULT CTemplateBinding::CreatePropertyInformation(CPropertyInformation **ppInf
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &PropertyProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
 
@@ -95,7 +95,8 @@ HRESULT CTemplateBinding::GetValue(CProperty* pProperty, CObjectWithType** ppVal
 
     if(pProperty == &CTemplateBinding::PropertyProperty)
     {
-        IFC(E_NOTIMPL);
+        *ppValue = m_Property;
+        AddRefObject(m_Property);
     }
     else
     {

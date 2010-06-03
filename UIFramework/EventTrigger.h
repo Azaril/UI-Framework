@@ -61,6 +61,6 @@ class CResolvedEventTrigger : public CResolvedTrigger
 
         void OnEvent( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
-        connection m_Connection;
+        events::signals::connection m_Connection;
         CResolvedSetters* m_Setters;
 };

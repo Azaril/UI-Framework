@@ -104,7 +104,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::AddPropertyChangeListener(const PropertyChangedHandler& Handler, connection* pConnection)
+HRESULT CPropertyObject::AddPropertyChangeListener(const PropertyChangedHandler& Handler, events::signals::connection* pConnection)
 {
     HRESULT hr = S_OK;
 

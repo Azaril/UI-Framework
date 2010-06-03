@@ -69,13 +69,13 @@ HRESULT CEventTrigger::CreatePropertyInformation(CPropertyInformation **ppInform
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] =
     {
         &RoutedEventProperty,
         &SettersProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
 

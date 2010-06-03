@@ -63,12 +63,12 @@ HRESULT CPanel::CreatePropertyInformation(CPropertyInformation** ppInformation)
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &ChildrenProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));

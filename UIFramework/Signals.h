@@ -6,5 +6,4 @@
 #include <boost/bind/bind.hpp>
 #include <boost/signals.hpp>
 
-using namespace boost::signals;
-using boost::signal;
+namespace events = boost;

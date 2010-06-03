@@ -55,13 +55,13 @@ HRESULT CGradientBrush::CreatePropertyInformation(CPropertyInformation **ppInfor
     CStaticPropertyInformation* pStaticInformation = NULL;
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
-
-    IFCPTR(ppInformation);
-
+    
     CStaticProperty* Properties[] = 
     {
         &GradientStopsProperty
-    };
+    };    
+
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CBrush::CreatePropertyInformation(&pBaseInformation));

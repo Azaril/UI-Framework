@@ -4,6 +4,7 @@
 #include "RefCounted.h"
 #include "TypeIndex.h"
 #include "ErrorChecking.h"
+#include "Signals.h"
 
 template< typename T >
 struct ObjectTypeTraits;
@@ -87,7 +88,7 @@ class CAttachedPropertyHolder
         CObjectWithType* m_Value;
 };
 
-typedef signal< void ( CPropertyObject*, CProperty* ) > PropertyChangedSignal;
+typedef events::signal< void ( CPropertyObject*, CProperty* ) > PropertyChangedSignal;
 typedef PropertyChangedSignal::slot_type PropertyChangedHandler;
 
 class CPropertyObject : public CObjectWithType
@@ -98,7 +99,7 @@ class CPropertyObject : public CObjectWithType
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
-        HRESULT AddPropertyChangeListener( const PropertyChangedHandler& Handler, connection* pConnection );
+        HRESULT AddPropertyChangeListener( const PropertyChangedHandler& Handler, events::signals::connection* pConnection );
 
         template< typename T >
         HRESULT GetTypedValue( CProperty* pProperty, T** ppValue )

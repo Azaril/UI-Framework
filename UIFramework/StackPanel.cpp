@@ -32,8 +32,8 @@ HRESULT CStackPanel::SetOrientation(Orientation::Value Direction)
 HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF ChildrenSize = { 0 };
-    SizeF MaxSize = { FLT_MAX, FLT_MAX };
+    SizeF ChildrenSize;
+    SizeF MaxSize(FLT_MAX, FLT_MAX);
     CUIElementCollection* pChildCollection = NULL;
 
     pChildCollection = GetChildCollection();
@@ -49,7 +49,7 @@ HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         MaxSize.width = AvailableSize.width;
     }
 
-    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
+    for(UINT32 i = 0; i < pChildCollection->GetCount(); i++)
     {
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
@@ -59,13 +59,13 @@ HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
         if(m_Orientation == Orientation::Vertical)
         {
-            ChildrenSize.width = max(ChildrenSize.width, ElementDesiredSize.width);
+            ChildrenSize.width = std::max(ChildrenSize.width, ElementDesiredSize.width);
             ChildrenSize.height += ElementDesiredSize.height;
         }
         else
         {
             ChildrenSize.width += ElementDesiredSize.width;
-            ChildrenSize.height = max(ChildrenSize.height, ElementDesiredSize.height);
+            ChildrenSize.height = std::max(ChildrenSize.height, ElementDesiredSize.height);
         }
     }
 
@@ -79,18 +79,18 @@ Cleanup:
 HRESULT CStackPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
-    Point2F LayoutPoint = { 0 };
+    Point2F LayoutPoint;
     CUIElementCollection* pChildCollection = NULL;
 
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
 
-    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
+    for(UINT32 i = 0; i < pChildCollection->GetCount(); i++)
     {
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
-        RectF ElementBounds = { LayoutPoint.x, LayoutPoint.y, LayoutPoint.x + ElementDesiredSize.width, LayoutPoint.y + ElementDesiredSize.height };
+        RectF ElementBounds(LayoutPoint.x, LayoutPoint.y, LayoutPoint.x + ElementDesiredSize.width, LayoutPoint.y + ElementDesiredSize.height);
 
         IFC(pElement->Arrange(ElementBounds));
 

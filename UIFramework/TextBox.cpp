@@ -47,7 +47,7 @@ HRESULT CTextBox::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
     CTextProvider* pTextProvider = NULL;
-    SizeF InitialSize = { 0 };
+    SizeF InitialSize;
     CStringValue* pText = NULL;
 
     IFC(CControl::OnAttach(Context));
@@ -154,12 +154,12 @@ HRESULT CTextBox::CreatePropertyInformation(CPropertyInformation** ppInformation
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &TextProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CControl::CreatePropertyInformation(&pBaseInformation));

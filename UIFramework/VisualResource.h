@@ -2,6 +2,7 @@
 
 #include "VisualContext.h"
 #include "VisualNotification.h"
+#include "Collections.h"
 
 class CVisualResource
 {

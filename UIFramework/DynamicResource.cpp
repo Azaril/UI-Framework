@@ -65,12 +65,12 @@ HRESULT CDynamicResource::CreatePropertyInformation(CPropertyInformation **ppInf
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &ResourceKeyProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CBinding::CreatePropertyInformation(&pBaseInformation));

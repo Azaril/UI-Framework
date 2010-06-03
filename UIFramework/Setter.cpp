@@ -100,13 +100,13 @@ HRESULT CSetter::CreatePropertyInformation(CPropertyInformation **ppInformation)
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &PropertyProperty,
         &ValueProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
 
@@ -156,11 +156,13 @@ HRESULT CSetter::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
 
     if(pProperty == &CSetter::PropertyProperty)
     {
-        IFC(E_NOTIMPL);
+        *ppValue = m_Property;
+        AddRefObject(m_Property);
     }
     else if(pProperty == &CSetter::ValueProperty)
     {
-        IFC(E_NOTIMPL);
+        *ppValue = m_Value;
+        AddRefObject(m_Value);
     }
     else
     {

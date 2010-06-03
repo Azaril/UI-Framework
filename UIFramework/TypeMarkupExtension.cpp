@@ -35,12 +35,12 @@ HRESULT CTypeMarkupExtension::CreatePropertyInformation(CPropertyInformation **p
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &TypeNameProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
 

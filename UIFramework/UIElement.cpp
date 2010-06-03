@@ -19,7 +19,7 @@ DEFINE_GET_DEFAULT( MaximumHeight, CFloatValue, FLT_MAX );
 DEFINE_GET_DEFAULT( Visibility, CVisibilityValue, Visibility::Visible );
 DEFINE_GET_DEFAULT( HorizontalAlignment, CHorizontalAlignmentValue, HorizontalAlignment::Stretch );
 DEFINE_GET_DEFAULT( VerticalAlignment, CVerticalAlignmentValue, VerticalAlignment::Stretch );
-DEFINE_GET_DEFAULT( Margin, CRectFValue, D2D1::RectF(0, 0, 0, 0) );
+DEFINE_GET_DEFAULT( Margin, CRectFValue, RectF(0, 0, 0, 0) );
 DEFINE_GET_DEFAULT( Focusable, CBoolValue, FALSE );
 
 //
@@ -294,34 +294,34 @@ HRESULT CUIElement::GetMinMaxSize(SizeF& MinimumSize, SizeF& MaximumSize)
     HRESULT hr = S_OK;
     CFloatValue* pHeight = NULL;
     CFloatValue* pWidth = NULL;
-
-    IFC(m_Height.GetTypedEffectiveValue(GetProviders(), &pHeight));
-
     FLOAT MaxHeight = 0;
     FLOAT MinHeight = 0;
+    FLOAT Height = 0;
+    FLOAT Width = 0;
+    FLOAT MaxWidth = 0;
+    FLOAT MinWidth = 0;    
+
+    IFC(m_Height.GetTypedEffectiveValue(GetProviders(), &pHeight));
 
     IFC(GetEffectiveMaximumHeight(&MaxHeight));
     IFC(GetEffectiveMinimumHeight(&MinHeight));
 
-    FLOAT Height = (pHeight != NULL) ? pHeight->GetValue() : FLT_MAX;
-    MaxHeight = max(min(Height, MaxHeight), MinHeight);
+    Height = (pHeight != NULL) ? pHeight->GetValue() : FLT_MAX;
+    MaxHeight = std::max(std::min(Height, MaxHeight), MinHeight);
 
     Height = (pHeight != NULL) ? pHeight->GetValue() : 0;
-    MinHeight = max(min(MaxHeight, Height), MinHeight);
-
-    FLOAT MaxWidth = 0;
-    FLOAT MinWidth = 0;
+    MinHeight = std::max(std::min(MaxHeight, Height), MinHeight);
 
     IFC(GetEffectiveMaximumWidth(&MaxWidth));
     IFC(GetEffectiveMinimumWidth(&MinWidth));
 
     IFC(m_Width.GetTypedEffectiveValue(GetProviders(), &pWidth));
 
-    FLOAT Width = (pWidth != NULL) ? pWidth->GetValue() : FLT_MAX;
-    MaxWidth = max(min(Width, MaxWidth), MinWidth);
+    Width = (pWidth != NULL) ? pWidth->GetValue() : FLT_MAX;
+    MaxWidth = std::max(std::min(Width, MaxWidth), MinWidth);
 
     Width = (pWidth != NULL) ? pWidth->GetValue() : 0;
-    MinWidth = max(min(MaxWidth, Width), MinWidth);
+    MinWidth = std::max(std::min(MaxWidth, Width), MinWidth);
 
     MinimumSize.width = MinWidth;
     MinimumSize.height = MinHeight;
@@ -348,28 +348,28 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
 
         if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
-            RectF Margin = { 0 };
+            RectF Margin;
 
             IFC(GetEffectiveMargin(&Margin));
 
             FLOAT MarginWidth = Margin.left + Margin.right;
             FLOAT MarginHeight = Margin.top + Margin.bottom;
 
-            SizeF ElementAvailableSize = { max(AvailableSize.width - MarginWidth, 0), max(AvailableSize.height - MarginHeight, 0) };
-            SizeF MinSize = { 0 };
-            SizeF MaxSize = { 0 };
+            SizeF ElementAvailableSize(std::max(AvailableSize.width - MarginWidth, 0.0f), std::max(AvailableSize.height - MarginHeight, 0.0f));
+            SizeF MinSize;
+            SizeF MaxSize;
 
             IFC(GetMinMaxSize(MinSize, MaxSize));
 
-            ElementAvailableSize.width = max(MinSize.width, min(ElementAvailableSize.width, MaxSize.width));
-            ElementAvailableSize.height = max(MinSize.height, min(ElementAvailableSize.height, MaxSize.height));
+            ElementAvailableSize.width = std::max(MinSize.width, std::min(ElementAvailableSize.width, MaxSize.width));
+            ElementAvailableSize.height = std::max(MinSize.height, std::min(ElementAvailableSize.height, MaxSize.height));
 
-            SizeF ElementDesiredSize = { 0 };
+            SizeF ElementDesiredSize;
 
             IFC(MeasureInternal(ElementAvailableSize, ElementDesiredSize));            
 
-            ElementDesiredSize.width = max(ElementDesiredSize.width, MinSize.width);
-            ElementDesiredSize.height = max(ElementDesiredSize.height, MinSize.height);
+            ElementDesiredSize.width = std::max(ElementDesiredSize.width, MinSize.width);
+            ElementDesiredSize.height = std::max(ElementDesiredSize.height, MinSize.height);
 
             m_UnclippedDesiredSize = ElementDesiredSize;
 
@@ -402,8 +402,8 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
                 Clipped = TRUE;
             }
 
-            m_DesiredSize.width = max(0, ClippedDesiredWidth);
-            m_DesiredSize.height = max(0, ClippedDesiredHeight);
+            m_DesiredSize.width = std::max(0.0f, ClippedDesiredWidth);
+            m_DesiredSize.height = std::max(0.0f, ClippedDesiredHeight);
 
             IFC(InvalidateArrange());
         }
@@ -609,17 +609,17 @@ HRESULT CUIElement::Arrange(RectF Bounds)
         {
             BOOL NeedsClipBounds = FALSE;
 
-            SizeF ArrangeSize = { Bounds.right - Bounds.left, Bounds.bottom - Bounds.top };
+            SizeF ArrangeSize(Bounds.right - Bounds.left, Bounds.bottom - Bounds.top);
 
-            RectF Margin = { 0 };
+            RectF Margin;
             
             IFC(GetEffectiveMargin(&Margin));
 
             FLOAT MarginWidth = Margin.left + Margin.right;
             FLOAT MarginHeight = Margin.top + Margin.bottom;
 
-            ArrangeSize.width = max(0, ArrangeSize.width - MarginWidth);
-            ArrangeSize.height = max(0, ArrangeSize.height - MarginHeight);
+            ArrangeSize.width = std::max(0.0f, ArrangeSize.width - MarginWidth);
+            ArrangeSize.height = std::max(0.0f, ArrangeSize.height - MarginHeight);
 
             if(ArrangeSize.width < m_UnclippedDesiredSize.width)
             {
@@ -646,12 +646,12 @@ HRESULT CUIElement::Arrange(RectF Bounds)
                 ArrangeSize.height = m_UnclippedDesiredSize.height;
             }
 
-            SizeF MinSize = { 0 };
-            SizeF MaxSize = { 0 };
+            SizeF MinSize;
+            SizeF MaxSize;
 
             IFC(GetMinMaxSize(MinSize, MaxSize));      
 
-            FLOAT EffectiveMaxWidth = max(m_UnclippedDesiredSize.width, MaxSize.width);
+            FLOAT EffectiveMaxWidth = std::max(m_UnclippedDesiredSize.width, MaxSize.width);
 
             if(EffectiveMaxWidth < ArrangeSize.width)
             {
@@ -659,7 +659,7 @@ HRESULT CUIElement::Arrange(RectF Bounds)
                 ArrangeSize.width = EffectiveMaxWidth;
             }
 
-            FLOAT EffectiveMaxHeight = max(m_UnclippedDesiredSize.height, MaxSize.height);
+            FLOAT EffectiveMaxHeight = std::max(m_UnclippedDesiredSize.height, MaxSize.height);
 
             if(EffectiveMaxHeight < ArrangeSize.height)
             {
@@ -667,26 +667,26 @@ HRESULT CUIElement::Arrange(RectF Bounds)
                 ArrangeSize.height = EffectiveMaxHeight;
             }
 
-            SizeF UsedArrangeSize = { 0 };
+            SizeF UsedArrangeSize;
 
             IFC(ArrangeInternal(ArrangeSize, UsedArrangeSize));
 
-            SizeF ClippedSize = { min(UsedArrangeSize.width, MaxSize.width), min(UsedArrangeSize.height, MaxSize.height) };
+            SizeF ClippedSize(std::min(UsedArrangeSize.width, MaxSize.width), std::min(UsedArrangeSize.height, MaxSize.height));
 
             NeedsClipBounds |= (ClippedSize.width < UsedArrangeSize.width) ||  (ClippedSize.height < UsedArrangeSize.height);
 
-            SizeF ClientSize = { max(0, ArrangeSize.width - MarginWidth), max(0, ArrangeSize.height - MarginHeight) };
+            SizeF ClientSize(std::max(0.0f, ArrangeSize.width - MarginWidth), std::max(0.0f, ArrangeSize.height - MarginHeight));
 
             NeedsClipBounds |= (ClientSize.width < ClippedSize.width) || (ClientSize.height < ClippedSize.height);
 
-            SizeF Offset = { 0 };
+            SizeF Offset;
 
             IFC(ComputeAlignmentOffset(ClientSize, ClippedSize, Offset));
 
             Offset.width += Bounds.left + Margin.left;
             Offset.height += Bounds.top + Margin.top;
 
-            Matrix3X2 VisualTransform = D2D1::Matrix3x2F::Translation(Offset);
+            Matrix3X2 VisualTransform = Matrix3X2::Translation(Offset);
             
             //TODO: Use something other than visual transform?
             IFC(SetVisualTransform(VisualTransform));
@@ -937,8 +937,6 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &WidthProperty,
@@ -953,6 +951,8 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
         &MarginProperty,
         &FocusableProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
     IFC(CVisual::CreatePropertyInformation(&pBaseInformation));
@@ -973,8 +973,6 @@ HRESULT CUIElement::CreateEventInformation(CEventInformation** ppInformation)
 {
     HRESULT hr = S_OK;
     CRoutedEventInformation* pEventInformation = NULL;
-
-    IFCPTR(ppInformation);
 
     CRoutedEvent* Events[] = 
     {
@@ -998,6 +996,8 @@ HRESULT CUIElement::CreateEventInformation(CEventInformation** ppInformation)
         &KeyUpEvent,
         &TextEvent
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CRoutedEventInformation::Create(Events, ARRAYSIZE(Events), &pEventInformation));
 
@@ -1420,7 +1420,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::AddHandler(CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, connection* pConnection)
+HRESULT CUIElement::AddHandler(CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, events::signals::connection* pConnection)
 {
     HRESULT hr = S_OK;
     CEventHandlerChain* pHandlerChain = NULL;
@@ -1791,7 +1791,7 @@ CRoutedEvent* CEventHandlerChain::GetRoutedEvent()
     return m_RoutedEvent;
 }
 
-HRESULT CEventHandlerChain::AddHandler(const RoutedEventHandler& Handler, connection* pConnection)
+HRESULT CEventHandlerChain::AddHandler(const RoutedEventHandler& Handler, events::signals::connection* pConnection)
 {
     HRESULT hr = S_OK;
 

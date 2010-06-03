@@ -147,7 +147,7 @@ HRESULT CImage::RebuildGeometry()
     HRESULT hr = S_OK;
     CRectangleGeometry* pRectangleGeometry = NULL;
     SizeF FinalSize = GetFinalSize();
-    RectF Rectangle = { 0, 0, FinalSize.width, FinalSize.height };
+    RectF Rectangle(0, 0, FinalSize.width, FinalSize.height);
 
     IFC(m_VisualContext.GetGraphicsDevice()->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
 
@@ -287,12 +287,12 @@ HRESULT CImage::CreatePropertyInformation(CPropertyInformation** ppInformation)
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &SourceProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));

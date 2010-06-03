@@ -86,7 +86,7 @@ HRESULT CTextVisual::RenderTransformed(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
-    Point2F TextOrigin = { 0 };
+    Point2F TextOrigin;
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
@@ -105,7 +105,7 @@ Cleanup:
 HRESULT CTextVisual::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
 {
     HRESULT hr = S_OK;
-    SizeF RenderSize = { 0 };
+    SizeF RenderSize;
 
     IFCPTR(ppHitTestResult);
 

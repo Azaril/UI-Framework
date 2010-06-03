@@ -40,11 +40,11 @@ class CTemplateBinding : public CBinding
 
         void OnSourcePropertyChanged( CPropertyObject* pObject, CProperty* pProperty );
 
-        connection m_TargetAttachedConnection;
-        connection m_TargetDetachedConnection;
+        events::signals::connection m_TargetAttachedConnection;
+        events::signals::connection m_TargetDetachedConnection;
         CStringValue* m_Property;
         CProperty* m_ResolvedProperty;
-        connection m_PropertyChangedConnection;
+        events::signals::connection m_PropertyChangedConnection;
 };
 
 template< >

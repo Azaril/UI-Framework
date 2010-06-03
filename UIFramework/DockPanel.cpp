@@ -89,7 +89,7 @@ HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         BOOL LastChild = (i == ChildCount - 1);
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
-        SizeF ElementAvailableSize = { max(0.0, AvailableSize.width - AccumulatedWidth), max(0.0, AvailableSize.height - AccumulatedHeight) };
+        SizeF ElementAvailableSize(std::max(0.0f, AvailableSize.width - AccumulatedWidth), std::max(0.0f, AvailableSize.height - AccumulatedHeight));
 
         IFC(pElement->Measure(ElementAvailableSize));
 
@@ -104,7 +104,7 @@ HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
             case RectangleEdge::Left:
             case RectangleEdge::Right:
                 {
-                    ParentHeight = max(ParentHeight, AccumulatedHeight + ElementDesiredSize.height);
+                    ParentHeight = std::max(ParentHeight, AccumulatedHeight + ElementDesiredSize.height);
                     AccumulatedWidth += ElementDesiredSize.width;
 
                     break;
@@ -113,7 +113,7 @@ HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
             case RectangleEdge::Top:
             case RectangleEdge::Bottom:
                 {
-                    ParentWidth = max(ParentWidth, AccumulatedWidth + ElementDesiredSize.width);
+                    ParentWidth = std::max(ParentWidth, AccumulatedWidth + ElementDesiredSize.width);
                     AccumulatedHeight += ElementDesiredSize.height;
 
                     break;
@@ -123,8 +123,8 @@ HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         ReleaseObject(pDock);
     }
 
-    DesiredSize.width = max(ParentWidth, AccumulatedWidth);
-    DesiredSize.height = max(ParentHeight, AccumulatedHeight);
+    DesiredSize.width = std::max(ParentWidth, AccumulatedWidth);
+    DesiredSize.height = std::max(ParentHeight, AccumulatedHeight);
 
 Cleanup:
     ReleaseObject(pDock);
@@ -157,15 +157,15 @@ HRESULT CDockPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
-        SizeF ElementPosition = { 0 };
-        SizeF ElementAvailableSize = { 0 };
+        SizeF ElementPosition;
+        SizeF ElementAvailableSize;
 
         IFC(pElement->GetTypedValue(&DockProperty, &pDock));
 
         if(LastChildFill && LastChild)
         {
-            ElementAvailableSize.height = max(AvailableSize.height - (TopSideOffset + BottomSideOffset), 0);
-            ElementAvailableSize.width = max(AvailableSize.width - (LeftSideOffset + RightSideOffset), 0);
+            ElementAvailableSize.height = std::max(AvailableSize.height - (TopSideOffset + BottomSideOffset), 0.0f);
+            ElementAvailableSize.width = std::max(AvailableSize.width - (LeftSideOffset + RightSideOffset), 0.0f);
 
             ElementPosition.width = LeftSideOffset;
             ElementPosition.height = TopSideOffset;
@@ -176,7 +176,7 @@ HRESULT CDockPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
         {
             if(pDock == NULL || pDock->GetValue() == RectangleEdge::Left)
             {
-                ElementAvailableSize.height = max(AvailableSize.height - (TopSideOffset + BottomSideOffset), 0);
+                ElementAvailableSize.height = std::max(AvailableSize.height - (TopSideOffset + BottomSideOffset), 0.0f);
                 ElementAvailableSize.width = ElementDesiredSize.width;
 
                 ElementPosition.width = LeftSideOffset;
@@ -188,7 +188,7 @@ HRESULT CDockPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
             }
             else if(pDock->GetValue() == RectangleEdge::Right)
             {
-                ElementAvailableSize.height = max(AvailableSize.height - (TopSideOffset + BottomSideOffset), 0);
+                ElementAvailableSize.height = std::max(AvailableSize.height - (TopSideOffset + BottomSideOffset), 0.0f);
                 ElementAvailableSize.width = ElementDesiredSize.width;
 
                 ElementPosition.width = (AvailableSize.width - RightSideOffset) - ElementDesiredSize.width;
@@ -201,7 +201,7 @@ HRESULT CDockPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
             else if(pDock->GetValue() == RectangleEdge::Top)
             {
                 ElementAvailableSize.height = ElementDesiredSize.height;
-                ElementAvailableSize.width = max(AvailableSize.width - (LeftSideOffset + RightSideOffset), 0);
+                ElementAvailableSize.width = std::max(AvailableSize.width - (LeftSideOffset + RightSideOffset), 0.0f);
 
                 ElementPosition.width = LeftSideOffset;
                 ElementPosition.height = TopSideOffset;
@@ -213,7 +213,7 @@ HRESULT CDockPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
             else 
             {
                 ElementAvailableSize.height = ElementDesiredSize.height;
-                ElementAvailableSize.width = max(AvailableSize.width - (LeftSideOffset + RightSideOffset), 0);
+                ElementAvailableSize.width = std::max(AvailableSize.width - (LeftSideOffset + RightSideOffset), 0.0f);
 
                 ElementPosition.width = LeftSideOffset;
                 ElementPosition.height = (AvailableSize.height - BottomSideOffset) - ElementDesiredSize.height;
@@ -254,13 +254,13 @@ HRESULT CDockPanel::CreatePropertyInformation(CPropertyInformation** ppInformati
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &DockProperty,
         &LastChildFillProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CPanel::CreatePropertyInformation(&pBaseInformation));

@@ -37,8 +37,8 @@ class CDynamicResource : public CBinding
         void OnTargetAttached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
         void OnTargetDetached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
-        connection m_TargetAttachedConnection;
-        connection m_TargetDetachedConnection;
+        events::signals::connection m_TargetAttachedConnection;
+        events::signals::connection m_TargetDetachedConnection;
         CObjectWithType* m_ResourceKey;
 };
 

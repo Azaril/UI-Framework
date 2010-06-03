@@ -5,6 +5,7 @@
 #include "RoutedEvent.h"
 #include "SolidColorBrush.h"
 #include "Providers.h"
+#include "Types.h"
 
 StaticTypeConverter BasicConverters[] =
 {
@@ -119,7 +120,7 @@ struct PredefinedColor
 };
 
 //TODO: Remove relying on the ColorF constructor.
-#define PREDEFINED_COLOR(color) { L#color, D2D1::ColorF(D2D1::ColorF::##color) }
+#define PREDEFINED_COLOR(color) { L ## #color, Color::color }
 
 PredefinedColor PredefinedColors[] =
 {
@@ -414,7 +415,7 @@ HRESULT ConvertStringToRectF(CConversionContext* pContext, CObjectWithType* pVal
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
     CRectFValue* pRectFValue = NULL;
-    RectF Value = { 0 };
+    RectF Value;
     FLOAT Values[4] = { 0 };
     UINT32 ValueCount = 0;
     const WCHAR* pParsePoint = NULL;
@@ -699,7 +700,7 @@ HRESULT ConvertStringToPoint2F(CConversionContext* pContext, CObjectWithType* pV
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
     CPoint2FValue* pPoint2FValue = NULL;
-    Point2F Value = { 0 };
+    Point2F Value;
     FLOAT Values[2] = { 0 };
     UINT32 ValueCount = 0;
     const WCHAR* pParsePoint = NULL;

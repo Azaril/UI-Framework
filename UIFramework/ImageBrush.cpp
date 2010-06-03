@@ -31,12 +31,12 @@ HRESULT CImageBrush::CreatePropertyInformation(CPropertyInformation **ppInformat
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &SourceProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CBrush::CreatePropertyInformation(&pBaseInformation));
@@ -221,7 +221,7 @@ HRESULT CImageBrush::OnVisualDetach(CVisualDetachContext& Context)
         }
     }
 
-    IFCPTR(E_FAIL);
+    IFC(E_FAIL);
 
 Cleanup:
     return hr;

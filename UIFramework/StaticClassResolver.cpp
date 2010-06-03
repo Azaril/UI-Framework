@@ -216,7 +216,7 @@ HRESULT CStaticClassResolver::ResolveProperty(const WCHAR* pPropertyName, CPrope
         pClassType = new WCHAR[ClassTypeLength + 1];
         IFCOOM(pClassType);
 
-        wcsncpy_s(pClassType, ClassTypeLength + 1, pPropertyName, ClassTypeLength);
+        wcsncpy(pClassType, pPropertyName, ClassTypeLength);
         pClassType[ClassTypeLength] = L'\0';
 
         IFC(ResolveProperties(pClassType, &pResolvedClassProperties));
@@ -285,7 +285,7 @@ HRESULT CStaticClassResolver::ResolveEvent(const WCHAR* pEventName, CEventInform
         pClassType = new WCHAR[ClassTypeLength + 1];
         IFCOOM(pClassType);
 
-        wcsncpy_s(pClassType, ClassTypeLength + 1, pEventName, ClassTypeLength);
+        wcsncpy(pClassType, pEventName, ClassTypeLength);
         pClassType[ClassTypeLength] = L'\0';
 
         IFC(ResolveEvents(pClassType, &pResolvedClassEvents));

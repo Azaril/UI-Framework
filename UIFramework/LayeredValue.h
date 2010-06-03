@@ -28,25 +28,24 @@ namespace EffectiveValue
     };
 }
 
+struct ValueLayer
+{
+    ValueLayer() : Value(NULL)
+    {
+    }
+    
+    ~ValueLayer()
+    {
+        ReleaseObject(Value);
+    }
+    
+    CObjectWithType* Value;
+    events::signals::connection BindingInvalidationConnection;
+};
+
 template< typename T >
 class CTypedLocalLayeredValue : public CLayeredValue
 {
-    protected:
-        struct ValueLayer
-        {
-            ValueLayer() : Value(NULL)
-            {
-            }
-
-            ~ValueLayer()
-            {
-                ReleaseObject(Value);
-            }
-
-            CObjectWithType* Value;
-            connection BindingInvalidationConnection;
-        };
-
     public:
         CTypedLocalLayeredValue( CPropertyObject* pOwner, CProperty* pProperty ) : m_Owner(pOwner),
                                                                                    m_Property(pProperty),
@@ -462,7 +461,7 @@ class CTypedLayeredValue : public CTypedLocalLayeredValue< T >
         {
             HRESULT hr = S_OK;
 
-            IFC(SetValueToLayer(m_StyleLayer, EffectiveValue::Style, pObject, pProviders));        
+            IFC(CTypedLocalLayeredValue< T >::SetValueToLayer(m_StyleLayer, EffectiveValue::Style, pObject, pProviders));        
 
         Cleanup:
             return hr;
@@ -477,7 +476,7 @@ class CTypedLayeredValue : public CTypedLocalLayeredValue< T >
             {
                 case EffectiveValue::Style:
                     {
-                        IFC(GetValueFromLayer(m_StyleLayer, pProviders, ppValue));
+                        IFC(CTypedLocalLayeredValue< T >::GetValueFromLayer(m_StyleLayer, pProviders, ppValue));
 
                         break;
                     }

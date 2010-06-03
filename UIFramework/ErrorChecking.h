@@ -15,9 +15,11 @@
 #else
 
 #define S_OK            (0)
+#define S_FALSE         (1)
 #define E_FAIL          (-1)
 #define E_POINTER       (-2)
 #define E_OUTOFMEMORY   (-3)
+#define E_UNEXPECTED    (-4)
 
 #define SUCCEEDED(expr) (expr >= 0)
 #define FAILED(expr)    (expr < 0)

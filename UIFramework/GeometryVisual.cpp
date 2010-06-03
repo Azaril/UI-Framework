@@ -7,7 +7,7 @@ CGeometryVisual::CGeometryVisual() : m_Geometry(NULL),
                                      m_StrokeGraphicsBrush(NULL),
                                      m_StrokeThickness(1.0f)
 {
-    m_FillBrushTransform = D2D1::Matrix3x2F::Identity();
+    m_FillBrushTransform = Matrix3X2::Identity();
 }
 
 CGeometryVisual::~CGeometryVisual()
@@ -260,9 +260,6 @@ HRESULT CGeometryVisual::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestR
 
     if(m_Geometry != NULL)
     {
-        //TODO: Fix this!
-        using namespace D2D1;
-
         IFC(m_Geometry->FillContainsPoint(LocalPoint * m_FinalLocalTransform, &FillContainsPoint));
     }
 

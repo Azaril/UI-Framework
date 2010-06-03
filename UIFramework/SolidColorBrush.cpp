@@ -73,12 +73,12 @@ HRESULT CSolidColorBrush::CreatePropertyInformation(CPropertyInformation **ppInf
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &ColorProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CBrush::CreatePropertyInformation(&pBaseInformation));
@@ -120,13 +120,17 @@ Cleanup:
 HRESULT CSolidColorBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
+    CColorFValue* pColorValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
     if(pProperty  == &CSolidColorBrush::ColorProperty)
     {
-        IFC(E_NOTIMPL);
+        IFC(CColorFValue::Create(m_Color, &pColorValue));
+        
+        *ppValue = pColorValue;
+        pColorValue = NULL;
     }
     else
     {
@@ -134,6 +138,8 @@ HRESULT CSolidColorBrush::GetValue(CProperty* pProperty, CObjectWithType** ppVal
     }
 
 Cleanup:
+    ReleaseObject(pColorValue);
+    
     return hr;
 }
 

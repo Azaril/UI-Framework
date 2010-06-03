@@ -134,7 +134,7 @@ class CParameterlessUINotification : public CUINotification
 typedef CParameterlessUINotification< UINotification::ChildMeasureInvalidated > CChildMeasureInvalidatedNotification;
 typedef CParameterlessUINotification< UINotification::ChildArrangeInvalidated > CChildArrangeInvalidatedNotification;
 
-typedef signal< void ( CObjectWithType*, CRoutedEventArgs* ) > RoutedEventSignal;
+typedef events::signal< void ( CObjectWithType*, CRoutedEventArgs* ) > RoutedEventSignal;
 typedef RoutedEventSignal::slot_type RoutedEventHandler;
 
 class CEventHandlerChain : public CRefCountedObject
@@ -144,7 +144,7 @@ class CEventHandlerChain : public CRefCountedObject
 
         CRoutedEvent* GetRoutedEvent();
 
-        HRESULT AddHandler( const RoutedEventHandler& Handler, connection* pConnection );
+        HRESULT AddHandler( const RoutedEventHandler& Handler, events::signals::connection* pConnection );
 
         BOOL HasHandlers();
 
@@ -157,7 +157,7 @@ class CEventHandlerChain : public CRefCountedObject
         HRESULT Initialize( CRoutedEvent* pRoutedEvent );
 
         CRoutedEvent* m_RoutedEvent;
-        signal< void ( CObjectWithType*, CRoutedEventArgs* ) > m_Handlers;
+        events::signal< void ( CObjectWithType*, CRoutedEventArgs* ) > m_Handlers;
 };
 
 class CUIElement : public CVisual
@@ -207,7 +207,7 @@ class CUIElement : public CVisual
 
         virtual HRESULT RaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
 
-        virtual HRESULT AddHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, connection* pConnection );
+        virtual HRESULT AddHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, events::signals::connection* pConnection );
 
         HRESULT Focus( BOOL* pSetFocus );
 
@@ -379,17 +379,17 @@ class CUIElement : public CVisual
 
         std::vector< CEventHandlerChain* > m_EventHandlers;
 
-        connection m_MouseButtonConnection;
-        connection m_MouseDownConnection;
-        connection m_MouseUpConnection;
-        connection m_MouseLeftButtonDownConnection;
-        connection m_MouseRightButtonDownConnection;
-        connection m_MouseMiddleButtonDownConnection;
-        connection m_MouseLeftButtonUpConnection;
-        connection m_MouseRightButtonUpConnection;
-        connection m_MouseMiddleButtonUpConnection;
-        connection m_MouseMoveConnection;
-        connection m_KeyConnection;
+        events::signals::connection m_MouseButtonConnection;
+        events::signals::connection m_MouseDownConnection;
+        events::signals::connection m_MouseUpConnection;
+        events::signals::connection m_MouseLeftButtonDownConnection;
+        events::signals::connection m_MouseRightButtonDownConnection;
+        events::signals::connection m_MouseMiddleButtonDownConnection;
+        events::signals::connection m_MouseLeftButtonUpConnection;
+        events::signals::connection m_MouseRightButtonUpConnection;
+        events::signals::connection m_MouseMiddleButtonUpConnection;
+        events::signals::connection m_MouseMoveConnection;
+        events::signals::connection m_KeyConnection;
 };
 
 template< >

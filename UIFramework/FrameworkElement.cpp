@@ -87,7 +87,7 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
     {
         CUIAttachContext ChildContext(this, GetTemplateParentForChildren(), GetFocusManager(), GetNamescopeForChildren());
 
-        for(UINT i = 0; i < m_Children->GetCount(); i++)
+        for(UINT32 i = 0; i < m_Children->GetCount(); i++)
         {
             CUIElement* pElement = m_Children->GetAtIndex(i);
 
@@ -124,7 +124,7 @@ HRESULT CFrameworkElement::OnDetach(CUIDetachContext& Context)
     {
         CUIDetachContext ChildContext(this);
 
-        for(UINT i = 0; i < m_Children->GetCount(); i++)
+        for(UINT32 i = 0; i < m_Children->GetCount(); i++)
         {
             CUIElement* pElement = m_Children->GetAtIndex(i);
 
@@ -232,7 +232,7 @@ CUIElementCollection* CFrameworkElement::GetChildCollection()
     return m_Children;
 }
 
-VOID CFrameworkElement::OnChildAdded(CUIElement* pElement)
+void CFrameworkElement::OnChildAdded(CUIElement* pElement)
 {
     HRESULT hr = S_OK;
 
@@ -251,7 +251,7 @@ Cleanup:
     ;
 }
 
-VOID CFrameworkElement::OnChildRemoved(CUIElement* pElement)
+void CFrameworkElement::OnChildRemoved(CUIElement* pElement)
 {
     HRESULT hr = S_OK;
 
@@ -487,14 +487,14 @@ HRESULT CFrameworkElement::CreatePropertyInformation(CPropertyInformation **ppIn
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &NameProperty,
         &ResourcesProperty,
         &StyleProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
     IFC(CUIElement::CreatePropertyInformation(&pBaseInformation));
@@ -546,7 +546,7 @@ HRESULT CUIElementCollection::AddObject(CObjectWithType* pObject)
 
     IFCPTR(pObject);
 
-    for(UINT i = 0; i < GetCount(); i++)
+    for(UINT32 i = 0; i < GetCount(); i++)
     {
         CUIElement* pChildElement = GetAtIndex(i);
 

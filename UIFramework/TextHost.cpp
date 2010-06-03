@@ -52,8 +52,8 @@ HRESULT CTextHost::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     HRESULT hr = S_OK;
     CTextLayoutMetrics* pTextLayoutMetrics = NULL;
     
-    RectF TextBounds = { 0 };
-    SizeF SizeWithText = { 0 };
+    RectF TextBounds;
+    SizeF SizeWithText;
 
     if(m_TextLayout)
     {
@@ -77,7 +77,7 @@ HRESULT CTextHost::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
     CTextLayoutMetrics* pMetrics = NULL;
-    RectF TextBounds = { 0 };
+    RectF TextBounds;
 
     if(m_TextLayout)
     {
@@ -100,7 +100,7 @@ Cleanup:
 HRESULT CTextHost::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
 {
     HRESULT hr = S_OK;
-    SizeF RenderSize = { 0 };
+    SizeF RenderSize;
 
     IFCPTR(ppHitTestResult);
 

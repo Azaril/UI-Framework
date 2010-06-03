@@ -86,8 +86,8 @@ HRESULT CUIHost::EnsureLayout()
 {
     HRESULT hr = S_OK;
 
-    SizeF AvailableSize = { 0 };
-    SizeF DesiredSize = { 0 };
+    SizeF AvailableSize;
+    SizeF DesiredSize;
 
     AvailableSize = m_RenderTarget->GetSize();
 

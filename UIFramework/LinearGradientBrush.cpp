@@ -3,8 +3,8 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-Point2F DefaultStartPoint = { 0, 0 };
-Point2F DefaultEndPoint = { 1, 1 };
+Point2F DefaultStartPoint(0, 0);
+Point2F DefaultEndPoint(1, 1);
 
 //
 // Property Defaults
@@ -54,13 +54,13 @@ HRESULT CLinearGradientBrush::CreatePropertyInformation(CPropertyInformation **p
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &StartPointProperty,
         &EndPointProperty    
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CGradientBrush::CreatePropertyInformation(&pBaseInformation));

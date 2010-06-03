@@ -75,7 +75,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBinding::AddChangeListener(const BindingInvalidatedHandler& Handler, connection* pConnection)
+HRESULT CBinding::AddChangeListener(const BindingInvalidatedHandler& Handler, events::signals::connection* pConnection)
 {
     HRESULT hr = S_OK;
 

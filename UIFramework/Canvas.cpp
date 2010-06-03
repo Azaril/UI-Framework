@@ -32,13 +32,13 @@ Cleanup:
 HRESULT CCanvas::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF MaxSize = { FLT_MAX, FLT_MAX };
+    SizeF MaxSize(FLT_MAX, FLT_MAX);
     CUIElementCollection* pChildCollection = NULL;
 
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
 
-    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
+    for(UINT32 i = 0; i < pChildCollection->GetCount(); i++)
     {
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
@@ -64,13 +64,13 @@ HRESULT CCanvas::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
 
-    for(UINT i = 0; i < pChildCollection->GetCount(); i++)
+    for(UINT32 i = 0; i < pChildCollection->GetCount(); i++)
     {
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
-        SizeF ElementFinalSize = { 0 };
-        SizeF ElementPosition = { 0 };
+        SizeF ElementFinalSize;
+        SizeF ElementPosition;
 
         IFC(pElement->GetTypedValue(&LeftProperty, &pLeft));
         IFC(pElement->GetTypedValue(&TopProperty, &pTop));
@@ -95,7 +95,7 @@ HRESULT CCanvas::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
             ElementPosition.height = pBottom->GetValue() - ElementDesiredSize.height;
         }
 
-        RectF ElementBounds = { ElementPosition.width, ElementPosition.height, ElementPosition.width + ElementDesiredSize.width, ElementPosition.height + ElementDesiredSize.height };
+        RectF ElementBounds(ElementPosition.width, ElementPosition.height, ElementPosition.width + ElementDesiredSize.width, ElementPosition.height + ElementDesiredSize.height);
 
         IFC(pElement->Arrange(ElementBounds));
 
@@ -137,8 +137,6 @@ HRESULT CCanvas::CreatePropertyInformation(CPropertyInformation** ppInformation)
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &LeftProperty,
@@ -146,6 +144,8 @@ HRESULT CCanvas::CreatePropertyInformation(CPropertyInformation** ppInformation)
         &RightProperty,
         &BottomProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CPanel::CreatePropertyInformation(&pBaseInformation));

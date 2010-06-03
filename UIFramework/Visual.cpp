@@ -4,8 +4,8 @@
 
 CVisual::CVisual() : m_VisualAttached(FALSE)
 {
-    m_VisualTransform = D2D1::Matrix3x2F::Identity();
-    m_FinalLocalTransform = D2D1::Matrix3x2F::Identity();
+    m_VisualTransform = Matrix3X2::Identity();
+    m_FinalLocalTransform = Matrix3X2::Identity();
 }
 
 CVisual::~CVisual()
@@ -359,10 +359,7 @@ HRESULT CVisual::TransformToParent(CTransform** ppTransform)
 
     IFCPTR(ppTransform);
 
-    //TODO: Remove D2D dependency!
-    IFCEXPECT(D2D1IsMatrixInvertible(&m_FinalLocalTransform));
-
-    IFCEXPECT(D2D1InvertMatrix(&TransformedMatrix));
+    IFCEXPECT(TransformedMatrix.Invert());
 
     IFC(CMatrixTransform::Create(TransformedMatrix, &pMatrixTransform));
 

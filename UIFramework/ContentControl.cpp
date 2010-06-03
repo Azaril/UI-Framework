@@ -40,12 +40,12 @@ HRESULT CContentControl::CreatePropertyInformation(CPropertyInformation **ppInfo
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &ContentProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CControl::CreatePropertyInformation(&pBaseInformation));

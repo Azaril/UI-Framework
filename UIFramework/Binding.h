@@ -6,7 +6,7 @@
 
 class CBinding;
 
-typedef signal< void ( CBinding* ) > BindingInvalidatedSignal;
+typedef events::signal< void ( CBinding* ) > BindingInvalidatedSignal;
 typedef BindingInvalidatedSignal::slot_type BindingInvalidatedHandler;
 
 class CBinding : public CRefCountedObjectBase< CPropertyObject >
@@ -21,7 +21,7 @@ class CBinding : public CRefCountedObjectBase< CPropertyObject >
         virtual HRESULT SetTarget( CPropertyObject* pTarget, CProperty* pTargetProperty );
         virtual HRESULT ClearTarget();
 
-        HRESULT AddChangeListener( const BindingInvalidatedHandler& Handler, connection* pConnection );
+        HRESULT AddChangeListener( const BindingInvalidatedHandler& Handler, events::signals::connection* pConnection );
 
     protected:
         CBinding();

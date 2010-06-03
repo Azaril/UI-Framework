@@ -21,7 +21,7 @@ HRESULT WalkVisualTreeForHitTesting(const Point2F& LocalPoint, CVisual* pParent,
 
             for(UINT32 i = 0; i < ChildCount; i++)
             {
-                Point2F ChildPoint = { 0 };
+                Point2F ChildPoint;
                 CVisual* pChild = pParent->GetVisualChild(ChildCount - i - 1);
 
                 IFC(pChild->TransformToParent(&pTransform));

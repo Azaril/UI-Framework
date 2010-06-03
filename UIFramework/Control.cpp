@@ -198,14 +198,14 @@ HRESULT CControl::CreatePropertyInformation(CPropertyInformation **ppInformation
     CPropertyInformation* pBaseInformation = NULL;
     CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
 
-    IFCPTR(ppInformation);
-
     CStaticProperty* Properties[] = 
     {
         &TemplateProperty,
         &BackgroundProperty,
         &BorderBrushProperty
     };
+    
+    IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
     IFC(CFrameworkElement::CreatePropertyInformation(&pBaseInformation));
@@ -254,7 +254,7 @@ Cleanup:
 HRESULT CControl::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF ChildSizeDesired = { 0 };
+    SizeF ChildSizeDesired;
     CUIElement* pChild = NULL;
 
     IFC(GetTemplateChild(&pChild));
