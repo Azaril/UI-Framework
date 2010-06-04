@@ -17,7 +17,9 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::Bool, ConvertStringToBool },
     { TypeIndex::String, TypeIndex::Point2F, ConvertStringToPoint2F },
     { TypeIndex::String, TypeIndex::RoutedEvent, ConvertStringToRoutedEvent },
-    { TypeIndex::String, TypeIndex::Brush, ConvertStringToBrush }
+    { TypeIndex::String, TypeIndex::Brush, ConvertStringToBrush },
+    { TypeIndex::String, TypeIndex::HorizontalAlignment, ConvertStringToHorizontalAlignment },
+    { TypeIndex::String, TypeIndex::VerticalAlignment, ConvertStringToVerticalAlignment }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -937,6 +939,98 @@ Cleanup:
     ReleaseObject(pColorValue);
     ReleaseObject(pBrush);
     ReleaseObject(pSolidColorBrush);
+
+    return hr;
+}
+
+HRESULT ConvertStringToHorizontalAlignment(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    HorizontalAlignment::Value Value;
+    CStringValue* pStringValue = NULL;
+    CHorizontalAlignmentValue* pAlignmentValue = NULL;
+
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    if(wcscmp(pStringValue->GetValue(), L"Left") == 0)
+    {
+        Value = HorizontalAlignment::Left;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"Center") == 0)
+    {
+        Value = HorizontalAlignment::Center;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"Right") == 0)
+    {
+        Value = HorizontalAlignment::Right;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"Stretch") == 0)
+    {
+        Value = HorizontalAlignment::Stretch;
+    }
+    else
+    {
+        IFC(E_FAIL);
+    }
+
+    IFC(CHorizontalAlignmentValue::Create(Value, &pAlignmentValue));
+
+    *ppConvertedValue = pAlignmentValue;
+    pAlignmentValue = NULL;
+
+Cleanup:
+    ReleaseObject(pAlignmentValue);
+
+    return hr;
+}
+
+HRESULT ConvertStringToVerticalAlignment(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    VerticalAlignment::Value Value;
+    CStringValue* pStringValue = NULL;
+    CVerticalAlignmentValue* pAlignmentValue = NULL;
+
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    if(wcscmp(pStringValue->GetValue(), L"Top") == 0)
+    {
+        Value = VerticalAlignment::Top;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"Center") == 0)
+    {
+        Value = VerticalAlignment::Center;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"Bottom") == 0)
+    {
+        Value = VerticalAlignment::Bottom;
+    }
+    else if(wcscmp(pStringValue->GetValue(), L"Stretch") == 0)
+    {
+        Value = VerticalAlignment::Stretch;
+    }
+    else
+    {
+        IFC(E_FAIL);
+    }
+
+    IFC(CVerticalAlignmentValue::Create(Value, &pAlignmentValue));
+
+    *ppConvertedValue = pAlignmentValue;
+    pAlignmentValue = NULL;
+
+Cleanup:
+    ReleaseObject(pAlignmentValue);
 
     return hr;
 }

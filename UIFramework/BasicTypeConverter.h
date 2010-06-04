@@ -13,3 +13,5 @@ HRESULT ConvertStringToBool( CConversionContext* pContext, CObjectWithType* pVal
 HRESULT ConvertStringToPoint2F( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToRoutedEvent( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToBrush( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToHorizontalAlignment( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToVerticalAlignment( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );

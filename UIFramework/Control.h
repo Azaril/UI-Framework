@@ -45,6 +45,9 @@ class CControl : public CFrameworkElement
         static CStaticProperty TemplateProperty;
         static CStaticProperty BackgroundProperty;
         static CStaticProperty BorderBrushProperty;
+        static CStaticProperty BorderThicknessProperty;
+        static CStaticProperty HorizontalContentAlignmentProperty;
+        static CStaticProperty VerticalContentAlignmentProperty;
 
     protected:
         CControl();
@@ -79,6 +82,9 @@ class CControl : public CFrameworkElement
         CTypedLayeredValue< CControlTemplate > m_Template;
         CTypedLayeredValue< CBrush > m_Background;
         CTypedLayeredValue< CBrush > m_BorderBrush;
+        CTypedLayeredValue< CFloatValue > m_BorderThickness;
+        CTypedLayeredValue< CHorizontalAlignmentValue > m_HorizontalContentAlignment;
+        CTypedLayeredValue< CVerticalAlignmentValue > m_VerticalContentAlignment;
         BOOL m_TemplateDirty;
         CUIElement* m_TemplateChild;
         CNamescope* m_TemplateNamescope;

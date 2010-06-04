@@ -153,6 +153,21 @@ Cleanup:
     return hr;
 }
 
+HRESULT CContentPresenter::GetContentChild(CUIElement** ppChild)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppChild);
+
+    IFC(EnsureContentUI());
+
+    *ppChild = m_ContentChild;
+    AddRefObject(m_ContentChild);
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CContentPresenter::CreatePropertyInformation(CPropertyInformation **ppInformation)
 {
     HRESULT hr = S_OK;

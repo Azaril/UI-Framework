@@ -572,6 +572,14 @@
 							>
 						</File>
 						<File
+							RelativePath=".\ScrollContentPresenter.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ScrollContentPresenter.h"
+							>
+						</File>
+						<File
 							RelativePath=".\TextBlock.cpp"
 							>
 						</File>
@@ -703,6 +711,14 @@
 								</File>
 								<File
 									RelativePath=".\ContentControl.h"
+									>
+								</File>
+								<File
+									RelativePath=".\ScrollViewer.cpp"
+									>
+								</File>
+								<File
+									RelativePath=".\ScrollViewer.h"
 									>
 								</File>
 							</Filter>

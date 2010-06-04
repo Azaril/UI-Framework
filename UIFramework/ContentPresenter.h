@@ -39,7 +39,7 @@ class CContentPresenter : public CFrameworkElement
         //
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnContentChanged );
 
-        HRESULT OnContentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        virtual HRESULT OnContentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
         HRESULT GetUIForContent( CUIElement** ppContentUI );
         

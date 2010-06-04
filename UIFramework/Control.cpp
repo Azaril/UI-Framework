@@ -9,6 +9,9 @@
 DEFINE_GET_DEFAULT_NULL( Template );
 DEFINE_GET_DEFAULT_NULL( Background );
 DEFINE_GET_DEFAULT_NULL( BorderBrush );
+DEFINE_GET_DEFAULT( BorderThickness, CFloatValue, 0 );
+DEFINE_GET_DEFAULT( HorizontalContentAlignment, CHorizontalAlignmentValue, HorizontalAlignment::Stretch );
+DEFINE_GET_DEFAULT( VerticalContentAlignment, CVerticalAlignmentValue, VerticalAlignment::Stretch );
 
 //
 // Properties
@@ -16,6 +19,9 @@ DEFINE_GET_DEFAULT_NULL( BorderBrush );
 CStaticProperty CControl::TemplateProperty( L"Template", TypeIndex::ControlTemplate, StaticPropertyFlags::None, &GET_DEFAULT( Template ), &INSTANCE_CHANGE_CALLBACK( CControl, OnTemplateChanged ) );
 CStaticProperty CControl::BackgroundProperty( L"Background", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Background ) );
 CStaticProperty CControl::BorderBrushProperty( L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( BorderBrush ) );
+CStaticProperty CControl::BorderThicknessProperty( L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(BorderThickness) );
+CStaticProperty CControl::HorizontalContentAlignmentProperty( L"HorizontalContentAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(HorizontalContentAlignment) );
+CStaticProperty CControl::VerticalContentAlignmentProperty( L"VerticalContentAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(VerticalContentAlignment) );
 
 //
 // Property Change Handlers
@@ -25,6 +31,9 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CControl, OnTemplateChanged );
 CControl::CControl() : m_Template(this, &CControl::TemplateProperty),
                        m_Background(this, &CControl::BackgroundProperty),
                        m_BorderBrush(this, &CControl::BorderBrushProperty),
+                       m_BorderThickness(this, &CControl::BorderThicknessProperty),
+                       m_HorizontalContentAlignment(this, &CControl::HorizontalContentAlignmentProperty),
+                       m_VerticalContentAlignment(this, &CControl::VerticalContentAlignmentProperty),
                        m_TemplateDirty(TRUE),
                        m_TemplateChild(NULL),
                        m_TemplateNamescope(NULL)
@@ -202,7 +211,10 @@ HRESULT CControl::CreatePropertyInformation(CPropertyInformation **ppInformation
     {
         &TemplateProperty,
         &BackgroundProperty,
-        &BorderBrushProperty
+        &BorderBrushProperty,
+        &BorderThicknessProperty,
+        &HorizontalContentAlignmentProperty,
+        &VerticalContentAlignmentProperty
     };
     
     IFCPTR(ppInformation);
@@ -241,6 +253,18 @@ HRESULT CControl::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayere
     else if(pProperty == &CControl::BorderBrushProperty)
     {
         *ppLayeredValue = &m_BorderBrush;
+    }
+    else if(pProperty == &CControl::BorderThicknessProperty)
+    {
+        *ppLayeredValue = &m_BorderThickness;
+    }
+    else if(pProperty == &CControl::HorizontalContentAlignmentProperty)
+    {
+        *ppLayeredValue = &m_HorizontalContentAlignment;
+    }
+    else if(pProperty == &CControl::VerticalContentAlignmentProperty)
+    {
+        *ppLayeredValue = &m_VerticalContentAlignment;
     }
     else
     {
