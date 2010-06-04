@@ -7,7 +7,7 @@ CGeometryVisual::CGeometryVisual() : m_Geometry(NULL),
                                      m_StrokeGraphicsBrush(NULL),
                                      m_StrokeThickness(1.0f)
 {
-    m_FillBrushTransform = Matrix3X2::Identity();
+    m_FillBrushTransform = Matrix3X2F::Identity();
 }
 
 CGeometryVisual::~CGeometryVisual()
@@ -70,7 +70,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::SetFillBrushTransform(const Matrix3X2& Transform)
+HRESULT CGeometryVisual::SetFillBrushTransform(const Matrix3X2F& Transform)
 {
     HRESULT hr = S_OK;
 

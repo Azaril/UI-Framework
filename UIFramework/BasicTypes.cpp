@@ -52,6 +52,7 @@ HRESULT CStringValue::Initialize(const WCHAR* pValue, UINT32 Length)
     IFCOOM(m_Value);
 
     wcsncpy(m_Value, pValue, Length);
+    m_Value[m_Length] = '\0';
 
 Cleanup:
     return hr;

@@ -225,14 +225,6 @@
 					RelativePath=".\Signals.h"
 					>
 				</File>
-				<File
-					RelativePath=".\Types.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Types.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Graphics"
@@ -1401,6 +1393,98 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="Types"
+				>
+				<File
+					RelativePath=".\ColorF.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ColorF.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Colors.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DataTypes.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Gradient.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Gradient.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Matrix3X2F.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Matrix3X2F.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Point2F.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Point2F.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Point2U.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Point2U.h"
+					>
+				</File>
+				<File
+					RelativePath=".\RectF.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\RectF.h"
+					>
+				</File>
+				<File
+					RelativePath=".\RectU.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\RectU.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SizeF.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SizeF.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SizeU.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SizeU.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Types.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Types.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

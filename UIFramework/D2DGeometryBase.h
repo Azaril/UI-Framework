@@ -20,7 +20,7 @@ class CD2DGeometryBase : public T
 
             IFCPTR(pContainsPoint);
 
-            IFC(m_Geometry->FillContainsPoint(LocalPoint, D2D1::Matrix3x2F::Identity(), pContainsPoint));
+            IFC(m_Geometry->FillContainsPoint(LocalPoint, Matrix3X2F::Identity(), pContainsPoint));
 
         Cleanup:
             return hr;

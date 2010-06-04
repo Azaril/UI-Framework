@@ -25,7 +25,7 @@ class CRenderTarget : public CRefCountedObject
         virtual HRESULT BeginRendering() = 0;
         virtual HRESULT EndRendering() = 0;
 
-        virtual HRESULT SetTransform( const Matrix3X2& Transform ) = 0;
+        virtual HRESULT SetTransform( const Matrix3X2F& Transform ) = 0;
 
         virtual HRESULT Clear( ColorF Color ) = 0;
 

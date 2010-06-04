@@ -34,7 +34,9 @@ Cleanup:
 
 SizeF CD2DRenderTarget::GetSize()
 {
-    return m_RenderTarget->GetSize();
+    D2D1_SIZE_F Size = m_RenderTarget->GetSize();
+
+    return SizeF(Size.width, Size.height);
 }
 
 HRESULT CD2DRenderTarget::BeginRendering()
@@ -56,7 +58,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::SetTransform( const Matrix3X2& Transform )
+HRESULT CD2DRenderTarget::SetTransform(const Matrix3X2F& Transform)
 {
     HRESULT hr = S_OK;
 
@@ -137,7 +139,7 @@ HRESULT CD2DRenderTarget::GetDefaultBrush(DefaultBrush::Value Type, CGraphicsBru
     {
         case DefaultBrush::TextForeground:
             {
-                IFC(CreateSolidBrush(D2D1::ColorF(D2D1::ColorF::Black), ppBrush));
+                IFC(CreateSolidBrush(ColorF(Color::Black), ppBrush));
                 break;
             }
 

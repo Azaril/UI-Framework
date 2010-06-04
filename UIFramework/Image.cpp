@@ -191,7 +191,7 @@ Cleanup:
 HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeU ImageSize = { 0 };
+    SizeU ImageSize;
     CFloatValue* pWidth = NULL;
     CFloatValue* pHeight = NULL;
 
@@ -235,7 +235,7 @@ Cleanup:
 HRESULT CImage::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
-    SizeU ImageSize = { 0 };
+    SizeU ImageSize;
     CFloatValue* pWidth = NULL;
     CFloatValue* pHeight = NULL;
 

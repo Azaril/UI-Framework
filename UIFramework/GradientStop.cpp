@@ -1,7 +1,7 @@
 #include "GradientStop.h"
 #include "BasicTypes.h"
 
-static ColorF DefaultColor = { 1, 1, 1, 1 };
+static ColorF DefaultColor(1, 1, 1, 1);
 
 //
 // Property Defaults

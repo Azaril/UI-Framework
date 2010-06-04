@@ -4,8 +4,8 @@
 
 CVisual::CVisual() : m_VisualAttached(FALSE)
 {
-    m_VisualTransform = Matrix3X2::Identity();
-    m_FinalLocalTransform = Matrix3X2::Identity();
+    m_VisualTransform = Matrix3X2F::Identity();
+    m_FinalLocalTransform = Matrix3X2F::Identity();
 }
 
 CVisual::~CVisual()
@@ -257,7 +257,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::SetVisualTransform(const Matrix3X2& Matrix)
+HRESULT CVisual::SetVisualTransform(const Matrix3X2F& Matrix)
 {
     HRESULT hr = S_OK;
 
@@ -266,7 +266,7 @@ HRESULT CVisual::SetVisualTransform(const Matrix3X2& Matrix)
     return hr;
 }
 
-const Matrix3X2& CVisual::GetVisualTransform()
+const Matrix3X2F& CVisual::GetVisualTransform()
 {
     return m_VisualTransform;
 }
@@ -355,7 +355,7 @@ HRESULT CVisual::TransformToParent(CTransform** ppTransform)
 {
     HRESULT hr = S_OK;
     CMatrixTransform* pMatrixTransform = NULL;
-    Matrix3X2 TransformedMatrix = m_FinalLocalTransform;
+    Matrix3X2F TransformedMatrix = m_FinalLocalTransform;
 
     IFCPTR(ppTransform);
 

@@ -5,22 +5,22 @@
 
 class CMatrixStack
 {
-    typedef std::vector< Matrix3X2 > MatrixStack;
+    typedef std::vector< Matrix3X2F > MatrixStack;
 
     public:
         CMatrixStack();
         ~CMatrixStack();
 
-        const Matrix3X2& GetTop();
+        const Matrix3X2F& GetTop();
 
         HRESULT Push();
         HRESULT Pop();
 
         HRESULT LoadIdentity();
-        HRESULT LoadMatrix( const Matrix3X2& Matrix );
+        HRESULT LoadMatrix( const Matrix3X2F& Matrix );
 
-        HRESULT MultMatrix( const Matrix3X2& Matrix );
-        HRESULT MultMatrixLocal( const Matrix3X2& Matrix );
+        HRESULT MultMatrix( const Matrix3X2F& Matrix );
+        HRESULT MultMatrixLocal( const Matrix3X2F& Matrix );
 
         HRESULT Translate( const SizeF& Translation );
         HRESULT TranslateLocal( const Point2F& Translation );
@@ -36,5 +36,5 @@ class CMatrixStack
 
     protected:
         MatrixStack m_MatrixStack;
-        Matrix3X2 m_Identity;
+        Matrix3X2F m_Identity;
 };

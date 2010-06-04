@@ -38,36 +38,6 @@ CUIHost* g_UIHost = NULL;
 CMouseController* g_MouseController = NULL;
 CKeyboardController* g_KeyboardController = NULL;
 
-const WCHAR* ImageSources[] =
-{
-    L"C:\\3.png",
-    L"C:\\2.jpg"
-};
-
-UINT32 ImageSourceIndex = 0;
-
-void OnImageLeftMouseDown(CObjectWithType* pObject, CRoutedEventArgs* pArgs)
-{
-    HRESULT hr = S_OK;
-    CImage* pImage = NULL;
-
-    IFCPTR(pObject);
-    IFCPTR(pArgs);
-
-    IFCEXPECT(pObject->IsTypeOf(TypeIndex::Image));
-
-    pImage = (CImage*)pObject;
-
-    IFC(pImage->SetSource(ImageSources[ImageSourceIndex]));
-
-    ImageSourceIndex = (ImageSourceIndex + 1) % ARRAYSIZE(ImageSources);
-
-    pArgs->SetHandled();
-
-Cleanup:
-    ;
-}
-
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
     HRESULT hr = S_OK;
@@ -88,7 +58,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CProviders* pProviders = NULL;
     CMouseController* pMouseController = NULL;
     CKeyboardController* pKeyboardController = NULL;
-    connection ImageLeftButtonDownConnection;
 
 #ifdef _DEBUG
     // Get current flag
@@ -163,11 +132,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     //IFC(pRootElement->FindName(L"Image1", &pImage1));
 
     ////IFC(pImage1->FindResource(L"WhiteBrush", &pWhiteBrush));
-
-    //if(pImage1)
-    //{
-    //    pImage1->AddHandler(&CUIElement::MouseLeftButtonDownEvent, bind(&OnImageLeftMouseDown, _1, _2), &ImageLeftButtonDownConnection);
-    //}
 
     //
     // Message pump
@@ -299,7 +263,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_MOUSEMOVE:
             {
-                Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+                Point2F Point(GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam));
 
                 IFC(g_MouseController->InjectMouseMove(Point));
 
@@ -310,7 +274,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_LBUTTONDOWN:
             {
-                Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+                Point2F Point(GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam));
 
                 IFC(g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Down, Point));
 
@@ -321,7 +285,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_LBUTTONUP:
             {
-                Point2F Point = { GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+                Point2F Point(GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam));
 
                 IFC(g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Up, Point));
 

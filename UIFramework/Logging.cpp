@@ -1,15 +1,19 @@
 #include "Logging.h"
 
+#ifdef _WINDOWS
+#include <atlstr.h>
+#endif
+
 void InternalDebugOutCallbackA(const CHAR* strText)
 {
-#ifdef __WIN32__    
+#ifdef _WINDOWS    
     OutputDebugStringA(strText);
 #endif
 }
 
 void InternalDebugOutCallbackW(const WCHAR* strText)
 {
-#ifdef __WIN32__
+#ifdef _WINDOWS
     OutputDebugStringW(strText);
 #endif
 }
@@ -55,7 +59,7 @@ void InternalDebugOut(const WCHAR* strText)
 
 void DebugOut(const CHAR* pFormat, ...)
 {
-#ifdef __WIN32__    
+#ifdef _WINDOWS    
     CStringA FormattedString;
 
     va_list args;
@@ -70,7 +74,7 @@ void DebugOut(const CHAR* pFormat, ...)
 }
 void DebugOut(const WCHAR* pFormat, ...)
 {
-#ifdef __WIN32__    
+#ifdef _WINDOWS    
     CStringW FormattedString;
 
     va_list args;
@@ -86,7 +90,7 @@ void DebugOut(const WCHAR* pFormat, ...)
 
 void ZoneOut(const CHAR* pZone, const CHAR* pFormat, ...)
 {
-#ifdef __WIN32__    
+#ifdef _WINDOWS    
     CStringA FormattedString;
 
     va_list args;
@@ -106,7 +110,7 @@ void ZoneOut(const CHAR* pZone, const CHAR* pFormat, ...)
 
 void ZoneOut(const WCHAR* pZone, const WCHAR* pFormat, ...)
 {
-#ifdef __WIN32__
+#ifdef _WINDOWS
     CStringW FormattedString;
 
     va_list args;
@@ -126,7 +130,7 @@ void ZoneOut(const WCHAR* pZone, const WCHAR* pFormat, ...)
 
 void ZoneLevelOut(UINT32 Level, const CHAR* pZone, const CHAR* pFormat, ...)
 {
-#ifdef __WIN32__
+#ifdef _WINDOWS
     CStringA FormattedString;
 
     va_list args;
@@ -151,7 +155,7 @@ void ZoneLevelOut(UINT32 Level, const CHAR* pZone, const CHAR* pFormat, ...)
 
 void ZoneLevelOut(UINT32 Level, const WCHAR* pZone, const WCHAR* pFormat, ...)
 {
-#ifdef __WIN32__
+#ifdef _WINDOWS
     CStringW FormattedString;
 
     va_list args;

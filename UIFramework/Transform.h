@@ -12,12 +12,12 @@ class CTransform : public CRefCountedObject
 class CMatrixTransform : public CTransform
 {
     public:
-        DECLARE_FACTORY1( CMatrixTransform, const Matrix3X2& );
+        DECLARE_FACTORY1( CMatrixTransform, const Matrix3X2F& );
 
         virtual HRESULT TransformPoint( const Point2F& Point, Point2F* pTransformedPoint );
 
     protected:
-        HRESULT Initialize( const Matrix3X2& Transform );
+        HRESULT Initialize( const Matrix3X2F& Transform );
 
-        Matrix3X2 m_Transform;
+        Matrix3X2F m_Transform;
 };

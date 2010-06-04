@@ -686,7 +686,7 @@ HRESULT CUIElement::Arrange(RectF Bounds)
             Offset.width += Bounds.left + Margin.left;
             Offset.height += Bounds.top + Margin.top;
 
-            Matrix3X2 VisualTransform = Matrix3X2::Translation(Offset);
+            Matrix3X2F VisualTransform = Matrix3X2F::Translation(Offset);
             
             //TODO: Use something other than visual transform?
             IFC(SetVisualTransform(VisualTransform));

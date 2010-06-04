@@ -25,8 +25,8 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );
 
-        HRESULT SetVisualTransform( const Matrix3X2& Matrix );
-        const Matrix3X2& GetVisualTransform();
+        HRESULT SetVisualTransform( const Matrix3X2F& Matrix );
+        const Matrix3X2F& GetVisualTransform();
 
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult ) = 0;
 
@@ -63,8 +63,8 @@ class CVisual : public CRefCountedObjectBase< CPropertyObject >
         CVisualAttachContext m_VisualContext;
         VisualChildCollection m_VisualChildren;
         VisualResourceCollection m_VisualResources;
-        Matrix3X2 m_VisualTransform;
-        Matrix3X2 m_FinalLocalTransform;
+        Matrix3X2F m_VisualTransform;
+        Matrix3X2F m_FinalLocalTransform;
         BOOL m_VisualAttached;
 };
 

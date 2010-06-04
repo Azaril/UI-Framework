@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-HRESULT CMatrixTransform::Initialize(const Matrix3X2& Transform)
+HRESULT CMatrixTransform::Initialize(const Matrix3X2F& Transform)
 {
     HRESULT hr = S_OK;
 

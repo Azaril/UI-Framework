@@ -1,7 +1,7 @@
 #include "XMLReader.h"
 #include "ErrorChecking.h"
 
-#ifdef __WIN32__
+#ifdef _WINDOWS
 #include "XMLLiteReader.h"
 #endif
 
@@ -9,13 +9,13 @@ HRESULT CreateXMLReader(CXMLReader** ppReader)
 {
     HRESULT hr = S_OK;
     
-#ifdef __WIN32__    
+#ifdef _WINDOWS    
     CXMLLiteReader* pXMLLiteReader = NULL;
 #endif
 
     IFCPTR(ppReader);
 
-#ifdef __WIN32__    
+#ifdef _WINDOWS    
     if(SUCCEEDED(CXMLLiteReader::Create(&pXMLLiteReader)))
     {
         *ppReader = pXMLLiteReader;
@@ -28,7 +28,7 @@ HRESULT CreateXMLReader(CXMLReader** ppReader)
 
 Cleanup:
     
-#ifdef __WIN32__
+#ifdef _WINDOWS
     ReleaseObject(pXMLLiteReader);
 #endif
 

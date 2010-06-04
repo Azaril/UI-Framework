@@ -3,7 +3,7 @@
 
 CMatrixStack::CMatrixStack()
 {
-    m_Identity = Matrix3X2::Identity();
+    m_Identity = Matrix3X2F::Identity();
     
     m_MatrixStack.push_back(m_Identity);
 }
@@ -12,7 +12,7 @@ CMatrixStack::~CMatrixStack()
 {
 }
 
-const Matrix3X2& CMatrixStack::GetTop()
+const Matrix3X2F& CMatrixStack::GetTop()
 {
     if(!m_MatrixStack.empty())
     {
@@ -53,14 +53,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMatrixStack::LoadMatrix(const Matrix3X2& Matrix)
+HRESULT CMatrixStack::LoadMatrix(const Matrix3X2F& Matrix)
 {
     HRESULT hr =  S_OK;
 
     IFCEXPECT(!m_MatrixStack.empty());
 
     {
-        Matrix3X2& CurrentMatrix = m_MatrixStack.back();
+        Matrix3X2F& CurrentMatrix = m_MatrixStack.back();
 
         CurrentMatrix = Matrix;
     }
@@ -69,14 +69,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMatrixStack::MultMatrix(const Matrix3X2& Matrix)
+HRESULT CMatrixStack::MultMatrix(const Matrix3X2F& Matrix)
 {
     HRESULT hr =  S_OK;
 
     IFCEXPECT(!m_MatrixStack.empty());
 
     {
-        Matrix3X2& CurrentMatrix = m_MatrixStack.back();
+        Matrix3X2F& CurrentMatrix = m_MatrixStack.back();
 
         CurrentMatrix = CurrentMatrix * Matrix;
     }
@@ -85,14 +85,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMatrixStack::MultMatrixLocal(const Matrix3X2& Matrix)
+HRESULT CMatrixStack::MultMatrixLocal(const Matrix3X2F& Matrix)
 {
     HRESULT hr =  S_OK;
 
     IFCEXPECT(!m_MatrixStack.empty());
 
     {
-        Matrix3X2& CurrentMatrix = m_MatrixStack.back();
+        Matrix3X2F& CurrentMatrix = m_MatrixStack.back();
 
         CurrentMatrix = Matrix * CurrentMatrix;
     }

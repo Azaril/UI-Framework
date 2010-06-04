@@ -13,7 +13,7 @@ class CD2DRenderTarget : public CRenderTarget
         virtual HRESULT BeginRendering();
         virtual HRESULT EndRendering();
 
-        virtual HRESULT SetTransform( const Matrix3X2& Transform );
+        virtual HRESULT SetTransform( const Matrix3X2F& Transform );
 
         virtual HRESULT Clear( ColorF Color );
 
