@@ -7,11 +7,12 @@
 // Properties
 //
 CStaticProperty CSetter::PropertyProperty( L"Property", TypeIndex::String, StaticPropertyFlags::None );
-CStaticProperty CSetter::ValueProperty( L"Value", TypeIndex::Object, StaticPropertyFlags::Content );
+CStaticProperty CSetter::ValueProperty( L"Value", TypeIndex::ParserCommandList, StaticPropertyFlags::Content );
 
 CSetter::CSetter() : m_Property(NULL),
                      m_Value(NULL),
-                     m_Providers(NULL)
+                     m_Providers(NULL),
+                     m_CachedValue(NULL)
 {
 }
 
@@ -19,6 +20,7 @@ CSetter::~CSetter()
 {
     ReleaseObject(m_Property);
     ReleaseObject(m_Value);
+    ReleaseObject(m_CachedValue);
     ReleaseObject(m_Providers);
 }
 
@@ -57,13 +59,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSetter::SetPropertyValueInternal(CObjectWithType* pValue)
+HRESULT CSetter::SetPropertyValueInternal(CParserCommandList* pValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pValue);
 
     ReleaseObject(m_Value);
+    ReleaseObject(m_CachedValue);
 
     m_Value = pValue;
 
@@ -78,6 +81,7 @@ HRESULT CSetter::ResolveSetter(CUIElement* pObject, IStyleCallback* pCallback, C
     HRESULT hr = S_OK;
     CClassResolver* pClassResolver = NULL;
     CProperty* pProperty = NULL;
+    CObjectWithType* pValue = NULL;
 
     IFCPTR(pObject);
     IFCPTR(ppResolvedSetter);
@@ -87,10 +91,27 @@ HRESULT CSetter::ResolveSetter(CUIElement* pObject, IStyleCallback* pCallback, C
 
     IFC(pClassResolver->ResolveProperty(GetPropertyName(), pObject->GetType(), &pProperty));
 
-    IFC(CResolvedSetter::Create(pProperty, m_Value, pCallback, ppResolvedSetter));
+    if(m_CachedValue == NULL)
+    {
+        IFC(m_Value->Execute(&pValue));
+
+        if(pValue->IsShareable())
+        {
+            m_CachedValue = pValue;
+            AddRefObject(m_CachedValue);
+        }
+    }
+    else
+    {
+        pValue = m_CachedValue;
+        AddRefObject(pValue);
+    }
+
+    IFC(CResolvedSetter::Create(pProperty, pValue, pCallback, ppResolvedSetter));
 
 Cleanup:
     ReleaseObject(pProperty);
+    ReleaseObject(pValue);
 
     return hr;
 }
@@ -136,7 +157,11 @@ HRESULT CSetter::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
     }
     else if(pProperty == &CSetter::ValueProperty)
     {
-        IFC(SetPropertyValueInternal(pValue));
+        IFCEXPECT(pValue->IsTypeOf(TypeIndex::ParserCommandList));
+
+        CParserCommandList* pCommandList = (CParserCommandList*)pValue;
+
+        IFC(SetPropertyValueInternal(pCommandList));
     }
     else
     {

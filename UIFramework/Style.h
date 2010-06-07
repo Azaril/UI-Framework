@@ -22,6 +22,8 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
+        virtual BOOL IsShareable() { return true; }
+
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         HRESULT ResolveStyle( CUIElement* pObject, IStyleCallback* pCallback, CResolvedStyle** ppResolvedStyle );

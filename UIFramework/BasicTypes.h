@@ -31,6 +31,8 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
             return FALSE;
         }
 
+        virtual BOOL IsShareable() { return true; }
+
     protected:
         HRESULT Initialize( T Value )
         {

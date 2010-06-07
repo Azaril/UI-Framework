@@ -252,12 +252,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
         case WM_SIZE:
             {
-                //if(wParam == SIZE_RESTORED)
-                //{
+                if(wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED)
+                {
                     ID2D1HwndRenderTarget* pRenderTarget = g_RenderTarget->GetD2DHWNDRenderTarget();
                     
                     IFC(pRenderTarget->Resize(D2D1::SizeU(LOWORD(lParam), HIWORD(lParam))));
-                //}
+                }
                 break;
             }
 

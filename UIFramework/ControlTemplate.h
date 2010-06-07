@@ -15,6 +15,8 @@ class CControlTemplate : public CRefCountedObjectBase< CPropertyObject >
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
+        virtual BOOL IsShareable() { return true; }
+
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         HRESULT LoadContent( CObjectWithType** ppObject );

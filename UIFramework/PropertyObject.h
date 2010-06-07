@@ -63,6 +63,8 @@ class CObjectWithType
         DECLARE_TYPE( TypeIndex::Object );
 
         virtual BOOL Equals( CObjectWithType* pOther ) { return this == pOther; }
+
+        virtual BOOL IsShareable() { return false; }
 };
 
 template< >

@@ -18,6 +18,8 @@ class CBrush : public CRefCountedObjectBase< CPropertyObject >,
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
+        virtual BOOL IsShareable() { return true; }
+
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );

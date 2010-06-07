@@ -8,6 +8,7 @@
 #include "Collection.h"
 #include "Providers.h"
 #include "StyleCallback.h"
+#include "ParserCommandList.h"
 
 class CResolvedSetter;
 class CUIElement;
@@ -43,11 +44,12 @@ class CSetter : public CRefCountedObjectBase< CPropertyObject >
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
 
         HRESULT SetPropertyInternal( const WCHAR* pProperty );
-        HRESULT SetPropertyValueInternal( CObjectWithType* pValue );
+        HRESULT SetPropertyValueInternal( CParserCommandList* pValue );
 
         CProviders* m_Providers;
         CStringValue* m_Property;
-        CObjectWithType* m_Value;
+        CParserCommandList* m_Value;
+        CObjectWithType* m_CachedValue;
 };
 
 template< >

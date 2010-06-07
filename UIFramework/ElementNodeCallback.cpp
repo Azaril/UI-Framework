@@ -130,6 +130,7 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
     WCHAR* pClassType = NULL;
     UINT32 ClassTypeLength = 0;
     CStringValue* pAttributeValue = NULL;
+    CParserCommandList* pParserCommandList = NULL;
 
     IFCPTR(pAttribute);
 
@@ -177,9 +178,25 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
         {
             IFC(m_Context->GetClassResolver()->ResolveProperty(pNameString, m_Properties, &pProperty));
 
+            BOOL IsTemplate = (pProperty->GetType() == TypeIndex::ParserCommandList);
+
+            if(IsTemplate)
+            {
+                IFC(CParserCommandList::Create(m_Context->GetProviders(), &pParserCommandList));
+
+                IFC(m_Context->PushCommandList(pParserCommandList))
+            }
+
             IFC(CStringValue::Create(pValueString, ValueStringLength, &pAttributeValue));
 
             IFC(EvaluateAndAddAttribute(m_Context, pValueString, ValueStringLength));
+
+            if(IsTemplate)
+            {
+                IFC(m_Context->PopCommandList());
+
+                IFC(AddPushValueCommand(m_Context, pParserCommandList));
+            }
 
             IFC(AddSetPropertyCommand(m_Context, pProperty));
 
@@ -190,6 +207,8 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
 Cleanup:
     ReleaseObject(pProperty);
     ReleaseObject(pAttributeValue);
+    ReleaseObject(pParserCommandList);
+
     delete [] pClassType;
 
     return hr;
