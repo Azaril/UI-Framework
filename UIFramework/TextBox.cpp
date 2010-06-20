@@ -152,7 +152,7 @@ HRESULT CTextBox::CreatePropertyInformation(CPropertyInformation** ppInformation
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
     CPropertyInformation* pBaseInformation = NULL;
-    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingPropertyInformation = NULL;
 
     CStaticProperty* Properties[] = 
     {
@@ -163,15 +163,15 @@ HRESULT CTextBox::CreatePropertyInformation(CPropertyInformation** ppInformation
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CControl::CreatePropertyInformation(&pBaseInformation));
-    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingPropertyInformation));
 
-    *ppInformation = pDelegatingProperyInformation;
-    pDelegatingProperyInformation = NULL;
+    *ppInformation = pDelegatingPropertyInformation;
+    pDelegatingPropertyInformation = NULL;
 
 Cleanup:
     ReleaseObject(pStaticInformation);
     ReleaseObject(pBaseInformation);
-    ReleaseObject(pDelegatingProperyInformation);
+    ReleaseObject(pDelegatingPropertyInformation);
 
     return hr;
 }

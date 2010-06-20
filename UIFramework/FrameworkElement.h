@@ -73,7 +73,7 @@ class CFrameworkElement : public CUIElement
             HRESULT hr = S_OK;
             CObjectWithType* pFoundObject = NULL;
 
-            IFC(FindResource(pKey, &pFoundObject));
+            IFC_NOTRACE(FindResource(pKey, &pFoundObject));
 
             IFCEXPECT(pFoundObject->IsTypeOf(ObjectTypeTraits< T >::Type));
 

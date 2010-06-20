@@ -2,15 +2,6 @@
 
 #include "Panel.h"
 
-namespace Orientation
-{
-    enum Value
-    {
-        Vertical,
-        Horizontal
-    };
-}
-
 class CStackPanel : public CPanel
 {
     public:
@@ -18,9 +9,12 @@ class CStackPanel : public CPanel
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::StackPanel, CPanel );
 
-        //static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        HRESULT SetOrientation( Orientation::Value Direction );
+        //
+        // Properties
+        //
+        static CStaticProperty OrientationProperty;
 
     public:
         CStackPanel();
@@ -31,8 +25,18 @@ class CStackPanel : public CPanel
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
 
-        //TODO: Change to layered value.
-        Orientation::Value m_Orientation;
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
+
+        HRESULT GetEffectiveOrientation( Orientation::Value* pOrientation );
+
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnOrientationChanged );
+
+        HRESULT OnOrientationChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+
+        CTypedLayeredValue< COrientationValue > m_Orientation;
 };
 
 template< >

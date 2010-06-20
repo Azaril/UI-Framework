@@ -1,17 +1,5 @@
 #include "BasicTypes.h"
 
-//HRESULT CFloatValue::Initialize(FLOAT Value)
-//{
-//    m_Value = Value;
-//
-//    return S_OK;
-//}
-//
-//FLOAT CFloatValue::GetValue()
-//{
-//    return m_Value;
-//}
-
 CStringValue::CStringValue() : m_Value(NULL),
                                m_Length(0)
 {
@@ -62,6 +50,7 @@ const WCHAR* CStringValue::GetValue()
 {
     return m_Value;
 }
+
 UINT32 CStringValue::GetLength()
 {
     return m_Length;

@@ -9,6 +9,9 @@ class CScrollContentPresenter : public CContentPresenter
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::ScrollContentPresenter, CContentPresenter );
 
+        HRESULT LineUp();
+        HRESULT LineDown();
+
         FLOAT GetVerticalOffset();
         FLOAT GetHorizontalOffset();
 

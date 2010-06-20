@@ -15,3 +15,4 @@ HRESULT ConvertStringToRoutedEvent( CConversionContext* pContext, CObjectWithTyp
 HRESULT ConvertStringToBrush( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToHorizontalAlignment( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToVerticalAlignment( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToCommand( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );

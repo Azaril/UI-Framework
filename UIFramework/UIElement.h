@@ -169,6 +169,7 @@ class CUIElement : public CVisual
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
         static HRESULT CreateEventInformation( CEventInformation** ppInformation );
+        static HRESULT CreateCommandInformation( CCommandInformation** ppInformation );
 
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );
@@ -362,8 +363,6 @@ class CUIElement : public CVisual
 
         BOOL m_MeasureDirty;
         BOOL m_ArrangeDirty;
-
-        CPropertyInformation* m_PropertyInformation;
 
     private:
         CProviders* m_Providers;

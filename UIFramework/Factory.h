@@ -83,3 +83,35 @@ Cleanup: \
     ReleaseObject(pObj); \
     return hr; \
 }
+
+#define DECLARE_FACTORY5( ThisType, Arg1Type, Arg2Type, Arg3Type, Arg4Type, Arg5Type ) \
+static HRESULT Create( Arg1Type Arg1, Arg2Type Arg2, Arg3Type Arg3, Arg4Type Arg4, Arg5Type Arg5, ThisType** ppOut ) \
+{ \
+    HRESULT hr = S_OK; \
+    ThisType* pObj = NULL; \
+    IFCPTR(ppOut); \
+    pObj = new ThisType(); \
+    IFCOOM(pObj); \
+    IFC(pObj->Initialize(Arg1, Arg2, Arg3, Arg4, Arg5)); \
+    *ppOut = pObj; \
+    pObj = NULL; \
+Cleanup: \
+    ReleaseObject(pObj); \
+    return hr; \
+}
+
+#define DECLARE_FACTORY6( ThisType, Arg1Type, Arg2Type, Arg3Type, Arg4Type, Arg5Type, Arg6Type ) \
+static HRESULT Create( Arg1Type Arg1, Arg2Type Arg2, Arg3Type Arg3, Arg4Type Arg4, Arg5Type Arg5, Arg6Type, ThisType** ppOut ) \
+{ \
+    HRESULT hr = S_OK; \
+    ThisType* pObj = NULL; \
+    IFCPTR(ppOut); \
+    pObj = new ThisType(); \
+    IFCOOM(pObj); \
+    IFC(pObj->Initialize(Arg1, Arg2, Arg3, Arg4, Arg5, Arg6)); \
+    *ppOut = pObj; \
+    pObj = NULL; \
+Cleanup: \
+    ReleaseObject(pObj); \
+    return hr; \
+}

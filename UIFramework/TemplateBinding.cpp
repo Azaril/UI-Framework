@@ -125,7 +125,7 @@ HRESULT CTemplateBinding::GetBoundValue(CObjectWithType** ppValue)
     pTemplateParent = pTargetElement->GetTemplateParent();
 
     IFCPTR(m_Property);
-    IFCPTR(pTemplateParent);
+    IFCPTR_NOTRACE(pTemplateParent);
 
     pClassResolver = m_Providers->GetClassResolver();
     IFCPTR(pClassResolver);
@@ -134,7 +134,7 @@ HRESULT CTemplateBinding::GetBoundValue(CObjectWithType** ppValue)
 
     IFC(pTemplateParent->GetEffectiveValue(pSourceProperty, &pEffectiveValue));
 
-    IFCPTR(pEffectiveValue);
+    IFCPTR_NOTRACE(pEffectiveValue);
 
     *ppValue = pEffectiveValue;
     pEffectiveValue = NULL;

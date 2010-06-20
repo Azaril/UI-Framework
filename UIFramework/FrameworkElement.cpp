@@ -470,7 +470,7 @@ HRESULT CFrameworkElement::FindResource(CObjectWithType* pKey, CObjectWithType**
         {
             CFrameworkElement* pParentFrameworkElement = (CFrameworkElement*)pParent;
 
-            IFC(pParentFrameworkElement->FindResource(pKey, ppObject));
+            IFC_NOTRACE(pParentFrameworkElement->FindResource(pKey, ppObject));
         }
     }
 
@@ -485,7 +485,7 @@ HRESULT CFrameworkElement::CreatePropertyInformation(CPropertyInformation **ppIn
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
     CPropertyInformation* pBaseInformation = NULL;
-    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingPropertyInformation = NULL;
 
     CStaticProperty* Properties[] = 
     {
@@ -498,15 +498,15 @@ HRESULT CFrameworkElement::CreatePropertyInformation(CPropertyInformation **ppIn
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
     IFC(CUIElement::CreatePropertyInformation(&pBaseInformation));
-    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingPropertyInformation));
 
-    *ppInformation = pDelegatingProperyInformation;
-    pDelegatingProperyInformation = NULL;
+    *ppInformation = pDelegatingPropertyInformation;
+    pDelegatingPropertyInformation = NULL;
 
 Cleanup:
     ReleaseObject(pStaticInformation);
     ReleaseObject(pBaseInformation);
-    ReleaseObject(pDelegatingProperyInformation);
+    ReleaseObject(pDelegatingPropertyInformation);
 
     return hr;
 }

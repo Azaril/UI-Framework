@@ -188,7 +188,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
             {
                 case EffectiveValue::Local:
                     {
-                        IFC(GetValueFromLayer(m_LocalLayer, pProviders, ppValue));
+                        IFC_NOTRACE(GetValueFromLayer(m_LocalLayer, pProviders, ppValue));
 
                         break;
                     }
@@ -366,7 +366,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
                 {
                     CBinding* pBinding = (CBinding*)Layer.Value;
 
-                    IFC(pBinding->GetBoundValue(&pBoundValue));
+                    IFC_NOTRACE(pBinding->GetBoundValue(&pBoundValue));
 
                     if(pBoundValue)
                     {
@@ -483,7 +483,7 @@ class CTypedLayeredValue : public CTypedLocalLayeredValue< T >
 
                 default:
                     {
-                        IFC(Base::GetEffectiveValueInternal(ValueToGet, pProviders, ppValue));
+                        IFC_NOTRACE(Base::GetEffectiveValueInternal(ValueToGet, pProviders, ppValue));
 
                         break;
                     }

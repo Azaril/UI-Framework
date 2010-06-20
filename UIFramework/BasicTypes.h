@@ -124,6 +124,14 @@ struct ObjectTypeTraits< CTypeValue >
     static const TypeIndex::Value Type = TypeIndex::Type;
 };
 
+typedef CBasicValue< Orientation::Value, TypeIndex::Orientation > COrientationValue;
+
+template< >
+struct ObjectTypeTraits< COrientationValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::Orientation;
+};
+
 class CStringValue : public CRefCountedObjectBase< CObjectWithType >
 {
     public:

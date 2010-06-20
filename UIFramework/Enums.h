@@ -70,3 +70,12 @@ namespace VerticalAlignment
         Stretch
     };
 }
+
+namespace Orientation
+{
+    enum Value
+    {
+        Horizontal,
+        Vertical
+    };
+}

@@ -21,6 +21,30 @@ Cleanup:
     return hr;
 }
 
+HRESULT CScrollContentPresenter::LineUp()
+{
+    HRESULT hr = S_OK;
+
+    m_VerticalOffset -= 10;
+
+    IFC(InvalidateArrange());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollContentPresenter::LineDown()
+{
+    HRESULT hr = S_OK;
+
+    m_VerticalOffset += 10;
+
+    IFC(InvalidateArrange());
+
+Cleanup:
+    return hr;
+}
+
 FLOAT CScrollContentPresenter::GetVerticalOffset()
 {
     return m_VerticalOffset;
@@ -70,7 +94,7 @@ HRESULT CScrollContentPresenter::ArrangeInternal(SizeF AvailableSize, SizeF& Use
 
     if(pContentChild != NULL)
     {
-        SizeF ArrangePosition(-GetHorizontalOffset(), -GetVerticalOffset());
+        SizeF ArrangePosition(GetHorizontalOffset(), GetVerticalOffset());
 
         RectF ArrangeRect = MakeRect(ArrangePosition, AvailableSize);
 

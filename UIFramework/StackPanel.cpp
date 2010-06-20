@@ -2,7 +2,22 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 
-CStackPanel::CStackPanel() : m_Orientation(Orientation::Vertical)
+//
+// Property Defaults
+//
+DEFINE_GET_DEFAULT( Orientation, COrientationValue, Orientation::Vertical );
+
+//
+// Properties
+//
+CStaticProperty CStackPanel::OrientationProperty( L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CStackPanel, OnOrientationChanged ) );
+
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CStackPanel, OnOrientationChanged );
+
+CStackPanel::CStackPanel() : m_Orientation(this, &CStackPanel::OrientationProperty)
 {
 }
 
@@ -20,27 +35,20 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStackPanel::SetOrientation(Orientation::Value Direction)
-{
-    HRESULT hr = S_OK;
-
-    m_Orientation = Direction;
-
-    return hr;
-}
-
 HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
     SizeF ChildrenSize;
     SizeF MaxSize(FLT_MAX, FLT_MAX);
     CUIElementCollection* pChildCollection = NULL;
+    Orientation::Value Orient = Orientation::Vertical;
 
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
 
-    //TODO: Change to GetEffectiveOrientation
-    if(m_Orientation == Orientation::Horizontal)
+    IFC(GetEffectiveOrientation(&Orient));
+
+    if(Orient == Orientation::Horizontal)
     {
         MaxSize.height = AvailableSize.height;
     }
@@ -57,7 +65,7 @@ HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();
 
-        if(m_Orientation == Orientation::Vertical)
+        if(Orient == Orientation::Vertical)
         {
             ChildrenSize.width = std::max(ChildrenSize.width, ElementDesiredSize.width);
             ChildrenSize.height += ElementDesiredSize.height;
@@ -81,9 +89,12 @@ HRESULT CStackPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     HRESULT hr = S_OK;
     Point2F LayoutPoint;
     CUIElementCollection* pChildCollection = NULL;
+    Orientation::Value Orient = Orientation::Vertical;
 
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
+
+    IFC(GetEffectiveOrientation(&Orient));
 
     for(UINT32 i = 0; i < pChildCollection->GetCount(); i++)
     {
@@ -94,7 +105,7 @@ HRESULT CStackPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 
         IFC(pElement->Arrange(ElementBounds));
 
-        if(m_Orientation == Orientation::Vertical)
+        if(Orient == Orientation::Vertical)
         {
             LayoutPoint.y += ElementDesiredSize.height;
         }
@@ -107,5 +118,83 @@ HRESULT CStackPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     UsedSize = AvailableSize;
 
 Cleanup:
+    return hr;
+}
+
+HRESULT CStackPanel::CreatePropertyInformation(CPropertyInformation **ppInformation)
+{
+    HRESULT hr = S_OK;
+    CStaticPropertyInformation* pStaticInformation = NULL;
+    CPropertyInformation* pBaseInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingPropertyInformation = NULL;
+
+    CStaticProperty* Properties[] = 
+    {
+        &OrientationProperty
+    };
+    
+    IFCPTR(ppInformation);
+
+    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
+    IFC(CPanel::CreatePropertyInformation(&pBaseInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingPropertyInformation));
+
+    *ppInformation = pDelegatingPropertyInformation;
+    pDelegatingPropertyInformation = NULL;
+
+Cleanup:
+    ReleaseObject(pStaticInformation);
+    ReleaseObject(pBaseInformation);
+    ReleaseObject(pDelegatingPropertyInformation);
+
+    return hr;
+}
+
+HRESULT CStackPanel::OnOrientationChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InvalidateMeasure());
+    IFC(InvalidateArrange());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CStackPanel::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppLayeredValue);
+
+    //TODO: Make this a lookup table rather than requiring a comparison per property.
+    if(pProperty == &CStackPanel::OrientationProperty)
+    {
+        *ppLayeredValue = &m_Orientation;
+    }
+    else
+    {
+        hr = CPanel::GetLayeredValue(pProperty, ppLayeredValue);
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CStackPanel::GetEffectiveOrientation(Orientation::Value* pOrientation)
+{
+    HRESULT hr = S_OK;
+    COrientationValue* pEffectiveValue = NULL;
+
+    IFCPTR(pOrientation);
+
+    IFC(m_Orientation.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+
+    *pOrientation = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
     return hr;
 }

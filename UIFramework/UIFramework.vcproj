@@ -679,6 +679,14 @@
 								>
 							</File>
 							<File
+								RelativePath=".\ScrollBar.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ScrollBar.h"
+								>
+							</File>
+							<File
 								RelativePath=".\TextBox.cpp"
 								>
 							</File>
@@ -745,11 +753,27 @@
 						>
 					</File>
 					<File
+						RelativePath=".\DelegatingCommandInformation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DelegatingCommandInformation.h"
+						>
+					</File>
+					<File
 						RelativePath=".\DelegatingPropertyInformation.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\DelegatingPropertyInformation.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DelegatingRoutedEventInformation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DelegatingRoutedEventInformation.h"
 						>
 					</File>
 					<File
@@ -766,6 +790,14 @@
 					</File>
 					<File
 						RelativePath=".\RoutedEventInformation.h"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticCommandInformation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticCommandInformation.h"
 						>
 					</File>
 					<File
@@ -1097,6 +1129,42 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Commands"
+					>
+					<File
+						RelativePath=".\Command.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Command.h"
+						>
+					</File>
+					<File
+						RelativePath=".\RoutedCommand.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\RoutedCommand.h"
+						>
+					</File>
+					<File
+						RelativePath=".\RoutedCommandEventArgs.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\RoutedCommandEventArgs.h"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticRoutedCommand.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StaticRoutedCommand.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Text"
@@ -1214,6 +1282,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\DynamicClassResolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DynamicClassResolver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DynamicResolvedClass.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DynamicResolvedClass.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ElementNodeCallback.cpp"
 					>
 				</File>
@@ -1291,14 +1375,6 @@
 				</File>
 				<File
 					RelativePath=".\RichPropertyNodeCallback.h"
-					>
-				</File>
-				<File
-					RelativePath=".\StaticClassResolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\StaticClassResolver.h"
 					>
 				</File>
 				<File

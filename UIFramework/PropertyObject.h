@@ -46,6 +46,14 @@ class CEventInformation : public CRefCountedObject
         virtual HRESULT GetEvent( const WCHAR* pEventName, CRoutedEvent** ppRoutedEvent ) = 0;
 };
 
+class CCommand;
+
+class CCommandInformation : public CRefCountedObject
+{
+    public:
+        virtual HRESULT GetCommand( const WCHAR* pCommandName, CCommand** ppCommand ) = 0;
+};
+
 #define DECLARE_TYPE( type ) \
 virtual TypeIndex::Value GetType() { return type; } \
 virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type; }

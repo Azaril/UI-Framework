@@ -63,7 +63,7 @@ HRESULT CDynamicResource::CreatePropertyInformation(CPropertyInformation **ppInf
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
     CPropertyInformation* pBaseInformation = NULL;
-    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingPropertyInformation = NULL;
 
     CStaticProperty* Properties[] = 
     {
@@ -74,15 +74,15 @@ HRESULT CDynamicResource::CreatePropertyInformation(CPropertyInformation **ppInf
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
     IFC(CBinding::CreatePropertyInformation(&pBaseInformation));
-    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingPropertyInformation));
 
-    *ppInformation = pDelegatingProperyInformation;
-    pDelegatingProperyInformation = NULL;
+    *ppInformation = pDelegatingPropertyInformation;
+    pDelegatingPropertyInformation = NULL;
 
 Cleanup:
     ReleaseObject(pStaticInformation);
     ReleaseObject(pBaseInformation);
-    ReleaseObject(pDelegatingProperyInformation);
+    ReleaseObject(pDelegatingPropertyInformation);
 
     return hr;
 }

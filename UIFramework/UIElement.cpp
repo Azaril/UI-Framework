@@ -6,6 +6,7 @@
 #include "RoutedEventInformation.h"
 #include "FocusManager.h"
 #include "KeyboardEventArgs.h"
+#include "StaticCommandInformation.h"
 
 //
 // Property Defaults
@@ -91,7 +92,6 @@ CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::TextEvent(L"Text");
 CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
                            m_ArrangeDirty(TRUE),
-                           m_PropertyInformation(NULL),
                            m_Width(this, &CUIElement::WidthProperty),
                            m_Height(this, &CUIElement::HeightProperty),
                            m_MinimumWidth(this, &CUIElement::MinimumWidthProperty),
@@ -132,8 +132,6 @@ CUIElement::~CUIElement()
     m_MouseMiddleButtonUpConnection.disconnect();
     m_MouseMoveConnection.disconnect();
     m_KeyConnection.disconnect();
-
-    ReleaseObject(m_PropertyInformation);
 
     for(std::vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
     {
@@ -935,7 +933,7 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
     CPropertyInformation* pBaseInformation = NULL;
-    CDelegatingPropertyInformation* pDelegatingProperyInformation = NULL;
+    CDelegatingPropertyInformation* pDelegatingPropertyInformation = NULL;
 
     CStaticProperty* Properties[] = 
     {
@@ -956,15 +954,15 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
     IFC(CVisual::CreatePropertyInformation(&pBaseInformation));
-    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingProperyInformation));
+    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingPropertyInformation));
 
-    *ppInformation = pDelegatingProperyInformation;
-    pDelegatingProperyInformation = NULL;
+    *ppInformation = pDelegatingPropertyInformation;
+    pDelegatingPropertyInformation = NULL;
 
 Cleanup:
     ReleaseObject(pStaticInformation);
     ReleaseObject(pBaseInformation);
-    ReleaseObject(pDelegatingProperyInformation);
+    ReleaseObject(pDelegatingPropertyInformation);
 
     return hr;
 }
@@ -1006,6 +1004,24 @@ HRESULT CUIElement::CreateEventInformation(CEventInformation** ppInformation)
 
 Cleanup:
     ReleaseObject(pEventInformation);
+
+    return hr;
+}
+
+HRESULT CUIElement::CreateCommandInformation(CCommandInformation** ppInformation)
+{
+    HRESULT hr = S_OK;
+    CStaticCommandInformation* pCommandInformation = NULL;
+    
+    IFCPTR(ppInformation);
+
+    IFC(CStaticCommandInformation::Create(NULL, NULL, &pCommandInformation));
+
+    *ppInformation = pCommandInformation;
+    pCommandInformation = NULL;
+
+Cleanup:
+    ReleaseObject(pCommandInformation);
 
     return hr;
 }

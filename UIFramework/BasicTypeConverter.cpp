@@ -6,6 +6,7 @@
 #include "SolidColorBrush.h"
 #include "Providers.h"
 #include "Types.h"
+#include "RoutedCommand.h"
 
 StaticTypeConverter BasicConverters[] =
 {
@@ -19,7 +20,8 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::RoutedEvent, ConvertStringToRoutedEvent },
     { TypeIndex::String, TypeIndex::Brush, ConvertStringToBrush },
     { TypeIndex::String, TypeIndex::HorizontalAlignment, ConvertStringToHorizontalAlignment },
-    { TypeIndex::String, TypeIndex::VerticalAlignment, ConvertStringToVerticalAlignment }
+    { TypeIndex::String, TypeIndex::VerticalAlignment, ConvertStringToVerticalAlignment },
+    { TypeIndex::String, TypeIndex::Command, ConvertStringToCommand }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -1031,6 +1033,39 @@ HRESULT ConvertStringToVerticalAlignment(CConversionContext* pContext, CObjectWi
 
 Cleanup:
     ReleaseObject(pAlignmentValue);
+
+    return hr;
+}
+
+HRESULT ConvertStringToCommand(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    CClassResolver* pClassResolver = NULL;
+    CPropertyObject* pTargetObject = NULL;
+    CStringValue* pStringValue = NULL;
+    CRoutedEvent* pRoutedEvent = NULL;
+    CCommand* pCommand = NULL;
+
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    pClassResolver = pContext->GetProviders()->GetClassResolver();
+    IFCPTR(pClassResolver);
+
+    pTargetObject = pContext->GetTargetObject();
+
+    IFC(pClassResolver->ResolveCommand(pStringValue->GetValue(), pTargetObject->GetType(), &pCommand));
+
+    *ppConvertedValue = pCommand;
+    pCommand = NULL;
+
+Cleanup:
+    ReleaseObject(pCommand);
+    ReleaseObject(pRoutedEvent);
 
     return hr;
 }

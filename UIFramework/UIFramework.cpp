@@ -14,7 +14,7 @@
 #include "Image.h"
 #include "D2DHWNDRenderTarget.h"
 #include "Parser.h"
-#include "StaticClassResolver.h"
+#include "DynamicClassResolver.h"
 #include "BasicTypeConverter.h"
 
 #include <d2d1helper.h>
@@ -50,7 +50,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CRootUIElement* pRootElement = NULL; 
     CUIElement* pParsedRoot = NULL;
     CParser* pParser = NULL;
-    CStaticClassResolver* pStaticClassResolver = NULL;
+    CDynamicClassResolver* pClassResolver = NULL;
     CTypeConverter* pTypeConverter = NULL;
     CTextBlock* pTextBlock1 = NULL;
     CImage* pImage1 = NULL;
@@ -89,11 +89,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     //
     // Create providers
     //
-    IFC(CStaticClassResolver::Create(&pStaticClassResolver));
+    IFC(CDynamicClassResolver::Create(&pClassResolver));
 
     IFC(CreateBasicTypeConverter(&pTypeConverter));
 
-    IFC(CProviders::Create(pStaticClassResolver, pTypeConverter, &pProviders));
+    IFC(CProviders::Create(pClassResolver, pTypeConverter, &pProviders));
 
     //
     // Create Parser
@@ -167,7 +167,7 @@ Cleanup:
     ReleaseObject(pUIHost);
     ReleaseObject(pRenderTarget);
     ReleaseObject(pGraphicsDevice);
-    ReleaseObject(pStaticClassResolver);
+    ReleaseObject(pClassResolver);
     ReleaseObject(pTypeConverter);
     ReleaseObject(pParser);
     ReleaseObject(pProviders);

@@ -37,7 +37,7 @@ HRESULT CDelegatingPropertyInformation::GetProperty(const WCHAR* pPropertyName, 
 
     if(FAILED(m_Root->GetProperty(pPropertyName, ppProperty)))
     {
-        IFC(m_Base->GetProperty(pPropertyName, ppProperty));
+        IFC_NOTRACE(m_Base->GetProperty(pPropertyName, ppProperty));
     }
 
 Cleanup:

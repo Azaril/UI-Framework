@@ -16,7 +16,8 @@ class CResolvedClass
         virtual HRESULT CreateInstance( CProviders* pProviders, CPropertyObject** ppObject ) = 0;
 
         virtual HRESULT GetPropertyInformation( CPropertyInformation** ppInformation ) = 0;
-        virtual HRESULT GetEventInformation( CEventInformation** ppEventInformation ) = 0;
+        virtual HRESULT GetEventInformation( CEventInformation** ppInformation ) = 0;
+        virtual HRESULT GetCommandInformation( CCommandInformation** ppInformation ) = 0;
 };
 
 class CClassResolver : public CRefCountedObject
@@ -36,4 +37,10 @@ class CClassResolver : public CRefCountedObject
 
         virtual HRESULT ResolveEvent( const WCHAR* pEventName, TypeIndex::Value ImplicitClass, CRoutedEvent** ppRoutedEvent ) = 0;
         virtual HRESULT ResolveEvent( const WCHAR* pEventName, CEventInformation* pImplicitClassEvents, CRoutedEvent** ppRoutedEvent ) = 0;
+
+        virtual HRESULT ResolveCommands( TypeIndex::Value ClassType, CCommandInformation** ppCommands ) = 0;
+        virtual HRESULT ResolveCommands( const WCHAR* pTypeName, CCommandInformation** ppCommands ) = 0;
+
+        virtual HRESULT ResolveCommand( const WCHAR* pCommandName, TypeIndex::Value ImplicitClass, CCommand** ppCommand ) = 0;
+        virtual HRESULT ResolveCommand( const WCHAR* pCommandName, CCommandInformation* pImplicitClassCommands, CCommand** ppCommand ) = 0;
 };
