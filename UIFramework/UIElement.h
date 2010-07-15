@@ -276,6 +276,13 @@ class CUIElement : public CVisual
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
         virtual HRESULT RenderInternal( CRenderContext& Context );
 
+        virtual HRESULT GetClippingGeometry( CGeometry** ppGeometry );
+        virtual HRESULT GetClippingRectangle( RectF* pClippingRectangle );
+
+        virtual BOOL ShouldClipToLayout();
+
+        HRESULT RequiresLayer( BOOL* pRequiresLayer );
+
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
 
@@ -373,6 +380,10 @@ class CUIElement : public CVisual
         SizeF m_DesiredSize;
         SizeF m_UnclippedDesiredSize;
         SizeF m_FinalSize;
+
+        BOOL m_ClipToLayoutBounds;
+
+        CLayer* m_Layer;
 
         CUIAttachContext m_Context;
 

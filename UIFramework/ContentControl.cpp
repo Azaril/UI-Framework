@@ -29,7 +29,6 @@ HRESULT CContentControl::OnContentChanged(CObjectWithType* pOldValue, CObjectWit
 {
     HRESULT hr = S_OK;
 
-Cleanup:
     return hr;
 }
 

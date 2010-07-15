@@ -524,7 +524,7 @@ HRESULT ConvertStringToRectF(CConversionContext* pContext, CObjectWithType* pVal
                         ValueBuffer[ValueBufferIndex] = L'\0';
                         ValueBufferIndex = 0;
 
-                        Values[ValueCount] = _wtof(ValueBuffer);
+                        Values[ValueCount] = (FLOAT)_wtof(ValueBuffer);
 
                         ++ValueCount;
 
@@ -809,7 +809,7 @@ HRESULT ConvertStringToPoint2F(CConversionContext* pContext, CObjectWithType* pV
                         ValueBuffer[ValueBufferIndex] = L'\0';
                         ValueBufferIndex = 0;
 
-                        Values[ValueCount] = _wtof(ValueBuffer);
+                        Values[ValueCount] = (FLOAT)_wtof(ValueBuffer);
 
                         ++ValueCount;
 

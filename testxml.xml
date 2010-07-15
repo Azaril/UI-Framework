@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Border xmlns:x="http://internal" Background="White">
+  <Border.Resources>
+
+    <LinearGradientBrush x:Key="NormalButtonStateBrush" StartPoint="0,0" EndPoint="0,1">
+      <GradientStop Color="#717171" Offset="0"/>
+      <GradientStop Color="#717171" Offset="0.46"/>
+      <GradientStop Color="#646464" Offset="0.47"/>
+      <GradientStop Color="#646464" Offset="0.53"/>
+      <GradientStop Color="#595959" Offset="0.54"/>
+      <GradientStop Color="#595959" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HoverButtonStateBrush" StartPoint="0,0" EndPoint="0,1">
+      <GradientStop Color="#747474" Offset="0"/>
+      <GradientStop Color="#585858" Offset="0.46"/>
+      <GradientStop Color="#464646" Offset="0.47"/>
+      <GradientStop Color="#464646" Offset="0.53"/>
+      <GradientStop Color="#393939" Offset="0.54"/>
+      <GradientStop Color="#393939" Offset="0.8"/>
+      <GradientStop Color="#555555" Offset="1"/>
+    </LinearGradientBrush>
+
+    <Style x:Key="ButtonBorderStyle">
+      
+      <Style.Setters>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="BorderBrush">
+          <SolidColorBrush Color="#000000"/>
+        </Setter>
+        <Setter Property="Background" Value="{DynamicResource ResourceKey=NormalButtonStateBrush}"/>
+        <Setter Property="Padding" Value="15,8,15,8"/>
+      </Style.Setters>
+      
+    </Style>
+
+    <Style x:Key="ButtonTextBlockStyle">
+      <Setter Property="Foreground">
+        <SolidColorBrush Color="White"/>
+      </Setter>
+    </Style>
+
+    <!-- Default Button Template -->
+    <ControlTemplate x:Key="ButtonTemplate">
+      <Border Style="{DynamicResource ResourceKey=ButtonBorderStyle}" Background="{TemplateBinding Property=Background}" BorderBrush="{TemplateBinding Property=BorderBrush}">
+        <ContentPresenter Content="{TemplateBinding Property=Content}"/>
+      </Border>
+    </ControlTemplate>
+
+    <!-- Default Button Style -->
+    <Style x:Key="{Type TypeName=Button}">
+
+      <Style.Setters>
+        <Setter Property="Template" Value="{DynamicResource ResourceKey=ButtonTemplate}"/>
+      </Style.Setters>
+
+      <Style.Triggers>
+        <EventTrigger RoutedEvent="UIElement.MouseEnter">
+          <Setter Property="Background" Value="{DynamicResource ResourceKey=HoverButtonStateBrush}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="UIElement.MouseLeave">
+          <Setter Property="Background" Value="{DynamicResource ResourceKey=NormalButtonStateBrush}"/>
+        </EventTrigger>
+      </Style.Triggers>
+      
+    </Style>
+
+    <!-- Text Box Background Brush -->
+    <SolidColorBrush x:Key="TextBoxBackgroundBrush" Color="#939393"/>
+
+    <!-- Text Box Border Style -->
+    <Style x:Key="TextBoxBorderStyle">
+      <Style.Setters>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="BorderBrush">
+          <SolidColorBrush Color="#000000"/>
+        </Setter>
+        <Setter Property="Background" Value="{DynamicResource ResourceKey=TextBoxBackgroundBrush}"/>
+        <Setter Property="Padding" Value="8,8,8,8"/>
+      </Style.Setters>
+    </Style>
+
+    <!-- Default Text Box Template -->
+    <ControlTemplate x:Key="TextBoxTemplate">
+      <Border Style="{DynamicResource ResourceKey=TextBoxBorderStyle}" Background="{TemplateBinding Property=Background}" BorderBrush="{TemplateBinding Property=BorderBrush}">
+        <ContentPresenter Name="PART_TextHost"/>
+      </Border>
+    </ControlTemplate>
+
+    <!-- Default Text Box Style -->
+    <Style x:Key="{Type TypeName=TextBox}">
+      <Style.Setters>
+        <Setter Property="Template" Value="{DynamicResource ResourceKey=TextBoxTemplate}"/>
+      </Style.Setters>      
+    </Style>
+
+    <!-- Default Scroll Viewer Template -->
+    <ControlTemplate x:Key="ScrollViewerTemplate">
+      <Border CornerRadius="2" BorderBrush="{TemplateBinding Property=BorderBrush}" BorderThickness="{TemplateBinding Property=BorderThickness}">
+        <DockPanel>
+
+          <DockPanel DockPanel.Dock="Right" LastChildFill="False">
+            <Button DockPanel.Dock="Top" Command="ScrollBar.LineUp">
+              <TextBlock Text="˄" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
+            </Button>
+
+            <Button DockPanel.Dock="Bottom" Command="ScrollBar.LineDown">
+              <TextBlock Text="˅" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
+            </Button>
+          </DockPanel>
+          
+          <!-- Content -->
+          <ScrollContentPresenter Name="PART_ScrollContentPresenter" Content="{TemplateBinding Property=Content}"/>
+          
+        </DockPanel>
+      </Border>
+    </ControlTemplate>
+
+    <!-- Default Scroll Viewer Style -->
+    <Style x:Key="{Type TypeName=ScrollViewer}">
+      <Style.Setters>
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+        <!--<Setter Property="VerticalScrollBarVisibility" Value="Visible" />-->
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush">
+          <Setter.Value>
+            <SolidColorBrush Color="#000000"/>
+          </Setter.Value>
+        </Setter>
+        <Setter Property="Template" Value="{DynamicResource ResourceKey=ScrollViewerTemplate}"/>
+      </Style.Setters>
+    </Style>
+    
+  </Border.Resources>
+
+  <!-- Console Border -->
+  <Border BorderBrush="Black" BorderThickness="1" Height="200" Background="#898989">
+    <DockPanel>
+
+      <!-- Input Area -->
+      <Border DockPanel.Dock="Bottom" Padding="5">
+        <DockPanel>
+          <Button DockPanel.Dock="Right">
+            <TextBlock Text="Button" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
+          </Button>
+          <TextBox Text="Text goes here" Margin="0,0,5,0"/>
+        </DockPanel>
+      </Border>
+
+      <!-- History Area -->
+      <Border DockPanel.Dock="Top">
+        <ScrollViewer>
+          <StackPanel DockPanel.Dock="Top">
+            <TextBlock Text="Console history goes here"/>
+            <TextBlock Text="Console history goes here"/>
+            <TextBlock Text="Console history goes here"/>
+            <TextBlock Text="Console history goes here"/>
+            <TextBlock Text="Console history goes here"/>
+            <TextBlock Text="Console history goes here"/>
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+      
+    </DockPanel>
+  </Border>
+  
+</Border>

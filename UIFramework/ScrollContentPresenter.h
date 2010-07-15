@@ -26,6 +26,8 @@ class CScrollContentPresenter : public CContentPresenter
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
 
+        virtual BOOL ShouldClipToLayout();
+
         BOOL CanScrollHorizontally();
         BOOL CanScrollVertically();
 

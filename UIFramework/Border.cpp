@@ -104,6 +104,9 @@ HRESULT CBorder::SetBorderThickness(FLOAT BorderThickness)
 
     IFCEXPECT(BorderThickness >= 0);
 
+    //TODO: Implement.
+    IFC(E_FAIL);
+
     //m_BorderThickness = BorderThickness;
 
     //IFC(m_BorderVisual->SetStrokeThickness(BorderThickness));
@@ -128,24 +131,8 @@ HRESULT CBorder::SetPadding(const RectF& Padding)
 {
     HRESULT hr = S_OK;
 
-    IFC(SetPaddingInternal(Padding));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CBorder::SetPaddingInternal(const RectF& Padding)
-{
-    HRESULT hr = S_OK;
-
-    //IFCEXPECT(Padding.left >= 0);
-    //IFCEXPECT(Padding.right >= 0);
-    //IFCEXPECT(Padding.top >= 0);
-    //IFCEXPECT(Padding.bottom >= 0);
-
-    //m_Padding = Padding;
-
-    IFC(InvalidateMeasure());
+    //TODO: Implement.
+    IFC(E_FAIL);
 
 Cleanup:
     return hr;
@@ -155,21 +142,8 @@ HRESULT CBorder::SetCornerRadius(FLOAT Radius)
 {
     HRESULT hr = S_OK;
 
-    IFC(SetCornerRadiusInternal(Radius));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CBorder::SetCornerRadiusInternal(FLOAT Radius)
-{
-    HRESULT hr = S_OK;
-
-    //IFCEXPECT(Radius >= 0);
-
-    //m_CornerRadius = Radius;
-
-    //IFC(InvalidateGeometry());
+    //TODO: Implement.
+    IFC(E_FAIL);
 
 Cleanup:
     return hr;
@@ -460,7 +434,7 @@ HRESULT CBorder::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
         InternalSize.width = std::max(InternalSize.width, 0.0f);
         InternalSize.height = std::max(InternalSize.height, 0.0f);
 
-        SizeF Position((AvailableSize.width - InternalSize.width) / 2.0, (AvailableSize.height - InternalSize.height) / 2.0 );
+        SizeF Position((AvailableSize.width - InternalSize.width) / 2.0f, (AvailableSize.height - InternalSize.height) / 2.0f );
 
         IFC(pChild->Arrange(MakeRect(Position, InternalSize)));
     }

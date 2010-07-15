@@ -8,6 +8,7 @@
 #include "Bitmap.h"
 #include "Geometry.h"
 #include "GradientStop.h"
+#include "Layer.h"
 
 namespace DefaultBrush
 {
@@ -47,4 +48,9 @@ class CRenderTarget : public CRefCountedObject
 
         virtual HRESULT DrawGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush, FLOAT StrokeThickness = 1.0f ) = 0;
         virtual HRESULT FillGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush ) = 0;
+
+        virtual HRESULT CreateLayer( CLayer** ppLayer ) = 0;
+
+        virtual HRESULT PushLayer( CLayer* pLayer, const RectF& ClippingRect, CGeometry* pClippingGeometry ) = 0;
+        virtual HRESULT PopLayer() = 0;
 };

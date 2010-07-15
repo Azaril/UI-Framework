@@ -47,44 +47,6 @@ class StaticClassFactory
         }
 };
 
-//    CStaticResolvedClass(L"UIElement", STATIC_CLASS_INFO_NOT_CREATABLE_WITH_EVENTS(CUIElement)),
-//    CStaticResolvedClass(L"Border", STATIC_CLASS_INFO_WITH_EVENTS(CBorder)),
-//    CStaticResolvedClass(L"Canvas", STATIC_CLASS_INFO_WITH_EVENTS(CCanvas)),
-//    //CStaticResolvedClass(L"Grid", STATIC_CLASS_INFO_WITH_EVENTS(CGrid)),
-//    CStaticResolvedClass(L"Image", STATIC_CLASS_INFO_WITH_EVENTS(CImage)),
-//    CStaticResolvedClass(L"StackPanel", STATIC_CLASS_INFO_WITH_EVENTS(CStackPanel)),
-//    CStaticResolvedClass(L"DockPanel", STATIC_CLASS_INFO_WITH_EVENTS(CDockPanel)),
-//    CStaticResolvedClass(L"TextBlock", STATIC_CLASS_INFO_WITH_EVENTS(CTextBlock)),
-//    CStaticResolvedClass(L"ContentPresenter", STATIC_CLASS_INFO_WITH_EVENTS(CContentPresenter)),
-//    CStaticResolvedClass(L"ScrollContentPresenter", STATIC_CLASS_INFO_WITH_EVENTS(CScrollContentPresenter)),
-//    CStaticResolvedClass(L"ScrollViewer", STATIC_CLASS_INFO_WITH_EVENTS(CScrollViewer)),
-//    CStaticResolvedClass(L"TextBox", STATIC_CLASS_INFO_WITH_EVENTS(CTextBox)),
-//    CStaticResolvedClass(L"Button", STATIC_CLASS_INFO_WITH_EVENTS(CButton)),
-//    CStaticResolvedClass(L"ScrollBar", STATIC_CLASS_INFO_NOT_CREATABLE_WITH_EVENTS_AND_COMMANDS(CScrollBar)),
-//    CStaticResolvedClass(L"ImageBrush", STATIC_CLASS_INFO(CImageBrush)),
-//    CStaticResolvedClass(L"SolidColorBrush", STATIC_CLASS_INFO(CSolidColorBrush)),
-//    CStaticResolvedClass(L"Style", STATIC_CLASS_INFO(CStyle)),
-//    CStaticResolvedClass(L"Setter", STATIC_CLASS_INFO(CSetter)),
-//    CStaticResolvedClass(L"DynamicResource", STATIC_CLASS_INFO(CDynamicResource)),
-//    CStaticResolvedClass(L"LinearGradientBrush", STATIC_CLASS_INFO(CLinearGradientBrush)),
-//    CStaticResolvedClass(L"GradientStop", STATIC_CLASS_INFO(CGradientStop)),
-//    CStaticResolvedClass(L"EventTrigger", STATIC_CLASS_INFO(CEventTrigger)),
-//    CStaticResolvedClass(L"ControlTemplate", STATIC_CLASS_INFO(CControlTemplate)),
-//    CStaticResolvedClass(L"TemplateBinding", STATIC_CLASS_INFO(CTemplateBinding)),
-//    CStaticResolvedClass(L"Type", STATIC_CLASS_INFO(CTypeMarkupExtension)),
-//
-//    CStaticResolvedClass(L"RoutedCommand", 
-//        ObjectTypeTraits< CRoutedCommand >::Type, 
-//        NULL, 
-//        NULL,
-//        CRoutedCommand::CreateEventInformation)
-
-//#define STATIC_CLASS_INFO(classtype) ObjectTypeTraits< classtype >::Type, &StaticClassFactory< classtype >::Create, classtype::CreatePropertyInformation
-//#define STATIC_CLASS_INFO_NOT_CREATABLE_WITH_EVENTS(classtype) ObjectTypeTraits< classtype >::Type, NULL, classtype::CreatePropertyInformation, classtype::CreateEventInformation
-//#define STATIC_CLASS_INFO_NOT_CREATABLE_WITH_COMMANDS(classtype) ObjectTypeTraits< classtype >::Type, NULL, NULL, NULL, classtype::CreateCommandInformation
-//#define STATIC_CLASS_INFO_NOT_CREATABLE_WITH_EVENTS_AND_COMMANDS(classtype) ObjectTypeTraits< classtype >::Type, NULL, classtype::CreatePropertyInformation, classtype::CreateEventInformation, classtype::CreateCommandInformation
-//#define STATIC_CLASS_INFO_WITH_EVENTS(classtype) ObjectTypeTraits< classtype >::Type, &StaticClassFactory< classtype >::Create, classtype::CreatePropertyInformation, classtype::CreateEventInformation, classtype::CreateCommandInformation
-
 ClassInformation Classes[] =
 {
     ClassInformation(

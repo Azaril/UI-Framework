@@ -94,7 +94,7 @@ HRESULT CScrollContentPresenter::ArrangeInternal(SizeF AvailableSize, SizeF& Use
 
     if(pContentChild != NULL)
     {
-        SizeF ArrangePosition(GetHorizontalOffset(), GetVerticalOffset());
+        SizeF ArrangePosition(GetHorizontalOffset(), -GetVerticalOffset());
 
         RectF ArrangeRect = MakeRect(ArrangePosition, AvailableSize);
 
@@ -120,4 +120,9 @@ HRESULT CScrollContentPresenter::OnContentChanged(CObjectWithType* pOldValue, CO
 
 Cleanup:
     return hr;
+}
+
+BOOL CScrollContentPresenter::ShouldClipToLayout()
+{
+    return TRUE;
 }

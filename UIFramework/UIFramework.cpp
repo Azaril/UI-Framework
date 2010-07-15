@@ -263,7 +263,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_MOUSEMOVE:
             {
-                Point2F Point(GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam));
+                Point2F Point((FLOAT)GET_X_LPARAM(lParam), (FLOAT)GET_Y_LPARAM(lParam));
 
                 IFC(g_MouseController->InjectMouseMove(Point));
 
@@ -274,7 +274,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_LBUTTONDOWN:
             {
-                Point2F Point(GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam));
+                Point2F Point((FLOAT)GET_X_LPARAM(lParam), (FLOAT)GET_Y_LPARAM(lParam));
 
                 IFC(g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Down, Point));
 
@@ -285,7 +285,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_LBUTTONUP:
             {
-                Point2F Point(GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam));
+                Point2F Point((FLOAT)GET_X_LPARAM(lParam), (FLOAT)GET_Y_LPARAM(lParam));
 
                 IFC(g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Up, Point));
 

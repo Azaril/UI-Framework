@@ -262,6 +262,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Layer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer.h"
+					>
+				</File>
+				<File
 					RelativePath=".\MatrixStack.cpp"
 					>
 				</File>
@@ -334,6 +342,14 @@
 					</File>
 					<File
 						RelativePath=".\D2DHWNDRenderTarget.h"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DLayer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\D2DLayer.h"
 						>
 					</File>
 					<File

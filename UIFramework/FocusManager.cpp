@@ -13,7 +13,6 @@ HRESULT CFocusManager::Initialize()
 {
     HRESULT hr = S_OK;
 
-Cleanup:
     return hr;
 }
 

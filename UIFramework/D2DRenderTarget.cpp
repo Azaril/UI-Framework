@@ -5,6 +5,7 @@
 #include "D2DRectangleGeometry.h"
 #include "D2DRoundedRectangleGeometry.h"
 #include "D2DLinearGradientBrush.h"
+#include "D2DLayer.h"
 #include "ErrorChecking.h"
 #include "DirectWriteTextLayout.h"
 #include "DirectWriteEditableTextLayout.h"
@@ -321,15 +322,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBrush, FLOAT StrokeThickness)
+HRESULT CD2DRenderTarget::UnwrapGeometry(CGeometry* pGeometry, ID2D1Geometry** ppD2DGeometry)
 {
     HRESULT hr = S_OK;
-    CD2DBrush* pD2DBrush = NULL;
+    ID2D1Geometry* pUnwrappedGeometry = NULL;
 
     IFCPTR(pGeometry);
-    IFCPTR(pBrush);
-
-    pD2DBrush = (CD2DBrush*)pBrush;
+    IFCPTR(ppD2DGeometry);
 
     switch(pGeometry->GetType())
     {
@@ -337,7 +336,7 @@ HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBr
             {
                 CD2DRectangleGeometry* pRectangleGeometry = (CD2DRectangleGeometry*)pGeometry;
 
-                m_RenderTarget->DrawGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush(), StrokeThickness);
+                pUnwrappedGeometry = pRectangleGeometry->GetD2DGeometry();
 
                 break;
             }
@@ -346,7 +345,7 @@ HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBr
             {
                 CD2DRoundedRectangleGeometry* pRoundedRectangleGeometry = (CD2DRoundedRectangleGeometry*)pGeometry;
 
-                m_RenderTarget->DrawGeometry(pRoundedRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush(), StrokeThickness);
+                pUnwrappedGeometry = pRoundedRectangleGeometry->GetD2DGeometry();
 
                 break;
             }
@@ -357,6 +356,80 @@ HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBr
             }
     }
 
+    AddRefObject(pUnwrappedGeometry);
+    *ppD2DGeometry = pUnwrappedGeometry;
+
 Cleanup:
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBrush, FLOAT StrokeThickness)
+{
+    HRESULT hr = S_OK;
+    CD2DBrush* pD2DBrush = NULL;
+    ID2D1Geometry* pD2DGeometry = NULL;
+
+    IFCPTR(pGeometry);
+    IFCPTR(pBrush);
+
+    pD2DBrush = (CD2DBrush*)pBrush;
+
+    IFC(UnwrapGeometry(pGeometry, &pD2DGeometry));
+
+    m_RenderTarget->DrawGeometry(pD2DGeometry, pD2DBrush->GetD2DBrush(), StrokeThickness);
+
+Cleanup:
+    ReleaseObject(pD2DGeometry);
+
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::CreateLayer(CLayer** ppLayer)
+{
+    HRESULT hr = S_OK;
+    ID2D1Layer* pD2DLayer = NULL;
+    CD2DLayer* pLayer = NULL;
+
+    IFC(m_RenderTarget->CreateLayer(&pD2DLayer));
+
+    IFC(CD2DLayer::Create(pD2DLayer, &pLayer));
+
+    *ppLayer = pLayer;
+    pLayer = NULL;
+
+Cleanup:
+    ReleaseObject(pD2DLayer);
+    ReleaseObject(pLayer);
+
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::PushLayer(CLayer* pLayer, const RectF& ClippingRect, CGeometry* pClippingGeometry)
+{
+    HRESULT hr = S_OK;
+    CD2DLayer* pD2DLayer = NULL;
+    ID2D1Geometry* pD2DClipGeometry = NULL;
+
+    IFCPTR(pLayer);
+
+    pD2DLayer = (CD2DLayer*)pLayer;
+
+    if(pClippingGeometry)
+    {
+        IFC(UnwrapGeometry(pClippingGeometry, &pD2DClipGeometry));
+    }
+
+    m_RenderTarget->PushLayer(D2D1::LayerParameters(ClippingRect, pD2DClipGeometry), pD2DLayer->GetLayer());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CD2DRenderTarget::PopLayer()
+{
+    HRESULT hr = S_OK;
+
+    m_RenderTarget->PopLayer();
+
     return hr;
 }

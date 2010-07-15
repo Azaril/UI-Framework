@@ -102,7 +102,9 @@ CUIElement::CUIElement() : m_Attached(FALSE),
                            m_VerticalAlignment(this, &CUIElement::VerticalAlignmentProperty),
                            m_HorizontalAlignment(this, &CUIElement::HorizontalAlignmentProperty),
                            m_Margin(this, &CUIElement::MarginProperty),
-                           m_Focusable(this, &CUIElement::FocusableProperty)
+                           m_Focusable(this, &CUIElement::FocusableProperty),
+                           m_Layer(NULL),
+                           m_ClipToLayoutBounds(FALSE)
 {
     m_DesiredSize.width = 0;
     m_DesiredSize.height = 0;
@@ -139,6 +141,8 @@ CUIElement::~CUIElement()
     }
 
     m_EventHandlers.clear();
+
+    ReleaseObject(m_Layer);
 
     ReleaseObject(m_Providers);
 }
@@ -191,11 +195,108 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::RequiresLayer(BOOL* pRequiresLayer)
+{
+    HRESULT hr = S_OK;
+    RectF ClipRect;
+    CGeometry* pClipGeometry = NULL;
+    Visibility::Value EffectiveVisibility = Visibility::Visible;
+
+    IFCPTR(pRequiresLayer);
+
+    *pRequiresLayer = FALSE;
+
+    IFC(GetEffectiveVisibility(&EffectiveVisibility));
+
+    if(EffectiveVisibility != Visibility::Visible)
+    {
+        goto Cleanup;
+    }
+
+    IFC(GetClippingRectangle(&ClipRect));
+
+    if(!ClipRect.IsInfinite())
+    {
+        *pRequiresLayer = TRUE;
+
+        goto Cleanup;
+    }
+
+    IFC(GetClippingGeometry(&pClipGeometry));
+
+    if(pClipGeometry)
+    {
+        *pRequiresLayer = TRUE;
+
+        goto Cleanup;
+    }
+
+Cleanup:
+    ReleaseObject(pClipGeometry);
+
+    return hr;
+}
+
 HRESULT CUIElement::PreRenderInternal(CPreRenderContext& Context)
 {
     HRESULT hr = S_OK;
+    CRenderTarget* pRenderTarget = NULL;
+    BOOL NeedsLayer = FALSE;
+
+    pRenderTarget = Context.GetRenderTarget();
+    IFCPTR(pRenderTarget);
 
     IFC(CVisual::PreRender(Context));
+
+    IFC(RequiresLayer(&NeedsLayer));
+
+    if(NeedsLayer)
+    {
+        if(m_Layer == NULL)
+        {
+            IFC(pRenderTarget->CreateLayer(&m_Layer));
+        }
+    }
+    else
+    {
+        ReleaseObject(m_Layer);
+    }
+
+Cleanup:
+    return hr;
+}
+
+BOOL CUIElement::ShouldClipToLayout()
+{
+    return m_ClipToLayoutBounds;
+}
+
+HRESULT CUIElement::GetClippingGeometry(CGeometry** ppGeometry)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppGeometry);
+
+    *ppGeometry = NULL;
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::GetClippingRectangle(RectF* pClippingRect)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pClippingRect);
+
+    if(ShouldClipToLayout())
+    {
+        *pClippingRect = MakeRect(m_FinalSize);
+    }
+    else
+    {
+        *pClippingRect = RectF::Infinite();
+    }    
 
 Cleanup:
     return hr;
@@ -205,15 +306,37 @@ HRESULT CUIElement::Render(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
     Visibility::Value EffectiveVisibility = Visibility::Visible;
+    CRenderTarget* pRenderTarget = NULL;
+    RectF ClipRect;
+    CGeometry* pClipGeometry = NULL;
+
+    pRenderTarget = Context.GetRenderTarget();
+    IFCPTR(pRenderTarget);
 
     IFC(GetEffectiveVisibility(&EffectiveVisibility));
 
     if(EffectiveVisibility == Visibility::Visible)
     {
+        if(m_Layer != NULL)
+        {
+            IFC(GetClippingRectangle(&ClipRect));
+
+            IFC(GetClippingGeometry(&pClipGeometry));
+
+            IFC(pRenderTarget->PushLayer(m_Layer, ClipRect, pClipGeometry));
+        }
+
         IFC(RenderInternal(Context));
+
+        if(m_Layer != NULL)
+        {
+            IFC(pRenderTarget->PopLayer());
+        }
     }
 
 Cleanup:
+    ReleaseObject(pClipGeometry);
+
     return hr;
 }
 
@@ -661,7 +784,7 @@ HRESULT CUIElement::Arrange(RectF Bounds)
 
             if(EffectiveMaxHeight < ArrangeSize.height)
             {
-                NeedsClipBounds = true;
+                NeedsClipBounds = TRUE;
                 ArrangeSize.height = EffectiveMaxHeight;
             }
 
@@ -689,6 +812,7 @@ HRESULT CUIElement::Arrange(RectF Bounds)
             //TODO: Use something other than visual transform?
             IFC(SetVisualTransform(VisualTransform));
 
+            m_ClipToLayoutBounds = NeedsClipBounds;
             m_FinalSize = ClippedSize;
 
             m_ArrangeDirty = FALSE;
@@ -726,7 +850,7 @@ HRESULT CUIElement::ComputeAlignmentOffset(SizeF ClientSize, SizeF RenderSize, S
 
     if(HorzAlign == HorizontalAlignment::Center ||  HorzAlign == HorizontalAlignment::Stretch)
     {
-        Offset.width = (ClientSize.width - RenderSize.width) * 0.5;
+        Offset.width = (ClientSize.width - RenderSize.width) * 0.5f;
     }
     else if(HorzAlign == HorizontalAlignment::Right)
     {
@@ -739,7 +863,7 @@ HRESULT CUIElement::ComputeAlignmentOffset(SizeF ClientSize, SizeF RenderSize, S
 
     if(VertAlign == VerticalAlignment::Center ||  VertAlign == VerticalAlignment::Stretch)
     {
-        Offset.height = (ClientSize.height - RenderSize.height) * 0.5;
+        Offset.height = (ClientSize.height - RenderSize.height) * 0.5f;
     }
     else if(VertAlign == VerticalAlignment::Bottom)
     {

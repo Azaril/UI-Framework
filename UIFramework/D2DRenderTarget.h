@@ -33,11 +33,18 @@ class CD2DRenderTarget : public CRenderTarget
         virtual HRESULT DrawGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush, FLOAT StrokeThickness = 1.0f );
         virtual HRESULT FillGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush );
 
+        virtual HRESULT CreateLayer( CLayer** ppLayer );
+
+        virtual HRESULT PushLayer( CLayer* pLayer, const RectF& ClippingRect, CGeometry* pClippingGeometry );
+        virtual HRESULT PopLayer();
+
     protected:
         CD2DRenderTarget();
         virtual ~CD2DRenderTarget();
 
         HRESULT Initialize( ID2D1RenderTarget* pRenderTarget );
+
+        HRESULT UnwrapGeometry( CGeometry* pGeometry, ID2D1Geometry** ppD2DGeometry );
 
         ID2D1RenderTarget* m_RenderTarget;
 };

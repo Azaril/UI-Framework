@@ -108,7 +108,6 @@ HRESULT CButtonBase::OnCommandChanged(CObjectWithType* pOldValue, CObjectWithTyp
 
     //TODO: Update if command can execute and disable UI or not.
 
-Cleanup:
     return hr;
 }
 

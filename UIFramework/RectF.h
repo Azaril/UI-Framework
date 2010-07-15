@@ -27,6 +27,16 @@ struct RectF
         right = Right;
         bottom = Bottom;
     }
+
+    inline BOOL IsInfinite()
+    {
+        return (left == -FLT_MAX && right == FLT_MAX && top == -FLT_MAX && bottom == FLT_MAX);
+    }
+
+    static inline RectF Infinite()
+    {
+        return RectF(-FLT_MAX, -FLT_MAX, FLT_MAX, FLT_MAX);
+    }
     
 #ifndef _WINDOWS
     FLOAT left;
