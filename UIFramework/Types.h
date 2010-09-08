@@ -5,10 +5,12 @@
 #include <math.h>
 #include <algorithm>
 
+#include "Defines.h"
+
 #if _WINDOWS
 #include <crtdbg.h>
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(TRACK_LEAKS)
 #include "Signals.h"
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif

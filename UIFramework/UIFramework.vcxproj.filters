@@ -1,0 +1,1127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{c7552c17-d502-4625-90f9-01dd6850d6ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Utility">
+      <UniqueIdentifier>{5f810c8e-b1a5-463a-a8b7-e19f9cdb9f6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Graphics">
+      <UniqueIdentifier>{1bb87d19-9ef9-4329-9449-74857cc15064}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Graphics\D2D">
+      <UniqueIdentifier>{99022cff-a0cc-40b9-8a2e-158c08005ec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Graphics\Imaging">
+      <UniqueIdentifier>{168b5871-f358-4afb-9e7d-40e62d31575b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Graphics\Imaging\WIC">
+      <UniqueIdentifier>{7ad9db8e-83b7-4d4c-90df-a40b04c9aa98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI">
+      <UniqueIdentifier>{b0344129-50b9-4d00-9c4f-237e382e1b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Visuals">
+      <UniqueIdentifier>{84967dda-ab3a-41e9-a3e7-9f649ce77858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Visuals\Elements">
+      <UniqueIdentifier>{beef563d-4357-4e67-86f3-ce4316bfa411}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Visuals\Elements\Panels">
+      <UniqueIdentifier>{9669034e-993a-44c5-b410-a41c22937046}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Visuals\Elements\Decorators">
+      <UniqueIdentifier>{5a5b680b-43a7-4e5d-889f-b3da186f862d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Visuals\Elements\Controls">
+      <UniqueIdentifier>{34a5edb8-8297-448e-8ce4-ba8ee910b44b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Visuals\Elements\Controls\ContentControls">
+      <UniqueIdentifier>{b7508ee0-f737-4252-9151-c0462f13b708}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Properties">
+      <UniqueIdentifier>{1a4a4daf-4eb1-4b5f-ad82-3ce10bfdfe71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\VisualResources">
+      <UniqueIdentifier>{aca76061-10a5-44fc-909e-8477d4829f1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Input">
+      <UniqueIdentifier>{a33e029e-9882-4555-b468-0179a3c5270b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Events">
+      <UniqueIdentifier>{87cb6dd3-5a88-40c0-9f90-fc44fe57ea4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Hit Testing">
+      <UniqueIdentifier>{3456be5f-6946-47af-885c-2b540f56c3a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Namescope">
+      <UniqueIdentifier>{389b2f71-2074-4cdd-b50c-191ef895f34d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Styling">
+      <UniqueIdentifier>{ef49fc30-6a02-41df-bfde-7c28ca8e2a64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Collections">
+      <UniqueIdentifier>{bf994d2f-2a56-43ed-ba4f-5f522795fc77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Binding">
+      <UniqueIdentifier>{0b3ce5f5-9fa1-412d-a024-423101b91073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Templating">
+      <UniqueIdentifier>{c4444413-dc1d-428b-9906-fa0ece2017ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Commands">
+      <UniqueIdentifier>{934a30c8-8ed8-44f4-8571-c26702cba249}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\Animation">
+      <UniqueIdentifier>{d296b602-e364-4c5a-b913-eb8bd8edee8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Text">
+      <UniqueIdentifier>{5309afdd-0d96-4c2b-89e4-0bce0a3a773f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Text\DirectWrite">
+      <UniqueIdentifier>{33940d0f-aa60-430c-ae79-f6b4d3d5e794}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Parser">
+      <UniqueIdentifier>{4016a65d-9d90-4168-949a-37ce07bda8a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Parser\XML">
+      <UniqueIdentifier>{26bb880f-994a-4efc-a891-544b0486abb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Parser\XML\XMLLite">
+      <UniqueIdentifier>{9e6d628a-34d7-4068-ab41-77b626914cfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Parser\Commands">
+      <UniqueIdentifier>{81689a14-8e84-421d-a1f3-b3419c5189c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Types">
+      <UniqueIdentifier>{702a1cf9-7199-4736-932e-976bf580ff6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{9d388cf6-ae21-4fe1-9225-679266369298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Collections.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="ErrorChecking.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Factory.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Logging.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="RefCounted.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Signals.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitmap.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsBrush.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsDevice.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Layer.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="MatrixStack.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DBitmap.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DBitmapBrush.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DBitmapRenderTarget.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DBrush.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DGeometryBase.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DGraphicsDevice.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DHWNDRenderTarget.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DLayer.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DLinearGradientBrush.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DRectangleGeometry.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DRenderTarget.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DRoundedRectangleGeometry.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DSolidColorBrush.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapSource.cpp">
+      <Filter>Framework\Graphics\Imaging</Filter>
+    </ClCompile>
+    <ClCompile Include="ImagingProvider.cpp">
+      <Filter>Framework\Graphics\Imaging</Filter>
+    </ClCompile>
+    <ClCompile Include="WICBitmapSource.cpp">
+      <Filter>Framework\Graphics\Imaging\WIC</Filter>
+    </ClCompile>
+    <ClCompile Include="WICImagingProvider.cpp">
+      <Filter>Framework\Graphics\Imaging\WIC</Filter>
+    </ClCompile>
+    <ClCompile Include="Enums.cpp">
+      <Filter>Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="LayeredValue.cpp">
+      <Filter>Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Providers.cpp">
+      <Filter>Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderContext.cpp">
+      <Filter>Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceDictionary.cpp">
+      <Filter>Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIHost.cpp">
+      <Filter>Framework\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryVisual.cpp">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleVisual.cpp">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="TextVisual.cpp">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="Visual.cpp">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="VisualContext.cpp">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="VisualNotification.cpp">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="VisualResource.cpp">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentPresenter.cpp">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameworkElement.cpp">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="RootUIElement.cpp">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrollContentPresenter.cpp">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBlock.cpp">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="TextHost.cpp">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="DockPanel.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="StackPanel.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Border.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Decorators</Filter>
+    </ClCompile>
+    <ClCompile Include="Decorator.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Decorators</Filter>
+    </ClCompile>
+    <ClCompile Include="Control.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrollBar.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls\ContentControls</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonBase.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls\ContentControls</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentControl.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls\ContentControls</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrollViewer.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls\ContentControls</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicTypeConverter.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicTypes.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="DelegatingCommandInformation.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="DelegatingPropertyInformation.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="DelegatingRoutedEventInformation.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyObject.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="RoutedEventInformation.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticCommandInformation.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticPropertyInformation.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticTypeConverter.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeConverter.cpp">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClCompile>
+    <ClCompile Include="Brush.cpp">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClCompile>
+    <ClCompile Include="GradientBrush.cpp">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClCompile>
+    <ClCompile Include="GradientStop.cpp">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageBrush.cpp">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearGradientBrush.cpp">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClCompile>
+    <ClCompile Include="SolidColorBrush.cpp">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClCompile>
+    <ClCompile Include="FocusManager.cpp">
+      <Filter>Framework\UI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="InputEventArgs.cpp">
+      <Filter>Framework\UI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyboardController.cpp">
+      <Filter>Framework\UI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyboardEventArgs.cpp">
+      <Filter>Framework\UI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseController.cpp">
+      <Filter>Framework\UI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseInput.cpp">
+      <Filter>Framework\UI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseInputEventArgs.cpp">
+      <Filter>Framework\UI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="TextEventArgs.cpp">
+      <Filter>Framework\UI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="RoutedEvent.cpp">
+      <Filter>Framework\UI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="RoutedEventArgs.cpp">
+      <Filter>Framework\UI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticRoutedEvent.cpp">
+      <Filter>Framework\UI\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="HitTesting.cpp">
+      <Filter>Framework\UI\Hit Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="HitTestResult.cpp">
+      <Filter>Framework\UI\Hit Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="Namescope.cpp">
+      <Filter>Framework\UI\Namescope</Filter>
+    </ClCompile>
+    <ClCompile Include="EventTrigger.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="ResolvedSetters.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="ResolvedTriggers.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="Setter.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="Style.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleCallback.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="Trigger.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="Collection.cpp">
+      <Filter>Framework\UI\Collections</Filter>
+    </ClCompile>
+    <ClCompile Include="Dictionary.cpp">
+      <Filter>Framework\UI\Collections</Filter>
+    </ClCompile>
+    <ClCompile Include="Binding.cpp">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicResource.cpp">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClCompile>
+    <ClCompile Include="TemplateBinding.cpp">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlTemplate.cpp">
+      <Filter>Framework\UI\Templating</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Framework\UI\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="RoutedCommand.cpp">
+      <Filter>Framework\UI\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="RoutedCommandEventArgs.cpp">
+      <Filter>Framework\UI\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticRoutedCommand.cpp">
+      <Filter>Framework\UI\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationContainer.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="EditableTextLayout.cpp">
+      <Filter>Framework\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="TextEditor.cpp">
+      <Filter>Framework\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="TextFormat.cpp">
+      <Filter>Framework\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLayout.cpp">
+      <Filter>Framework\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLayoutMetrics.cpp">
+      <Filter>Framework\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="TextProvider.cpp">
+      <Filter>Framework\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteEditableTextLayout.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteLayoutMetrics.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteTextFormat.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteTextLayout.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteTextProvider.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="ClassResolver.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentPropertyNodeCallback.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicClassResolver.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicResolvedClass.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ElementNodeCallback.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkupExtension.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ParseContext.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ParserCallback.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ParserNodeCallback.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ParserUtilities.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ParserXMLCallback.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyNodeCallback.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="RichPropertyNodeCallback.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeMarkupExtension.cpp">
+      <Filter>Framework\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLReader.cpp">
+      <Filter>Framework\Parser\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLLiteReader.cpp">
+      <Filter>Framework\Parser\XML\XMLLite</Filter>
+    </ClCompile>
+    <ClCompile Include="AddToCollectionCommand.cpp">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="AddToDictionaryCommand.cpp">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateObjectCommand.cpp">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="EvaluateMarkupExtensionCommand.cpp">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ParserCommand.cpp">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ParserCommandContext.cpp">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ParserCommandList.cpp">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="PushObjectCommand.cpp">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPropertyCommand.cpp">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorF.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Gradient.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3X2F.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2F.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2U.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RectF.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="RectU.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="SizeF.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="SizeU.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Types.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DSurfaceRenderTarget.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Collections.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorChecking.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Factory.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Logging.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="RefCounted.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Signals.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Bitmap.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsBrush.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsDevice.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Layer.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrixStack.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DBitmap.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DBitmapBrush.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DBitmapRenderTarget.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DBrush.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DGeometryBase.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DGraphicsDevice.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DHWNDRenderTarget.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DLayer.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DLinearGradientBrush.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DRectangleGeometry.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DRenderTarget.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DRoundedRectangleGeometry.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DSolidColorBrush.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapSource.h">
+      <Filter>Framework\Graphics\Imaging</Filter>
+    </ClInclude>
+    <ClInclude Include="ImagingProvider.h">
+      <Filter>Framework\Graphics\Imaging</Filter>
+    </ClInclude>
+    <ClInclude Include="WICBitmapSource.h">
+      <Filter>Framework\Graphics\Imaging\WIC</Filter>
+    </ClInclude>
+    <ClInclude Include="WICImagingProvider.h">
+      <Filter>Framework\Graphics\Imaging\WIC</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="LayeredValue.h">
+      <Filter>Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Providers.h">
+      <Filter>Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderContext.h">
+      <Filter>Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceDictionary.h">
+      <Filter>Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIHost.h">
+      <Filter>Framework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryVisual.h">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleVisual.h">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="TextVisual.h">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="Visual.h">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="VisualContext.h">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="VisualNotification.h">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="VisualResource.h">
+      <Filter>Framework\UI\Visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentPresenter.h">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameworkElement.h">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="RootUIElement.h">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrollContentPresenter.h">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBlock.h">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="TextHost.h">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>Framework\UI\Visuals\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="DockPanel.h">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel.h">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="StackPanel.h">
+      <Filter>Framework\UI\Visuals\Elements\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Border.h">
+      <Filter>Framework\UI\Visuals\Elements\Decorators</Filter>
+    </ClInclude>
+    <ClInclude Include="Decorator.h">
+      <Filter>Framework\UI\Visuals\Elements\Decorators</Filter>
+    </ClInclude>
+    <ClInclude Include="Control.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrollBar.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls\ContentControls</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonBase.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls\ContentControls</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentControl.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls\ContentControls</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrollViewer.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls\ContentControls</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicTypeConverter.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicTypes.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="DelegatingCommandInformation.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="DelegatingPropertyInformation.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="DelegatingRoutedEventInformation.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyObject.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="RoutedEventInformation.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticCommandInformation.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticPropertyInformation.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticTypeConverter.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeConverter.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeIndex.h">
+      <Filter>Framework\UI\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Brush.h">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClInclude>
+    <ClInclude Include="GradientBrush.h">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClInclude>
+    <ClInclude Include="GradientStop.h">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageBrush.h">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearGradientBrush.h">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClInclude>
+    <ClInclude Include="SolidColorBrush.h">
+      <Filter>Framework\UI\VisualResources</Filter>
+    </ClInclude>
+    <ClInclude Include="FocusManager.h">
+      <Filter>Framework\UI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InputEventArgs.h">
+      <Filter>Framework\UI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyboardController.h">
+      <Filter>Framework\UI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyboardEventArgs.h">
+      <Filter>Framework\UI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseController.h">
+      <Filter>Framework\UI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseInput.h">
+      <Filter>Framework\UI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseInputEventArgs.h">
+      <Filter>Framework\UI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="TextEventArgs.h">
+      <Filter>Framework\UI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="RoutedEvent.h">
+      <Filter>Framework\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="RoutedEventArgs.h">
+      <Filter>Framework\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticRoutedEvent.h">
+      <Filter>Framework\UI\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="HitTesting.h">
+      <Filter>Framework\UI\Hit Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="HitTestResult.h">
+      <Filter>Framework\UI\Hit Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="Namescope.h">
+      <Filter>Framework\UI\Namescope</Filter>
+    </ClInclude>
+    <ClInclude Include="EventTrigger.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="ResolvedSetters.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="ResolvedTriggers.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="Setter.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="Style.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="StyleCallback.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="Trigger.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="Collection.h">
+      <Filter>Framework\UI\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="Dictionary.h">
+      <Filter>Framework\UI\Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="Binding.h">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicResource.h">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClInclude>
+    <ClInclude Include="TemplateBinding.h">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlTemplate.h">
+      <Filter>Framework\UI\Templating</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Framework\UI\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="RoutedCommand.h">
+      <Filter>Framework\UI\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="RoutedCommandEventArgs.h">
+      <Filter>Framework\UI\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticRoutedCommand.h">
+      <Filter>Framework\UI\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationContainer.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="EditableTextLayout.h">
+      <Filter>Framework\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="TextEditor.h">
+      <Filter>Framework\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="TextFormat.h">
+      <Filter>Framework\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="TextLayout.h">
+      <Filter>Framework\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="TextLayoutMetrics.h">
+      <Filter>Framework\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="TextProvider.h">
+      <Filter>Framework\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteEditableTextLayout.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteLayoutMetrics.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteTextFormat.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteTextLayout.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteTextProvider.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassResolver.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentPropertyNodeCallback.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicClassResolver.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicResolvedClass.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementNodeCallback.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkupExtension.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ParseContext.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ParserCallback.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ParserNodeCallback.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ParserUtilities.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ParserXMLCallback.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyNodeCallback.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="RichPropertyNodeCallback.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeMarkupExtension.h">
+      <Filter>Framework\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLReader.h">
+      <Filter>Framework\Parser\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLLiteReader.h">
+      <Filter>Framework\Parser\XML\XMLLite</Filter>
+    </ClInclude>
+    <ClInclude Include="AddToCollectionCommand.h">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="AddToDictionaryCommand.h">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateObjectCommand.h">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="EvaluateMarkupExtensionCommand.h">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ParserCommand.h">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ParserCommandContext.h">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ParserCommandList.h">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="PushObjectCommand.h">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPropertyCommand.h">
+      <Filter>Framework\Parser\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorF.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Colors.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Gradient.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix3X2F.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2F.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2U.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RectF.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RectU.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="SizeF.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="SizeU.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DSurfaceRenderTarget.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="small.ico">
+      <Filter>Application\Resource Files</Filter>
+    </None>
+    <None Include="UIFramework.ico">
+      <Filter>Application\Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UIFramework.rc">
+      <Filter>Application\Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

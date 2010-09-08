@@ -7,12 +7,9 @@
 
 class CRenderTarget;
 
-class CGraphicsDevice : public CRefCountedObject
+class UIFRAMEWORK_API CGraphicsDevice : public CRefCountedObject
 {
 	public:
-#ifdef _WINDOWS
-		virtual HRESULT CreateHWNDRenderTarget( HWND Window, CRenderTarget** ppRenderTarget ) = 0;
-#endif
         //virtual HRESULT CreateRenderTarget( const SizeF& Size, CRenderTarget** ppRenderTarget ) = 0;
 
         virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider ) = 0;
@@ -23,4 +20,4 @@ class CGraphicsDevice : public CRefCountedObject
         virtual HRESULT CreateRoundedRectangleGeometry( const RectF& Rectangle, FLOAT CornerRadius, CRoundedRectangleGeometry** ppRectangleGeometry ) = 0;
 };
 
-HRESULT CreateGraphicsDevice( CGraphicsDevice** ppGraphicsDevice );
+//HRESULT CreateGraphicsDevice( CGraphicsDevice** ppGraphicsDevice );

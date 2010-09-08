@@ -4,7 +4,7 @@
 #include "TypeConverter.h"
 #include "Factory.h"
 
-class CProviders : public CRefCountedObject
+class UIFRAMEWORK_API CProviders : public CRefCountedObject
 {
     public:
         DECLARE_FACTORY2( CProviders, CClassResolver*, CTypeConverter* );

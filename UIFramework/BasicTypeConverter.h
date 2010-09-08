@@ -2,7 +2,7 @@
 
 #include "TypeConverter.h"
 
-HRESULT CreateBasicTypeConverter( CTypeConverter** ppTypeConverter );
+HRESULT UIFRAMEWORK_API CreateBasicTypeConverter( CTypeConverter** ppTypeConverter );
 
 HRESULT ConvertStringToFloat( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToVisibility( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );

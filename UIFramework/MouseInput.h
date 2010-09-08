@@ -15,7 +15,7 @@ class CMouseInputHitTestFilter : public CHitTestFilter
 class CMouseButtonHitTestCallback : public CHitTestCallback
 {
     public:
-        CMouseButtonHitTestCallback( CMouseController* pController, Point2F MouseLocation, MouseButton::Value Button, MouseButtonState::Value State );
+        CMouseButtonHitTestCallback( CMouseController* pController, Point2F MouseLocation, MouseButton::Value Button, MouseButtonState::Value State, BOOL* pHandled );
 
         virtual HRESULT ItemHit( CVisual* pVisual, HitTestResultBehavior::Value* pResultBehavior );
 
@@ -24,16 +24,18 @@ class CMouseButtonHitTestCallback : public CHitTestCallback
         MouseButton::Value m_Button;
         MouseButtonState::Value m_ButtonState;
         Point2F m_Location;
+        BOOL* m_Handled;
 };
 
 class CMouseMoveHitTestCallback : public CHitTestCallback
 {
     public:
-        CMouseMoveHitTestCallback( CMouseController* pController, Point2F MouseLocation );
+        CMouseMoveHitTestCallback( CMouseController* pController, Point2F MouseLocation, BOOL* pHandled );
 
         virtual HRESULT ItemHit( CVisual* pVisual, HitTestResultBehavior::Value* pResultBehavior );
 
     protected:
         CMouseController* m_Controller;
         Point2F m_Location;
+        BOOL* m_Handled;
 };

@@ -1435,6 +1435,21 @@ Cleanup:
     return hr;
 }
 
+BOOL CUIElement::IsFocusable()
+{
+    BOOL Focusable = FALSE;
+    BOOL EffectiveFocusable = FALSE;
+    Visibility::Value EffectiveVisibility = Visibility::Visible;
+
+    if(SUCCEEDED(GetEffectiveFocusable(&EffectiveFocusable)) && SUCCEEDED(GetEffectiveVisibility(&EffectiveVisibility)))
+    {
+        Focusable = EffectiveFocusable && (EffectiveVisibility == Visibility::Visible);
+    }
+
+Cleanup:
+    return Focusable;
+}
+
 HRESULT CUIElement::Focus(BOOL* pSetFocus)
 {
     HRESULT hr = S_OK;
@@ -1648,7 +1663,6 @@ void CUIElement::OnMouseDown(CObjectWithType* pSender, CRoutedEventArgs* pRouted
     HRESULT hr = S_OK;
     CMouseButtonEventArgs* pMouseButtonEventArgs = NULL;
     CMouseButtonEventArgs* pNewEventArgs = NULL;
-    BOOL SetFocus = FALSE;
 
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
@@ -1656,14 +1670,6 @@ void CUIElement::OnMouseDown(CObjectWithType* pSender, CRoutedEventArgs* pRouted
     IFCEXPECT(pRoutedEventArgs->IsTypeOf(TypeIndex::MouseButtonEventArgs));
 
     pMouseButtonEventArgs = (CMouseButtonEventArgs*)pRoutedEventArgs;
-
-    // Set focus to the element if it's focusable.
-    IFC(Focus(&SetFocus));
-
-    if(SetFocus)
-    {
-        pMouseButtonEventArgs->SetHandled(TRUE);
-    }
 
     if(!pMouseButtonEventArgs->IsHandled())
     {
@@ -1787,9 +1793,23 @@ Cleanup:
 void CUIElement::OnMouseLeftButtonDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
 {
     HRESULT hr = S_OK;
+    CMouseButtonEventArgs* pMouseButtonEventArgs = NULL;
+    BOOL SetFocus = FALSE;
 
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
+
+    IFCEXPECT(pRoutedEventArgs->IsTypeOf(TypeIndex::MouseButtonEventArgs));
+
+    pMouseButtonEventArgs = (CMouseButtonEventArgs*)pRoutedEventArgs;
+
+    // Set focus to the element if it's focusable.
+    IFC(Focus(&SetFocus));
+
+    if(SetFocus)
+    {
+        pMouseButtonEventArgs->SetHandled(TRUE);
+    }
 
 Cleanup:
     ;

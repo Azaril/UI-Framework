@@ -49,12 +49,19 @@ CControl::~CControl()
 HRESULT CControl::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
+    CBoolValue* pFocusable = NULL;
 
     IFC(CFrameworkElement::Initialize(pProviders));
 
     IFC(CNamescope::Create(&m_TemplateNamescope));
 
+    IFC(CBoolValue::Create(TRUE, &pFocusable));
+
+    IFC(SetValue(&CUIElement::FocusableProperty, pFocusable));
+
 Cleanup:
+    ReleaseObject(pFocusable);
+
     return hr;
 }
 

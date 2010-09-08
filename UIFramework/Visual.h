@@ -10,7 +10,7 @@
 #include "HitTestResult.h"
 #include "Transform.h"
 
-class CVisual : public CRefCountedObjectBase< CPropertyObject >
+class UIFRAMEWORK_API CVisual : public CRefCountedObjectBase< CPropertyObject >
 {
     typedef std::vector< CVisual* > VisualChildCollection;
     typedef std::vector< CVisualResource* > VisualResourceCollection;

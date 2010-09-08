@@ -19,4 +19,5 @@ class CWICImagingProvider : public CImagingProvider
         HRESULT Initialize();
 
         IWICImagingFactory* m_Factory;
+        BOOL m_UninitializeCOM;
 };

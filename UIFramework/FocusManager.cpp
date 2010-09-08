@@ -40,7 +40,9 @@ HRESULT CFocusManager::SetFocus(CUIElement* pElement, BOOL* pSetFocus)
 
     if(pElement != m_FocusedElement)
     {
-        if(m_FocusedElement)
+        Abort = !pElement->IsFocusable();
+
+        if(!Abort && m_FocusedElement)
         {
             IFC(CRoutedEventArgs::Create(&CUIElement::PreviewLostFocusEvent, &pPreviewLostFocusEventArgs));
 

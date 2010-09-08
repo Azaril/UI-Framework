@@ -62,7 +62,7 @@ virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type; }
 virtual TypeIndex::Value GetType() { return type; } \
 virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type || base::IsTypeOf(Type); }
 
-class CObjectWithType
+class UIFRAMEWORK_API CObjectWithType
 {
     public:
         virtual INT32 AddRef() = 0;
@@ -101,7 +101,7 @@ class CAttachedPropertyHolder
 typedef events::signal< void ( CPropertyObject*, CProperty* ) > PropertyChangedSignal;
 typedef PropertyChangedSignal::slot_type PropertyChangedHandler;
 
-class CPropertyObject : public CObjectWithType
+class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
 {
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::PropertyObject, CObjectWithType );

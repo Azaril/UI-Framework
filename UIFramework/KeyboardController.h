@@ -5,7 +5,7 @@
 #include "MouseInput.h"
 #include "FocusManager.h"
 
-class CKeyboardController :  public CRefCountedObject 
+class UIFRAMEWORK_API CKeyboardController :  public CRefCountedObject 
 {
     public:
         DECLARE_FACTORY2( CKeyboardController, CFocusManager*, CUIElement* );

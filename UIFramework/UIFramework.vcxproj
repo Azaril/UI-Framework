@@ -1,0 +1,439 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FDDA5D3C-5FFF-477E-8D61-40357A1332FD}</ProjectGuid>
+    <RootNamespace>UIFramework</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfAtl>Static</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfAtl>Static</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include;$(ProjectDir)\External\boost;$(ProjectDir)\External\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRTDBG_MAP_ALLOC;UIFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include;$(ProjectDir)\External\boost;$(ProjectDir)\External\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;UIFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Collections.cpp" />
+    <ClCompile Include="D2DSurfaceRenderTarget.cpp" />
+    <ClCompile Include="ErrorChecking.cpp" />
+    <ClCompile Include="Factory.cpp" />
+    <ClCompile Include="Logging.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RefCounted.cpp" />
+    <ClCompile Include="Signals.cpp" />
+    <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="GraphicsBrush.cpp" />
+    <ClCompile Include="GraphicsDevice.cpp" />
+    <ClCompile Include="Layer.cpp" />
+    <ClCompile Include="MatrixStack.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="D2DBitmap.cpp" />
+    <ClCompile Include="D2DBitmapBrush.cpp" />
+    <ClCompile Include="D2DBitmapRenderTarget.cpp" />
+    <ClCompile Include="D2DBrush.cpp" />
+    <ClCompile Include="D2DGeometryBase.cpp" />
+    <ClCompile Include="D2DGraphicsDevice.cpp" />
+    <ClCompile Include="D2DHWNDRenderTarget.cpp" />
+    <ClCompile Include="D2DLayer.cpp" />
+    <ClCompile Include="D2DLinearGradientBrush.cpp" />
+    <ClCompile Include="D2DRectangleGeometry.cpp" />
+    <ClCompile Include="D2DRenderTarget.cpp" />
+    <ClCompile Include="D2DRoundedRectangleGeometry.cpp" />
+    <ClCompile Include="D2DSolidColorBrush.cpp" />
+    <ClCompile Include="BitmapSource.cpp" />
+    <ClCompile Include="ImagingProvider.cpp" />
+    <ClCompile Include="WICBitmapSource.cpp" />
+    <ClCompile Include="WICImagingProvider.cpp" />
+    <ClCompile Include="Enums.cpp" />
+    <ClCompile Include="LayeredValue.cpp" />
+    <ClCompile Include="Providers.cpp" />
+    <ClCompile Include="RenderContext.cpp" />
+    <ClCompile Include="ResourceDictionary.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UIHost.cpp" />
+    <ClCompile Include="GeometryVisual.cpp" />
+    <ClCompile Include="RectangleVisual.cpp" />
+    <ClCompile Include="TextVisual.cpp" />
+    <ClCompile Include="Visual.cpp" />
+    <ClCompile Include="VisualContext.cpp" />
+    <ClCompile Include="VisualNotification.cpp" />
+    <ClCompile Include="VisualResource.cpp" />
+    <ClCompile Include="ContentPresenter.cpp" />
+    <ClCompile Include="FrameworkElement.cpp" />
+    <ClCompile Include="Image.cpp" />
+    <ClCompile Include="RootUIElement.cpp" />
+    <ClCompile Include="ScrollContentPresenter.cpp" />
+    <ClCompile Include="TextBlock.cpp" />
+    <ClCompile Include="TextHost.cpp" />
+    <ClCompile Include="UIElement.cpp" />
+    <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="DockPanel.cpp" />
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="Panel.cpp" />
+    <ClCompile Include="StackPanel.cpp" />
+    <ClCompile Include="Border.cpp" />
+    <ClCompile Include="Decorator.cpp" />
+    <ClCompile Include="Control.cpp" />
+    <ClCompile Include="ScrollBar.cpp" />
+    <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ButtonBase.cpp" />
+    <ClCompile Include="ContentControl.cpp" />
+    <ClCompile Include="ScrollViewer.cpp" />
+    <ClCompile Include="BasicTypeConverter.cpp" />
+    <ClCompile Include="BasicTypes.cpp" />
+    <ClCompile Include="DelegatingCommandInformation.cpp" />
+    <ClCompile Include="DelegatingPropertyInformation.cpp" />
+    <ClCompile Include="DelegatingRoutedEventInformation.cpp" />
+    <ClCompile Include="PropertyObject.cpp" />
+    <ClCompile Include="RoutedEventInformation.cpp" />
+    <ClCompile Include="StaticCommandInformation.cpp" />
+    <ClCompile Include="StaticPropertyInformation.cpp" />
+    <ClCompile Include="StaticTypeConverter.cpp" />
+    <ClCompile Include="TypeConverter.cpp" />
+    <ClCompile Include="Brush.cpp" />
+    <ClCompile Include="GradientBrush.cpp" />
+    <ClCompile Include="GradientStop.cpp" />
+    <ClCompile Include="ImageBrush.cpp" />
+    <ClCompile Include="LinearGradientBrush.cpp" />
+    <ClCompile Include="SolidColorBrush.cpp" />
+    <ClCompile Include="FocusManager.cpp" />
+    <ClCompile Include="InputEventArgs.cpp" />
+    <ClCompile Include="KeyboardController.cpp" />
+    <ClCompile Include="KeyboardEventArgs.cpp" />
+    <ClCompile Include="MouseController.cpp" />
+    <ClCompile Include="MouseInput.cpp" />
+    <ClCompile Include="MouseInputEventArgs.cpp" />
+    <ClCompile Include="TextEventArgs.cpp" />
+    <ClCompile Include="RoutedEvent.cpp" />
+    <ClCompile Include="RoutedEventArgs.cpp" />
+    <ClCompile Include="StaticRoutedEvent.cpp" />
+    <ClCompile Include="HitTesting.cpp" />
+    <ClCompile Include="HitTestResult.cpp" />
+    <ClCompile Include="Namescope.cpp" />
+    <ClCompile Include="EventTrigger.cpp" />
+    <ClCompile Include="ResolvedSetters.cpp" />
+    <ClCompile Include="ResolvedTriggers.cpp" />
+    <ClCompile Include="Setter.cpp" />
+    <ClCompile Include="Style.cpp" />
+    <ClCompile Include="StyleCallback.cpp" />
+    <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="Collection.cpp" />
+    <ClCompile Include="Dictionary.cpp" />
+    <ClCompile Include="Binding.cpp" />
+    <ClCompile Include="DynamicResource.cpp" />
+    <ClCompile Include="TemplateBinding.cpp" />
+    <ClCompile Include="ControlTemplate.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="RoutedCommand.cpp" />
+    <ClCompile Include="RoutedCommandEventArgs.cpp" />
+    <ClCompile Include="StaticRoutedCommand.cpp" />
+    <ClCompile Include="AnimationContainer.cpp" />
+    <ClCompile Include="EditableTextLayout.cpp" />
+    <ClCompile Include="TextEditor.cpp" />
+    <ClCompile Include="TextFormat.cpp" />
+    <ClCompile Include="TextLayout.cpp" />
+    <ClCompile Include="TextLayoutMetrics.cpp" />
+    <ClCompile Include="TextProvider.cpp" />
+    <ClCompile Include="DirectWriteEditableTextLayout.cpp" />
+    <ClCompile Include="DirectWriteLayoutMetrics.cpp" />
+    <ClCompile Include="DirectWriteTextFormat.cpp" />
+    <ClCompile Include="DirectWriteTextLayout.cpp" />
+    <ClCompile Include="DirectWriteTextProvider.cpp" />
+    <ClCompile Include="ClassResolver.cpp" />
+    <ClCompile Include="ContentPropertyNodeCallback.cpp" />
+    <ClCompile Include="DynamicClassResolver.cpp" />
+    <ClCompile Include="DynamicResolvedClass.cpp" />
+    <ClCompile Include="ElementNodeCallback.cpp" />
+    <ClCompile Include="MarkupExtension.cpp" />
+    <ClCompile Include="ParseContext.cpp" />
+    <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="ParserCallback.cpp" />
+    <ClCompile Include="ParserNodeCallback.cpp" />
+    <ClCompile Include="ParserUtilities.cpp" />
+    <ClCompile Include="ParserXMLCallback.cpp" />
+    <ClCompile Include="PropertyNodeCallback.cpp" />
+    <ClCompile Include="RichPropertyNodeCallback.cpp" />
+    <ClCompile Include="TypeMarkupExtension.cpp" />
+    <ClCompile Include="XMLReader.cpp" />
+    <ClCompile Include="XMLLiteReader.cpp" />
+    <ClCompile Include="AddToCollectionCommand.cpp" />
+    <ClCompile Include="AddToDictionaryCommand.cpp" />
+    <ClCompile Include="CreateObjectCommand.cpp" />
+    <ClCompile Include="EvaluateMarkupExtensionCommand.cpp" />
+    <ClCompile Include="ParserCommand.cpp" />
+    <ClCompile Include="ParserCommandContext.cpp" />
+    <ClCompile Include="ParserCommandList.cpp" />
+    <ClCompile Include="PushObjectCommand.cpp" />
+    <ClCompile Include="SetPropertyCommand.cpp" />
+    <ClCompile Include="ColorF.cpp" />
+    <ClCompile Include="Gradient.cpp" />
+    <ClCompile Include="Matrix3X2F.cpp" />
+    <ClCompile Include="Point2F.cpp" />
+    <ClCompile Include="Point2U.cpp" />
+    <ClCompile Include="RectF.cpp" />
+    <ClCompile Include="RectU.cpp" />
+    <ClCompile Include="SizeF.cpp" />
+    <ClCompile Include="SizeU.cpp" />
+    <ClCompile Include="Types.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Collections.h" />
+    <ClInclude Include="D2DSurfaceRenderTarget.h" />
+    <ClInclude Include="Defines.h" />
+    <ClInclude Include="ErrorChecking.h" />
+    <ClInclude Include="Factory.h" />
+    <ClInclude Include="Logging.h" />
+    <ClInclude Include="RefCounted.h" />
+    <ClInclude Include="Signals.h" />
+    <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="Geometry.h" />
+    <ClInclude Include="GraphicsBrush.h" />
+    <ClInclude Include="GraphicsDevice.h" />
+    <ClInclude Include="Layer.h" />
+    <ClInclude Include="MatrixStack.h" />
+    <ClInclude Include="RenderTarget.h" />
+    <ClInclude Include="D2DBitmap.h" />
+    <ClInclude Include="D2DBitmapBrush.h" />
+    <ClInclude Include="D2DBitmapRenderTarget.h" />
+    <ClInclude Include="D2DBrush.h" />
+    <ClInclude Include="D2DGeometryBase.h" />
+    <ClInclude Include="D2DGraphicsDevice.h" />
+    <ClInclude Include="D2DHWNDRenderTarget.h" />
+    <ClInclude Include="D2DLayer.h" />
+    <ClInclude Include="D2DLinearGradientBrush.h" />
+    <ClInclude Include="D2DRectangleGeometry.h" />
+    <ClInclude Include="D2DRenderTarget.h" />
+    <ClInclude Include="D2DRoundedRectangleGeometry.h" />
+    <ClInclude Include="D2DSolidColorBrush.h" />
+    <ClInclude Include="BitmapSource.h" />
+    <ClInclude Include="ImagingProvider.h" />
+    <ClInclude Include="WICBitmapSource.h" />
+    <ClInclude Include="WICImagingProvider.h" />
+    <ClInclude Include="Enums.h" />
+    <ClInclude Include="LayeredValue.h" />
+    <ClInclude Include="Providers.h" />
+    <ClInclude Include="RenderContext.h" />
+    <ClInclude Include="ResourceDictionary.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="UIHost.h" />
+    <ClInclude Include="GeometryVisual.h" />
+    <ClInclude Include="RectangleVisual.h" />
+    <ClInclude Include="TextVisual.h" />
+    <ClInclude Include="Visual.h" />
+    <ClInclude Include="VisualContext.h" />
+    <ClInclude Include="VisualNotification.h" />
+    <ClInclude Include="VisualResource.h" />
+    <ClInclude Include="ContentPresenter.h" />
+    <ClInclude Include="FrameworkElement.h" />
+    <ClInclude Include="Image.h" />
+    <ClInclude Include="RootUIElement.h" />
+    <ClInclude Include="ScrollContentPresenter.h" />
+    <ClInclude Include="TextBlock.h" />
+    <ClInclude Include="TextHost.h" />
+    <ClInclude Include="UIElement.h" />
+    <ClInclude Include="Canvas.h" />
+    <ClInclude Include="DockPanel.h" />
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="Panel.h" />
+    <ClInclude Include="StackPanel.h" />
+    <ClInclude Include="Border.h" />
+    <ClInclude Include="Decorator.h" />
+    <ClInclude Include="Control.h" />
+    <ClInclude Include="ScrollBar.h" />
+    <ClInclude Include="TextBox.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="ButtonBase.h" />
+    <ClInclude Include="ContentControl.h" />
+    <ClInclude Include="ScrollViewer.h" />
+    <ClInclude Include="BasicTypeConverter.h" />
+    <ClInclude Include="BasicTypes.h" />
+    <ClInclude Include="DelegatingCommandInformation.h" />
+    <ClInclude Include="DelegatingPropertyInformation.h" />
+    <ClInclude Include="DelegatingRoutedEventInformation.h" />
+    <ClInclude Include="PropertyObject.h" />
+    <ClInclude Include="RoutedEventInformation.h" />
+    <ClInclude Include="StaticCommandInformation.h" />
+    <ClInclude Include="StaticPropertyInformation.h" />
+    <ClInclude Include="StaticTypeConverter.h" />
+    <ClInclude Include="TypeConverter.h" />
+    <ClInclude Include="TypeIndex.h" />
+    <ClInclude Include="Brush.h" />
+    <ClInclude Include="GradientBrush.h" />
+    <ClInclude Include="GradientStop.h" />
+    <ClInclude Include="ImageBrush.h" />
+    <ClInclude Include="LinearGradientBrush.h" />
+    <ClInclude Include="SolidColorBrush.h" />
+    <ClInclude Include="FocusManager.h" />
+    <ClInclude Include="InputEventArgs.h" />
+    <ClInclude Include="KeyboardController.h" />
+    <ClInclude Include="KeyboardEventArgs.h" />
+    <ClInclude Include="MouseController.h" />
+    <ClInclude Include="MouseInput.h" />
+    <ClInclude Include="MouseInputEventArgs.h" />
+    <ClInclude Include="TextEventArgs.h" />
+    <ClInclude Include="RoutedEvent.h" />
+    <ClInclude Include="RoutedEventArgs.h" />
+    <ClInclude Include="StaticRoutedEvent.h" />
+    <ClInclude Include="HitTesting.h" />
+    <ClInclude Include="HitTestResult.h" />
+    <ClInclude Include="Namescope.h" />
+    <ClInclude Include="EventTrigger.h" />
+    <ClInclude Include="ResolvedSetters.h" />
+    <ClInclude Include="ResolvedTriggers.h" />
+    <ClInclude Include="Setter.h" />
+    <ClInclude Include="Style.h" />
+    <ClInclude Include="StyleCallback.h" />
+    <ClInclude Include="Trigger.h" />
+    <ClInclude Include="Collection.h" />
+    <ClInclude Include="Dictionary.h" />
+    <ClInclude Include="Binding.h" />
+    <ClInclude Include="DynamicResource.h" />
+    <ClInclude Include="TemplateBinding.h" />
+    <ClInclude Include="ControlTemplate.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="RoutedCommand.h" />
+    <ClInclude Include="RoutedCommandEventArgs.h" />
+    <ClInclude Include="StaticRoutedCommand.h" />
+    <ClInclude Include="AnimationContainer.h" />
+    <ClInclude Include="EditableTextLayout.h" />
+    <ClInclude Include="TextEditor.h" />
+    <ClInclude Include="TextFormat.h" />
+    <ClInclude Include="TextLayout.h" />
+    <ClInclude Include="TextLayoutMetrics.h" />
+    <ClInclude Include="TextProvider.h" />
+    <ClInclude Include="DirectWriteEditableTextLayout.h" />
+    <ClInclude Include="DirectWriteLayoutMetrics.h" />
+    <ClInclude Include="DirectWriteTextFormat.h" />
+    <ClInclude Include="DirectWriteTextLayout.h" />
+    <ClInclude Include="DirectWriteTextProvider.h" />
+    <ClInclude Include="ClassResolver.h" />
+    <ClInclude Include="ContentPropertyNodeCallback.h" />
+    <ClInclude Include="DynamicClassResolver.h" />
+    <ClInclude Include="DynamicResolvedClass.h" />
+    <ClInclude Include="ElementNodeCallback.h" />
+    <ClInclude Include="MarkupExtension.h" />
+    <ClInclude Include="ParseContext.h" />
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="ParserCallback.h" />
+    <ClInclude Include="ParserNodeCallback.h" />
+    <ClInclude Include="ParserUtilities.h" />
+    <ClInclude Include="ParserXMLCallback.h" />
+    <ClInclude Include="PropertyNodeCallback.h" />
+    <ClInclude Include="RichPropertyNodeCallback.h" />
+    <ClInclude Include="TypeMarkupExtension.h" />
+    <ClInclude Include="XMLReader.h" />
+    <ClInclude Include="XMLLiteReader.h" />
+    <ClInclude Include="AddToCollectionCommand.h" />
+    <ClInclude Include="AddToDictionaryCommand.h" />
+    <ClInclude Include="CreateObjectCommand.h" />
+    <ClInclude Include="EvaluateMarkupExtensionCommand.h" />
+    <ClInclude Include="ParserCommand.h" />
+    <ClInclude Include="ParserCommandContext.h" />
+    <ClInclude Include="ParserCommandList.h" />
+    <ClInclude Include="PushObjectCommand.h" />
+    <ClInclude Include="SetPropertyCommand.h" />
+    <ClInclude Include="ColorF.h" />
+    <ClInclude Include="Colors.h" />
+    <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="Gradient.h" />
+    <ClInclude Include="Matrix3X2F.h" />
+    <ClInclude Include="Point2F.h" />
+    <ClInclude Include="Point2U.h" />
+    <ClInclude Include="RectF.h" />
+    <ClInclude Include="RectU.h" />
+    <ClInclude Include="SizeF.h" />
+    <ClInclude Include="SizeU.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="small.ico" />
+    <None Include="UIFramework.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UIFramework.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

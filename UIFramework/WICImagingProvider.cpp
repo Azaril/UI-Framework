@@ -4,7 +4,8 @@
 EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_WICImagingFactory = { 0xcacaf262, 0x9370, 0x4615, { 0xa1, 0x3b,  0x9f,  0x55,  0x39,  0xda,  0x4c,  0xa } };
 EXTERN_C const GUID DECLSPEC_SELECTANY GUID_WICPixelFormat32bppPBGRA = { 0x6fddc324, 0x4e03, 0x4bfe, { 0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x10 } };
 
-CWICImagingProvider::CWICImagingProvider() : m_Factory(NULL)
+CWICImagingProvider::CWICImagingProvider() : m_Factory(NULL),
+                                             m_UninitializeCOM(FALSE)
 {
 }
 
@@ -12,14 +13,20 @@ CWICImagingProvider::~CWICImagingProvider()
 {
     ReleaseObject(m_Factory);
 
-    CoUninitialize();
+    if(m_UninitializeCOM)
+    {
+        CoUninitialize();
+    }
 }
 
 HRESULT CWICImagingProvider::Initialize()
 {
     HRESULT hr = S_OK;
 
-    IFC(CoInitializeEx(NULL, COINIT_APARTMENTTHREADED));
+    if(SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED)))
+    {
+        m_UninitializeCOM = TRUE;
+    }
 
     IFC(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_Factory));
 

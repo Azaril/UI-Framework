@@ -5,17 +5,18 @@
 #include "MouseInput.h"
 #include "FocusManager.h"
 
-class CMouseController : public CRefCountedObject
+class UIFRAMEWORK_API CMouseController : public CRefCountedObject
 {
     public:
         DECLARE_FACTORY2( CMouseController, CFocusManager*, CUIElement* );
 
-        HRESULT InjectMouseButton( MouseButton::Value Button, MouseButtonState::Value State, Point2F Location );
-        HRESULT InjectMouseMove( Point2F Location );
+        HRESULT InjectMouseButton( MouseButton::Value Button, MouseButtonState::Value State, BOOL* pConsumed = NULL );
+        HRESULT InjectMouseButton( MouseButton::Value Button, MouseButtonState::Value State, Point2F Location, BOOL* pConsumed = NULL );
+        HRESULT InjectMouseMove( Point2F Location, BOOL* pConsumed = NULL );
 
         HRESULT SetMouseOverElement( CUIElement* pElement, Point2F Location );
-        HRESULT RaiseMouseMove( Point2F Location );
-        HRESULT RaiseMouseButton( Point2F Location, MouseButton::Value Button, MouseButtonState::Value State );
+        HRESULT RaiseMouseMove( Point2F Location, BOOL* pConsumed = NULL );
+        HRESULT RaiseMouseButton( Point2F Location, MouseButton::Value Button, MouseButtonState::Value State, BOOL* pConsumed = NULL );
 
     protected:
         CMouseController();
@@ -27,4 +28,6 @@ class CMouseController : public CRefCountedObject
         CUIElement* m_RootElement;
         CUIElement* m_MouseOverElement;
         CUIElement* m_CaptureElement;
+
+        Point2F m_Position;
 };

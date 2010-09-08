@@ -5,7 +5,7 @@
 #include "Providers.h"
 #include "DynamicResolvedClass.h"
 
-class CDynamicClassResolver : public CClassResolver
+class UIFRAMEWORK_API CDynamicClassResolver : public CClassResolver
 {
     typedef std::vector< CDynamicResolvedClass* > ClassContainer;
 

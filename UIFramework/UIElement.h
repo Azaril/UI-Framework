@@ -160,7 +160,7 @@ class CEventHandlerChain : public CRefCountedObject
         events::signal< void ( CObjectWithType*, CRoutedEventArgs* ) > m_Handlers;
 };
 
-class CUIElement : public CVisual
+class UIFRAMEWORK_API CUIElement : public CVisual
 {
     public:
         DELEGATE_REFCOUNTING( CVisual );
@@ -211,6 +211,7 @@ class CUIElement : public CVisual
         virtual HRESULT AddHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, events::signals::connection* pConnection );
 
         HRESULT Focus( BOOL* pSetFocus );
+        BOOL IsFocusable();
 
         //
         // Properties

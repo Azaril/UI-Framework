@@ -4,6 +4,9 @@
 #include <atlstr.h>
 #endif
 
+namespace logging
+{
+
 void InternalDebugOutCallbackA(const CHAR* strText)
 {
 #ifdef _WINDOWS    
@@ -176,4 +179,6 @@ void ZoneLevelOut(UINT32 Level, const WCHAR* pZone, const WCHAR* pFormat, ...)
 
     InternalDebugOut(ZoneFormat);
 #endif
+}
+
 }

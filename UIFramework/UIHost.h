@@ -8,7 +8,7 @@
 #include "KeyboardController.h"
 #include "FocusManager.h"
 
-class CUIHost : public CRefCountedObject
+class UIFRAMEWORK_API CUIHost : public CRefCountedObject
 {
     public:
         DECLARE_FACTORY3( CUIHost, CGraphicsDevice*, CRenderTarget*, CProviders* );

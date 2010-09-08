@@ -2,6 +2,8 @@
 
 #include "Types.h"
 
+namespace logging
+{
 //#include "PublicUtilities.h"
 
 #define LOGGING_TRACE       4
@@ -32,18 +34,20 @@
 typedef void (*DebugOutCallbackFuncA)(const char* strOutput);
 typedef void (*DebugOutCallbackFuncW)(const wchar_t* strOutput);
 
-void SetDebugOutCallback(DebugOutCallbackFuncA Func);
-void SetDebugOutCallback(DebugOutCallbackFuncW Func);
+void UIFRAMEWORK_API SetDebugOutCallback(DebugOutCallbackFuncA Func);
+void UIFRAMEWORK_API SetDebugOutCallback(DebugOutCallbackFuncW Func);
 
 void InternalDebugOut(const char* strText);
 void InternalDebugOut(const wchar_t* strText);
 
-DebugOutCallbackFuncA GetDebugOutCallbackA();
-DebugOutCallbackFuncW GetDebugOutCallbackW();
+DebugOutCallbackFuncA UIFRAMEWORK_API GetDebugOutCallbackA();
+DebugOutCallbackFuncW UIFRAMEWORK_API GetDebugOutCallbackW();
 
-void DebugOut(const char* pFormat, ...);
-void DebugOut(const wchar_t* pFormat, ...);
-void ZoneOut(const char* pZone, const char* pFormat, ...);
-void ZoneOut(const wchar_t* pZone, const wchar_t* pFormat, ...);
-void ZoneLevelOut(UINT32 Level, const char* pZone, const char* pFormat, ...);
-void ZoneLevelOut(UINT32 Level, const wchar_t* pZone, const wchar_t* pFormat, ...);
+void UIFRAMEWORK_API DebugOut(const char* pFormat, ...);
+void UIFRAMEWORK_API DebugOut(const wchar_t* pFormat, ...);
+void UIFRAMEWORK_API ZoneOut(const char* pZone, const char* pFormat, ...);
+void UIFRAMEWORK_API ZoneOut(const wchar_t* pZone, const wchar_t* pFormat, ...);
+void UIFRAMEWORK_API ZoneLevelOut(UINT32 Level, const char* pZone, const char* pFormat, ...);
+void UIFRAMEWORK_API ZoneLevelOut(UINT32 Level, const wchar_t* pZone, const wchar_t* pFormat, ...);
+
+}

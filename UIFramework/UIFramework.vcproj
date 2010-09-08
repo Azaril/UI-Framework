@@ -1181,6 +1181,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Animation"
+					>
+					<File
+						RelativePath=".\AnimationContainer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\AnimationContainer.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Text"

@@ -6,7 +6,7 @@
 #include "TypeConverter.h"
 #include "Providers.h"
 
-class CParser : public CRefCountedObject
+class UIFRAMEWORK_API CParser : public CRefCountedObject
 {
     public:
         DECLARE_FACTORY1( CParser, CProviders* );

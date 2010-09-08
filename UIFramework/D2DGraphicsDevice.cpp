@@ -1,13 +1,11 @@
 #include "D2DGraphicsDevice.h"
 #include "D2DHWNDRenderTarget.h"
+#include "D2DSurfaceRenderTarget.h"
 #include "D2DBitmapRenderTarget.h"
 #include "DirectWriteTextProvider.h"
 #include "WICImagingProvider.h"
 #include "D2DRectangleGeometry.h"
 #include "D2DRoundedRectangleGeometry.h"
-
-//TODO: Remove this!
-#pragma comment( lib, "d2d1.lib" )
 
 typedef HRESULT (WINAPI *D2D1CreateFactoryFunc)( __in D2D1_FACTORY_TYPE factoryType, __in REFIID riid, __in_opt CONST D2D1_FACTORY_OPTIONS *pFactoryOptions, __out void **ppIFactory );
 
@@ -80,6 +78,29 @@ Cleanup:
     return hr;
 }
 
+HRESULT CD2DGraphicsDevice::CreateDXGISurfaceRenderTarget(IDXGISurface* pSurface, CRenderTarget** ppRenderTarget)
+{
+    HRESULT hr = S_OK;
+    ID2D1RenderTarget* pD2DRenderTarget = NULL;
+    CD2DSurfaceRenderTarget* pSurfaceRenderTarget = NULL;
+
+    IFCPTR(pSurface);
+    IFCPTR(ppRenderTarget);
+
+    IFC(m_Factory->CreateDxgiSurfaceRenderTarget(pSurface, D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED)), &pD2DRenderTarget));
+
+    IFC(CD2DSurfaceRenderTarget::Create(pSurface, pD2DRenderTarget, &pSurfaceRenderTarget));
+
+    *ppRenderTarget = pSurfaceRenderTarget;
+    pSurfaceRenderTarget = NULL;
+
+Cleanup:
+    ReleaseObject(pD2DRenderTarget);
+    ReleaseObject(pSurfaceRenderTarget);
+
+    return hr;
+}
+
 //HRESULT CD2DGraphicsDevice::CreateRenderTarget(const SizeF& Size, CRenderTarget** ppRenderTarget)
 //{
 //    HRESULT hr = S_OK;
@@ -132,6 +153,8 @@ HRESULT CD2DGraphicsDevice::CreateTextProvider(CTextProvider** ppTextProvider)
         goto Cleanup;
     }
 
+    IFC(E_FAIL);
+
 Cleanup:
     ReleaseObject(pDirectWriteTextProvider);
 
@@ -149,7 +172,10 @@ HRESULT CD2DGraphicsDevice::CreateImagingProvider(CImagingProvider** ppImagingPr
     {
         *ppImagingProvider = pWICImagingProvider;
         pWICImagingProvider = NULL;
+        goto Cleanup;
     }
+
+    IFC(E_FAIL);
 
 Cleanup:
     ReleaseObject(pWICImagingProvider);

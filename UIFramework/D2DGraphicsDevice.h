@@ -6,12 +6,13 @@
 #include <d2d1.h>
 #include <d2d1helper.h>
 
-class CD2DGraphicsDevice : public CGraphicsDevice
+class UIFRAMEWORK_API CD2DGraphicsDevice : public CGraphicsDevice
 {
     public:
         DECLARE_FACTORY( CD2DGraphicsDevice );
 
-		virtual HRESULT CreateHWNDRenderTarget( HWND Window, CRenderTarget** ppRenderTarget );
+		HRESULT CreateHWNDRenderTarget( HWND Window, CRenderTarget** ppRenderTarget );
+        HRESULT CreateDXGISurfaceRenderTarget( IDXGISurface* pSurface, CRenderTarget** ppRenderTarget );
         //virtual HRESULT CreateRenderTarget( const SizeF& Size, CRenderTarget** ppRenderTarget );
 
         virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider );
