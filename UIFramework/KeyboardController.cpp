@@ -30,7 +30,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CKeyboardController::InjectKey(UINT32 Key, KeyState::Value State, BOOL* pConsumed)
+HRESULT CKeyboardController::InjectKey(Key::Value Key, KeyState::Value State, BOOL* pConsumed)
 {
     HRESULT hr = S_OK;
     CUIElement* pFocusedElement = NULL;

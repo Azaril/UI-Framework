@@ -32,7 +32,8 @@ CFrameworkElement::CFrameworkElement() : m_ChildrenSubscriber(*this),
                                          m_Style(this, &CFrameworkElement::StyleProperty),
                                          m_Children(NULL),
                                          m_RegisteredName(NULL),
-                                         m_ResolvedStyle(NULL)
+                                         m_ResolvedStyle(NULL),
+                                         m_AutomaticNamescopeParticipation(TRUE)
 {
 }
 
@@ -72,16 +73,12 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
 
     IFC(CUIElement::OnAttach(Context));
 
-    pNamescope = GetNamescope();
-    IFCPTR(pNamescope);
-
-    IFC(GetEffectiveName(&pName));
-
-    if(pName)
+    if(m_AutomaticNamescopeParticipation)
     {
-        IFC(pNamescope->RegisterName(pName->GetValue(), this));
+        pNamescope = GetNamescope();
+        IFCPTR(pNamescope);
 
-        IFC(pName->Clone(&m_RegisteredName));
+        IFC(RegisterInNamescope(pNamescope, &m_RegisteredName));
     }
 
     {
@@ -432,6 +429,37 @@ Cleanup:
     return hr;
 }
 
+VOID CFrameworkElement::SetAutomaticNamescopeParticipation(BOOL Participate)
+{
+    m_AutomaticNamescopeParticipation = Participate;
+}
+
+HRESULT CFrameworkElement::RegisterInNamescope(CNamescope* pNamescope, CStringValue** ppRegisteredName)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pName = NULL;
+
+    IFCPTR(pNamescope);
+
+    IFC(GetEffectiveName(&pName));
+
+    if(pName)
+    {
+        IFC(pNamescope->RegisterName(pName->GetValue(), this));
+
+        if(ppRegisteredName)
+        {
+            *ppRegisteredName = pName;
+            pName = NULL;
+        }
+    }
+
+Cleanup:
+    ReleaseObject(pName);
+
+    return hr;
+}
+
 HRESULT CFrameworkElement::FindResource(const WCHAR* pResourceName, CObjectWithType** ppObject)
 {
     HRESULT hr = S_OK;
@@ -560,4 +588,26 @@ HRESULT CUIElementCollection::AddObject(CObjectWithType* pObject)
 
 Cleanup:
     return hr;
+}
+
+//
+// CFrameworkElement
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CFrameworkElement_TypeIndex()
+{
+    return TypeIndex::FrameworkElement;
+}
+
+
+extern "C" __declspec(dllexport)
+CUIElement* CFrameworkElement_CastTo_CUIElement(CFrameworkElement* pElement)
+{
+    return pElement;
+}
+
+extern "C" __declspec(dllexport)
+CFrameworkElement* CObjectWithType_CastTo_CFrameworkElement(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::FrameworkElement)) ? (CFrameworkElement*)pObject : NULL;
 }

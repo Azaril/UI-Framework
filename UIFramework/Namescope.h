@@ -23,10 +23,12 @@ class CNamedObjectHolder : public CRefCountedObject
         CObjectWithType* m_Object;
 };
 
-class CNamescope : public CRefCountedObject
+class CNamescope : public CRefCountedObjectBase< CObjectWithType >
 {
     public:
         DECLARE_FACTORY( CNamescope );
+
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Namescope, CObjectWithType );
 
         virtual HRESULT RegisterName( const WCHAR* pName, CObjectWithType* pObject );
         virtual HRESULT UnregisterName( const WCHAR* pName, CObjectWithType* pObject );
@@ -42,4 +44,10 @@ class CNamescope : public CRefCountedObject
         HRESULT Initialize();
 
         std::vector< CNamedObjectHolder* > m_NamedObjects;
+};
+
+template< >
+struct ObjectTypeTraits< CNamescope >
+{
+    static const TypeIndex::Value Type = TypeIndex::Namescope;
 };

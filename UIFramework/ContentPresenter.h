@@ -2,7 +2,7 @@
 
 #include "FrameworkElement.h"
 
-class CContentPresenter : public CFrameworkElement
+class UIFRAMEWORK_API CContentPresenter : public CFrameworkElement
 {
     public:
         DECLARE_FACTORY1( CContentPresenter, CProviders* );

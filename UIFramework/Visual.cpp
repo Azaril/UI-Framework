@@ -415,3 +415,24 @@ HRESULT CVisual::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
 Cleanup:
     return hr;
 }
+
+//
+// CVisual
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CVisual_TypeIndex()
+{
+    return TypeIndex::Visual;
+}
+
+extern "C" __declspec(dllexport)
+CPropertyObject* CVisual_CastTo_CPropertyObject(CVisual* pVisual)
+{
+    return pVisual;
+}
+
+extern "C" __declspec(dllexport)
+CVisual* CObjectWithType_CastTo_CVisual(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::Visual)) ? (CVisual*)pObject : NULL;
+}

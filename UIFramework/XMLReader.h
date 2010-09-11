@@ -42,6 +42,7 @@ class CXMLReader : public CRefCountedObject
 {
     public:
         virtual HRESULT LoadFromFile( const WCHAR* pPath, CXMLReaderCallback* pCallback ) = 0;
+        virtual HRESULT LoadFromString( const WCHAR* pText, CXMLReaderCallback* pCallback ) = 0;
 };
 
 HRESULT CreateXMLReader( CXMLReader** ppReader );

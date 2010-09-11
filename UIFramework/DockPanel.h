@@ -1,6 +1,6 @@
 #include "Panel.h"
 
-class CDockPanel : public CPanel
+class UIFRAMEWORK_API CDockPanel : public CPanel
 {
     public:
         DECLARE_FACTORY1( CDockPanel, CProviders* );

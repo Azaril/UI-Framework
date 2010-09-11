@@ -3,7 +3,7 @@
 //#include "Visual.h"
 //#include "Brush.h"
 //
-//class CRectangleVisual : public CVisual
+//class UIFRAMEWORK_API CRectangleVisual : public CVisual
 //{
 //    public:
 //        DECLARE_FACTORY( CRectangleVisual );

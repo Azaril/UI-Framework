@@ -32,6 +32,18 @@ HRESULT CContentControl::OnContentChanged(CObjectWithType* pOldValue, CObjectWit
     return hr;
 }
 
+HRESULT CContentControl::GetEffectiveContent(CObjectWithType** ppContent)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppContent);
+
+    IFC(m_Content.GetEffectiveValue(GetProviders(), ppContent));
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CContentControl::CreatePropertyInformation(CPropertyInformation **ppInformation)
 {
     HRESULT hr = S_OK;
@@ -80,4 +92,25 @@ HRESULT CContentControl::GetLayeredValue(CProperty* pProperty, CLayeredValue** p
 
 Cleanup:
     return hr;
+}
+
+//
+// CContentControl
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CContentControl_TypeIndex()
+{
+    return TypeIndex::ContentControl;
+}
+
+extern "C" __declspec(dllexport)
+CControl* CContentControl_CastTo_CControl(CContentControl* pContentControl)
+{
+    return pContentControl;
+}
+
+extern "C" __declspec(dllexport)
+CContentControl* CObjectWithType_CastTo_CContentControl(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::ContentControl)) ? (CContentControl*)pObject : NULL;
 }

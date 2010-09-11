@@ -161,3 +161,24 @@ Cleanup:
 
     return hr;
 }
+
+//
+// CCanvas
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CCanvas_TypeIndex()
+{
+    return TypeIndex::Canvas;
+}
+
+extern "C" __declspec(dllexport)
+CPanel* CCanvas_CastTo_CPanel(CCanvas* pCanvas)
+{
+    return pCanvas;
+}
+
+extern "C" __declspec(dllexport)
+CCanvas* CObjectWithType_CastTo_CCanvas(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::Canvas)) ? (CCanvas*)pObject : NULL;
+}

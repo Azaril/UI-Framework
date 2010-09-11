@@ -14,4 +14,6 @@ class CEditableTextLayout : public CTextLayout
         virtual HRESULT ClearText() = 0;
         virtual HRESULT InsertText( UINT32 Position, const WCHAR* pText, UINT32 TextLength ) = 0;
         virtual HRESULT RemoveText( UINT32 Position, UINT32 Length ) = 0;
+
+        virtual const WCHAR* GetText() = 0;
 };

@@ -22,6 +22,7 @@ DEFINE_GET_DEFAULT( HorizontalAlignment, CHorizontalAlignmentValue, HorizontalAl
 DEFINE_GET_DEFAULT( VerticalAlignment, CVerticalAlignmentValue, VerticalAlignment::Stretch );
 DEFINE_GET_DEFAULT( Margin, CRectFValue, RectF(0, 0, 0, 0) );
 DEFINE_GET_DEFAULT( Focusable, CBoolValue, FALSE );
+DEFINE_GET_DEFAULT_NULL( Namescope );
 
 //
 // Properties
@@ -37,6 +38,7 @@ CStaticProperty CUIElement::HorizontalAlignmentProperty( L"HorizontalAlignment",
 CStaticProperty CUIElement::VerticalAlignmentProperty( L"VerticalAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( VerticalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged ) );
 CStaticProperty CUIElement::MarginProperty( L"Margin", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT( Margin ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged ) );
 CStaticProperty CUIElement::FocusableProperty( L"Focusable", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( Focusable ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnFocusableChanged ) );
+CStaticProperty CUIElement::NamescopeProperty( L"Namescope", TypeIndex::Namescope, StaticPropertyFlags::None, &GET_DEFAULT( Namescope ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnNamescopeChanged ) );
 
 //
 // Property Change Handlers
@@ -52,46 +54,49 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnFocusableChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnNamescopeChanged );
 
 //
 // Events
 //
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::AttachedEvent(L"Attached");
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::DetachedEvent(L"Detached");
+CStaticRoutedEvent CUIElement::AttachedEvent(L"Attached", RoutingStrategy::Direct);
+CStaticRoutedEvent CUIElement::DetachedEvent(L"Detached", RoutingStrategy::Direct);
 
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseButtonEvent(L"MouseButton");
+CStaticRoutedEvent CUIElement::MouseButtonEvent(L"MouseButton", RoutingStrategy::Bubbling);
 
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseDownEvent(L"MouseDown");
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseUpEvent(L"MouseUp");
+CStaticRoutedEvent CUIElement::MouseDownEvent(L"MouseDown", RoutingStrategy::Direct);
+CStaticRoutedEvent CUIElement::MouseUpEvent(L"MouseUp", RoutingStrategy::Direct);
 
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseLeftButtonDownEvent(L"MouseLeftButtonDown");
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseRightButtonDownEvent(L"MouseRightButtonDown");
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseMiddleButtonDownEvent(L"MouseMiddleButtonDown");
+CStaticRoutedEvent CUIElement::MouseLeftButtonDownEvent(L"MouseLeftButtonDown", RoutingStrategy::Direct);
+CStaticRoutedEvent CUIElement::MouseRightButtonDownEvent(L"MouseRightButtonDown", RoutingStrategy::Direct);
+CStaticRoutedEvent CUIElement::MouseMiddleButtonDownEvent(L"MouseMiddleButtonDown", RoutingStrategy::Direct);
 
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseLeftButtonUpEvent(L"MouseLeftButtonUp");
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseRightButtonUpEvent(L"MouseRightButtonUp");
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::MouseMiddleButtonUpEvent(L"MouseMiddleButtonUp");
+CStaticRoutedEvent CUIElement::MouseLeftButtonUpEvent(L"MouseLeftButtonUp", RoutingStrategy::Direct);
+CStaticRoutedEvent CUIElement::MouseRightButtonUpEvent(L"MouseRightButtonUp", RoutingStrategy::Direct);
+CStaticRoutedEvent CUIElement::MouseMiddleButtonUpEvent(L"MouseMiddleButtonUp", RoutingStrategy::Direct);
 
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseMoveEvent(L"MouseMove");
+CStaticRoutedEvent CUIElement::MouseMoveEvent(L"MouseMove", RoutingStrategy::Bubbling);
 
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseEnterEvent(L"MouseEnter");
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::MouseLeaveEvent(L"MouseLeave");
+CStaticRoutedEvent CUIElement::MouseEnterEvent(L"MouseEnter", RoutingStrategy::Bubbling);
+CStaticRoutedEvent CUIElement::MouseLeaveEvent(L"MouseLeave", RoutingStrategy::Bubbling);
 
-CStaticRoutedEvent< RoutingStrategy::Tunneled > CUIElement::PreviewGotFocusEvent(L"PreviewGotFocus");
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::GotFocusEvent(L"GotFocus");
+CStaticRoutedEvent CUIElement::PreviewGotFocusEvent(L"PreviewGotFocus", RoutingStrategy::Tunneled);
+CStaticRoutedEvent CUIElement::GotFocusEvent(L"GotFocus", RoutingStrategy::Bubbling);
 
-CStaticRoutedEvent< RoutingStrategy::Tunneled > CUIElement::PreviewLostFocusEvent(L"PreviewLostFocus");
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::LostFocusEvent(L"LostFocus");
+CStaticRoutedEvent CUIElement::PreviewLostFocusEvent(L"PreviewLostFocus", RoutingStrategy::Tunneled);
+CStaticRoutedEvent CUIElement::LostFocusEvent(L"LostFocus", RoutingStrategy::Bubbling);
 
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::KeyEvent(L"Key");
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::KeyDownEvent(L"KeyDown");
-CStaticRoutedEvent< RoutingStrategy::Direct > CUIElement::KeyUpEvent(L"KeyUp");
+CStaticRoutedEvent CUIElement::KeyEvent(L"Key", RoutingStrategy::Bubbling);
+CStaticRoutedEvent CUIElement::KeyDownEvent(L"KeyDown", RoutingStrategy::Direct);
+CStaticRoutedEvent CUIElement::KeyUpEvent(L"KeyUp", RoutingStrategy::Direct);
 
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CUIElement::TextEvent(L"Text");
+CStaticRoutedEvent CUIElement::TextEvent(L"Text", RoutingStrategy::Bubbling);
 
 CUIElement::CUIElement() : m_Attached(FALSE),
                            m_MeasureDirty(TRUE),
+                           m_NotifiedParentMeasureDirty(FALSE),
                            m_ArrangeDirty(TRUE),
+                           m_NotifiedParentArrangeDirty(FALSE),
                            m_Width(this, &CUIElement::WidthProperty),
                            m_Height(this, &CUIElement::HeightProperty),
                            m_MinimumWidth(this, &CUIElement::MinimumWidthProperty),
@@ -103,6 +108,7 @@ CUIElement::CUIElement() : m_Attached(FALSE),
                            m_HorizontalAlignment(this, &CUIElement::HorizontalAlignmentProperty),
                            m_Margin(this, &CUIElement::MarginProperty),
                            m_Focusable(this, &CUIElement::FocusableProperty),
+                           m_Namescope(this, &CUIElement::NamescopeProperty),
                            m_Layer(NULL),
                            m_ClipToLayoutBounds(FALSE)
 {
@@ -354,11 +360,25 @@ HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
     CRoutedEventArgs* pAttachedEventArgs = NULL;
+    CNamescope* pNamescope = NULL;
 
     IFCEXPECT(!IsAttached());
 
     m_Attached = TRUE;
-    m_Context = Context;
+
+    IFC(GetEffectiveNamescope(&pNamescope));
+
+    if(pNamescope)
+    {
+        m_Context = CUIAttachContext(Context.GetParent(), Context.GetTemplateParent(), Context.GetFocusManager(), pNamescope);
+    }
+    else
+    {
+        m_Context = Context;
+    }
+
+    m_NotifiedParentMeasureDirty = FALSE;
+    m_NotifiedParentArrangeDirty = FALSE;
 
     IFC(InvalidateMeasure());
     IFC(InvalidateArrange());
@@ -369,6 +389,7 @@ HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
     
 Cleanup:
     ReleaseObject(pAttachedEventArgs);
+    ReleaseObject(pNamescope);
 
     return hr;
 }
@@ -534,7 +555,7 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
             m_DesiredSize.height = 0;
         }
 
-        m_MeasureDirty = FALSE;
+        CleanMeasure();
     }
 
 Cleanup:
@@ -701,6 +722,29 @@ Cleanup:
     return hr;
 }
 
+
+HRESULT CUIElement::GetEffectiveNamescope(CNamescope** ppNamescope)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppNamescope);
+
+    IFC(m_Namescope.GetTypedEffectiveValue(GetProviders(), ppNamescope));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::OnNamescopeChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    //TODO: Unregister and switch namescope?
+
+Cleanup:
+    return hr;
+}
+
 SizeF CUIElement::GetDesiredSize()
 {
     return m_DesiredSize;
@@ -814,14 +858,14 @@ HRESULT CUIElement::Arrange(RectF Bounds)
 
             m_ClipToLayoutBounds = NeedsClipBounds;
             m_FinalSize = ClippedSize;
-
-            m_ArrangeDirty = FALSE;
         }
         else
         {
             m_FinalSize.width = 0;
             m_FinalSize.height = 0;
         }
+
+        CleanArrange();
     }
 
 Cleanup:
@@ -896,6 +940,11 @@ HRESULT CUIElement::InvalidateMeasure()
     if(!m_MeasureDirty)
     {
         m_MeasureDirty = TRUE;
+    }
+
+    if(!m_NotifiedParentMeasureDirty && GetParent() != NULL)
+    {
+        m_NotifiedParentMeasureDirty = TRUE;
 
         IFC(CChildMeasureInvalidatedNotification::Create(&pNotification));
 
@@ -916,6 +965,11 @@ HRESULT CUIElement::InvalidateArrange()
     if(!m_ArrangeDirty)
     {
         m_ArrangeDirty = TRUE;
+    }
+
+    if(!m_NotifiedParentArrangeDirty && GetParent() != NULL)
+    {
+        m_NotifiedParentArrangeDirty = TRUE;
 
         IFC(CChildArrangeInvalidatedNotification::Create(&pNotification));
 
@@ -936,6 +990,18 @@ BOOL CUIElement::IsMeasureDirty()
 BOOL CUIElement::IsArrangeDirty()
 {
     return m_ArrangeDirty;
+}
+
+void CUIElement::CleanMeasure()
+{
+    m_MeasureDirty = FALSE;
+    m_NotifiedParentMeasureDirty = FALSE;
+}
+
+void CUIElement::CleanArrange()
+{
+    m_ArrangeDirty = FALSE;
+    m_NotifiedParentArrangeDirty = FALSE;
 }
 
 CUIElement* CUIElement::GetParent()
@@ -1202,6 +1268,10 @@ HRESULT CUIElement::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
     {
         *ppLayeredValue = &m_Focusable;
     }
+    else if(pProperty == &CUIElement::NamescopeProperty)
+    {
+        *ppLayeredValue = &m_Namescope;
+    }
     else
     {
         hr = E_FAIL;
@@ -1266,11 +1336,14 @@ HRESULT CUIElement::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     }
     else
     {
-        IFC(GetLayeredValue(pProperty, &pLayeredValue));
-
-        IFC(pLayeredValue->GetLocalValue(GetProviders(), ppValue));
-
-        //NOTE: Don't call the base class here as all properties are expected to be layered.
+        if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+        {
+            IFC(pLayeredValue->GetLocalValue(GetProviders(), ppValue));
+        }
+        else
+        {
+            IFC(GetValueInternal(pProperty, ppValue));
+        }
     }
 
 Cleanup:
@@ -1979,4 +2052,187 @@ HRESULT CEventHandlerChain::RaiseEvent(CObjectWithType* pSender, CRoutedEventArg
 
 Cleanup:
     return hr;
+}
+
+//
+// CUIElement
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CUIElement_TypeIndex()
+{
+    return TypeIndex::UIElement;
+}
+
+extern "C" __declspec(dllexport)
+CVisual* CUIElement_CastTo_CVisual(CUIElement* pElement)
+{
+    return pElement;
+}
+
+extern "C" __declspec(dllexport)
+CUIElement* CObjectWithType_CastTo_CUIElement(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::UIElement)) ? (CUIElement*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+CNamescope* CUIElement_GetNamescope(CUIElement* pElement)
+{
+    return pElement->GetNamescope();
+}
+
+typedef void (*HandlerFunc)( CObjectWithType*, CRoutedEventArgs* );
+
+extern "C" __declspec(dllexport)
+HRESULT CUIElement_AddHandler(CUIElement* pElement, CRoutedEvent* pRoutedEvent, HandlerFunc Handler, events::signals::connection** ppConnection)
+{
+    HRESULT hr = S_OK;
+    events::signals::connection Con;
+
+    IFCPTR(ppConnection);
+
+    IFC(pElement->AddHandler(pRoutedEvent, Handler, &Con));
+
+    *ppConnection = new events::signals::connection(Con);
+    IFCOOM(ppConnection);
+
+Cleanup:
+    return hr;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetAttachedEvent()
+{
+    return &CUIElement::AttachedEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetDetachedEvent()
+{
+    return &CUIElement::DetachedEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseButtonEvent()
+{
+    return &CUIElement::MouseButtonEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseDownEvent()
+{
+    return &CUIElement::MouseDownEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseUpEvent()
+{
+    return &CUIElement::MouseUpEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseLeftButtonDownEvent()
+{
+    return &CUIElement::MouseLeftButtonDownEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseRightButtonDownEvent()
+{
+    return &CUIElement::MouseRightButtonDownEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseMiddleButtonDownEvent()
+{
+    return &CUIElement::MouseMiddleButtonDownEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseLeftButtonUpEvent()
+{
+    return &CUIElement::MouseLeftButtonUpEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseRightButtonUpEvent()
+{
+    return &CUIElement::MouseRightButtonUpEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseMiddleButtonUpEvent()
+{
+    return &CUIElement::MouseMiddleButtonUpEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseMoveEvent()
+{
+    return &CUIElement::MouseMoveEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseEnterEvent()
+{
+    return &CUIElement::MouseEnterEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetMouseLeaveEvent()
+{
+    return &CUIElement::MouseLeaveEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetPreviewGotFocusEvent()
+{
+    return &CUIElement::PreviewGotFocusEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetGotFocusEvent()
+{
+    return &CUIElement::GotFocusEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetPreviewLostFocusEvent()
+{
+    return &CUIElement::PreviewLostFocusEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetLostFocusEvent()
+{
+    return &CUIElement::LostFocusEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetKeyEvent()
+{
+    return &CUIElement::KeyEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetKeyDownEvent()
+{
+    return &CUIElement::KeyDownEvent;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CUIElement_GetKeyUpEvent()
+{
+    return &CUIElement::KeyUpEvent;
+}
+
+//
+// Connection
+//
+extern "C" __declspec(dllexport)
+void Connection_DisconnectAndDelete(events::signals::connection* pConnection)
+{
+    pConnection->disconnect();
+
+    delete pConnection;
 }

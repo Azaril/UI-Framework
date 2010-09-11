@@ -2,7 +2,7 @@
 
 #include "FrameworkElement.h"
 
-class CPanel : public CFrameworkElement
+class UIFRAMEWORK_API CPanel : public CFrameworkElement
 {
     public:       
         DECLARE_TYPE_WITH_BASE( TypeIndex::Panel, CFrameworkElement );

@@ -8,6 +8,7 @@
 typedef HRESULT (WINAPI *CreateXmlReaderFunc)( REFIID riid, void** ppvObject, IMalloc* pMalloc );
 
 typedef HRESULT (WINAPI *SHCreateStreamOnFileWFunc)( LPCWSTR pszFile, DWORD grfMode, IStream** ppstm );
+typedef IStream* (WINAPI *SHCreateMemStreamFunc)( const BYTE *pInit, UINT cbInit );
 
 class CXMLLiteXMLElementStart : public CXMLElementStart
 {
@@ -64,6 +65,7 @@ class CXMLLiteReader : public CXMLReader
         DECLARE_FACTORY( CXMLLiteReader );
 
         virtual HRESULT LoadFromFile( const WCHAR* pPath, CXMLReaderCallback* pCallback );
+        virtual HRESULT LoadFromString( const WCHAR* pText, CXMLReaderCallback* pCallback );
         virtual HRESULT LoadFromStream( IStream* pStream, CXMLReaderCallback* pCallback );
 
     protected:
@@ -83,4 +85,5 @@ class CXMLLiteReader : public CXMLReader
 
         HMODULE m_ShlwapiModule;
         SHCreateStreamOnFileWFunc m_SHCreateStreamOnFileW;
+        SHCreateMemStreamFunc m_SHCreateMemStream;
 };

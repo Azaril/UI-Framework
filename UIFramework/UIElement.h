@@ -31,11 +31,25 @@ class CUIAttachContext
         {
         }
 
+        CUIAttachContext( const CUIAttachContext& Other ) : m_Parent(Other.m_Parent),
+                                                            m_TemplateParent(Other.m_TemplateParent),
+                                                            m_FocusManager(Other.m_FocusManager),
+                                                            m_Namescope(Other.m_Namescope)
+        {
+            AddRefObject(m_Namescope);
+        }
+
         CUIAttachContext( CUIElement* pParent, CUIElement* pTemplateParent, CFocusManager* pFocusManager, CNamescope* pNamescope ) : m_Parent(pParent),
                                                                                                                                      m_TemplateParent(pTemplateParent),
                                                                                                                                      m_FocusManager(pFocusManager),
                                                                                                                                      m_Namescope(pNamescope)
         {
+            AddRefObject(m_Namescope);
+        }
+
+        ~CUIAttachContext()
+        {
+            ReleaseObject(m_Namescope);
         }
     
         CUIElement* GetParent()
@@ -58,12 +72,24 @@ class CUIAttachContext
             return m_Namescope;
         }
 
+        CUIAttachContext& operator=(const CUIAttachContext& Other)
+        {
+            m_Parent = Other.m_Parent;
+            m_TemplateParent = Other.m_TemplateParent;
+            m_FocusManager = Other.m_FocusManager;
+            m_Namescope = Other.m_Namescope;
+
+            AddRefObject(m_Namescope);
+
+            return *this;
+        }
+
         void Reset()
         {
             m_Parent = NULL;
             m_TemplateParent = NULL;
             m_FocusManager = NULL;
-            m_Namescope = NULL;
+            ReleaseObject(m_Namescope);
         }
     
     protected:
@@ -227,42 +253,43 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         static CStaticProperty VerticalAlignmentProperty;
         static CStaticProperty MarginProperty;
         static CStaticProperty FocusableProperty;
+        static CStaticProperty NamescopeProperty;
 
         //
         // Events
         //
-        static CStaticRoutedEvent< RoutingStrategy::Direct > AttachedEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Direct > DetachedEvent;
+        static CStaticRoutedEvent AttachedEvent;
+        static CStaticRoutedEvent DetachedEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseButtonEvent;
+        static CStaticRoutedEvent MouseButtonEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseDownEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseUpEvent;
+        static CStaticRoutedEvent MouseDownEvent;
+        static CStaticRoutedEvent MouseUpEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseLeftButtonDownEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseRightButtonDownEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseMiddleButtonDownEvent;
+        static CStaticRoutedEvent MouseLeftButtonDownEvent;
+        static CStaticRoutedEvent MouseRightButtonDownEvent;
+        static CStaticRoutedEvent MouseMiddleButtonDownEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseLeftButtonUpEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseRightButtonUpEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Direct > MouseMiddleButtonUpEvent;
+        static CStaticRoutedEvent MouseLeftButtonUpEvent;
+        static CStaticRoutedEvent MouseRightButtonUpEvent;
+        static CStaticRoutedEvent MouseMiddleButtonUpEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseMoveEvent;
+        static CStaticRoutedEvent MouseMoveEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseEnterEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > MouseLeaveEvent;
+        static CStaticRoutedEvent MouseEnterEvent;
+        static CStaticRoutedEvent MouseLeaveEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Tunneled > PreviewGotFocusEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > GotFocusEvent;
+        static CStaticRoutedEvent PreviewGotFocusEvent;
+        static CStaticRoutedEvent GotFocusEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Tunneled > PreviewLostFocusEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > LostFocusEvent;
+        static CStaticRoutedEvent PreviewLostFocusEvent;
+        static CStaticRoutedEvent LostFocusEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > KeyEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Direct > KeyDownEvent;
-        static CStaticRoutedEvent< RoutingStrategy::Direct > KeyUpEvent;
+        static CStaticRoutedEvent KeyEvent;
+        static CStaticRoutedEvent KeyDownEvent;
+        static CStaticRoutedEvent KeyUpEvent;
 
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > TextEvent;
+        static CStaticRoutedEvent TextEvent;
 
     
     protected:
@@ -309,6 +336,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         HRESULT GetEffectiveVerticalAlignment( VerticalAlignment::Value* pAlignment );
         HRESULT GetEffectiveMargin( RectF* pMargin );
         HRESULT GetEffectiveFocusable( BOOL* pFocusable );
+        HRESULT GetEffectiveNamescope( CNamescope** ppNamescope );
 
         virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
@@ -330,6 +358,9 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         HRESULT GetMinMaxSize( SizeF& MinimumSize, SizeF& MaximumSize );
         HRESULT ComputeAlignmentOffset( SizeF ClientSize, SizeF RenderSize, SizeF Offset );
 
+        void CleanMeasure();
+        void CleanArrange();
+
         //
         // Property Change Handlers
         //
@@ -344,6 +375,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnVerticalAlignmentChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnMarginChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnFocusableChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnNamescopeChanged );
 
         HRESULT OnWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
@@ -356,6 +388,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         HRESULT OnVerticalAlignmentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnMarginChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnFocusableChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnNamescopeChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
    
         CTypedLayeredValue< CFloatValue > m_Width;
         CTypedLayeredValue< CFloatValue > m_Height;
@@ -368,9 +401,12 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         CTypedLayeredValue< CHorizontalAlignmentValue > m_HorizontalAlignment;
         CTypedLayeredValue< CRectFValue > m_Margin;
         CTypedLayeredValue< CBoolValue > m_Focusable;
+        CTypedLocalLayeredValue< CNamescope > m_Namescope;
 
         BOOL m_MeasureDirty;
         BOOL m_ArrangeDirty;
+        BOOL m_NotifiedParentMeasureDirty;
+        BOOL m_NotifiedParentArrangeDirty;
 
     private:
         CProviders* m_Providers;

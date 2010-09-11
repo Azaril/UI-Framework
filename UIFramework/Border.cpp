@@ -542,3 +542,24 @@ HRESULT CBorder::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayered
 Cleanup:
     return hr;
 }
+
+//
+// CBorder
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CBorder_TypeIndex()
+{
+    return TypeIndex::Border;
+}
+
+extern "C" __declspec(dllexport)
+CDecorator* CBorder_CastTo_CDecorator(CBorder* pBorder)
+{
+    return pBorder;
+}
+
+extern "C" __declspec(dllexport)
+CBorder* CObjectWithType_CastTo_CBorder(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::Border)) ? (CBorder*)pObject : NULL;
+}

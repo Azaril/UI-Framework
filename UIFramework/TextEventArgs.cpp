@@ -30,3 +30,24 @@ UINT32 CTextEventArgs::GetTextLength()
 {
     return m_Text->GetLength();
 }
+
+//
+// CTextEventArgs
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CTextEventArgs_TypeIndex()
+{
+    return TypeIndex::TextEventArgs;
+}
+
+extern "C" __declspec(dllexport)
+CInputEventArgs* CTextEventArgs_CastTo_CInputEventArgs(CTextEventArgs* pArgs)
+{
+    return pArgs;
+}
+
+extern "C" __declspec(dllexport)
+CTextEventArgs* CObjectWithType_CastTo_CTextEventArgs(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::TextEventArgs)) ? (CTextEventArgs*)pObject : NULL;
+}

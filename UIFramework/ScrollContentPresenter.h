@@ -2,7 +2,7 @@
 
 #include "ContentPresenter.h"
 
-class CScrollContentPresenter : public CContentPresenter
+class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 {
     public:
         DECLARE_FACTORY1( CScrollContentPresenter, CProviders* );

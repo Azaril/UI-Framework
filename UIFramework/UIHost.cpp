@@ -133,3 +133,21 @@ HRESULT CUIHost::Render()
 Cleanup:
     return hr;
 }
+
+extern "C" __declspec(dllexport)
+void CUIHost_AddRef(CUIHost* pHost)
+{
+    pHost->AddRef();
+}
+
+extern "C" __declspec(dllexport)
+void CUIHost_Release(CUIHost* pHost)
+{
+    pHost->Release();
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CUIHost_GetRootElement(CUIHost* pHost, CRootUIElement** ppElement)
+{
+    return pHost->GetRootElement(ppElement);
+}

@@ -6,7 +6,7 @@
 //
 // Events
 //
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CRoutedCommand::ExecutedEvent(L"Executed");
+CStaticRoutedEvent CRoutedCommand::ExecutedEvent(L"Executed", RoutingStrategy::Bubbling);
 
 CRoutedCommand::CRoutedCommand()
 {

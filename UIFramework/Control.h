@@ -61,7 +61,6 @@ class CControl : public CFrameworkElement
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         virtual CUIElement* GetTemplateParentForChildren();
-        virtual CNamescope* GetNamescopeForChildren();
 
         //
         // Property Change Handlers

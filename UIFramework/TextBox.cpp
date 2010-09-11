@@ -6,22 +6,25 @@
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Text );
+DEFINE_GET_DEFAULT( AcceptsReturn, CBoolValue, TRUE );
 
 //
 // Properties
 //
 CStaticProperty CTextBox::TextProperty( L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT(Text), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnTextChanged ) );
+CStaticProperty CTextBox::AcceptsReturnProperty( L"AcceptsReturn", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT(AcceptsReturn), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnAcceptsReturnChanged ) );
 
 //
 // Property Change Handlers
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CTextBox, OnTextChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CTextBox, OnAcceptsReturnChanged );
 
 CTextBox::CTextBox() : m_TextEditor(NULL),
                        m_TextLayout(NULL),
                        m_TextHostControl(NULL),
                        m_TextHost(NULL),
-                       m_Text(this, &CTextBox::TextProperty)
+                       m_AcceptsReturn(this, &CTextBox::AcceptsReturnProperty)
 {
 }
 
@@ -38,6 +41,8 @@ HRESULT CTextBox::Initialize(CProviders* pProviders)
     HRESULT hr = S_OK;
 
     IFC(CControl::Initialize(pProviders));
+
+    IFC(CTextEditor::Create(&m_TextEditor));
 
 Cleanup:
     return hr;
@@ -56,14 +61,12 @@ HRESULT CTextBox::OnAttach(CUIAttachContext& Context)
 
     IFC(pTextProvider->CreateEditableTextLayout(InitialSize, &m_TextLayout));
 
-    IFC(CTextEditor::Create(this, m_TextLayout, &m_TextEditor));
-
-    IFC(m_Text.GetTypedEffectiveValue(GetProviders(), &pText));
+    /*IFC(m_Text.GetTypedEffectiveValue(GetProviders(), &pText));
 
     if(pText)
     {
         IFC(m_TextEditor->SetText(pText->GetValue(), pText->GetLength()));
-    }
+    }*/
 
     IFC(GetTemplateChild(L"PART_TextHost", &m_TextHostControl));
 
@@ -72,6 +75,10 @@ HRESULT CTextBox::OnAttach(CUIAttachContext& Context)
     IFC(CTextHost::Create(GetProviders(), m_TextLayout, &m_TextHost));
 
     IFC(m_TextHostControl->SetContent(m_TextHost));
+
+    IFC(m_TextEditor->SetTextHost(this));
+
+    IFC(m_TextEditor->SetTextLayout(m_TextLayout));
 
 Cleanup:
     ReleaseObject(pTextProvider);
@@ -93,11 +100,14 @@ HRESULT CTextBox::OnDetach(CUIDetachContext& Context)
 
     IFC(m_TextHost->SetTextLayout(NULL));
 
+    IFC(m_TextEditor->SetTextLayout(NULL));
+
+    IFC(m_TextEditor->SetTextHost(this));
+
     IFC(CControl::OnDetach(Context));
 
     //TODO: Preserve text and layout so it can be reloaded if attached again.
     ReleaseObject(m_TextLayout);
-    ReleaseObject(m_TextEditor);
 
 Cleanup:
     return hr;
@@ -156,7 +166,8 @@ HRESULT CTextBox::CreatePropertyInformation(CPropertyInformation** ppInformation
 
     CStaticProperty* Properties[] = 
     {
-        &TextProperty
+        &TextProperty,
+        &AcceptsReturnProperty
     };
     
     IFCPTR(ppInformation);
@@ -184,13 +195,60 @@ HRESULT CTextBox::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayere
     IFCPTR(ppLayeredValue);
 
     //TODO: Make this a lookup table rather than requiring a comparison per property.
-    if(pProperty == &CTextBox::TextProperty)
+    if(pProperty == &CTextBox::AcceptsReturnProperty)
     {
-        *ppLayeredValue = &m_Text;
+        *ppLayeredValue = &m_AcceptsReturn;
     }
     else
     {
         hr = CControl::GetLayeredValue(pProperty, ppLayeredValue);
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CTextBox::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    if(pProperty == &CTextBox::TextProperty)
+    {
+        IFC(CastType(pValue, &pStringValue));
+
+        IFC(m_TextEditor->SetText(pStringValue->GetValue(), pStringValue->GetLength()));
+    }
+    else
+    {
+        IFC(CControl::SetValueInternal(pProperty, pValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CTextBox::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pText = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    if(pProperty == &CTextBox::TextProperty)
+    {
+        IFC(CStringValue::Create(m_TextEditor->GetText(), &pText));
+        
+        *ppValue = pText;
+        pText = NULL;
+    }
+    else
+    {
+        IFC(CControl::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:
@@ -209,20 +267,30 @@ HRESULT CTextBox::OnTextChanged(CObjectWithType* pOldValue, CObjectWithType* pNe
 
         IFC(CastType(pNewValue, &pTextValue));
 
-        if(m_TextLayout)
-        {
-            IFC(m_TextLayout->SetText(pTextValue->GetValue(), pTextValue->GetLength()));
-        }
+        IFC(m_TextEditor->SetText(pTextValue->GetValue(), pTextValue->GetLength()));
     }
     else
     {
-        if(m_TextLayout)
-        {
-            IFC(m_TextLayout->ClearText());
-        }
+        IFC(m_TextEditor->SetText(NULL, 0))
     }
 
     //TODO: Update layout, or query if the value is from the layout?
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CTextBox::OnAcceptsReturnChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+    CBoolValue* pBool = NULL;
+
+    IFC(CastType(pNewValue, &pBool));
+
+    if(pBool)
+    {
+        m_TextEditor->SetAcceptsEnter(pBool->GetValue());
+    }
 
 Cleanup:
     return hr;
@@ -237,4 +305,31 @@ HRESULT CTextBox::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
 
 Cleanup:
     return hr;
+}
+
+//
+// CTextBox
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CTextBox_TypeIndex()
+{
+    return TypeIndex::TextBox;
+}
+
+extern "C" __declspec(dllexport)
+CControl* CTextBox_CastTo_CControl(CTextBox* pTextBox)
+{
+    return pTextBox;
+}
+
+extern "C" __declspec(dllexport)
+CTextBox* CObjectWithType_CastTo_CTextBox(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::TextBox)) ? (CTextBox*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CTextBox_GetTextProperty()
+{
+    return &CTextBox::TextProperty;
 }

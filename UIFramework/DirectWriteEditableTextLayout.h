@@ -23,6 +23,8 @@ class CDirectWriteEditableTextLayout : public CEditableTextLayout
         virtual HRESULT InsertText( UINT32 Position, const WCHAR* pText, UINT32 TextLength );
         virtual HRESULT RemoveText( UINT32 Position, UINT32 Length );
 
+        virtual const WCHAR* GetText();
+
     protected:
         CDirectWriteEditableTextLayout();
         virtual ~CDirectWriteEditableTextLayout();

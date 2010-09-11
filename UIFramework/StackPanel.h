@@ -2,7 +2,7 @@
 
 #include "Panel.h"
 
-class CStackPanel : public CPanel
+class UIFRAMEWORK_API CStackPanel : public CPanel
 {
     public:
         DECLARE_FACTORY1( CStackPanel, CProviders* );

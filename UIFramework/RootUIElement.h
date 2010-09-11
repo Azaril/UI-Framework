@@ -2,11 +2,13 @@
 
 #include "FrameworkElement.h"
 
-class CRootUIElement : public CFrameworkElement,
+class UIFRAMEWORK_API CRootUIElement : public CFrameworkElement,
                        public IRenderRoot
 {
     public:
         DECLARE_FACTORY4( CRootUIElement, CGraphicsDevice*, CRenderTarget*, CProviders*, CFocusManager* );
+
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Image, CFrameworkElement );
 
         virtual HRESULT RenderRoot( CRenderContext& Context );
 

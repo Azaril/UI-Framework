@@ -3,7 +3,7 @@
 #include "Decorator.h"
 #include "GeometryVisual.h"
 
-class CBorder : public CDecorator
+class UIFRAMEWORK_API CBorder : public CDecorator
 {
     public:
         DECLARE_FACTORY1( CBorder, CProviders* );

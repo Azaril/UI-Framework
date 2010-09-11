@@ -18,22 +18,22 @@ struct ObjectTypeTraits< CKeyboardEventArgs >
 class CKeyEventArgs : public CKeyboardEventArgs
 {
     public:
-        DECLARE_FACTORY3( CKeyEventArgs, CRoutedEvent*, UINT32, KeyState::Value );
+        DECLARE_FACTORY3( CKeyEventArgs, CRoutedEvent*, Key::Value, KeyState::Value );
         DECLARE_FACTORY2( CKeyEventArgs, CRoutedEvent*, CKeyEventArgs* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::KeyEventArgs, CKeyboardEventArgs );
 
-        UINT32 GetKey();
+        Key::Value GetKey();
         KeyState::Value GetState();
 
     protected:
         CKeyEventArgs();
         virtual ~CKeyEventArgs();
 
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent, UINT32 Key, KeyState::Value State );
+        HRESULT Initialize( CRoutedEvent* pRoutedEvent, Key::Value Key, KeyState::Value State );
         HRESULT Initialize( CRoutedEvent* pRoutedEvent, CKeyEventArgs* pSourceArgs );
 
-        UINT32 m_Key;
+        Key::Value m_Key;
         KeyState::Value m_State;
 };
 

@@ -53,8 +53,6 @@ HRESULT CControl::Initialize(CProviders* pProviders)
 
     IFC(CFrameworkElement::Initialize(pProviders));
 
-    IFC(CNamescope::Create(&m_TemplateNamescope));
-
     IFC(CBoolValue::Create(TRUE, &pFocusable));
 
     IFC(SetValue(&CUIElement::FocusableProperty, pFocusable));
@@ -68,11 +66,6 @@ Cleanup:
 CUIElement* CControl::GetTemplateParentForChildren()
 {
     return this;
-}
-
-CNamescope* CControl::GetNamescopeForChildren()
-{
-    return m_TemplateNamescope;
 }
 
 HRESULT CControl::OnAttach(CUIAttachContext& Context)
@@ -139,6 +132,8 @@ HRESULT CControl::RevokeTemplate()
         ReleaseObject(m_TemplateChild);
     }
 
+    ReleaseObject(m_TemplateNamescope);
+
 Cleanup:
     return hr;
 }
@@ -178,7 +173,9 @@ HRESULT CControl::ApplyTemplate(CControlTemplate* pTemplate)
 
     IFCPTR(pTemplate);
 
-    IFC(pTemplate->LoadContent(&pRootObject));
+    IFC(CNamescope::Create(&m_TemplateNamescope));
+
+    IFC(pTemplate->LoadContent(m_TemplateNamescope, &pRootObject));
 
     IFCPTR(pRootObject);
 
@@ -342,4 +339,25 @@ HRESULT CControl::GetTemplateChild(CUIElement** ppChild)
 
 Cleanup:
     return hr;
+}
+
+//
+// CControl
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CControl_TypeIndex()
+{
+    return TypeIndex::Control;
+}
+
+extern "C" __declspec(dllexport)
+CFrameworkElement* CControl_CastTo_CFrameworkElement(CControl* pControl)
+{
+    return pControl;
+}
+
+extern "C" __declspec(dllexport)
+CControl* CObjectWithType_CastTo_CControl(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::Control)) ? (CControl*)pObject : NULL;
 }

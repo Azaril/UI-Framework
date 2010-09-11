@@ -5,6 +5,7 @@
 #include "Factory.h"
 #include "ParserCommandList.h"
 #include "StaticPropertyInformation.h"
+#include "Namescope.h"
 
 class CControlTemplate : public CRefCountedObjectBase< CPropertyObject >
 {
@@ -19,7 +20,7 @@ class CControlTemplate : public CRefCountedObjectBase< CPropertyObject >
 
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
-        HRESULT LoadContent( CObjectWithType** ppObject );
+        HRESULT LoadContent( CNamescope* pNamescope, CObjectWithType** ppObject );
 
        //
         // Properties
@@ -41,4 +42,16 @@ template< >
 struct ObjectTypeTraits< CControlTemplate >
 {
     static const TypeIndex::Value Type = TypeIndex::ControlTemplate;
+};
+
+class CControlTemplateParseCallback : public IParserCallback
+{
+    public:
+        CControlTemplateParseCallback( CNamescope* pNamescope );
+
+        virtual HRESULT OnPushObject( CObjectWithType* pObject );
+        virtual HRESULT OnPopObject( CObjectWithType* pObject );
+
+    protected:
+        CNamescope* m_Namescope;
 };

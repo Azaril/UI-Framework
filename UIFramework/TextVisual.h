@@ -4,7 +4,7 @@
 #include "Brush.h"
 #include "Providers.h"
 
-class CTextVisual : public CVisual
+class UIFRAMEWORK_API CTextVisual : public CVisual
 {
     public:
         DECLARE_FACTORY( CTextVisual );

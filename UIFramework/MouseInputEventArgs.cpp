@@ -91,3 +91,45 @@ MouseButtonState::Value CMouseButtonEventArgs::GetButtonState()
 {
     return m_ButtonState;
 }
+
+//
+// CMouseEventArgs
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CMouseEventArgs_TypeIndex()
+{
+    return TypeIndex::MouseEventArgs;
+}
+
+extern "C" __declspec(dllexport)
+CInputEventArgs* CMouseEventArgs_CastTo_CInputEventArgs(CMouseEventArgs* pArgs)
+{
+    return pArgs;
+}
+
+extern "C" __declspec(dllexport)
+CMouseEventArgs* CObjectWithType_CastTo_CMouseEventArgs(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::MouseEventArgs)) ? (CMouseEventArgs*)pObject : NULL;
+}
+
+//
+// CMouseButtonEventArgs
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CMouseButtonEventArgs_TypeIndex()
+{
+    return TypeIndex::MouseButtonEventArgs;
+}
+
+extern "C" __declspec(dllexport)
+CMouseEventArgs* CMouseButtonEventArgs_CastTo_CMouseEventArgs(CMouseButtonEventArgs* pArgs)
+{
+    return pArgs;
+}
+
+extern "C" __declspec(dllexport)
+CMouseButtonEventArgs* CObjectWithType_CastTo_CMouseButtonEventArgs(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::MouseButtonEventArgs)) ? (CMouseButtonEventArgs*)pObject : NULL;
+}

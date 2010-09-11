@@ -117,3 +117,36 @@ HRESULT CPanel::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
 Cleanup:
     return hr;
 }
+
+//
+// CPanel
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CPanel_TypeIndex()
+{
+    return TypeIndex::Panel;
+}
+
+extern "C" __declspec(dllexport)
+CFrameworkElement* CPanel_CastTo_CFrameworkElement(CPanel* pPanel)
+{
+    return pPanel;
+}
+
+extern "C" __declspec(dllexport)
+CPanel* CObjectWithType_CastTo_CPanel(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::Panel)) ? (CPanel*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CPanel_AddChild(CPanel* pPanel, CUIElement* pChild)
+{
+    return pPanel->AddChild(pChild);
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CPanel_RemoveChild(CPanel* pPanel, CUIElement* pChild)
+{
+    return pPanel->RemoveChild(pChild);
+}

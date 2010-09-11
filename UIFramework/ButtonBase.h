@@ -19,7 +19,7 @@ class CButtonBase : public CContentControl
         //
         // Events
         //
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > ClickEvent;
+        static CStaticRoutedEvent ClickEvent;
         
     protected:
         CButtonBase();

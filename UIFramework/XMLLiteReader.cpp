@@ -34,6 +34,9 @@ HRESULT CXMLLiteReader::Initialize()
     m_SHCreateStreamOnFileW = (SHCreateStreamOnFileWFunc)GetProcAddress(m_ShlwapiModule, "SHCreateStreamOnFileW");
     IFCPTR(m_SHCreateStreamOnFileW);
 
+    m_SHCreateMemStream = (SHCreateMemStreamFunc)GetProcAddress(m_ShlwapiModule, "SHCreateMemStream");
+    IFCPTR(m_SHCreateMemStream);
+
 Cleanup:
     return hr;
 }
@@ -47,6 +50,25 @@ HRESULT CXMLLiteReader::LoadFromFile(const WCHAR* pPath, CXMLReaderCallback* pCa
     IFCPTR(pCallback);
 
     IFC(m_SHCreateStreamOnFileW(pPath, STGM_READ, &pStream));
+
+    IFC(LoadFromStream(pStream, pCallback));
+
+Cleanup:
+    ReleaseObject(pStream);
+
+    return hr;
+}
+
+HRESULT CXMLLiteReader::LoadFromString(const WCHAR* pText, CXMLReaderCallback* pCallback)
+{
+    HRESULT hr = S_OK;
+    IStream* pStream = NULL;
+
+    IFCPTR(pText);
+    IFCPTR(pCallback);
+
+    pStream = m_SHCreateMemStream((const BYTE*)pText, wcslen(pText) * sizeof(WCHAR));
+    IFCPTR(pStream);
 
     IFC(LoadFromStream(pStream, pCallback));
 

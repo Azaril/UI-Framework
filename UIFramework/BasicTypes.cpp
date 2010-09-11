@@ -79,3 +79,30 @@ HRESULT CStringValue::Clone(CStringValue** ppClone)
 Cleanup:
     return hr;
 }
+
+//
+// CStringValue
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CStringValue_TypeIndex()
+{
+    return TypeIndex::String;
+}
+
+extern "C" __declspec(dllexport)
+CObjectWithType* CStringValue_CastTo_CObjectWithType(CStringValue* pValue)
+{
+    return pValue;
+}
+
+extern "C" __declspec(dllexport)
+CStringValue* CObjectWithType_CastTo_CStringValue(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::String)) ? (CStringValue*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+const WCHAR* CStringValue_GetValue(CStringValue* pValue)
+{
+    return pValue->GetValue();
+}

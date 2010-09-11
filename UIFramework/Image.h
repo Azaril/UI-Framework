@@ -4,7 +4,7 @@
 #include "ImageBrush.h"
 #include "GeometryVisual.h"
 
-class CImage : public CFrameworkElement
+class UIFRAMEWORK_API CImage : public CFrameworkElement
 {
     public:
         DECLARE_FACTORY1( CImage, CProviders* );

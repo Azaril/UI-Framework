@@ -93,7 +93,7 @@ HRESULT CSetter::ResolveSetter(CUIElement* pObject, IStyleCallback* pCallback, C
 
     if(m_CachedValue == NULL)
     {
-        IFC(m_Value->Execute(&pValue));
+        IFC(m_Value->Execute(NULL, &pValue));
 
         if(pValue->IsShareable())
         {

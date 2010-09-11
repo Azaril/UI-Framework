@@ -20,6 +20,8 @@ class CContentControl : public CControl
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
+        HRESULT GetEffectiveContent( CObjectWithType** ppContent );
+
         //
         // Property Change Handlers
         //

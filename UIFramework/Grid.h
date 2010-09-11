@@ -2,7 +2,7 @@
 
 #include "Panel.h"
 
-//class CGrid : public CPanel
+//class UIFRAMEWORK_API CGrid : public CPanel
 //{
 //    public:
 //        DECLARE_FACTORY( CGrid );

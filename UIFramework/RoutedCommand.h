@@ -12,7 +12,7 @@ class CRoutedCommand : public CCommand
         
         virtual HRESULT Execute( CUIElement* pSender );
 
-        static CStaticRoutedEvent< RoutingStrategy::Bubbling > ExecutedEvent;
+        static CStaticRoutedEvent ExecutedEvent;
 
     protected:
         CRoutedCommand();

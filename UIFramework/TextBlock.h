@@ -4,7 +4,7 @@
 #include "Brush.h"
 #include "TextVisual.h"
 
-class CTextBlock : public CFrameworkElement
+class UIFRAMEWORK_API CTextBlock : public CFrameworkElement
 {
     public:
         DECLARE_FACTORY1( CTextBlock, CProviders* );

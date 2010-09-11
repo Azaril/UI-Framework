@@ -4,7 +4,7 @@
 #include "Geometry.h"
 #include "Brush.h"
 
-class CGeometryVisual : public CVisual
+class UIFRAMEWORK_API CGeometryVisual : public CVisual
 {
     public:
         DECLARE_FACTORY( CGeometryVisual );

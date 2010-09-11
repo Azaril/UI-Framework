@@ -23,6 +23,7 @@ class CTextBox : public CControl
         // Properties
         //
         static CStaticProperty TextProperty;
+        static CStaticProperty AcceptsReturnProperty;
 
     protected:
         CTextBox();
@@ -30,20 +31,25 @@ class CTextBox : public CControl
 
         HRESULT Initialize( CProviders* pProviders );
 
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         //
         // Property Change Handlers
         //
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnTextChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnAcceptsReturnChanged );
 
         HRESULT OnTextChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnAcceptsReturnChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
         CEditableTextLayout* m_TextLayout;
         CTextEditor* m_TextEditor;
         CTextHost* m_TextHost;
-        CTypedLayeredValue< CStringValue > m_Text;
         CContentPresenter* m_TextHostControl;
+        CTypedLayeredValue< CBoolValue > m_AcceptsReturn;
 };
 
 template< >

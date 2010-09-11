@@ -305,3 +305,30 @@ HRESULT CTextBlock::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult
 Cleanup:
     return hr;
 }
+
+//
+// CTextBlock
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CTextBlock_TypeIndex()
+{
+    return TypeIndex::TextBlock;
+}
+
+extern "C" __declspec(dllexport)
+CFrameworkElement* CTextBlock_CastTo_CFrameworkElement(CTextBlock* pTextBlock)
+{
+    return pTextBlock;
+}
+
+extern "C" __declspec(dllexport)
+CTextBlock* CObjectWithType_CastTo_CTextBlock(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::TextBlock)) ? (CTextBlock*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CTextBlock_GetTextProperty()
+{
+    return &CTextBlock::TextProperty;
+}

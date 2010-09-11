@@ -167,3 +167,24 @@ HRESULT CRootUIElement::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestRe
 Cleanup:
     return hr;
 }
+
+//
+// CRootUIElement
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CRootUIElement_TypeIndex()
+{
+    return TypeIndex::RootUIElement;
+}
+
+extern "C" __declspec(dllexport)
+CFrameworkElement* CRootUIElement_CastTo_CFrameworkElement(CRootUIElement* pElement)
+{
+    return pElement;
+}
+
+extern "C" __declspec(dllexport)
+CRootUIElement* CObjectWithType_CastTo_CRootUIElement(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::RootUIElement)) ? (CRootUIElement*)pObject : NULL;
+}

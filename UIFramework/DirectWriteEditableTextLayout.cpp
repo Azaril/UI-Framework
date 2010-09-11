@@ -184,3 +184,8 @@ HRESULT CDirectWriteEditableTextLayout::GetMetrics(CTextLayoutMetrics** ppMetric
 Cleanup:
     return hr;
 }
+
+const WCHAR* CDirectWriteEditableTextLayout::GetText()
+{
+    return m_Text.c_str();
+}

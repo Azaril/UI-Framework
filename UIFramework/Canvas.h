@@ -2,7 +2,7 @@
 
 #include "Panel.h"
 
-class CCanvas : public CPanel
+class UIFRAMEWORK_API CCanvas : public CPanel
 {
     public:
         DECLARE_FACTORY1( CCanvas, CProviders* );

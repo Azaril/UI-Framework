@@ -297,3 +297,24 @@ HRESULT CDockPanel::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
 Cleanup:
     return hr;
 }
+
+//
+// CDockPanel
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CDockPanel_TypeIndex()
+{
+    return TypeIndex::DockPanel;
+}
+
+extern "C" __declspec(dllexport)
+CPanel* CDockPanel_CastTo_CPanel(CDockPanel* pDockPanel)
+{
+    return pDockPanel;
+}
+
+extern "C" __declspec(dllexport)
+CDockPanel* CObjectWithType_CastTo_CDockPanel(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::DockPanel)) ? (CDockPanel*)pObject : NULL;
+}

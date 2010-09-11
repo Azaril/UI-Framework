@@ -1,5 +1,6 @@
 #include "PropertyObject.h"
 #include "ErrorChecking.h"
+#include "BasicTypes.h"
 
 CPropertyObject::CPropertyObject()
 {
@@ -180,4 +181,111 @@ Cleanup:
 CProperty* CAttachedPropertyHolder::GetProperty()
 {
     return m_Property;
+}
+
+//
+// CObjectWithType
+//
+extern "C" __declspec(dllexport)
+void CObjectWithType_AddRef(CObjectWithType* pObject)
+{
+    pObject->AddRef();
+}
+
+extern "C" __declspec(dllexport)
+void CObjectWithType_Release(CObjectWithType* pObject)
+{
+    pObject->Release();
+}
+
+extern "C" __declspec(dllexport)
+TypeIndex::Value CObjectWithType_TypeIndex()
+{
+    return TypeIndex::Object;
+}
+
+extern "C" __declspec(dllexport)
+TypeIndex::Value CObjectWithType_GetType(CObjectWithType* pObject)
+{
+    return pObject->GetType();
+}
+
+//
+// CProperty
+//
+extern "C" __declspec(dllexport)
+void CProperty_AddRef(CProperty* pProperty)
+{
+    pProperty->AddRef();
+}
+
+extern "C" __declspec(dllexport)
+void CProperty_Release(CProperty* pProperty)
+{
+    pProperty->Release();
+}
+
+//
+// CPropertyObject
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CPropertyObject_TypeIndex()
+{
+    return TypeIndex::PropertyObject;
+}
+
+extern "C" __declspec(dllexport)
+CObjectWithType* CPropertyObject_CastTo_CObjectWithType(CPropertyObject* pPropertyObject)
+{
+    return pPropertyObject;
+}
+
+extern "C" __declspec(dllexport)
+CPropertyObject* CObjectWithType_CastTo_CPropertyObject(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::PropertyObject)) ? (CPropertyObject*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CPropertyObject_SetValue(CPropertyObject* pPropertyObject, CProperty* pProperty, CObjectWithType* pValue)
+{
+    return pPropertyObject->SetValue(pProperty, pValue);
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CPropertyObject_SetValueFloat(CPropertyObject* pPropertyObject, CProperty* pProperty, FLOAT Value)
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pValue = NULL;
+
+    IFC(CFloatValue::Create(Value, &pValue));
+
+    IFC(pPropertyObject->SetValue(pProperty, pValue));
+
+Cleanup:
+    ReleaseObject(pValue);
+
+    return hr;
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CPropertyObject_SetValueString(CPropertyObject* pPropertyObject, CProperty* pProperty, const WCHAR* strValue)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pValue = NULL;
+
+    IFC(CStringValue::Create(strValue, &pValue));
+
+    IFC(pPropertyObject->SetValue(pProperty, pValue));
+
+Cleanup:
+    ReleaseObject(pValue);
+
+    return hr;
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CPropertyObject_GetValue(CPropertyObject* pPropertyObject, CProperty* pProperty, CObjectWithType** ppValue)
+{
+    return pPropertyObject->GetValue(pProperty, ppValue);
 }

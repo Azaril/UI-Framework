@@ -6,7 +6,7 @@
 #include "Style.h"
 #include "LayeredValue.h"
 
-class CUIElementCollection : public CCollection< CUIElement >
+class UIFRAMEWORK_API CUIElementCollection : public CCollection< CUIElement >
 {
     public:
         DECLARE_FACTORY( CUIElementCollection );
@@ -22,7 +22,7 @@ struct ObjectTypeTraits< CUIElementCollection >
     static const TypeIndex::Value Type = TypeIndex::UIElementCollection;
 };
 
-class CFrameworkElement : public CUIElement
+class UIFRAMEWORK_API CFrameworkElement : public CUIElement
 {
     typedef std::vector< CUIElement* > ChildCollection;
 
@@ -33,6 +33,10 @@ class CFrameworkElement : public CUIElement
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
+
+        void SetAutomaticNamescopeParticipation( BOOL Participate );
+
+        HRESULT RegisterInNamescope( CNamescope* pNamescope, CStringValue** ppRegisteredName );
 
         HRESULT SetName( const WCHAR* pName );
 
@@ -154,6 +158,8 @@ class CFrameworkElement : public CUIElement
         CTypedLocalLayeredValue< CStringValue > m_Name;
         CTypedLocalLayeredValue< CResourceDictionary > m_Resources;
         CTypedLocalLayeredValue< CStyle > m_Style;
+
+        BOOL m_AutomaticNamescopeParticipation;
         CStringValue* m_RegisteredName;
 
         BOOL m_StyleDirty;

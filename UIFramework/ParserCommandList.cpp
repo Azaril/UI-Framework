@@ -29,11 +29,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserCommandList::Execute(CObjectWithType** ppObject)
+HRESULT CParserCommandList::Execute(IParserCallback* pCallback, CObjectWithType** ppObject)
 {
     HRESULT hr = S_OK;
 
-    CParserCommandContext Context(m_Providers);
+    CParserCommandContext Context(m_Providers, pCallback);
 
     for(std::vector< CParserCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
     {

@@ -126,3 +126,24 @@ HRESULT CDecorator::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
 Cleanup:
     return hr;
 }
+
+//
+// CDecorator
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CDecorator_TypeIndex()
+{
+    return TypeIndex::Decorator;
+}
+
+extern "C" __declspec(dllexport)
+CFrameworkElement* CDecorator_CastTo_CFrameworkElement(CDecorator* pDecorator)
+{
+    return pDecorator;
+}
+
+extern "C" __declspec(dllexport)
+CDecorator* CObjectWithType_CastTo_CDecorator(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::Decorator)) ? (CDecorator*)pObject : NULL;
+}

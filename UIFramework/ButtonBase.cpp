@@ -22,7 +22,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CButtonBase, OnCommandChanged );
 //
 // Events
 //
-CStaticRoutedEvent< RoutingStrategy::Bubbling > CButtonBase::ClickEvent(L"Click");
+CStaticRoutedEvent CButtonBase::ClickEvent(L"Click", RoutingStrategy::Bubbling);
 
 CButtonBase::CButtonBase() : m_Command(this, &CButtonBase::CommandProperty)
 {
@@ -38,6 +38,8 @@ void CButtonBase::OnMouseLeftButtonDown(CObjectWithType* pSender, CRoutedEventAr
 
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
+
+    CContentControl::OnMouseLeftButtonDown(pSender, pRoutedEventArgs);
 
     //TODO: Capture mouse.
 
@@ -188,4 +190,31 @@ HRESULT CButtonBase::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLay
 
 Cleanup:
     return hr;
+}
+
+//
+// CButtonBase
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CButtonBase_TypeIndex()
+{
+    return TypeIndex::ButtonBase;
+}
+
+extern "C" __declspec(dllexport)
+CContentControl* CButtonBase_CastTo_CContentControl(CButtonBase* pButtonBase)
+{
+    return pButtonBase;
+}
+
+extern "C" __declspec(dllexport)
+CButtonBase* CObjectWithType_CastTo_CButtonBase(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::ButtonBase)) ? (CButtonBase*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEvent* CButtonBase_GetClickEvent()
+{
+    return &CButtonBase::ClickEvent;
 }

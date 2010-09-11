@@ -6,10 +6,16 @@
 #include "Factory.h"
 #include "Providers.h"
 
+struct IParserCallback
+{
+    virtual HRESULT OnPushObject( CObjectWithType* pObject ) = 0;
+    virtual HRESULT OnPopObject( CObjectWithType* pObject ) = 0;
+};
+
 class CParserCommandContext
 {
     public:
-        CParserCommandContext( CProviders* pProviders );
+        CParserCommandContext( CProviders* pProviders, IParserCallback* pCallback = NULL );
         virtual ~CParserCommandContext();
 
         HRESULT GetObject( CObjectWithType** ppObject );
@@ -40,4 +46,5 @@ class CParserCommandContext
     protected:
         CProviders* m_Providers;
         std::vector< CObjectWithType* > m_ObjectStack;
+        IParserCallback* m_Callback;
 };

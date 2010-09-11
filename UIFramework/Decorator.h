@@ -2,7 +2,7 @@
 
 #include "FrameworkElement.h"
 
-class CDecorator : public CFrameworkElement
+class UIFRAMEWORK_API CDecorator : public CFrameworkElement
 {
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Decorator, CFrameworkElement );

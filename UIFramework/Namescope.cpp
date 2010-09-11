@@ -167,3 +167,30 @@ CObjectWithType* CNamedObjectHolder::GetObject()
 {
     return m_Object;
 }
+
+//
+// CNamescope
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CNamescope_TypeIndex()
+{
+    return TypeIndex::Namescope;
+}
+
+extern "C" __declspec(dllexport)
+CObjectWithType* CNamescope_CastTo_CObjectWithType(CNamescope* pNamescope)
+{
+    return pNamescope;
+}
+
+extern "C" __declspec(dllexport)
+CNamescope* CObjectWithType_CastTo_CNamescope(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::Namescope)) ? (CNamescope*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CNamescope_FindName(CNamescope* pScope, const WCHAR* pName, CObjectWithType** ppObject)
+{
+    return pScope->FindName(pName, ppObject);
+}

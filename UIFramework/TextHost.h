@@ -3,7 +3,7 @@
 #include "FrameworkElement.h"
 #include "TextVisual.h"
 
-class CTextHost : public CFrameworkElement
+class UIFRAMEWORK_API CTextHost : public CFrameworkElement
 {
     public:
         DECLARE_FACTORY1( CTextHost, CProviders* );

@@ -1,4 +1,5 @@
 #include "ControlTemplate.h"
+#include "FrameworkElement.h"
 
 //
 // Properties
@@ -22,13 +23,15 @@ Cleanup:
     return hr;
 }
 
-HRESULT CControlTemplate::LoadContent(CObjectWithType** ppObject)
+HRESULT CControlTemplate::LoadContent(CNamescope* pNamescope, CObjectWithType** ppObject)
 {
     HRESULT hr = S_OK;
 
+    CControlTemplateParseCallback Callback(pNamescope);
+
     IFCPTR(m_TemplateCommandList);
 
-    IFC(m_TemplateCommandList->Execute(ppObject));
+    IFC(m_TemplateCommandList->Execute(&Callback, ppObject));
 
 Cleanup:
     return hr;
@@ -98,6 +101,43 @@ HRESULT CControlTemplate::GetValue(CProperty* pProperty, CObjectWithType** ppVal
     else
     {
         IFC(CPropertyObject::GetValue(pProperty, ppValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
+
+
+
+CControlTemplateParseCallback::CControlTemplateParseCallback(CNamescope* pNamescope) : m_Namescope(pNamescope)
+{
+}
+
+HRESULT CControlTemplateParseCallback::OnPushObject(CObjectWithType* pObject)
+{
+    HRESULT hr = S_OK;
+
+    return hr;
+}
+
+HRESULT CControlTemplateParseCallback::OnPopObject(CObjectWithType* pObject)
+{
+    HRESULT hr = S_OK;
+    CFrameworkElement* pElement = NULL;
+
+    IFCPTR(pObject);
+
+    if(pObject->IsTypeOf(TypeIndex::FrameworkElement))
+    {
+        IFC(CastType(pObject, &pElement));
+
+        pElement->SetAutomaticNamescopeParticipation(FALSE);
+
+        if(m_Namescope)
+        {
+            IFC(pElement->RegisterInNamescope(m_Namescope, NULL));
+        }
     }
 
 Cleanup:

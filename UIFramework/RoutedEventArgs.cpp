@@ -37,3 +37,36 @@ void CRoutedEventArgs::SetHandled(BOOL Handled)
 {
     m_Handled = Handled;
 }
+
+//
+// CRoutedEventArgs
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CRoutedEventArgs_TypeIndex()
+{
+    return TypeIndex::RoutedEventArgs;
+}
+
+extern "C" __declspec(dllexport)
+CObjectWithType* CRoutedEventArgs_CastTo_CObjectWithType(CRoutedEventArgs* pArgs)
+{
+    return pArgs;
+}
+
+extern "C" __declspec(dllexport)
+CRoutedEventArgs* CObjectWithType_CastTo_CRoutedEventArgs(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::RoutedEventArgs)) ? (CRoutedEventArgs*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+BOOL CRoutedEventArgs_IsHandled(CRoutedEventArgs* pArgs)
+{
+    return pArgs->IsHandled();
+}
+
+extern "C" __declspec(dllexport)
+void CRoutedEventArgs_SetHandled(CRoutedEventArgs* pArgs, BOOL Handled)
+{
+    pArgs->SetHandled(Handled);
+}

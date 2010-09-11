@@ -15,6 +15,7 @@ namespace TypeIndex
                 Visual,
                     UIElement,
                         FrameworkElement,
+                            RootUIElement,
                             Panel,
                                 StackPanel,
                                 Canvas,
@@ -81,6 +82,7 @@ namespace TypeIndex
             ParserCommandList,
             ControlTemplate,
             MarkupExtension,
-            TypeMarkupExtension
+            TypeMarkupExtension,
+            Namescope
     };
 }

@@ -1,6 +1,7 @@
 #include "ParserCommandContext.h"
 
-CParserCommandContext::CParserCommandContext(CProviders* pProviders) : m_Providers(pProviders)
+CParserCommandContext::CParserCommandContext(CProviders* pProviders, IParserCallback* pCallback) : m_Providers(pProviders),
+                                                                                                   m_Callback(pCallback)
 {
     AddRefObject(m_Providers);
 }
@@ -48,6 +49,11 @@ HRESULT CParserCommandContext::PushObject(CObjectWithType* pObject)
     m_ObjectStack.push_back(pObject);
     AddRefObject(pObject);
 
+    if(m_Callback)
+    {
+        IFC(m_Callback->OnPushObject(pObject));
+    }
+
 Cleanup:
     return hr;
 }
@@ -60,6 +66,11 @@ HRESULT CParserCommandContext::PopObject()
     IFCEXPECT(!m_ObjectStack.empty());
 
     pObject = m_ObjectStack.back();
+
+    if(m_Callback)
+    {
+        IFC(m_Callback->OnPopObject(pObject));
+    }
 
     m_ObjectStack.pop_back();
 

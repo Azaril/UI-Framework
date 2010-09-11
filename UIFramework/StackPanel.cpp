@@ -198,3 +198,24 @@ Cleanup:
 
     return hr;
 }
+
+//
+// CStackPanel
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CStackPanel_TypeIndex()
+{
+    return TypeIndex::StackPanel;
+}
+
+extern "C" __declspec(dllexport)
+CPanel* CStackPanel_CastTo_CPanel(CStackPanel* pStackPanel)
+{
+    return pStackPanel;
+}
+
+extern "C" __declspec(dllexport)
+CStackPanel* CObjectWithType_CastTo_CStackPanel(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::StackPanel)) ? (CStackPanel*)pObject : NULL;
+}
