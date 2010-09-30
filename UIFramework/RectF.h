@@ -57,6 +57,14 @@ inline bool operator!=( const RectF& Val1, const RectF& Val2 )
 }
 
 #include "SizeF.h"
+#include "Point2F.h"
+
+inline RectF MakeRect(Point2F Coords, SizeF Size)
+{
+    RectF Val(Coords.x, Coords.y, Coords.x + Size.width, Coords.y + Size.height);
+    
+    return Val;
+}
 
 inline RectF MakeRect(SizeF Coords, SizeF Size)
 {

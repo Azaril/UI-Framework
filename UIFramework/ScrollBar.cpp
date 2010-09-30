@@ -7,11 +7,13 @@
 // Property Defaults
 //
 DEFINE_GET_DEFAULT( Orientation, COrientationValue, Orientation::Vertical );
+DEFINE_GET_DEFAULT( ViewportSize, CFloatValue, 0 );
 
 //
 // Properties
 //
 CStaticProperty CScrollBar::OrientationProperty( L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CScrollBar, OnOrientationChanged ) );
+CStaticProperty CScrollBar::ViewportSizeProperty( L"ViewportSize", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( ViewportSize ) );
 
 //
 // Property Change Handlers
@@ -24,7 +26,8 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollBar, OnOrientationChanged );
 CStaticRoutedCommand CScrollBar::LineUpCommand( L"LineUp" );
 CStaticRoutedCommand CScrollBar::LineDownCommand( L"LineDown" );
 
-CScrollBar::CScrollBar() : m_Orientation(this, &CScrollBar::OrientationProperty)
+CScrollBar::CScrollBar() : m_Orientation(this, &CScrollBar::OrientationProperty),
+                           m_ViewportSize(this, &CScrollBar::ViewportSizeProperty)
 {
 }
 
@@ -38,7 +41,7 @@ HRESULT CScrollBar::Initialize(CProviders* pProviders)
 
     IFCPTR(pProviders);
 
-    IFC(CControl::Initialize(pProviders));
+    IFC(CRangeBase::Initialize(pProviders));
 
 Cleanup:
     return hr;
@@ -56,9 +59,13 @@ HRESULT CScrollBar::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
     {
         *ppLayeredValue = &m_Orientation;
     }
+    else if(pProperty == &CScrollBar::ViewportSizeProperty)
+    {
+        *ppLayeredValue = &m_ViewportSize;
+    }
     else
     {
-        hr = CControl::GetLayeredValue(pProperty, ppLayeredValue);
+        hr = CRangeBase::GetLayeredValue(pProperty, ppLayeredValue);
     }
 
 Cleanup:
@@ -74,13 +81,14 @@ HRESULT CScrollBar::CreatePropertyInformation(CPropertyInformation **ppInformati
 
     CStaticProperty* Properties[] = 
     {
-        &OrientationProperty
+        &OrientationProperty,
+        &ViewportSizeProperty
     };
     
     IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation))
-    IFC(CControl::CreatePropertyInformation(&pBaseInformation));
+    IFC(CRangeBase::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingPropertyInformation));
 
     *ppInformation = pDelegatingPropertyInformation;
@@ -110,7 +118,7 @@ HRESULT CScrollBar::CreateCommandInformation(CCommandInformation** ppInformation
     IFCPTR(ppInformation);
 
     IFC(CStaticCommandInformation::Create(Commands, ARRAYSIZE(Commands), &pStaticInformation))
-    IFC(CControl::CreateCommandInformation(&pBaseInformation));
+    IFC(CRangeBase::CreateCommandInformation(&pBaseInformation));
     IFC(CDelegatingCommandInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingCommandInformation));
 
     *ppInformation = pDelegatingCommandInformation;
@@ -142,7 +150,7 @@ HRESULT CScrollBar::GetEffectiveOrientation(Orientation::Value* pOrientation)
 
     IFCPTR(pOrientation);
 
-    IFC(m_Orientation.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_Orientation.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pOrientation = pEffectiveValue->GetValue();
 

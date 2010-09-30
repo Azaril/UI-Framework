@@ -41,7 +41,7 @@ class CButtonBase : public CContentControl
 
         HRESULT OnCommandChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        CTypedLayeredValue< CCommand > m_Command;
+        CTypedLayeredValue< CButtonBase, CCommand > m_Command;
 };
 
 template< >

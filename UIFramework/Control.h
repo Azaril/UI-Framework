@@ -62,6 +62,9 @@ class CControl : public CFrameworkElement
 
         virtual CUIElement* GetTemplateParentForChildren();
 
+        virtual HRESULT PostTemplateApplied();
+        virtual HRESULT PreTemplateRevoked();
+
         //
         // Property Change Handlers
         //
@@ -78,12 +81,12 @@ class CControl : public CFrameworkElement
         HRESULT GetTemplateChild( CUIElement** ppChild );
 
     private:
-        CTypedLayeredValue< CControlTemplate > m_Template;
-        CTypedLayeredValue< CBrush > m_Background;
-        CTypedLayeredValue< CBrush > m_BorderBrush;
-        CTypedLayeredValue< CFloatValue > m_BorderThickness;
-        CTypedLayeredValue< CHorizontalAlignmentValue > m_HorizontalContentAlignment;
-        CTypedLayeredValue< CVerticalAlignmentValue > m_VerticalContentAlignment;
+        CTypedLayeredValue< CControl, CControlTemplate > m_Template;
+        CTypedLayeredValue< CControl, CBrush > m_Background;
+        CTypedLayeredValue< CControl, CBrush > m_BorderBrush;
+        CTypedLayeredValue< CControl, CFloatValue > m_BorderThickness;
+        CTypedLayeredValue< CControl, CHorizontalAlignmentValue > m_HorizontalContentAlignment;
+        CTypedLayeredValue< CControl, CVerticalAlignmentValue > m_VerticalContentAlignment;
         BOOL m_TemplateDirty;
         CUIElement* m_TemplateChild;
         CNamescope* m_TemplateNamescope;

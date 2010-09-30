@@ -300,7 +300,7 @@ HRESULT CBorder::GetEffectiveBackground(CBrush** ppBrush)
 
     IFCPTR(ppBrush);
 
-    IFC(m_Background.GetTypedEffectiveValue(GetProviders(), ppBrush));
+    IFC(m_Background.GetTypedEffectiveValue(ppBrush));
 
 Cleanup:
     return hr;
@@ -311,7 +311,7 @@ HRESULT CBorder::GetEffectivePadding(RectF* pPadding)
     HRESULT hr = S_OK;
     CRectFValue* pEffectiveValue = NULL;
 
-    IFC(m_Padding.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_Padding.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pPadding = pEffectiveValue->GetValue();
 
@@ -326,7 +326,7 @@ HRESULT CBorder::GetEffectiveBorderThickness(FLOAT* pBorderThickness)
     HRESULT hr = S_OK;
     CFloatValue* pEffectiveValue = NULL;
 
-    IFC(m_BorderThickness.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_BorderThickness.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pBorderThickness = pEffectiveValue->GetValue();
 
@@ -342,7 +342,7 @@ HRESULT CBorder::GetEffectiveBorderBrush(CBrush** ppBrush)
 
     IFCPTR(ppBrush);
 
-    IFC(m_BorderBrush.GetTypedEffectiveValue(GetProviders(), ppBrush));
+    IFC(m_BorderBrush.GetTypedEffectiveValue(ppBrush));
 
 Cleanup:
     return hr;
@@ -353,7 +353,7 @@ HRESULT CBorder::GetEffectiveCornerRadius(FLOAT* pCornerRadius)
     HRESULT hr = S_OK;
     CFloatValue* pEffectiveValue = NULL;
 
-    IFC(m_CornerRadius.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_CornerRadius.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pCornerRadius = pEffectiveValue->GetValue();
 

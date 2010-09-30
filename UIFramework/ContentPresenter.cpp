@@ -133,10 +133,11 @@ HRESULT CContentPresenter::GetUIForContent(CUIElement** ppContentUI)
 {
     HRESULT hr = S_OK;
     CObjectWithType* pContent = NULL;
+    CTypeValue* pType = NULL;
 
     IFCPTR(ppContentUI);
 
-    IFC(m_Content.GetEffectiveValue(GetProviders(), &pContent));
+    IFC(m_Content.GetEffectiveValue(&pContent));
 
     if(pContent)
     {
@@ -145,10 +146,20 @@ HRESULT CContentPresenter::GetUIForContent(CUIElement** ppContentUI)
             *ppContentUI = (CUIElement*)pContent;
             pContent = NULL;
         }
+        else
+        {
+            //TODO: Implement data templates.
+            //IFC(CTypeValue::Create(pContent->GetType(), &pType));
+
+            //if(SUCCEEDED(FindResource(pType, &pTemplate)))
+            //{
+            //}
+        }
     }
 
 Cleanup:
     ReleaseObject(pContent);
+    ReleaseObject(pType);
 
     return hr;
 }

@@ -404,7 +404,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::PushLayer(CLayer* pLayer, const RectF& ClippingRect, CGeometry* pClippingGeometry)
+HRESULT CD2DRenderTarget::PushLayer(CLayer* pLayer, const RectF& ClippingRect, FLOAT Opacity, CGeometry* pClippingGeometry)
 {
     HRESULT hr = S_OK;
     CD2DLayer* pD2DLayer = NULL;
@@ -419,7 +419,7 @@ HRESULT CD2DRenderTarget::PushLayer(CLayer* pLayer, const RectF& ClippingRect, C
         IFC(UnwrapGeometry(pClippingGeometry, &pD2DClipGeometry));
     }
 
-    m_RenderTarget->PushLayer(D2D1::LayerParameters(ClippingRect, pD2DClipGeometry), pD2DLayer->GetLayer());
+    m_RenderTarget->PushLayer(D2D1::LayerParameters(ClippingRect, pD2DClipGeometry, D2D1_ANTIALIAS_MODE_PER_PRIMITIVE, D2D1::IdentityMatrix(), Opacity), pD2DLayer->GetLayer());
 
 Cleanup:
     return hr;

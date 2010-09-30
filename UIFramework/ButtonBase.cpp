@@ -71,7 +71,7 @@ HRESULT CButtonBase::GetEffectiveCommand(CCommand** ppCommand)
 
     IFCPTR(ppCommand);
 
-    IFC(m_Command.GetTypedEffectiveValue(GetProviders(), ppCommand));
+    IFC(m_Command.GetTypedEffectiveValue(ppCommand));
 
 Cleanup:
     return hr;

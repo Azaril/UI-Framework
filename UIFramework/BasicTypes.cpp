@@ -106,3 +106,30 @@ const WCHAR* CStringValue_GetValue(CStringValue* pValue)
 {
     return pValue->GetValue();
 }
+
+//
+// CVisibilityValue
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CVisibilityValue_TypeIndex()
+{
+    return TypeIndex::Visibility;
+}
+
+extern "C" __declspec(dllexport)
+CObjectWithType* CVisibilityValue_CastTo_CObjectWithType(CVisibilityValue* pValue)
+{
+    return pValue;
+}
+
+extern "C" __declspec(dllexport)
+CVisibilityValue* CObjectWithType_CastTo_CVisibilityValue(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::Visibility)) ? (CVisibilityValue*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+Visibility::Value CVisibilityValue_GetValue(CVisibilityValue* pValue)
+{
+    return pValue->GetValue();
+}

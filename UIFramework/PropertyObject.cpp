@@ -1,6 +1,7 @@
 #include "PropertyObject.h"
 #include "ErrorChecking.h"
 #include "BasicTypes.h"
+#include "LayeredValue.h"
 
 CPropertyObject::CPropertyObject()
 {
@@ -20,10 +21,7 @@ HRESULT CPropertyObject::SetValue(CProperty* pProperty, CObjectWithType* pValue)
 
     IFCEXPECT(!pProperty->IsReadOnly());
 
-    IFC(SetValueInternal(pProperty, pValue));
-
-    //TODO: Resolve this with style set values.
-    IFC(RaisePropertyChanged(pProperty));
+    IFC(SetValuePrivate(pProperty, pValue));
 
 Cleanup:
     ReleaseObject(pOldValue);
@@ -31,9 +29,28 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+HRESULT CPropertyObject::SetValueReadOnly(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
+    CObjectWithType* pOldValue = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    IFCEXPECT(pProperty->IsReadOnly());
+
+    IFC(SetValuePrivate(pProperty, pValue));
+
+Cleanup:
+    ReleaseObject(pOldValue);
+
+    return hr;
+}
+
+HRESULT CPropertyObject::SetValuePrivate(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CLayeredValue* pLayeredValue = NULL;
     CObjectWithType* pOldValue = NULL;
 
     IFCPTR(pProperty);
@@ -63,10 +80,18 @@ HRESULT CPropertyObject::SetValueInternal(CProperty* pProperty, CObjectWithType*
         }
 
         IFC(pProperty->OnValueChanged(this, pOldValue, pValue));
+
+        IFC(RaisePropertyChanged(pProperty));
+    }
+    else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    {
+        IFC(pLayeredValue->SetLocalValue(pValue));
     }
     else
     {
-        IFC(E_FAIL);
+        IFC(SetValueInternal(pProperty, pValue));
+
+        IFC(RaisePropertyChanged(pProperty));
     }
 
 Cleanup:
@@ -75,9 +100,20 @@ Cleanup:
     return hr;
 }
 
+HRESULT CPropertyObject::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(E_FAIL);
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CPropertyObject::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
+    CLayeredValue* pLayeredValue;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
@@ -96,9 +132,55 @@ HRESULT CPropertyObject::GetValue(CProperty* pProperty, CObjectWithType** ppValu
 
         *ppValue = NULL;
     }
+    else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    {
+        IFC(pLayeredValue->GetLocalValue(ppValue));
+    }
     else
     {
-        IFC(E_FAIL);
+        IFC(GetValueInternal(pProperty, ppValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CPropertyObject::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC_NOTRACE(E_FAIL);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CPropertyObject::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(E_FAIL);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CPropertyObject::GetEffectiveValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+    CLayeredValue* pLayeredValue = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    {
+        IFC(pLayeredValue->GetEffectiveValue(ppValue));
+    }
+    else
+    {
+        //TODO: This will trigger yet another layered property lookup, needs optomization.
+        IFC(GetValue(pProperty, ppValue));
     }
 
 Cleanup:
@@ -275,6 +357,22 @@ HRESULT CPropertyObject_SetValueString(CPropertyObject* pPropertyObject, CProper
     CStringValue* pValue = NULL;
 
     IFC(CStringValue::Create(strValue, &pValue));
+
+    IFC(pPropertyObject->SetValue(pProperty, pValue));
+
+Cleanup:
+    ReleaseObject(pValue);
+
+    return hr;
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CPropertyObject_SetValueVisibility(CPropertyObject* pPropertyObject, CProperty* pProperty, const Visibility::Value Val)
+{
+    HRESULT hr = S_OK;
+    CVisibilityValue* pValue = NULL;
+
+    IFC(CVisibilityValue::Create(Val, &pValue));
 
     IFC(pPropertyObject->SetValue(pProperty, pValue));
 

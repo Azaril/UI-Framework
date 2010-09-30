@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Control.h"
+#include "RangeBase.h"
 #include "StaticRoutedCommand.h"
 
-class CScrollBar : public CControl
+class CScrollBar : public CRangeBase
 {
     public:
         DECLARE_FACTORY1( CScrollBar, CProviders* );
 
-        DECLARE_TYPE_WITH_BASE( TypeIndex::ScrollBar, CControl );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::ScrollBar, CRangeBase );
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
         static HRESULT CreateCommandInformation( CCommandInformation** ppInformation );
@@ -19,6 +19,7 @@ class CScrollBar : public CControl
         // Properties
         //
         static CStaticProperty OrientationProperty;
+        static CStaticProperty ViewportSizeProperty;
 
         //
         // Commands
@@ -43,7 +44,8 @@ class CScrollBar : public CControl
 
         HRESULT OnOrientationChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        CTypedLayeredValue< COrientationValue > m_Orientation;
+        CTypedLayeredValue< CScrollBar, COrientationValue > m_Orientation;
+        CTypedLayeredValue< CScrollBar, CFloatValue > m_ViewportSize;
 };
 
 template< >

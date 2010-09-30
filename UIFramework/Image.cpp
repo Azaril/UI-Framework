@@ -112,7 +112,7 @@ HRESULT CImage::GetEffectiveSource(CObjectWithType** ppSource)
 
     IFCPTR(ppSource);
 
-    IFC(m_Source.GetEffectiveValue(GetProviders(), ppSource));
+    IFC(m_Source.GetEffectiveValue(ppSource));
 
 Cleanup:
     return hr;
@@ -195,8 +195,8 @@ HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     CFloatValue* pWidth = NULL;
     CFloatValue* pHeight = NULL;
 
-    IFC(m_Width.GetTypedEffectiveValue(GetProviders(), &pWidth));
-    IFC(m_Height.GetTypedEffectiveValue(GetProviders(), &pHeight));
+    IFC(m_Width.GetTypedEffectiveValue(&pWidth));
+    IFC(m_Height.GetTypedEffectiveValue(&pHeight));
 
     if(m_ImageBrush != NULL)
     {
@@ -239,8 +239,8 @@ HRESULT CImage::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     CFloatValue* pWidth = NULL;
     CFloatValue* pHeight = NULL;
 
-    IFC(m_Width.GetTypedEffectiveValue(GetProviders(), &pWidth));
-    IFC(m_Height.GetTypedEffectiveValue(GetProviders(), &pHeight));
+    IFC(m_Width.GetTypedEffectiveValue(&pWidth));
+    IFC(m_Height.GetTypedEffectiveValue(&pHeight));
 
     if(m_ImageBrush != NULL)
     {

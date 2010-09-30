@@ -1,8 +1,11 @@
 #include "ScrollContentPresenter.h"
 
 CScrollContentPresenter::CScrollContentPresenter() : m_HorizontalOffset(0),
-                                                     m_VerticalOffset(0)
+                                                     m_VerticalOffset(0),
+                                                     m_ChildTransformDirty(FALSE),
+                                                     m_ScrollOwner(NULL)
 {
+    m_ChildrenTransform = Matrix3X2F::Identity();
 }
 
 CScrollContentPresenter::~CScrollContentPresenter()
@@ -25,9 +28,7 @@ HRESULT CScrollContentPresenter::LineUp()
 {
     HRESULT hr = S_OK;
 
-    m_VerticalOffset -= 10;
-
-    IFC(InvalidateArrange());
+    SetScrollOffsets(m_HorizontalOffset, m_VerticalOffset - 10);
 
 Cleanup:
     return hr;
@@ -37,9 +38,59 @@ HRESULT CScrollContentPresenter::LineDown()
 {
     HRESULT hr = S_OK;
 
-    m_VerticalOffset += 10;
+    SetScrollOffsets(m_HorizontalOffset, m_VerticalOffset + 10);
 
-    IFC(InvalidateArrange());
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollContentPresenter::DirtyScrollInformation()
+{
+    HRESULT hr = S_OK;
+
+    if(m_ScrollOwner != NULL)
+    {
+        IFC(m_ScrollOwner->InvalidateScrollInformation());
+    }
+
+    DirtyChildTransform();
+    
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollContentPresenter::SetScrollOwner(IScrollOwner* pOwner)
+{
+    HRESULT hr = S_OK;
+
+    m_ScrollOwner = pOwner;
+    
+    if(m_ScrollOwner)
+    {
+        IFC(m_ScrollOwner->InvalidateScrollInformation());
+    }
+
+Cleanup:
+    return hr;
+}
+
+void CScrollContentPresenter::DirtyChildTransform()
+{
+    m_ChildTransformDirty = TRUE;
+}
+
+HRESULT CScrollContentPresenter::SetScrollOffsets(FLOAT XOffset, FLOAT YOffset)
+{
+    HRESULT hr = S_OK;
+    SizeF FinalSize = GetFinalSize();
+    
+    FLOAT MaxX = std::max((m_Extent.width - FinalSize.width), 0.0f);
+    FLOAT MaxY = std::max((m_Extent.height - FinalSize.height), 0.0f);
+
+    m_HorizontalOffset = std::max(std::min(XOffset, MaxX), 0.0f);
+    m_VerticalOffset = std::max(std::min(YOffset, MaxY), 0.0f);
+
+    DirtyScrollInformation();
 
 Cleanup:
     return hr;
@@ -67,6 +118,27 @@ BOOL CScrollContentPresenter::CanScrollVertically()
     return TRUE;
 }
 
+const Matrix3X2F* CScrollContentPresenter::GetChildRenderTransform()
+{
+    return &m_ChildrenTransform;
+}
+
+HRESULT CScrollContentPresenter::PreRenderInternal(CPreRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    if(m_ChildTransformDirty)
+    {
+        //TODO: This should track dirtiness and only be changed in the render walk.
+        m_ChildrenTransform = Matrix3X2F::Translation(-m_HorizontalOffset, -m_VerticalOffset);
+    }
+
+    IFC(CContentPresenter::PreRenderInternal(Context));
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CScrollContentPresenter::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
@@ -85,21 +157,40 @@ Cleanup:
     return hr;
 }
 
+HRESULT CScrollContentPresenter::Arrange(RectF Bounds)
+{
+    HRESULT hr = S_OK;
+
+    IFC(CContentPresenter::Arrange(Bounds));
+
+    IFC(DirtyScrollInformation());
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CScrollContentPresenter::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
     CUIElement* pContentChild = NULL;
+    SizeF AvailableContentSize;
+    SizeF DesiredContentSize;
     
     IFC(GetContentChild(&pContentChild));
 
     if(pContentChild != NULL)
     {
-        SizeF ArrangePosition(GetHorizontalOffset(), -GetVerticalOffset());
+        SizeF ChildDesiredSize = pContentChild->GetDesiredSize();
 
-        RectF ArrangeRect = MakeRect(ArrangePosition, AvailableSize);
+        AvailableContentSize.width = CanScrollHorizontally() ?  std::max(AvailableSize.width, ChildDesiredSize.width) : AvailableSize.width;
+        AvailableContentSize.height = CanScrollVertically() ? std::max(AvailableSize.height, ChildDesiredSize.height) : AvailableSize.height;
+
+        RectF ArrangeRect = MakeRect(AvailableContentSize);
 
         IFC(pContentChild->Arrange(ArrangeRect));
     }
+
+    m_Extent = AvailableContentSize;
 
     UsedSize = AvailableSize;
       
@@ -125,4 +216,14 @@ Cleanup:
 BOOL CScrollContentPresenter::ShouldClipToLayout()
 {
     return TRUE;
+}
+
+SizeF CScrollContentPresenter::GetExtent()
+{
+    return m_Extent;
+}
+
+SizeF CScrollContentPresenter::GetViewport()
+{
+    return GetFinalSize();
 }

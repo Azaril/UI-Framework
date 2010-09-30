@@ -91,10 +91,12 @@
   <ItemGroup>
     <ClCompile Include="Collections.cpp" />
     <ClCompile Include="D2DSurfaceRenderTarget.cpp" />
+    <ClCompile Include="DragDeltaEventArgs.cpp" />
     <ClCompile Include="ErrorChecking.cpp" />
     <ClCompile Include="Factory.cpp" />
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RangeBase.cpp" />
     <ClCompile Include="RefCounted.cpp" />
     <ClCompile Include="Signals.cpp" />
     <ClCompile Include="Bitmap.cpp" />
@@ -119,6 +121,8 @@
     <ClCompile Include="D2DSolidColorBrush.cpp" />
     <ClCompile Include="BitmapSource.cpp" />
     <ClCompile Include="ImagingProvider.cpp" />
+    <ClCompile Include="Thumb.cpp" />
+    <ClCompile Include="Track.cpp" />
     <ClCompile Include="WICBitmapSource.cpp" />
     <ClCompile Include="WICImagingProvider.cpp" />
     <ClCompile Include="Enums.cpp" />
@@ -258,9 +262,11 @@
     <ClInclude Include="Collections.h" />
     <ClInclude Include="D2DSurfaceRenderTarget.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="DragDeltaEventArgs.h" />
     <ClInclude Include="ErrorChecking.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="Logging.h" />
+    <ClInclude Include="RangeBase.h" />
     <ClInclude Include="RefCounted.h" />
     <ClInclude Include="Signals.h" />
     <ClInclude Include="Bitmap.h" />
@@ -285,6 +291,8 @@
     <ClInclude Include="D2DSolidColorBrush.h" />
     <ClInclude Include="BitmapSource.h" />
     <ClInclude Include="ImagingProvider.h" />
+    <ClInclude Include="Thumb.h" />
+    <ClInclude Include="Track.h" />
     <ClInclude Include="WICBitmapSource.h" />
     <ClInclude Include="WICImagingProvider.h" />
     <ClInclude Include="Enums.h" />

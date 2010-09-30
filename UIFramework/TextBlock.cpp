@@ -253,7 +253,7 @@ HRESULT CTextBlock::GetEffectiveText(CStringValue** ppText)
 
     IFCPTR(ppText);
 
-    IFC(m_Text.GetTypedEffectiveValue(GetProviders(), ppText));
+    IFC(m_Text.GetTypedEffectiveValue(ppText));
 
 Cleanup:
     return hr;
@@ -278,7 +278,7 @@ HRESULT CTextBlock::GetEffectiveForeground(CBrush** ppBrush)
 
     IFCPTR(ppBrush);
 
-    IFC(m_Foreground.GetTypedEffectiveValue(GetProviders(), ppBrush));
+    IFC(m_Foreground.GetTypedEffectiveValue(ppBrush));
 
 Cleanup:
     return hr;

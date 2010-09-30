@@ -36,6 +36,9 @@ class CTextBox : public CControl
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
+        virtual HRESULT PostTemplateApplied();
+        virtual HRESULT PreTemplateRevoked();
+
         //
         // Property Change Handlers
         //
@@ -49,7 +52,7 @@ class CTextBox : public CControl
         CTextEditor* m_TextEditor;
         CTextHost* m_TextHost;
         CContentPresenter* m_TextHostControl;
-        CTypedLayeredValue< CBoolValue > m_AcceptsReturn;
+        CTypedLayeredValue< CTextBox, CBoolValue > m_AcceptsReturn;
 };
 
 template< >

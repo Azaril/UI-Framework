@@ -32,7 +32,7 @@ class UIFRAMEWORK_API CDecorator : public CFrameworkElement
 
         HRESULT GetEffectiveChild( CUIElement** ppChild );
 
-        CTypedLayeredValue< CUIElement > m_Child;
+        CTypedLayeredValue< CDecorator, CUIElement > m_Child;
 };
 
 template< >

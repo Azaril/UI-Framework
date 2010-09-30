@@ -1,4 +1,5 @@
 #include "MouseInputEventArgs.h"
+#include "Visual.h"
 
 CMouseEventArgs::CMouseEventArgs()
 {
@@ -31,17 +32,41 @@ HRESULT CMouseEventArgs::Initialize(CRoutedEvent* pRoutedEvent, CMouseEventArgs*
 
     IFC(CInputEventArgs::Initialize(pRoutedEvent));
 
-    m_Location = pSourceArgs->GetLocation();
+    IFC(pSourceArgs->GetLocation(&m_Location));
 
 Cleanup:
     return hr;
 }
 
-Point2F CMouseEventArgs::GetLocation()
+HRESULT CMouseEventArgs::GetLocation(Point2F* pLocation)
 {
-    return m_Location;
+    HRESULT hr = S_OK;
+
+    IFCPTR(pLocation);
+
+    *pLocation = m_Location;
+
+Cleanup:
+    return hr;
 }
 
+HRESULT CMouseEventArgs::GetLocation(CVisual* pVisual, Point2F* pLocation)
+{
+    HRESULT hr = S_OK;
+    CTransform* pTransform = NULL;
+
+    IFCPTR(pLocation);
+    IFCPTR(pVisual);
+
+    IFC(pVisual->TransformToAncestor(NULL, &pTransform));
+
+    IFC(pTransform->TransformPoint(m_Location, pLocation));
+
+Cleanup:
+    ReleaseObject(pTransform);
+
+    return hr;
+}
 
 CMouseButtonEventArgs::CMouseButtonEventArgs()
 {

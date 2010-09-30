@@ -79,11 +79,11 @@ class UIFRAMEWORK_API CBorder : public CDecorator
         HRESULT GetEffectiveBorderBrush( CBrush** ppBrush );
         HRESULT GetEffectiveCornerRadius( FLOAT* pCornerRadius );
 
-        CTypedLayeredValue< CBrush > m_Background;
-        CTypedLayeredValue< CRectFValue > m_Padding;
-        CTypedLayeredValue< CFloatValue > m_BorderThickness;
-        CTypedLayeredValue< CBrush > m_BorderBrush;
-        CTypedLayeredValue< CFloatValue > m_CornerRadius;
+        CTypedLayeredValue< CBorder, CBrush > m_Background;
+        CTypedLayeredValue< CBorder, CRectFValue > m_Padding;
+        CTypedLayeredValue< CBorder, CFloatValue > m_BorderThickness;
+        CTypedLayeredValue< CBorder, CBrush > m_BorderBrush;
+        CTypedLayeredValue< CBorder, CFloatValue > m_CornerRadius;
 
         CGeometryVisual* m_BorderVisual;
         BOOL m_GeometryDirty;

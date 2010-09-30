@@ -104,6 +104,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="Framework\UI\Visuals\Elements\Controls\Range">
+      <UniqueIdentifier>{026601eb-d6e4-4efc-a130-230356d06edf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -284,9 +287,6 @@
       <Filter>Framework\UI\Visuals\Elements\Decorators</Filter>
     </ClCompile>
     <ClCompile Include="Control.cpp">
-      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="ScrollBar.cpp">
       <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
     </ClCompile>
     <ClCompile Include="TextBox.cpp">
@@ -598,6 +598,21 @@
     <ClCompile Include="D2DSurfaceRenderTarget.cpp">
       <Filter>Framework\Graphics\D2D</Filter>
     </ClCompile>
+    <ClCompile Include="Thumb.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="DragDeltaEventArgs.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Track.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="RangeBase.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls\Range</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrollBar.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Controls\Range</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -778,9 +793,6 @@
       <Filter>Framework\UI\Visuals\Elements\Decorators</Filter>
     </ClInclude>
     <ClInclude Include="Control.h">
-      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="ScrollBar.h">
       <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
     </ClInclude>
     <ClInclude Include="TextBox.h">
@@ -1109,6 +1121,21 @@
     </ClInclude>
     <ClInclude Include="D2DSurfaceRenderTarget.h">
       <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Thumb.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="DragDeltaEventArgs.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Track.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="RangeBase.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls\Range</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrollBar.h">
+      <Filter>Framework\UI\Visuals\Elements\Controls\Range</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

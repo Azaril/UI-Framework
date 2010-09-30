@@ -53,20 +53,36 @@ HRESULT CTextBox::OnAttach(CUIAttachContext& Context)
     HRESULT hr = S_OK;
     CTextProvider* pTextProvider = NULL;
     SizeF InitialSize;
-    CStringValue* pText = NULL;
-
-    IFC(CControl::OnAttach(Context));
 
     IFC(m_VisualContext.GetGraphicsDevice()->GetTextProvider(&pTextProvider));
 
     IFC(pTextProvider->CreateEditableTextLayout(InitialSize, &m_TextLayout));
 
-    /*IFC(m_Text.GetTypedEffectiveValue(GetProviders(), &pText));
+    IFC(CControl::OnAttach(Context));
 
-    if(pText)
-    {
-        IFC(m_TextEditor->SetText(pText->GetValue(), pText->GetLength()));
-    }*/
+Cleanup:
+    ReleaseObject(pTextProvider);
+
+    return hr;
+}
+
+HRESULT CTextBox::OnDetach(CUIDetachContext& Context)
+{
+    HRESULT hr = S_OK;
+
+    IFC(CControl::OnDetach(Context));
+
+    ReleaseObject(m_TextLayout);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CTextBox::PostTemplateApplied()
+{
+    HRESULT hr = S_OK;
+
+    IFC(CControl::PostTemplateApplied());
 
     IFC(GetTemplateChild(L"PART_TextHost", &m_TextHostControl));
 
@@ -81,13 +97,10 @@ HRESULT CTextBox::OnAttach(CUIAttachContext& Context)
     IFC(m_TextEditor->SetTextLayout(m_TextLayout));
 
 Cleanup:
-    ReleaseObject(pTextProvider);
-    ReleaseObject(pText);
-
     return hr;
 }
 
-HRESULT CTextBox::OnDetach(CUIDetachContext& Context)
+HRESULT CTextBox::PreTemplateRevoked()
 {
     HRESULT hr = S_OK;
 
@@ -104,10 +117,7 @@ HRESULT CTextBox::OnDetach(CUIDetachContext& Context)
 
     IFC(m_TextEditor->SetTextHost(this));
 
-    IFC(CControl::OnDetach(Context));
-
-    //TODO: Preserve text and layout so it can be reloaded if attached again.
-    ReleaseObject(m_TextLayout);
+    IFC(CControl::PreTemplateRevoked());
 
 Cleanup:
     return hr;

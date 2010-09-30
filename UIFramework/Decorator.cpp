@@ -41,7 +41,7 @@ HRESULT CDecorator::GetEffectiveChild(CUIElement** ppChild)
 
     IFCPTR(ppChild);
 
-    IFC(m_Child.GetTypedEffectiveValue(GetProviders(), ppChild));
+    IFC(m_Child.GetTypedEffectiveValue(ppChild));
 
 Cleanup:
     return hr;

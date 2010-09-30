@@ -49,8 +49,8 @@ class UIFRAMEWORK_API CTextBlock : public CFrameworkElement
         HRESULT GetTextLayout( CTextLayout** ppTextLayout );
         HRESULT InvalidateTextLayout();
 
-        CTypedLayeredValue< CStringValue > m_Text;
-        CTypedLayeredValue< CBrush > m_Foreground;
+        CTypedLayeredValue< CTextBlock, CStringValue > m_Text;
+        CTypedLayeredValue< CTextBlock, CBrush > m_Foreground;
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;
         CTextVisual* m_TextVisual;

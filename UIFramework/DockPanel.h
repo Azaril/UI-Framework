@@ -37,7 +37,7 @@ class UIFRAMEWORK_API CDockPanel : public CPanel
 
         HRESULT GetEffectiveLastChildFill( BOOL* pLastChildFill );
 
-        CTypedLayeredValue< CBoolValue > m_LastChildFill;
+        CTypedLayeredValue< CDockPanel, CBoolValue > m_LastChildFill;
 };
 
 template< >

@@ -20,6 +20,8 @@ class UIFRAMEWORK_API CUIHost : public CRefCountedObject
         HRESULT GetMouseController( CMouseController** ppController );
         HRESULT GetKeyboardController( CKeyboardController** ppController );
 
+        HRESULT GetFocusManager( CFocusManager** ppFocusManager );
+
     protected:
         CUIHost();
         virtual ~CUIHost();

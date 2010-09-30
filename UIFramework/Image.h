@@ -52,7 +52,7 @@ class UIFRAMEWORK_API CImage : public CFrameworkElement
 
         HRESULT GetEffectiveSource( CObjectWithType** ppSource );
 
-        CTypedLayeredValue< CObjectWithType > m_Source;
+        CTypedLayeredValue< CImage, CObjectWithType > m_Source;
         CImageBrush* m_ImageBrush;
         CGeometryVisual* m_ImageVisual;
         BOOL m_GeometryDirty;

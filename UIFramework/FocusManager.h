@@ -4,7 +4,7 @@
 #include "UIElement.h"
 #include "MouseInput.h"
 
-class CFocusManager : public CRefCountedObject
+class UIFRAMEWORK_API CFocusManager : public CRefCountedObject
 {
     public:
         DECLARE_FACTORY( CFocusManager );

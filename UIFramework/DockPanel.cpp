@@ -44,7 +44,7 @@ HRESULT CDockPanel::GetEffectiveLastChildFill(BOOL* pLastChildFill)
 
     IFCPTR(pLastChildFill);
 
-    IFC(m_LastChildFill.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_LastChildFill.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pLastChildFill = pEffectiveValue->GetValue();
 

@@ -29,7 +29,7 @@ class CContentControl : public CControl
 
         HRESULT OnContentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        CTypedLayeredValue< CObjectWithType > m_Content;
+        CTypedLayeredValue< CContentControl, CObjectWithType > m_Content;
 };
 
 template< >

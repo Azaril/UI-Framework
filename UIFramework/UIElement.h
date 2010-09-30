@@ -200,8 +200,6 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         virtual HRESULT PreRender( CPreRenderContext& Context );
         virtual HRESULT Render( CRenderContext& Context );
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-        virtual HRESULT GetEffectiveValue( CProperty* pProperty, CObjectWithType** ppValue );
         virtual HRESULT ClearValue( CProperty* pProperty );
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
@@ -253,7 +251,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         static CStaticProperty VerticalAlignmentProperty;
         static CStaticProperty MarginProperty;
         static CStaticProperty FocusableProperty;
-        static CStaticProperty NamescopeProperty;
+        static CStaticProperty OpacityProperty;
 
         //
         // Events
@@ -298,9 +296,6 @@ class UIFRAMEWORK_API CUIElement : public CVisual
     
         HRESULT Initialize( CProviders* pProviders );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
-
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
         virtual HRESULT RenderInternal( CRenderContext& Context );
 
@@ -336,7 +331,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         HRESULT GetEffectiveVerticalAlignment( VerticalAlignment::Value* pAlignment );
         HRESULT GetEffectiveMargin( RectF* pMargin );
         HRESULT GetEffectiveFocusable( BOOL* pFocusable );
-        HRESULT GetEffectiveNamescope( CNamescope** ppNamescope );
+        HRESULT GetEffectiveOpacity( FLOAT* pOpacity );
 
         virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
@@ -375,7 +370,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnVerticalAlignmentChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnMarginChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnFocusableChanged );
-        DECLARE_INSTANCE_CHANGE_CALLBACK( OnNamescopeChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnOpacityChanged );
 
         HRESULT OnWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
@@ -388,20 +383,20 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         HRESULT OnVerticalAlignmentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnMarginChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnFocusableChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
-        HRESULT OnNamescopeChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnOpacityChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
    
-        CTypedLayeredValue< CFloatValue > m_Width;
-        CTypedLayeredValue< CFloatValue > m_Height;
-        CTypedLayeredValue< CFloatValue > m_MinimumWidth;
-        CTypedLayeredValue< CFloatValue > m_MinimumHeight;
-        CTypedLayeredValue< CFloatValue > m_MaximumWidth;
-        CTypedLayeredValue< CFloatValue > m_MaximumHeight;
-        CTypedLayeredValue< CVisibilityValue > m_Visibility;
-        CTypedLayeredValue< CVerticalAlignmentValue > m_VerticalAlignment;
-        CTypedLayeredValue< CHorizontalAlignmentValue > m_HorizontalAlignment;
-        CTypedLayeredValue< CRectFValue > m_Margin;
-        CTypedLayeredValue< CBoolValue > m_Focusable;
-        CTypedLocalLayeredValue< CNamescope > m_Namescope;
+        CTypedLayeredValue< CUIElement, CFloatValue > m_Width;
+        CTypedLayeredValue< CUIElement, CFloatValue > m_Height;
+        CTypedLayeredValue< CUIElement, CFloatValue > m_MinimumWidth;
+        CTypedLayeredValue< CUIElement, CFloatValue > m_MinimumHeight;
+        CTypedLayeredValue< CUIElement, CFloatValue > m_MaximumWidth;
+        CTypedLayeredValue< CUIElement, CFloatValue > m_MaximumHeight;
+        CTypedLayeredValue< CUIElement, CVisibilityValue > m_Visibility;
+        CTypedLayeredValue< CUIElement, CVerticalAlignmentValue > m_VerticalAlignment;
+        CTypedLayeredValue< CUIElement, CHorizontalAlignmentValue > m_HorizontalAlignment;
+        CTypedLayeredValue< CUIElement, CRectFValue > m_Margin;
+        CTypedLayeredValue< CUIElement, CBoolValue > m_Focusable;
+        CTypedLayeredValue< CUIElement, CFloatValue > m_Opacity;
 
         BOOL m_MeasureDirty;
         BOOL m_ArrangeDirty;

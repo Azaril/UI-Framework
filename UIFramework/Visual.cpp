@@ -248,9 +248,36 @@ HRESULT CVisual::RenderTransformed(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
 
+    IFC(RenderChildren(Context));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CVisual::RenderChildren(CRenderContext& Context)
+{
+    HRESULT hr = S_OK;
+    CMatrixStack& MatrixStack = Context.GetMatrixStack();
+
+    const Matrix3X2F* pChildrenTransform = GetChildRenderTransform();
+
+    if(pChildrenTransform)
+    {
+        IFC(MatrixStack.Push());
+
+        IFC(MatrixStack.MultMatrixLocal(*pChildrenTransform));
+
+        IFC(Context.GetRenderTarget()->SetTransform(MatrixStack.GetTop()));
+    }
+
     for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
     {
         IFC((*It)->Render(Context));
+    }
+
+    if(pChildrenTransform)
+    {
+        IFC(MatrixStack.Pop());
     }
 
 Cleanup:
@@ -351,24 +378,94 @@ CVisual* CVisual::GetVisualChild(UINT32 Index)
     return m_VisualChildren.at(Index);
 }
 
+CVisual* CVisual::GetVisualParent()
+{
+    return m_VisualContext.GetParent();
+}
+
+const Matrix3X2F* CVisual::GetChildRenderTransform()
+{
+    return NULL;
+}
+
 HRESULT CVisual::TransformToParent(CTransform** ppTransform)
 {
     HRESULT hr = S_OK;
     CMatrixTransform* pMatrixTransform = NULL;
-    Matrix3X2F TransformedMatrix = m_FinalLocalTransform;
+    CVisual* pParent = GetVisualParent();
 
     IFCPTR(ppTransform);
 
-    IFCEXPECT(TransformedMatrix.Invert());
+    if(pParent)
+    {
+        IFC(TransformToAncestor(pParent, ppTransform));
+    }
+    else
+    {
+        IFC(CMatrixTransform::Create(m_FinalLocalTransform, &pMatrixTransform));
 
-    IFC(CMatrixTransform::Create(TransformedMatrix, &pMatrixTransform));
+        *ppTransform = pMatrixTransform;
+        pMatrixTransform = NULL;
+    }
+
+Cleanup:
+    ReleaseObject(pMatrixTransform);
+
+    return hr;
+}
+
+const Matrix3X2F& CVisual::GetFinalLocalTransform()
+{
+    return m_FinalLocalTransform;
+}
+
+HRESULT CVisual::TransformFromAncestor(CVisual* pAncestor, CTransform** ppTransform)
+{
+    HRESULT hr = S_OK;
+    CVisual* pCurrentVisual = NULL;
+    Matrix3X2F TransformMatrix = Matrix3X2F::Identity();
+    CMatrixTransform* pMatrixTransform = NULL;
+
+    pCurrentVisual = this;
+
+    while(pCurrentVisual != NULL && pCurrentVisual != pAncestor)
+    {
+        TransformMatrix = pCurrentVisual->GetFinalLocalTransform() * TransformMatrix;
+
+        pCurrentVisual = pCurrentVisual->GetVisualParent();
+
+        if(pCurrentVisual)
+        {
+            const Matrix3X2F* pParentChildTransform = pCurrentVisual->GetChildRenderTransform();
+
+            if(pParentChildTransform)
+            {
+                TransformMatrix = (*pParentChildTransform) * TransformMatrix;
+            }
+        }
+    }
+
+    IFCEXPECT(pAncestor == NULL || pCurrentVisual == pAncestor);
+
+    IFC(CMatrixTransform::Create(TransformMatrix, &pMatrixTransform));
 
     *ppTransform = pMatrixTransform;
     pMatrixTransform = NULL;
 
 Cleanup:
-    ReleaseObject(pMatrixTransform);
+    return hr;
+}
 
+HRESULT CVisual::TransformToAncestor(CVisual* pAncestor, CTransform** ppTransform)
+{
+    HRESULT hr = S_OK;
+    CTransform* pFromTransform = NULL;
+
+    IFC(TransformFromAncestor(pAncestor, &pFromTransform));
+
+    IFC(pFromTransform->Invert(ppTransform));
+
+Cleanup:
     return hr;
 }
 

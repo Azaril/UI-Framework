@@ -22,7 +22,7 @@ DEFINE_GET_DEFAULT( HorizontalAlignment, CHorizontalAlignmentValue, HorizontalAl
 DEFINE_GET_DEFAULT( VerticalAlignment, CVerticalAlignmentValue, VerticalAlignment::Stretch );
 DEFINE_GET_DEFAULT( Margin, CRectFValue, RectF(0, 0, 0, 0) );
 DEFINE_GET_DEFAULT( Focusable, CBoolValue, FALSE );
-DEFINE_GET_DEFAULT_NULL( Namescope );
+DEFINE_GET_DEFAULT( Opacity, CFloatValue, 1.0f );
 
 //
 // Properties
@@ -38,7 +38,7 @@ CStaticProperty CUIElement::HorizontalAlignmentProperty( L"HorizontalAlignment",
 CStaticProperty CUIElement::VerticalAlignmentProperty( L"VerticalAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( VerticalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged ) );
 CStaticProperty CUIElement::MarginProperty( L"Margin", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT( Margin ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged ) );
 CStaticProperty CUIElement::FocusableProperty( L"Focusable", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( Focusable ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnFocusableChanged ) );
-CStaticProperty CUIElement::NamescopeProperty( L"Namescope", TypeIndex::Namescope, StaticPropertyFlags::None, &GET_DEFAULT( Namescope ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnNamescopeChanged ) );
+CStaticProperty CUIElement::OpacityProperty( L"Opacity", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Opacity ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnOpacityChanged ) );
 
 //
 // Property Change Handlers
@@ -54,7 +54,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnFocusableChanged );
-DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnNamescopeChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnOpacityChanged );
 
 //
 // Events
@@ -108,7 +108,7 @@ CUIElement::CUIElement() : m_Attached(FALSE),
                            m_HorizontalAlignment(this, &CUIElement::HorizontalAlignmentProperty),
                            m_Margin(this, &CUIElement::MarginProperty),
                            m_Focusable(this, &CUIElement::FocusableProperty),
-                           m_Namescope(this, &CUIElement::NamescopeProperty),
+                           m_Opacity(this, &CUIElement::OpacityProperty),
                            m_Layer(NULL),
                            m_ClipToLayoutBounds(FALSE)
 {
@@ -207,6 +207,7 @@ HRESULT CUIElement::RequiresLayer(BOOL* pRequiresLayer)
     RectF ClipRect;
     CGeometry* pClipGeometry = NULL;
     Visibility::Value EffectiveVisibility = Visibility::Visible;
+    FLOAT Opacity = 0;
 
     IFCPTR(pRequiresLayer);
 
@@ -216,6 +217,15 @@ HRESULT CUIElement::RequiresLayer(BOOL* pRequiresLayer)
 
     if(EffectiveVisibility != Visibility::Visible)
     {
+        goto Cleanup;
+    }
+
+    IFC(GetEffectiveOpacity(&Opacity));
+
+    if(Opacity < 1.0f)
+    {
+        *pRequiresLayer = TRUE;
+
         goto Cleanup;
     }
 
@@ -315,6 +325,7 @@ HRESULT CUIElement::Render(CRenderContext& Context)
     CRenderTarget* pRenderTarget = NULL;
     RectF ClipRect;
     CGeometry* pClipGeometry = NULL;
+    FLOAT Opacity = 1.0f;
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
@@ -325,11 +336,13 @@ HRESULT CUIElement::Render(CRenderContext& Context)
     {
         if(m_Layer != NULL)
         {
+            IFC(GetEffectiveOpacity(&Opacity));
+
             IFC(GetClippingRectangle(&ClipRect));
 
             IFC(GetClippingGeometry(&pClipGeometry));
 
-            IFC(pRenderTarget->PushLayer(m_Layer, ClipRect, pClipGeometry));
+            IFC(pRenderTarget->PushLayer(m_Layer, ClipRect, Opacity, pClipGeometry));
         }
 
         IFC(RenderInternal(Context));
@@ -360,22 +373,12 @@ HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
     CRoutedEventArgs* pAttachedEventArgs = NULL;
-    CNamescope* pNamescope = NULL;
 
     IFCEXPECT(!IsAttached());
 
     m_Attached = TRUE;
 
-    IFC(GetEffectiveNamescope(&pNamescope));
-
-    if(pNamescope)
-    {
-        m_Context = CUIAttachContext(Context.GetParent(), Context.GetTemplateParent(), Context.GetFocusManager(), pNamescope);
-    }
-    else
-    {
-        m_Context = Context;
-    }
+    m_Context = Context;
 
     m_NotifiedParentMeasureDirty = FALSE;
     m_NotifiedParentArrangeDirty = FALSE;
@@ -389,7 +392,6 @@ HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
     
 Cleanup:
     ReleaseObject(pAttachedEventArgs);
-    ReleaseObject(pNamescope);
 
     return hr;
 }
@@ -443,7 +445,7 @@ HRESULT CUIElement::GetMinMaxSize(SizeF& MinimumSize, SizeF& MaximumSize)
     FLOAT MaxWidth = 0;
     FLOAT MinWidth = 0;    
 
-    IFC(m_Height.GetTypedEffectiveValue(GetProviders(), &pHeight));
+    IFC(m_Height.GetTypedEffectiveValue(&pHeight));
 
     IFC(GetEffectiveMaximumHeight(&MaxHeight));
     IFC(GetEffectiveMinimumHeight(&MinHeight));
@@ -457,7 +459,7 @@ HRESULT CUIElement::GetMinMaxSize(SizeF& MinimumSize, SizeF& MaximumSize)
     IFC(GetEffectiveMaximumWidth(&MaxWidth));
     IFC(GetEffectiveMinimumWidth(&MinWidth));
 
-    IFC(m_Width.GetTypedEffectiveValue(GetProviders(), &pWidth));
+    IFC(m_Width.GetTypedEffectiveValue(&pWidth));
 
     Width = (pWidth != NULL) ? pWidth->GetValue() : FLT_MAX;
     MaxWidth = std::max(std::min(Width, MaxWidth), MinWidth);
@@ -580,7 +582,7 @@ HRESULT CUIElement::GetEffectiveVisibility(Visibility::Value* pVisibility)
 
     IFCPTR(pVisibility);
 
-    IFC(m_Visibility.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_Visibility.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pVisibility = pEffectiveValue->GetValue();
 
@@ -597,7 +599,7 @@ HRESULT CUIElement::GetEffectiveMinimumWidth(FLOAT* pMinimumWidth)
 
     IFCPTR(pMinimumWidth);
 
-    IFC(m_MinimumWidth.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_MinimumWidth.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pMinimumWidth = pEffectiveValue->GetValue();
 
@@ -614,7 +616,7 @@ HRESULT CUIElement::GetEffectiveMinimumHeight(FLOAT* pMinimumHeight)
 
     IFCPTR(pMinimumHeight);
 
-    IFC(m_MinimumHeight.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_MinimumHeight.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pMinimumHeight = pEffectiveValue->GetValue();
 
@@ -631,7 +633,7 @@ HRESULT CUIElement::GetEffectiveMaximumWidth(FLOAT* pMaximumWidth)
 
     IFCPTR(pMaximumWidth);
 
-    IFC(m_MaximumWidth.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_MaximumWidth.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pMaximumWidth = pEffectiveValue->GetValue();
 
@@ -648,7 +650,7 @@ HRESULT CUIElement::GetEffectiveMaximumHeight(FLOAT* pMaximumHeight)
 
     IFCPTR(pMaximumHeight);
 
-    IFC(m_MaximumHeight.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_MaximumHeight.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pMaximumHeight = pEffectiveValue->GetValue();
 
@@ -665,7 +667,7 @@ HRESULT CUIElement::GetEffectiveHorizontalAlignment(HorizontalAlignment::Value* 
 
     IFCPTR(pAlignment);
 
-    IFC(m_HorizontalAlignment.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_HorizontalAlignment.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pAlignment = pEffectiveValue->GetValue();
 
@@ -682,7 +684,7 @@ HRESULT CUIElement::GetEffectiveVerticalAlignment(VerticalAlignment::Value* pAli
 
     IFCPTR(pAlignment);
 
-    IFC(m_VerticalAlignment.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_VerticalAlignment.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pAlignment = pEffectiveValue->GetValue();
 
@@ -697,7 +699,7 @@ HRESULT CUIElement::GetEffectiveMargin(RectF* pMargin)
     HRESULT hr = S_OK;
     CRectFValue* pEffectiveValue = NULL;
 
-    IFC(m_Margin.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_Margin.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pMargin = pEffectiveValue->GetValue();
 
@@ -712,7 +714,7 @@ HRESULT CUIElement::GetEffectiveFocusable(BOOL* pFocusable)
     HRESULT hr = S_OK;
     CBoolValue* pEffectiveValue = NULL;
 
-    IFC(m_Focusable.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_Focusable.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pFocusable = pEffectiveValue->GetValue();
 
@@ -722,26 +724,20 @@ Cleanup:
     return hr;
 }
 
-
-HRESULT CUIElement::GetEffectiveNamescope(CNamescope** ppNamescope)
+HRESULT CUIElement::GetEffectiveOpacity(FLOAT* pOpacity)
 {
     HRESULT hr = S_OK;
+    CFloatValue* pEffectiveValue = NULL;
 
-    IFCPTR(ppNamescope);
+    IFCPTR(pOpacity);
 
-    IFC(m_Namescope.GetTypedEffectiveValue(GetProviders(), ppNamescope));
+    IFC(m_Opacity.GetTypedEffectiveValue(&pEffectiveValue));
 
-Cleanup:
-    return hr;
-}
-
-HRESULT CUIElement::OnNamescopeChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
-{
-    HRESULT hr = S_OK;
-
-    //TODO: Unregister and switch namescope?
+    *pOpacity = pEffectiveValue->GetValue();
 
 Cleanup:
+    ReleaseObject(pEffectiveValue);
+
     return hr;
 }
 
@@ -775,6 +771,7 @@ HRESULT CUIElement::Arrange(RectF Bounds)
             BOOL NeedsClipBounds = FALSE;
 
             SizeF ArrangeSize(Bounds.right - Bounds.left, Bounds.bottom - Bounds.top);
+            SizeF OriginalArrangeSize = ArrangeSize;
 
             RectF Margin;
             
@@ -840,7 +837,7 @@ HRESULT CUIElement::Arrange(RectF Bounds)
 
             NeedsClipBounds |= (ClippedSize.width < UsedArrangeSize.width) ||  (ClippedSize.height < UsedArrangeSize.height);
 
-            SizeF ClientSize(std::max(0.0f, ArrangeSize.width - MarginWidth), std::max(0.0f, ArrangeSize.height - MarginHeight));
+            SizeF ClientSize(std::max(0.0f, ArrangeSize.width), std::max(0.0f, ArrangeSize.height));
 
             NeedsClipBounds |= (ClientSize.width < ClippedSize.width) || (ClientSize.height < ClippedSize.height);
 
@@ -1137,7 +1134,8 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
         &HorizontalAlignmentProperty,
         &VerticalAlignmentProperty,
         &MarginProperty,
-        &FocusableProperty
+        &FocusableProperty,
+        &OpacityProperty
     };
     
     IFCPTR(ppInformation);
@@ -1268,117 +1266,13 @@ HRESULT CUIElement::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
     {
         *ppLayeredValue = &m_Focusable;
     }
-    else if(pProperty == &CUIElement::NamescopeProperty)
+    else if(pProperty == &CUIElement::OpacityProperty)
     {
-        *ppLayeredValue = &m_Namescope;
+        *ppLayeredValue = &m_Opacity;
     }
     else
     {
         hr = E_FAIL;
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CUIElement::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
-{
-    HRESULT hr = S_OK;
-    CLayeredValue* pLayeredValue = NULL;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    IFCEXPECT(!pProperty->IsReadOnly());
-
-    if(pProperty->IsAttached())
-    {
-        //TODO: Get or create layered value holder here and set it.
-        if(SUCCEEDED(E_FAIL))
-        {
-        }
-        else
-        {
-            IFC(CVisual::SetValueInternal(pProperty, pValue));
-        }
-    }
-    else
-    {
-        IFC(GetLayeredValue(pProperty, &pLayeredValue));
-
-        IFC(pLayeredValue->SetLocalValue(pValue, GetProviders()));
-
-        //NOTE: Don't call the base class here as all properties are expected to be layered.
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CUIElement::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
-{
-    HRESULT hr = S_OK;
-    CLayeredValue* pLayeredValue = NULL;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty->IsAttached())
-    {
-        //TODO: Get layered value holder here and get value.
-        if(SUCCEEDED(E_FAIL))
-        {
-        }
-        else
-        {
-            IFC(GetValueInternal(pProperty, ppValue));
-        }
-    }
-    else
-    {
-        if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
-        {
-            IFC(pLayeredValue->GetLocalValue(GetProviders(), ppValue));
-        }
-        else
-        {
-            IFC(GetValueInternal(pProperty, ppValue));
-        }
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CUIElement::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    IFC(CVisual::GetValue(pProperty, ppValue));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveValue(CProperty* pProperty, CObjectWithType** ppValue)
-{
-    HRESULT hr = S_OK;
-    CLayeredValue* pLayeredValue = NULL;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
-    {
-        IFC(pLayeredValue->GetEffectiveValue(GetProviders(), ppValue));
-    }
-    else
-    {
-        //TODO: This will trigger yet another layered property lookup, needs optomization.
-        IFC(GetValue(pProperty, ppValue));
     }
 
 Cleanup:
@@ -1394,7 +1288,7 @@ HRESULT CUIElement::ClearValue(CProperty* pProperty)
 
     IFC(GetLayeredValue(pProperty, &pLayeredValue));
 
-    IFC(pLayeredValue->ClearLocalValue(GetProviders()));
+    IFC(pLayeredValue->ClearLocalValue());
 
 Cleanup:
     return hr;
@@ -1503,6 +1397,16 @@ Cleanup:
 HRESULT CUIElement::OnFocusableChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::OnOpacityChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+    
+    //TODO: Invalidate render.
 
 Cleanup:
     return hr;
@@ -2224,6 +2128,18 @@ extern "C" __declspec(dllexport)
 CRoutedEvent* CUIElement_GetKeyUpEvent()
 {
     return &CUIElement::KeyUpEvent;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CUIElement_GetVisibilityProperty()
+{
+    return &CUIElement::VisibilityProperty;
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CUIElement_Focus(CUIElement* pElement, BOOL* pSetFocus)
+{
+    return pElement->Focus(pSetFocus);
 }
 
 //

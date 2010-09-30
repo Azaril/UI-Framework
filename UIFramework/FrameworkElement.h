@@ -155,9 +155,9 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
 
         CUIElementCollection* GetChildCollection();
 
-        CTypedLocalLayeredValue< CStringValue > m_Name;
-        CTypedLocalLayeredValue< CResourceDictionary > m_Resources;
-        CTypedLocalLayeredValue< CStyle > m_Style;
+        CTypedLocalLayeredValue< CFrameworkElement, CStringValue > m_Name;
+        CTypedLocalLayeredValue< CFrameworkElement, CResourceDictionary > m_Resources;
+        CTypedLocalLayeredValue< CFrameworkElement, CStyle > m_Style;
 
         BOOL m_AutomaticNamescopeParticipation;
         CStringValue* m_RegisteredName;

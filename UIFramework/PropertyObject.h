@@ -11,6 +11,7 @@ struct ObjectTypeTraits;
 
 class CObjectWithType;
 class CPropertyObject;
+class CLayeredValue;
 
 class CProperty
 {
@@ -108,6 +109,7 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
 
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual HRESULT GetEffectiveValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         HRESULT AddPropertyChangeListener( const PropertyChangedHandler& Handler, events::signals::connection* pConnection );
 
@@ -137,16 +139,22 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
             return hr;
         }
 
+        HRESULT RaisePropertyChanged( CProperty* pProperty );
+
     protected:
         CPropertyObject();
         virtual ~CPropertyObject();
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-
-        HRESULT RaisePropertyChanged( CProperty* pProperty );
+        virtual HRESULT SetValueReadOnly( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );     
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         std::vector< CAttachedPropertyHolder > m_AttachedProperties;
         PropertyChangedSignal m_PropertyChangedSignal;
+
+    private:
+        HRESULT SetValuePrivate( CProperty* pProperty, CObjectWithType* pValue );     
 };
 
 template< >

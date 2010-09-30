@@ -34,6 +34,8 @@ class UIFRAMEWORK_API CVisual : public CRefCountedObjectBase< CPropertyObject >
         virtual CVisual* GetVisualChild( UINT32 Index );
 
         virtual HRESULT TransformToParent( CTransform** ppTransform );
+        virtual HRESULT TransformFromAncestor( CVisual* pAncestor, CTransform** ppTransform );
+        virtual HRESULT TransformToAncestor( CVisual* pAncestor, CTransform** ppTransform );
 
         virtual HRESULT OnVisualNotification( CVisualNotification* pNotification );
     
@@ -59,6 +61,13 @@ class UIFRAMEWORK_API CVisual : public CRefCountedObjectBase< CPropertyObject >
         virtual HRESULT RemoveVisualResource( CVisualResource* pVisualResource );
 
         virtual HRESULT RenderTransformed( CRenderContext& Context );
+        virtual HRESULT RenderChildren( CRenderContext& Context );
+
+        virtual const Matrix3X2F* GetChildRenderTransform();
+
+        const Matrix3X2F& GetFinalLocalTransform();
+
+        CVisual* GetVisualParent();
 
         CVisualAttachContext m_VisualContext;
         VisualChildCollection m_VisualChildren;

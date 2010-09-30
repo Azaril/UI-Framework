@@ -35,7 +35,7 @@ class CD2DRenderTarget : public CRenderTarget
 
         virtual HRESULT CreateLayer( CLayer** ppLayer );
 
-        virtual HRESULT PushLayer( CLayer* pLayer, const RectF& ClippingRect, CGeometry* pClippingGeometry );
+        virtual HRESULT PushLayer( CLayer* pLayer, const RectF& ClippingRect, FLOAT Opacity, CGeometry* pClippingGeometry );
         virtual HRESULT PopLayer();
 
     protected:

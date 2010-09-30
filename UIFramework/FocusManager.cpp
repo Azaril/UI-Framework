@@ -40,7 +40,10 @@ HRESULT CFocusManager::SetFocus(CUIElement* pElement, BOOL* pSetFocus)
 
     if(pElement != m_FocusedElement)
     {
-        Abort = !pElement->IsFocusable();
+        if(pElement)
+        {
+            Abort = !pElement->IsFocusable();
+        }
 
         if(!Abort && m_FocusedElement)
         {
@@ -96,4 +99,31 @@ Cleanup:
     ReleaseObject(pGotFocusEvent);
 
     return hr;
+}
+
+//
+// CUIHost
+//
+extern "C" __declspec(dllexport)
+void CFocusManager_AddRef(CFocusManager* pManager)
+{
+    pManager->AddRef();
+}
+
+extern "C" __declspec(dllexport)
+void CFocusManager_Release(CFocusManager* pManager)
+{
+    pManager->Release();
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CFocusManager_SetFocus(CFocusManager* pManager, CUIElement* pElement, BOOL* pSetFocus)
+{
+    return pManager->SetFocus(pElement, pSetFocus);
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CFocusManager_GetFocusedElement(CFocusManager* pManager, CUIElement** ppElement)
+{
+    return pManager->GetFocusedElement(ppElement);
 }

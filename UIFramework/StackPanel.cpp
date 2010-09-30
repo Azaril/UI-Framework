@@ -189,7 +189,7 @@ HRESULT CStackPanel::GetEffectiveOrientation(Orientation::Value* pOrientation)
 
     IFCPTR(pOrientation);
 
-    IFC(m_Orientation.GetTypedEffectiveValue(GetProviders(), &pEffectiveValue));
+    IFC(m_Orientation.GetTypedEffectiveValue(&pEffectiveValue));
 
     *pOrientation = pEffectiveValue->GetValue();
 

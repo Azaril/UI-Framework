@@ -26,7 +26,7 @@ HRESULT CPanel::Initialize(CProviders* pProviders)
 
     IFC(CFrameworkElement::Initialize(pProviders));
 
-    IFC(m_Children.SetLocalValue(GetChildCollection(), GetProviders()));
+    IFC(m_Children.SetLocalValue(GetChildCollection()));
 
 Cleanup:
     return hr;

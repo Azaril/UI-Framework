@@ -86,6 +86,8 @@ HRESULT CControl::OnDetach(CUIDetachContext& Context)
 
     IFC(RevokeTemplate());
 
+    m_TemplateDirty = TRUE;
+
     IFC(CFrameworkElement::OnDetach(Context));
 
 Cleanup:
@@ -97,8 +99,6 @@ HRESULT CControl::OnTemplateChanged(CObjectWithType* pOldValue, CObjectWithType*
     HRESULT hr = S_OK;
 
     m_TemplateDirty = TRUE;
-
-    IFC(RevokeTemplate());
 
     IFC(EnsureTemplate());
 
@@ -127,12 +127,14 @@ HRESULT CControl::RevokeTemplate()
 
     if(m_TemplateChild != NULL)
     {
+        IFC(PreTemplateRevoked());
+
         IFC(RemoveLogicalChild(m_TemplateChild));
 
         ReleaseObject(m_TemplateChild);
-    }
 
-    ReleaseObject(m_TemplateNamescope);
+        ReleaseObject(m_TemplateNamescope);
+    }
 
 Cleanup:
     return hr;
@@ -147,6 +149,8 @@ HRESULT CControl::EnsureTemplate()
     {
         if(IsAttached())
         {
+            m_TemplateDirty = FALSE;
+
             IFC(RevokeTemplate());
 
             IFC(GetEffectiveTemplate(&pTemplate));
@@ -156,12 +160,26 @@ HRESULT CControl::EnsureTemplate()
                 IFC(ApplyTemplate(pTemplate));
             }
 
-            m_TemplateDirty = FALSE;
+            IFC(PostTemplateApplied());
         }
     }
 
 Cleanup:
     ReleaseObject(pTemplate);
+
+    return hr;
+}
+
+HRESULT CControl::PostTemplateApplied()
+{
+    HRESULT hr = S_OK;
+
+    return hr;
+}
+
+HRESULT CControl::PreTemplateRevoked()
+{
+    HRESULT hr = S_OK;
 
     return hr;
 }
@@ -198,7 +216,7 @@ HRESULT CControl::GetEffectiveTemplate(CControlTemplate** ppTemplate)
 
     IFCPTR(ppTemplate);
 
-    IFC(m_Template.GetTypedEffectiveValue(GetProviders(), ppTemplate));
+    IFC(m_Template.GetTypedEffectiveValue(ppTemplate));
 
 Cleanup:
     return hr;

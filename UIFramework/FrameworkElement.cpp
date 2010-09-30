@@ -53,7 +53,7 @@ HRESULT CFrameworkElement::Initialize(CProviders* pProviders)
 
     IFC(CResourceDictionary::Create(&pResources));
 
-    IFC(m_Resources.SetLocalValue(pResources, GetProviders()));
+    IFC(m_Resources.SetLocalValue(pResources));
 
     IFC(CUIElementCollection::Create(&m_Children));
 
@@ -143,7 +143,7 @@ HRESULT CFrameworkElement::GetEffectiveName(CStringValue** ppName)
 
     IFCPTR(ppName);
 
-    IFC(m_Name.GetTypedEffectiveValue(GetProviders(), ppName));
+    IFC(m_Name.GetTypedEffectiveValue(ppName));
 
 Cleanup:
     return hr;
@@ -155,7 +155,7 @@ HRESULT CFrameworkElement::GetEffectiveStyle(CStyle** ppStyle)
 
     IFCPTR(ppStyle);
 
-    IFC(m_Style.GetTypedEffectiveValue(GetProviders(), ppStyle));
+    IFC(m_Style.GetTypedEffectiveValue(ppStyle));
 
 Cleanup:
     return hr;
@@ -167,7 +167,7 @@ HRESULT CFrameworkElement::GetEffectiveResources(CResourceDictionary** ppResourc
 
     IFCPTR(ppResources);
 
-    IFC(m_Resources.GetTypedEffectiveValue(GetProviders(), ppResources));
+    IFC(m_Resources.GetTypedEffectiveValue(ppResources));
 
 Cleanup:
     return hr;
@@ -420,7 +420,7 @@ HRESULT CFrameworkElement::SetStyleValue(CProperty* pProperty, CObjectWithType* 
 
     IFC(GetLayeredValue(pProperty, &pLayeredValue));
 
-    IFC(pLayeredValue->SetStyleValue(pValue, GetProviders()));
+    IFC(pLayeredValue->SetStyleValue(pValue));
 
     //TODO: Resolve this for layered properties.
     IFC(RaisePropertyChanged(pProperty));

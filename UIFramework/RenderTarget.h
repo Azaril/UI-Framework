@@ -51,6 +51,6 @@ class CRenderTarget : public CRefCountedObject
 
         virtual HRESULT CreateLayer( CLayer** ppLayer ) = 0;
 
-        virtual HRESULT PushLayer( CLayer* pLayer, const RectF& ClippingRect, CGeometry* pClippingGeometry ) = 0;
+        virtual HRESULT PushLayer( CLayer* pLayer, const RectF& ClippingRect, FLOAT Opacity, CGeometry* pClippingGeometry ) = 0;
         virtual HRESULT PopLayer() = 0;
 };

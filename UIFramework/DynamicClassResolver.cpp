@@ -23,6 +23,9 @@
 #include "ScrollContentPresenter.h"
 #include "RoutedCommand.h"
 #include "ScrollBar.h"
+#include "Thumb.h"
+#include "Track.h"
+#include "RangeBase.h"
 
 template< typename FromType >
 class StaticClassFactory
@@ -56,6 +59,38 @@ ClassInformation Classes[] =
         &CUIElement::CreatePropertyInformation,
         &CUIElement::CreateEventInformation,
         &CUIElement::CreateCommandInformation),
+
+    ClassInformation(
+        L"FrameworkElement",
+        TypeIndex::FrameworkElement,
+        NULL,
+        &CFrameworkElement::CreatePropertyInformation,
+        &CFrameworkElement::CreateEventInformation,
+        &CFrameworkElement::CreateCommandInformation),
+
+    ClassInformation(
+        L"Control",
+        TypeIndex::Control,
+        NULL,
+        &CControl::CreatePropertyInformation,
+        &CControl::CreateEventInformation,
+        &CControl::CreateCommandInformation),
+
+    ClassInformation(
+        L"ContentControl",
+        TypeIndex::ContentControl,
+        NULL,
+        &CContentControl::CreatePropertyInformation,
+        &CContentControl::CreateEventInformation,
+        &CContentControl::CreateCommandInformation),
+
+    ClassInformation(
+        L"Decorator",
+        TypeIndex::Decorator,
+        NULL,
+        &CDecorator::CreatePropertyInformation,
+        &CDecorator::CreateEventInformation,
+        &CDecorator::CreateCommandInformation),
 
     ClassInformation(
         L"Border",
@@ -146,6 +181,14 @@ ClassInformation Classes[] =
         &CTextBox::CreateCommandInformation),
 
     ClassInformation(
+        L"ButtonBase",
+        TypeIndex::ButtonBase,
+        NULL,
+        &CButtonBase::CreatePropertyInformation,
+        &CButtonBase::CreateEventInformation,
+        &CButtonBase::CreateCommandInformation),
+
+    ClassInformation(
         L"Button",
         TypeIndex::Button,
         &StaticClassFactory< CButton >::Create,
@@ -160,6 +203,30 @@ ClassInformation Classes[] =
         &CScrollBar::CreatePropertyInformation,
         &CScrollBar::CreateEventInformation,
         &CScrollBar::CreateCommandInformation),
+
+    ClassInformation(
+        L"Thumb",
+        TypeIndex::Thumb,
+        &StaticClassFactory< CThumb >::Create,
+        &CThumb::CreatePropertyInformation,
+        &CThumb::CreateEventInformation,
+        &CThumb::CreateCommandInformation),
+
+    ClassInformation(
+        L"RangeBase",
+        TypeIndex::RangeBase,
+        NULL,
+        &CRangeBase::CreatePropertyInformation,
+        &CRangeBase::CreateEventInformation,
+        &CRangeBase::CreateCommandInformation),
+
+    ClassInformation(
+        L"Track",
+        TypeIndex::Track,
+        &StaticClassFactory< CTrack >::Create,
+        &CTrack::CreatePropertyInformation,
+        &CTrack::CreateEventInformation,
+        &CTrack::CreateCommandInformation),
 
     ClassInformation(
         L"ImageBrush",

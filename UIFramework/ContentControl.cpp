@@ -38,7 +38,7 @@ HRESULT CContentControl::GetEffectiveContent(CObjectWithType** ppContent)
 
     IFCPTR(ppContent);
 
-    IFC(m_Content.GetEffectiveValue(GetProviders(), ppContent));
+    IFC(m_Content.GetEffectiveValue(ppContent));
 
 Cleanup:
     return hr;

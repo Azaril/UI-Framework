@@ -3,6 +3,8 @@
 #include "Enums.h"
 #include "InputEventArgs.h"
 
+class CVisual;
+
 class CMouseEventArgs : public CInputEventArgs
 {
     public:
@@ -11,7 +13,8 @@ class CMouseEventArgs : public CInputEventArgs
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::MouseEventArgs, CInputEventArgs );
 
-        Point2F GetLocation();
+        HRESULT GetLocation( Point2F* pLocation );
+        HRESULT GetLocation( CVisual* pVisual, Point2F* pLocation );
 
     protected:
         CMouseEventArgs();

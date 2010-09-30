@@ -36,7 +36,7 @@ class UIFRAMEWORK_API CStackPanel : public CPanel
 
         HRESULT OnOrientationChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        CTypedLayeredValue< COrientationValue > m_Orientation;
+        CTypedLayeredValue< CStackPanel, COrientationValue > m_Orientation;
 };
 
 template< >

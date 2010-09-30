@@ -8,7 +8,7 @@ class UIFRAMEWORK_API CRootUIElement : public CFrameworkElement,
     public:
         DECLARE_FACTORY4( CRootUIElement, CGraphicsDevice*, CRenderTarget*, CProviders*, CFocusManager* );
 
-        DECLARE_TYPE_WITH_BASE( TypeIndex::Image, CFrameworkElement );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::RootUIElement, CFrameworkElement );
 
         virtual HRESULT RenderRoot( CRenderContext& Context );
 

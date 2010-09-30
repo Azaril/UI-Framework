@@ -82,6 +82,19 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIHost::GetFocusManager(CFocusManager** ppFocusManager)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppFocusManager);
+
+    *ppFocusManager = m_FocusManager;
+    AddRefObject(m_FocusManager);
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CUIHost::EnsureLayout()
 {
     HRESULT hr = S_OK;
@@ -134,6 +147,9 @@ Cleanup:
     return hr;
 }
 
+//
+// CUIHost
+//
 extern "C" __declspec(dllexport)
 void CUIHost_AddRef(CUIHost* pHost)
 {
@@ -150,4 +166,10 @@ extern "C" __declspec(dllexport)
 HRESULT CUIHost_GetRootElement(CUIHost* pHost, CRootUIElement** ppElement)
 {
     return pHost->GetRootElement(ppElement);
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CUIHost_GetFocusManager(CUIHost* pHost, CFocusManager** ppFocusManager)
+{
+    return pHost->GetFocusManager(ppFocusManager);
 }

@@ -28,7 +28,7 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     AddRefObject(m_Providers);
 
     {
-        CVisualAttachContext VisualContext(this, pGraphicsDevice);
+        CVisualAttachContext VisualContext(NULL, pGraphicsDevice);
 
         IFC(OnVisualAttach(VisualContext));
     }
