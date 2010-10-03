@@ -7,6 +7,7 @@
 #include "Providers.h"
 #include "Types.h"
 #include "RoutedCommand.h"
+#include "SourcedBinding.h"
 
 StaticTypeConverter BasicConverters[] =
 {
@@ -21,7 +22,8 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::Brush, ConvertStringToBrush },
     { TypeIndex::String, TypeIndex::HorizontalAlignment, ConvertStringToHorizontalAlignment },
     { TypeIndex::String, TypeIndex::VerticalAlignment, ConvertStringToVerticalAlignment },
-    { TypeIndex::String, TypeIndex::Command, ConvertStringToCommand }
+    { TypeIndex::String, TypeIndex::Command, ConvertStringToCommand },
+    { TypeIndex::String, TypeIndex::BindingDirection, ConvertStringToBindingDirection }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -71,6 +73,50 @@ HRESULT ConvertStringToFloat(CConversionContext* pContext, CObjectWithType* pVal
 
 Cleanup:
     ReleaseObject(pFloatValue);
+
+    return hr;
+}
+
+template< typename T>
+struct EnumHolder
+{
+    const WCHAR* StringValue;
+    T Value;
+};
+
+template< typename T, typename HolderType >
+HRESULT ConvertStringToEnum(CConversionContext* pContext, CObjectWithType* pValue, const EnumHolder< T >* pEnums, UINT32 EnumCount, BOOL CaseSensitive, HolderType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+    HolderType* pHolderValue = NULL;
+
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    for(UINT32 i = 0; i < EnumCount; i++)
+    {
+        INT32 Result = CaseSensitive ? wcscmp(pStringValue->GetValue(), pEnums[i].StringValue) : wcsicmp(pStringValue->GetValue(), pEnums[i].StringValue);
+
+        if(Result == 0)
+        {
+            IFC(HolderType::Create(pEnums[i].Value, &pHolderValue));
+
+            break;
+        }
+    }
+
+    IFCPTR(pHolderValue);
+
+    *ppConvertedValue = pHolderValue;
+    pHolderValue = NULL;
+
+Cleanup:
+    ReleaseObject(pHolderValue);
 
     return hr;
 }
@@ -1066,6 +1112,28 @@ HRESULT ConvertStringToCommand(CConversionContext* pContext, CObjectWithType* pV
 Cleanup:
     ReleaseObject(pCommand);
     ReleaseObject(pRoutedEvent);
+
+    return hr;
+}
+
+const EnumHolder< BindingDirection::Value > g_BindingDirections[] =
+{
+    { L"OneWay", BindingDirection::OneWay },
+    { L"TwoWay", BindingDirection::TwoWay }
+};
+
+HRESULT ConvertStringToBindingDirection(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    CBindingDirectionValue* pOutValue = NULL;
+
+    IFC(ConvertStringToEnum(pContext, pValue, g_BindingDirections, ARRAYSIZE(g_BindingDirections), TRUE, &pOutValue));
+
+    *ppConvertedValue = pOutValue;
+    pOutValue = NULL;
+
+Cleanup:
+    ReleaseObject(pOutValue);
 
     return hr;
 }

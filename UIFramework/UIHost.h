@@ -36,4 +36,5 @@ class UIFRAMEWORK_API CUIHost : public CRefCountedObject
         CFocusManager* m_FocusManager;
         CMouseController* m_MouseController;
         CKeyboardController* m_KeyboardController;
+        CStaticTreeData* m_TreeData;
 };

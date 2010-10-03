@@ -89,6 +89,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BindingBase.cpp" />
+    <ClCompile Include="BindingContext.cpp" />
+    <ClCompile Include="BindingManager.cpp" />
     <ClCompile Include="Collections.cpp" />
     <ClCompile Include="D2DSurfaceRenderTarget.cpp" />
     <ClCompile Include="DragDeltaEventArgs.cpp" />
@@ -121,6 +124,7 @@
     <ClCompile Include="D2DSolidColorBrush.cpp" />
     <ClCompile Include="BitmapSource.cpp" />
     <ClCompile Include="ImagingProvider.cpp" />
+    <ClCompile Include="SourcedBinding.cpp" />
     <ClCompile Include="Thumb.cpp" />
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="WICBitmapSource.cpp" />
@@ -259,6 +263,9 @@
     <ClCompile Include="Types.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BindingBase.h" />
+    <ClInclude Include="BindingContext.h" />
+    <ClInclude Include="BindingManager.h" />
     <ClInclude Include="Collections.h" />
     <ClInclude Include="D2DSurfaceRenderTarget.h" />
     <ClInclude Include="Defines.h" />
@@ -291,6 +298,7 @@
     <ClInclude Include="D2DSolidColorBrush.h" />
     <ClInclude Include="BitmapSource.h" />
     <ClInclude Include="ImagingProvider.h" />
+    <ClInclude Include="SourcedBinding.h" />
     <ClInclude Include="Thumb.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="WICBitmapSource.h" />

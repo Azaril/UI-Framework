@@ -39,11 +39,11 @@ void CThumb::OnMouseLeftButtonDown(CObjectWithType* pSender, CRoutedEventArgs* p
 
     m_Dragging = TRUE;
 
-    IFC(pMouseEventArgs->GetLocation(this, &MouseLocation));
+    IFC(CaptureMouse());
+
+    IFC(pMouseEventArgs->GetLocation(GetParent(), &MouseLocation));
 
     IFC(StartDragging(MouseLocation));
-
-    //TODO: Capture mouse.
     
     pRoutedEventArgs->SetHandled();
 
@@ -64,7 +64,7 @@ void CThumb::OnMouseMove(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEven
 
         IFC(CastType(pRoutedEventArgs, &pMouseEventArgs));
 
-        IFC(pMouseEventArgs->GetLocation(this, &MouseLocation));
+        IFC(pMouseEventArgs->GetLocation(GetParent(), &MouseLocation));
 
         IFC(UpdateDrag(MouseLocation));
 
@@ -90,7 +90,9 @@ void CThumb::OnMouseLeftButtonUp(CObjectWithType* pSender, CRoutedEventArgs* pRo
 
         IFC(CastType(pRoutedEventArgs, &pMouseEventArgs));
 
-        IFC(pMouseEventArgs->GetLocation(this, &MouseLocation));
+        IFC(ReleaseMouse());
+
+        IFC(pMouseEventArgs->GetLocation(GetParent(), &MouseLocation));
 
         IFC(StopDragging(MouseLocation));        
 
@@ -126,7 +128,7 @@ HRESULT CThumb::UpdateDrag(Point2F Location)
     FLOAT DeltaX = Location.x - m_LastMouseLocation.x;
     FLOAT DeltaY = Location.y - m_LastMouseLocation.y;
 
-    if(DeltaX != 0.0f && DeltaY != 0.0f)
+    if(DeltaX != 0.0f || DeltaY != 0.0f)
     {
         IFC(CDragDeltaEventArgs::Create(&DragDeltaEvent, DeltaX, DeltaY, &pDeltaArgs));
 

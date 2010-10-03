@@ -3,25 +3,23 @@
 #include "PropertyObject.h"
 #include "RefCounted.h"
 #include "Providers.h"
+#include "BasicTypes.h"
+#include "StaticPropertyInformation.h"
+#include "SourcedBinding.h"
 
-class CBinding;
-
-typedef events::signal< void ( CBinding* ) > BindingInvalidatedSignal;
-typedef BindingInvalidatedSignal::slot_type BindingInvalidatedHandler;
-
-class CBinding : public CRefCountedObjectBase< CPropertyObject >
+class CBinding : public CSourcedBinding
 {
     public:
-        DECLARE_TYPE_WITH_BASE( TypeIndex::Binding, CPropertyObject );
+        DECLARE_FACTORY1( CBinding, CProviders* )
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Binding, CSourcedBinding );
 
-        virtual HRESULT GetBoundValue( CObjectWithType** ppValue ) = 0;
+        //static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT SetTarget( CPropertyObject* pTarget, CProperty* pTargetProperty );
-        virtual HRESULT ClearTarget();
-
-        HRESULT AddChangeListener( const BindingInvalidatedHandler& Handler, events::signals::connection* pConnection );
+        //
+        // Properties
+        //
+        //static CStaticProperty BindingDirectionProperty;
 
     protected:
         CBinding();
@@ -29,12 +27,8 @@ class CBinding : public CRefCountedObjectBase< CPropertyObject >
 
         HRESULT Initialize( CProviders* pProviders );
 
-        HRESULT InvalidateBinding();
-
-        CProviders* m_Providers;
-        CPropertyObject* m_Target;
-        CProperty* m_TargetProperty;
-        BindingInvalidatedSignal m_InvalidatedSignal;
+        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
 };
 
 template< >

@@ -24,6 +24,7 @@ class UIFRAMEWORK_API CRefCountedObjectBase : public T
             
             return Ref;
         }
+
     protected:
         CRefCountedObjectBase() : m_Ref(1)
         {

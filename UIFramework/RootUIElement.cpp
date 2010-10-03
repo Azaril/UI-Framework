@@ -11,14 +11,14 @@ CRootUIElement::~CRootUIElement()
     Finalize();
 }
 
-HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders, CFocusManager* pFocusManager)
+HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders, CStaticTreeData* pTreeData)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pGraphicsDevice);
     IFCPTR(pRenderTarget);
     IFCPTR(pProviders);
-    IFCPTR(pFocusManager);
+    IFCPTR(pTreeData);
 
     IFC(CFrameworkElement::Initialize(pProviders));
 
@@ -34,7 +34,7 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     }
 
     {
-        CUIAttachContext UIContext(NULL, NULL, pFocusManager, m_Namescope);
+        CUIAttachContext UIContext(pTreeData, NULL, NULL, m_Namescope);
 
         IFC(OnAttach(UIContext));
     }

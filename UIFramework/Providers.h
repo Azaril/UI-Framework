@@ -4,6 +4,8 @@
 #include "TypeConverter.h"
 #include "Factory.h"
 
+class CBindingManager;
+
 class UIFRAMEWORK_API CProviders : public CRefCountedObject
 {
     public:
@@ -11,6 +13,7 @@ class UIFRAMEWORK_API CProviders : public CRefCountedObject
 
         CClassResolver* GetClassResolver();
         CTypeConverter* GetTypeConverter();
+        CBindingManager* GetBindingManager();
 
     protected:
         CProviders();
@@ -20,4 +23,5 @@ class UIFRAMEWORK_API CProviders : public CRefCountedObject
 
         CClassResolver* m_ClassResolver;
         CTypeConverter* m_TypeConverter;
+        CBindingManager* m_BindingManager;
 };

@@ -27,12 +27,14 @@ CStaticRoutedCommand CScrollBar::LineUpCommand( L"LineUp" );
 CStaticRoutedCommand CScrollBar::LineDownCommand( L"LineDown" );
 
 CScrollBar::CScrollBar() : m_Orientation(this, &CScrollBar::OrientationProperty),
-                           m_ViewportSize(this, &CScrollBar::ViewportSizeProperty)
+                           m_ViewportSize(this, &CScrollBar::ViewportSizeProperty),
+                           m_Track(NULL)
 {
 }
 
 CScrollBar::~CScrollBar()
 {
+    ReleaseObject(m_Track);
 }
 
 HRESULT CScrollBar::Initialize(CProviders* pProviders)
@@ -42,6 +44,42 @@ HRESULT CScrollBar::Initialize(CProviders* pProviders)
     IFCPTR(pProviders);
 
     IFC(CRangeBase::Initialize(pProviders));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollBar::PostTemplateApplied()
+{
+    HRESULT hr = S_OK;
+    CBinding* pBinding = NULL;
+
+    IFC(CControl::PostTemplateApplied());
+
+    IFC(GetTemplateChild(L"PART_Track", &m_Track));
+
+    IFCPTR(m_Track);
+
+    //IFC(CBinding::Create(GetProviders(), &pBinding));
+
+    //IFC(m_Track->SetBinding(&CTrack::ValueProperty, pBinding));
+
+Cleanup:
+    ReleaseObject(pBinding);
+
+    return hr;
+}
+
+HRESULT CScrollBar::PreTemplateRevoked()
+{
+    HRESULT hr = S_OK;
+
+    if(m_Track)
+    {
+        //TODO: Clear binding.
+
+        ReleaseObject(m_Track);
+    }    
 
 Cleanup:
     return hr;

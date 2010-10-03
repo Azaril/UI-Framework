@@ -108,6 +108,7 @@ namespace MarkupExtensionParseState
         ParseProperty,
         ParsePropertyValue,
         BeginParsePropertyValue,
+        PostPropertyValue,
         Complete
     };
 }
@@ -279,6 +280,8 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
                         PropertyName[PropertyNameCharacters] = L'\0';
 
+                        PropertyNameCharacters = 0;
+
                         IFC(pProperties->GetProperty(PropertyName, &pProperty));
 
                         ++pParsePoint;
@@ -341,13 +344,13 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
                         ++pParsePoint;
                     }
-                    else if(iswspace(Token) || Token == L'}')
+                    else if(iswspace(Token) || Token == L'}' || Token == L',')
                     {
                         IFCEXPECT(PropertyValueCharacters < ARRAYSIZE(PropertyValue) - 1);
 
                         PropertyValue[PropertyValueCharacters] = L'\0';
 
-                        ++PropertyValueCharacters;
+                        PropertyValueCharacters = 0;
 
                         IFC(CStringValue::Create(PropertyValue, &pStringPropertyValue));
 
@@ -359,7 +362,37 @@ HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValu
 
                         ReleaseObject(pStringPropertyValue);
 
-                        ParseState = MarkupExtensionParseState::BeginFindProperty;
+                        ParseState = MarkupExtensionParseState::PostPropertyValue;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case MarkupExtensionParseState::PostPropertyValue:
+                {
+                    IFCEXPECT(pParsePoint < pValue + ValueLength);
+
+                    const WCHAR Token = *pParsePoint;
+
+                    if(iswspace(Token))
+                    {
+                        ++pParsePoint;
+                    }
+                    else if(Token == L',')
+                    {
+                        ++pParsePoint;
+
+                        ParseState = MarkupExtensionParseState::FindProperty;
+                    }
+                    else if(Token == L'}')
+                    {
+                        ++pParsePoint;
+
+                        ParseState = MarkupExtensionParseState::Complete;
                     }
                     else
                     {

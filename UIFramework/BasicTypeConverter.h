@@ -16,3 +16,4 @@ HRESULT ConvertStringToBrush( CConversionContext* pContext, CObjectWithType* pVa
 HRESULT ConvertStringToHorizontalAlignment( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToVerticalAlignment( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToCommand( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToBindingDirection( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );

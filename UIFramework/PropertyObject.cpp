@@ -2,13 +2,15 @@
 #include "ErrorChecking.h"
 #include "BasicTypes.h"
 #include "LayeredValue.h"
+#include "BindingContext.h"
 
-CPropertyObject::CPropertyObject()
+CPropertyObject::CPropertyObject() : m_BindingContext(NULL)
 {
 }
 
 CPropertyObject::~CPropertyObject()
 {
+    ReleaseObject(m_BindingContext);
 }
 
 HRESULT CPropertyObject::SetValue(CProperty* pProperty, CObjectWithType* pValue)
@@ -37,8 +39,6 @@ HRESULT CPropertyObject::SetValueReadOnly(CProperty* pProperty, CObjectWithType*
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    IFCEXPECT(pProperty->IsReadOnly());
-
     IFC(SetValuePrivate(pProperty, pValue));
 
 Cleanup:
@@ -56,42 +56,47 @@ HRESULT CPropertyObject::SetValuePrivate(CProperty* pProperty, CObjectWithType* 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    if(pProperty->IsAttached())
-    {
-        BOOL SetVal = FALSE;
+    IFC(GetValue(pProperty, &pOldValue));
 
-        for(std::vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
+    if(!pOldValue || !pValue->Equals(pOldValue))
+    {
+        if(pProperty->IsAttached())
         {
-            if(It->GetProperty() == pProperty)
+            BOOL SetVal = FALSE;
+
+            for(std::vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
             {
-                IFC(It->GetValue(&pOldValue));
+                if(It->GetProperty() == pProperty)
+                {
+                    IFC(It->SetValue(pValue));
 
-                IFC(It->SetValue(pValue));
+                    SetVal = TRUE;
 
-                SetVal = TRUE;
-
-                break;
+                    break;
+                }
             }
-        }
 
-        if(!SetVal)
+            if(!SetVal)
+            {
+                m_AttachedProperties.push_back(CAttachedPropertyHolder(pProperty, pValue));
+            }
+
+            IFC(pProperty->OnValueChanged(this, pOldValue, pValue));
+
+            IFC(RaisePropertyChanged(pProperty));
+        }
+        else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
         {
-            m_AttachedProperties.push_back(CAttachedPropertyHolder(pProperty, pValue));
+            IFC(pLayeredValue->SetLocalValue(pValue));
         }
+        else
+        {
+            IFC(SetValueInternal(pProperty, pValue));
 
-        IFC(pProperty->OnValueChanged(this, pOldValue, pValue));
+            IFC(pProperty->OnValueChanged(this, pOldValue, pValue));
 
-        IFC(RaisePropertyChanged(pProperty));
-    }
-    else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
-    {
-        IFC(pLayeredValue->SetLocalValue(pValue));
-    }
-    else
-    {
-        IFC(SetValueInternal(pProperty, pValue));
-
-        IFC(RaisePropertyChanged(pProperty));
+            IFC(RaisePropertyChanged(pProperty));
+        }
     }
 
 Cleanup:
@@ -179,8 +184,30 @@ HRESULT CPropertyObject::GetEffectiveValue(CProperty* pProperty, CObjectWithType
     }
     else
     {
-        //TODO: This will trigger yet another layered property lookup, needs optomization.
+        //TODO: This will trigger yet another layered property lookup, needs optimization.
         IFC(GetValue(pProperty, ppValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CPropertyObject::SetEffectiveValue(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CLayeredValue* pLayeredValue = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    {
+        IFC(pLayeredValue->SetEffectiveValue(pValue));
+    }
+    else
+    {
+        //TODO: This will trigger yet another layered property lookup, needs optimization.
+        IFC(SetValue(pProperty, pValue));
     }
 
 Cleanup:
@@ -206,6 +233,43 @@ HRESULT CPropertyObject::RaisePropertyChanged(CProperty* pProperty)
     IFCPTR(pProperty);
 
     m_PropertyChangedSignal(this, pProperty);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CPropertyObject::SetBinding(CProperty* pProperty, CBindingBase* pBinding)
+{
+    HRESULT hr = S_OK;
+
+    //TODO: Provide access to binding manager?
+    IFC(E_NOTIMPL);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CPropertyObject::SetBindingContext(CBindingContext* pContext)
+{
+    HRESULT hr = S_OK;
+
+    ReleaseObject(m_BindingContext);
+
+    m_BindingContext = pContext;
+
+    AddRefObject(m_BindingContext);
+
+    return hr;
+}
+
+HRESULT CPropertyObject::GetBindingContext(CBindingContext** ppContext)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppContext);
+
+    *ppContext = m_BindingContext;
+    AddRefObject(m_BindingContext);
 
 Cleanup:
     return hr;

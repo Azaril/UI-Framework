@@ -24,25 +24,27 @@ HRESULT CDynamicResource::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFC(CBinding::Initialize(pProviders));
+    IFC(CBindingBase::Initialize(pProviders));
 
 Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::GetBoundValue( CObjectWithType** ppValue)
+HRESULT CDynamicResource::GetBoundValue(CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
+    CPropertyObject* pTarget = NULL;
 
     IFCPTR(ppValue);
 
     IFCPTR(m_ResourceKey);
 
-    IFCPTR(m_Target);
+    pTarget = GetTarget();
+    IFCPTR(pTarget);
 
-    if(m_Target->IsTypeOf(TypeIndex::FrameworkElement))
+    if(pTarget->IsTypeOf(TypeIndex::FrameworkElement))
     {
-        CFrameworkElement* pElement = (CFrameworkElement*)m_Target;
+        CFrameworkElement* pElement = (CFrameworkElement*)pTarget;
 
         if(FAILED(pElement->FindResource(m_ResourceKey, ppValue)))
         {
@@ -73,7 +75,7 @@ HRESULT CDynamicResource::CreatePropertyInformation(CPropertyInformation **ppInf
     IFCPTR(ppInformation);
 
     IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
-    IFC(CBinding::CreatePropertyInformation(&pBaseInformation));
+    IFC(CBindingBase::CreatePropertyInformation(&pBaseInformation));
     IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingPropertyInformation));
 
     *ppInformation = pDelegatingPropertyInformation;
@@ -102,28 +104,28 @@ HRESULT CDynamicResource::SetValueInternal(CProperty* pProperty, CObjectWithType
     }
     else
     {
-        IFC(CBinding::SetValueInternal(pProperty, pValue));
+        IFC(CBindingBase::SetValueInternal(pProperty, pValue));
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+HRESULT CDynamicResource::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    if(pProperty  == &CDynamicResource::ResourceKeyProperty)
+    if(pProperty == &CDynamicResource::ResourceKeyProperty)
     {
         *ppValue = m_ResourceKey;
         AddRefObject(m_ResourceKey);
     }
     else
     {
-        IFC(CBinding::GetValue(pProperty, ppValue));
+        IFC(CBindingBase::GetValue(pProperty, ppValue));
     }
 
 Cleanup:
@@ -140,7 +142,7 @@ HRESULT CDynamicResource::SetTarget(CPropertyObject* pTarget, CProperty* pTarget
     //TODO: Fix this, as currently you can only bind a template binding to a UI element.
     IFCEXPECT(pTarget->IsTypeOf(TypeIndex::UIElement));
 
-    IFC(CBinding::SetTarget(pTarget, pTargetProperty));
+    IFC(CBindingBase::SetTarget(pTarget, pTargetProperty));
 
     pTargetElement = (CUIElement*)pTarget;
 
@@ -155,7 +157,7 @@ HRESULT CDynamicResource::ClearTarget()
 {
     HRESULT hr = S_OK;
 
-    IFC(CBinding::ClearTarget());
+    IFC(CBindingBase::ClearTarget());
 
     m_TargetAttachedConnection.disconnect();
     m_TargetDetachedConnection.disconnect();

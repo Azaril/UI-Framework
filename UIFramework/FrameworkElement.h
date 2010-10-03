@@ -138,6 +138,11 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
         virtual CUIElement* GetTemplateParentForChildren();
         virtual CNamescope* GetNamescopeForChildren();
 
+        static HRESULT SetStyleBindingValue( CPropertyObject* pTarget, CProperty* pTargetProperty, CObjectWithType* pValue );
+
+        HRESULT SetStyleBinding( CProperty* pProperty, CBindingBase* pBinding );
+        HRESULT SetStyleValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+
         //
         // Property Change Handlers
         //

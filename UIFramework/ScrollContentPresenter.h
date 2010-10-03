@@ -19,6 +19,9 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
         HRESULT LineUp();
         HRESULT LineDown();
 
+        HRESULT SetVerticalOffset( FLOAT Offset );
+        HRESULT SetHorizontalOffset( FLOAT Offset );
+
         FLOAT GetVerticalOffset();
         FLOAT GetHorizontalOffset();
 

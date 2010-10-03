@@ -18,31 +18,63 @@
 #include "StaticPropertyInformation.h"
 
 class CUIElement;
-class CFocusManager;
 class CNamescope;
+class CFocusManager;
+class CMouseController;
+class CKeyboardController;
+
+class CStaticTreeData
+{
+    public:
+        CStaticTreeData( CFocusManager* pFocusManager, CMouseController* pMouseController, CKeyboardController* pKeyboardController ) : m_FocusManager(pFocusManager),
+                                                                                                                                        m_MouseController(pMouseController),
+                                                                                                                                        m_KeyboardController(pKeyboardController)
+        {
+        }
+
+        CFocusManager* GetFocusManager()
+        {
+            return m_FocusManager;
+        }
+
+        CMouseController* GetMouseController()
+        {
+            return m_MouseController;
+        }
+
+        CKeyboardController* GetKeyboardController()
+        {
+            return m_KeyboardController;
+        }
+
+    protected:
+        CFocusManager* m_FocusManager;
+        CMouseController* m_MouseController;
+        CKeyboardController* m_KeyboardController;
+};
 
 class CUIAttachContext
 {
     public:
         CUIAttachContext() : m_Parent(NULL),
                              m_TemplateParent(NULL),
-                             m_FocusManager(NULL),
-                             m_Namescope(NULL)
+                             m_Namescope(NULL),
+                             m_StaticData(NULL)
         {
         }
 
         CUIAttachContext( const CUIAttachContext& Other ) : m_Parent(Other.m_Parent),
                                                             m_TemplateParent(Other.m_TemplateParent),
-                                                            m_FocusManager(Other.m_FocusManager),
-                                                            m_Namescope(Other.m_Namescope)
+                                                            m_Namescope(Other.m_Namescope),
+                                                            m_StaticData(Other.m_StaticData)
         {
             AddRefObject(m_Namescope);
         }
 
-        CUIAttachContext( CUIElement* pParent, CUIElement* pTemplateParent, CFocusManager* pFocusManager, CNamescope* pNamescope ) : m_Parent(pParent),
-                                                                                                                                     m_TemplateParent(pTemplateParent),
-                                                                                                                                     m_FocusManager(pFocusManager),
-                                                                                                                                     m_Namescope(pNamescope)
+        CUIAttachContext( CStaticTreeData* pData, CUIElement* pParent, CUIElement* pTemplateParent, CNamescope* pNamescope ) : m_Parent(pParent),
+                                                                                                                               m_TemplateParent(pTemplateParent),
+                                                                                                                               m_Namescope(pNamescope),
+                                                                                                                               m_StaticData(pData)
         {
             AddRefObject(m_Namescope);
         }
@@ -62,21 +94,36 @@ class CUIAttachContext
             return m_TemplateParent;
         }
 
-        CFocusManager* GetFocusManager()
-        {
-            return m_FocusManager;
-        }
-
         CNamescope* GetNamescope()
         {
             return m_Namescope;
         }
 
+        CFocusManager* GetFocusManager()
+        {
+            return (m_StaticData != NULL) ? m_StaticData->GetFocusManager() :  NULL;
+        }
+
+        CMouseController* GetMouseController()
+        {
+            return (m_StaticData != NULL) ? m_StaticData->GetMouseController() :  NULL;
+        }
+
+        CKeyboardController* GetKeyboardController()
+        {
+            return (m_StaticData != NULL) ? m_StaticData->GetKeyboardController() :  NULL;
+        }
+
+        CStaticTreeData* GetStaticTreeData()
+        {
+            return m_StaticData;
+        }
+
         CUIAttachContext& operator=(const CUIAttachContext& Other)
         {
+            m_StaticData = Other.m_StaticData;
             m_Parent = Other.m_Parent;
             m_TemplateParent = Other.m_TemplateParent;
-            m_FocusManager = Other.m_FocusManager;
             m_Namescope = Other.m_Namescope;
 
             AddRefObject(m_Namescope);
@@ -86,17 +133,17 @@ class CUIAttachContext
 
         void Reset()
         {
+            m_StaticData = NULL;
             m_Parent = NULL;
-            m_TemplateParent = NULL;
-            m_FocusManager = NULL;
+            m_TemplateParent = NULL;            
             ReleaseObject(m_Namescope);
         }
     
     protected:
         CUIElement* m_Parent;
         CUIElement* m_TemplateParent;
-        CFocusManager* m_FocusManager;
         CNamescope* m_Namescope;
+        CStaticTreeData* m_StaticData;
 };
 
 class CUIDetachContext
@@ -227,6 +274,9 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         virtual CNamescope* GetNamescope();
         CProviders* GetProviders();
         CTypeConverter* GetTypeConverter();
+        CBindingManager* GetBindingManager();
+        CMouseController* GetMouseController();
+        CKeyboardController* GetKeyboardController();
 
         virtual HRESULT SetVisibility( Visibility::Value State );
 
@@ -236,6 +286,11 @@ class UIFRAMEWORK_API CUIElement : public CVisual
 
         HRESULT Focus( BOOL* pSetFocus );
         BOOL IsFocusable();
+
+        HRESULT CaptureMouse();
+        HRESULT ReleaseMouse();
+
+        virtual HRESULT SetBinding( CProperty* pProperty, CBindingBase* pBinding );
 
         //
         // Properties
@@ -352,9 +407,13 @@ class UIFRAMEWORK_API CUIElement : public CVisual
 
         HRESULT GetMinMaxSize( SizeF& MinimumSize, SizeF& MaximumSize );
         HRESULT ComputeAlignmentOffset( SizeF ClientSize, SizeF RenderSize, SizeF Offset );
+        
+        static HRESULT SetLocalBindingValue( CPropertyObject* pTarget, CProperty* pTargetProperty, CObjectWithType* pValue );
 
         void CleanMeasure();
         void CleanArrange();
+
+        CStaticTreeData* GetStaticTreeData();
 
         //
         // Property Change Handlers

@@ -39,6 +39,8 @@ class CTrack : public CControl
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
+        void OnThumbDragDelta(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs);
+
         HRESULT ComputeSliderLengths( SizeF AvailableSize, Orientation::Value Orient, FLOAT* pDecreaseButtonLength, FLOAT* pThumbLength, FLOAT* pIncreaseButtonLength );
         HRESULT ComputeScrollBarLengths( SizeF AvailableSize, FLOAT ViewportSize, Orientation::Value Orient, FLOAT* pDecreaseButtonLength, FLOAT* pThumbLength, FLOAT* pIncreaseButtonLength, BOOL* pHide );
 
@@ -51,6 +53,8 @@ class CTrack : public CControl
         HRESULT GetEffectiveMinimum( FLOAT* pMinimum );
         HRESULT GetEffectiveMaximum( FLOAT* pMaximum );
         HRESULT GetEffectiveTrackValue( FLOAT* pValue );
+
+        HRESULT SetTrackValue( FLOAT Value );
 
         //
         // Property Change Handlers
@@ -86,6 +90,8 @@ class CTrack : public CControl
         CTypedLayeredValue< CTrack, CFloatValue > m_TrackValue;
         FLOAT m_ThumbCenterOffset;
         FLOAT m_Density;
+
+        events::signals::connection m_ThumbDragDeltaConnection;
 };
 
 template< >

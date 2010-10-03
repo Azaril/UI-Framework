@@ -430,7 +430,7 @@ HRESULT CVisual::TransformFromAncestor(CVisual* pAncestor, CTransform** ppTransf
 
     while(pCurrentVisual != NULL && pCurrentVisual != pAncestor)
     {
-        TransformMatrix = pCurrentVisual->GetFinalLocalTransform() * TransformMatrix;
+        TransformMatrix = pCurrentVisual->m_VisualTransform * TransformMatrix;
 
         pCurrentVisual = pCurrentVisual->GetVisualParent();
 

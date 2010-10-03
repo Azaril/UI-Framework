@@ -5,7 +5,8 @@ CUIHost::CUIHost() : m_RenderTarget(NULL),
                      m_RootElement(NULL),
                      m_MouseController(NULL),
                      m_KeyboardController(NULL),
-                     m_FocusManager(NULL)
+                     m_FocusManager(NULL),
+                     m_TreeData(NULL)
 {
     m_LastLayoutSize.width = 0;
     m_LastLayoutSize.height = 0;
@@ -18,6 +19,8 @@ CUIHost::~CUIHost()
     ReleaseObject(m_MouseController);
     ReleaseObject(m_RootElement);
     ReleaseObject(m_RenderTarget);
+
+    delete m_TreeData;
 }
 
 HRESULT CUIHost::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders)
@@ -33,11 +36,17 @@ HRESULT CUIHost::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRe
 
     IFC(CFocusManager::Create(&m_FocusManager));
 
-    IFC(CRootUIElement::Create(pGraphicsDevice, pRenderTarget, pProviders, m_FocusManager, &m_RootElement));
+    IFC(CMouseController::Create(&m_MouseController));
 
-    IFC(CMouseController::Create(m_FocusManager, m_RootElement, &m_MouseController));
+    IFC(CKeyboardController::Create(m_FocusManager, &m_KeyboardController));
 
-    IFC(CKeyboardController::Create(m_FocusManager, m_RootElement, &m_KeyboardController));
+    m_TreeData = new CStaticTreeData(m_FocusManager, m_MouseController, m_KeyboardController);
+    IFCOOM(m_TreeData);
+
+    IFC(CRootUIElement::Create(pGraphicsDevice, pRenderTarget, pProviders, m_TreeData, &m_RootElement));
+
+    IFC(m_MouseController->SetRootElement(m_RootElement));
+    IFC(m_KeyboardController->SetRootElement(m_RootElement));
 
 Cleanup:
     return hr;

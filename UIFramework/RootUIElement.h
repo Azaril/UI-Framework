@@ -6,7 +6,7 @@ class UIFRAMEWORK_API CRootUIElement : public CFrameworkElement,
                        public IRenderRoot
 {
     public:
-        DECLARE_FACTORY4( CRootUIElement, CGraphicsDevice*, CRenderTarget*, CProviders*, CFocusManager* );
+        DECLARE_FACTORY4( CRootUIElement, CGraphicsDevice*, CRenderTarget*, CProviders*, CStaticTreeData* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::RootUIElement, CFrameworkElement );
 
@@ -20,7 +20,7 @@ class UIFRAMEWORK_API CRootUIElement : public CFrameworkElement,
         CRootUIElement();
         virtual ~CRootUIElement();
 
-        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders, CFocusManager* pFocusManager );
+        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders, CStaticTreeData* pTreeData );
         HRESULT Finalize();
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );

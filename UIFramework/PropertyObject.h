@@ -13,6 +13,9 @@ class CObjectWithType;
 class CPropertyObject;
 class CLayeredValue;
 
+class CBindingContext;
+class CBindingBase;
+
 class CProperty
 {
     public:
@@ -110,6 +113,7 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
         virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
         virtual HRESULT GetEffectiveValue( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual HRESULT SetEffectiveValue( CProperty* pProperty, CObjectWithType* pValue );
 
         HRESULT AddPropertyChangeListener( const PropertyChangedHandler& Handler, events::signals::connection* pConnection );
 
@@ -141,6 +145,11 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
 
         HRESULT RaisePropertyChanged( CProperty* pProperty );
 
+        virtual HRESULT SetBinding( CProperty* pProperty, CBindingBase* pBinding );
+
+        HRESULT SetBindingContext( CBindingContext* pContext );
+        HRESULT GetBindingContext( CBindingContext** ppContext );
+
     protected:
         CPropertyObject();
         virtual ~CPropertyObject();
@@ -152,6 +161,7 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
 
         std::vector< CAttachedPropertyHolder > m_AttachedProperties;
         PropertyChangedSignal m_PropertyChangedSignal;
+        CBindingContext* m_BindingContext;
 
     private:
         HRESULT SetValuePrivate( CProperty* pProperty, CObjectWithType* pValue );     

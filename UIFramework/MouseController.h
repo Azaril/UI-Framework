@@ -8,23 +8,26 @@
 class UIFRAMEWORK_API CMouseController : public CRefCountedObject
 {
     public:
-        DECLARE_FACTORY2( CMouseController, CFocusManager*, CUIElement* );
+        DECLARE_FACTORY( CMouseController );
+
+        HRESULT SetRootElement( CUIElement* pRootElement );
 
         HRESULT InjectMouseButton( MouseButton::Value Button, MouseButtonState::Value State, BOOL* pConsumed = NULL );
-        HRESULT InjectMouseButton( MouseButton::Value Button, MouseButtonState::Value State, Point2F Location, BOOL* pConsumed = NULL );
         HRESULT InjectMouseMove( Point2F Location, BOOL* pConsumed = NULL );
 
         HRESULT SetMouseOverElement( CUIElement* pElement, Point2F Location );
         HRESULT RaiseMouseMove( Point2F Location, BOOL* pConsumed = NULL );
         HRESULT RaiseMouseButton( Point2F Location, MouseButton::Value Button, MouseButtonState::Value State, BOOL* pConsumed = NULL );
 
+        HRESULT SetCapture( CUIElement* pElement );
+        HRESULT ReleaseCapture( CUIElement* pElement );
+
     protected:
         CMouseController();
         virtual ~CMouseController();
 
-        HRESULT Initialize( CFocusManager* pFocusManager, CUIElement* pRootElement );
+        HRESULT Initialize();
 
-        CFocusManager* m_FocusManager;
         CUIElement* m_RootElement;
         CUIElement* m_MouseOverElement;
         CUIElement* m_CaptureElement;

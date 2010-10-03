@@ -1,0 +1,438 @@
+#include "stdafx.h"
+#include "WindowsTestApp.h"
+
+#include "ErrorChecking.h"
+#include "GraphicsDevice.h"
+#include "UIHost.h"
+#include "Canvas.h"
+#include "TextBlock.h"
+#include "StackPanel.h"
+#include "Border.h"
+#include "Image.h"
+#include "Parser.h"
+#include "DynamicClassResolver.h"
+#include "BasicTypeConverter.h"
+
+#include <Windowsx.h>
+#include <strsafe.h>
+
+#define BUILD_D2D
+
+#if defined(BUILD_D2D)
+
+#include <d2d1helper.h>
+#include "D2DHWNDRenderTarget.h"
+#include "D2DGraphicsDevice.h"
+
+#elif defined(BUILD_IRRLICHT)
+
+#include "irrlicht.h"
+#include "IrrGraphicsDevice.h"
+#include "IrrTextureRenderTarget.h"
+
+#endif
+
+#define MAX_LOADSTRING 100
+
+// Global Variables:
+HINSTANCE hInst;								// current instance
+TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
+TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+
+// Forward declarations of functions included in this code module:
+ATOM MyRegisterClass( HINSTANCE hInstance );
+HRESULT InitInstance( HINSTANCE hInstance, int nCmdShow, HWND* pWindow );
+LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
+
+CRenderTarget* g_RenderTarget = NULL;
+CUIHost* g_UIHost = NULL;
+CMouseController* g_MouseController = NULL;
+CKeyboardController* g_KeyboardController = NULL;
+
+int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
+{
+    HRESULT hr = S_OK;
+
+#if defined(BUILD_D2D)
+
+    HWND hWnd = NULL;
+    MSG msg = { 0 };
+	HACCEL hAccelTable = NULL;
+
+#endif
+
+    CRenderTarget* pRenderTarget = NULL;
+    CUIHost* pUIHost = NULL;
+    CRootUIElement* pRootElement = NULL; 
+    CUIElement* pParsedRoot = NULL;
+    CParser* pParser = NULL;
+    CDynamicClassResolver* pClassResolver = NULL;
+    CTypeConverter* pTypeConverter = NULL;
+    CProviders* pProviders = NULL;
+    CMouseController* pMouseController = NULL;
+    CKeyboardController* pKeyboardController = NULL;
+
+#if defined(BUILD_D2D)
+
+    CD2DGraphicsDevice* pGraphicsDevice = NULL;
+
+#elif defined(BUILD_IRRLICHT)
+
+    irr::IrrlichtDevice* pIrrlichtDevice = NULL;
+    CIrrlichtGraphicsDevice* pGraphicsDevice = NULL;
+    CIrrlichtTextureRenderTarget* pIrrlichtRenderTarget = NULL;
+
+#endif
+
+#if defined(_DEBUG) && defined(USE_LEAK_CHECKING)
+    // Get current flag
+    int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+
+    // Turn on leak-checking bit.
+    tmpFlag |= _CRTDBG_LEAK_CHECK_DF;
+
+    //// Turn off CRT block checking bit.
+    //tmpFlag &= ~_CRTDBG_CHECK_CRT_DF;
+
+    // Set flag to the new value.
+    _CrtSetDbgFlag( tmpFlag );
+#endif
+
+    //
+    // Create providers
+    //
+    IFC(CDynamicClassResolver::Create(&pClassResolver));
+
+    IFC(CreateBasicTypeConverter(&pTypeConverter));
+
+    IFC(CProviders::Create(pClassResolver, pTypeConverter, &pProviders));
+
+    //
+    // Create Parser
+    // 
+    IFC(CParser::Create(pProviders, &pParser));
+
+    IFC(pParser->LoadFromFile(L"c:\\testxml.xml", &pParsedRoot));
+
+#if defined(BUILD_D2D)
+
+	// Initialize global strings
+	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+	LoadString(hInstance, IDC_WINDOWSTESTAPP, szWindowClass, MAX_LOADSTRING);
+	MyRegisterClass(hInstance);
+
+    //
+    // Create window
+    //
+	IFC(InitInstance (hInstance, nCmdShow, &hWnd));
+
+	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINDOWSTESTAPP));
+    IFCEXPECT(hAccelTable != NULL);
+
+#endif
+
+    //
+    // Create UI framework
+    //
+#if defined(BUILD_D2D)
+
+    IFC(CD2DGraphicsDevice::Create(&pGraphicsDevice));
+
+    IFC(pGraphicsDevice->CreateHWNDRenderTarget(hWnd, &pRenderTarget));
+
+#elif defined(BUILD_IRRLICHT)
+
+    {
+        HMODULE IrrlichtModule = LoadLibrary(L"Irrlicht.dll");
+        IFCEXPECT(IrrlichtModule != NULL);
+
+        irr::funcptr_createDevice pCreateDevice = (irr::funcptr_createDevice)GetProcAddress(IrrlichtModule, "createDevice");
+        IFCPTR(pCreateDevice);
+
+        pIrrlichtDevice = pCreateDevice(irr::video::EDT_DIRECT3D9, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, false, NULL);
+        IFCPTR(pIrrlichtDevice);
+
+        IFC(CIrrlichtGraphicsDevice::Create(pIrrlichtDevice->getVideoDriver(), &pGraphicsDevice));
+
+        IFC(pGraphicsDevice->CreateRenderTarget(SizeF(640, 480), &pRenderTarget));
+
+        pIrrlichtRenderTarget = (CIrrlichtTextureRenderTarget*)pRenderTarget;
+    }
+
+#endif
+
+    g_RenderTarget = pRenderTarget;
+
+    IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, pProviders, &pUIHost));
+
+    g_UIHost = pUIHost;
+
+    IFC(pUIHost->GetMouseController(&pMouseController));
+
+    g_MouseController = pMouseController;
+
+    IFC(pUIHost->GetKeyboardController(&pKeyboardController));
+
+    g_KeyboardController = pKeyboardController;
+
+    IFC(pUIHost->GetRootElement(&pRootElement));
+
+    IFC(pRootElement->SetChild(pParsedRoot));
+
+    //
+    // Message pump
+    //
+#if defined(BUILD_IRRLICHT)
+
+    while(pIrrlichtDevice->run())
+    {
+        IFC(pUIHost->Render());
+
+        irr::video::IVideoDriver* pDriver = pIrrlichtDevice->getVideoDriver();
+
+        IFCEXPECT(pDriver->setRenderTarget(irr::video::ERT_FRAME_BUFFER));
+
+        IFCEXPECT(pDriver->beginScene());
+
+        pDriver->draw2DImage(pIrrlichtRenderTarget->GetIrrlichtTexture(), irr::core::vector2d<irr::s32>(0, 0));
+
+        IFCEXPECT(pDriver->endScene());
+    }
+
+#else
+
+    do
+    {
+        if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+	        TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+        else
+        {
+            IFC(pUIHost->Render());
+        }
+    } while(msg.message != WM_QUIT);
+
+#endif
+
+Cleanup:
+    ReleaseObject(pMouseController);
+    ReleaseObject(pKeyboardController);
+    ReleaseObject(pParsedRoot);
+    ReleaseObject(pRootElement);
+    ReleaseObject(pUIHost);
+    ReleaseObject(pRenderTarget);
+    ReleaseObject(pClassResolver);
+    ReleaseObject(pTypeConverter);
+    ReleaseObject(pParser);
+    ReleaseObject(pProviders);
+
+    ReleaseObject(pGraphicsDevice);
+
+#if defined(BUILD_D2D)
+
+#elif defined(BUILD_IRRLICHT)
+
+    ReleaseObject(pIrrlichtDevice);
+
+#endif
+
+	return SUCCEEDED(hr);
+}
+
+
+
+//
+//  FUNCTION: MyRegisterClass()
+//
+//  PURPOSE: Registers the window class.
+//
+//  COMMENTS:
+//
+//    This function and its usage are only necessary if you want this code
+//    to be compatible with Win32 systems prior to the 'RegisterClassEx'
+//    function that was added to Windows 95. It is important to call this function
+//    so that the application will get 'well formed' small icons associated
+//    with it.
+//
+ATOM MyRegisterClass(HINSTANCE hInstance)
+{
+	WNDCLASSEX wcex;
+
+	wcex.cbSize = sizeof(WNDCLASSEX);
+
+	wcex.style			= CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc	= WndProc;
+	wcex.cbClsExtra		= 0;
+	wcex.cbWndExtra		= 0;
+	wcex.hInstance		= hInstance;
+	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINDOWSTESTAPP));
+	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
+	wcex.lpszMenuName	= NULL;
+	wcex.lpszClassName	= szWindowClass;
+	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+	return RegisterClassEx(&wcex);
+}
+
+//
+//   FUNCTION: InitInstance(HINSTANCE, int)
+//
+//   PURPOSE: Saves instance handle and creates main window
+//
+//   COMMENTS:
+//
+//        In this function, we save the instance handle in a global variable and
+//        create and display the main program window.
+//
+HRESULT InitInstance(HINSTANCE hInstance, int nCmdShow, HWND* pWindow)
+{
+    HRESULT hr = S_OK;
+    HWND hWnd = NULL;
+
+    IFCPTR(pWindow);
+
+    hInst = hInstance; // Store instance handle in our global variable
+
+    hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, 640, 480, NULL, NULL, hInstance, NULL);
+    IFCEXPECT(hWnd != NULL);
+
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd);
+
+    *pWindow = hWnd;
+
+Cleanup:
+   return hr;
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    HRESULT hr = S_OK;
+    LRESULT Result = 0;
+    BOOL Handled = FALSE;
+
+	switch (message)
+	{
+        case WM_SIZE:
+            {
+                if(wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED)
+                {
+                    //TODO: Support resize.
+                    //ID2D1HwndRenderTarget* pRenderTarget = g_RenderTarget->GetD2DHWNDRenderTarget();
+                    
+                    //IFC(pRenderTarget->Resize(D2D1::SizeU(LOWORD(lParam), HIWORD(lParam))));
+                }
+                break;
+            }
+
+        case WM_MOUSEMOVE:
+            {
+                Point2F Point((FLOAT)GET_X_LPARAM(lParam), (FLOAT)GET_Y_LPARAM(lParam));
+
+                IFC(g_MouseController->InjectMouseMove(Point));
+
+                Handled = TRUE;
+
+                break;
+            }
+
+        case WM_LBUTTONDOWN:
+            {
+                Point2F Point((FLOAT)GET_X_LPARAM(lParam), (FLOAT)GET_Y_LPARAM(lParam));
+
+                IFC(g_MouseController->InjectMouseMove(Point));
+
+                IFC(g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Down));
+
+                Handled = TRUE;
+
+                break;
+            }
+
+        case WM_LBUTTONUP:
+            {
+                Point2F Point((FLOAT)GET_X_LPARAM(lParam), (FLOAT)GET_Y_LPARAM(lParam));
+
+                IFC(g_MouseController->InjectMouseMove(Point));
+
+                IFC(g_MouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Up));
+
+                Handled = TRUE;
+
+                break;
+            }
+
+        case WM_KEYDOWN:
+            {
+                BOOL Consumed = FALSE;
+
+                //TODO: Convert to key value.
+                //IFC(g_KeyboardController->InjectKey(wParam, KeyState::Down, &Consumed));
+
+                Handled = Consumed;
+
+                if(Consumed)
+                {
+                    Result = 0;
+                }
+
+                break;
+            }
+
+        case WM_KEYUP:
+            {
+                BOOL Consumed = FALSE;
+
+                //TODO: Convert to key value.
+                //IFC(g_KeyboardController->InjectKey(wParam, KeyState::Up, &Consumed));
+
+                Handled = Consumed;
+
+                if(Consumed)
+                {
+                    Result = 0;
+                }
+
+                break;
+            }
+
+        case WM_CHAR:
+            {
+                if(iswprint(wParam))
+                {
+                    BOOL Consumed = FALSE;
+
+                    IFC(g_KeyboardController->InjectCharacter(wParam, &Consumed));
+
+                    Handled = Consumed;
+                    
+                    if(Consumed)
+                    {
+                        Result = 0;
+                    }
+                }
+
+                break;
+            }
+
+	    case WM_DESTROY:
+            {
+		        PostQuitMessage(0);
+
+                Handled = TRUE;
+
+		        break;
+            }
+	}
+
+Cleanup:
+    if(!Handled)
+    {
+        Result = DefWindowProc(hWnd, message, wParam, lParam);
+    }
+
+	return Result;
+}

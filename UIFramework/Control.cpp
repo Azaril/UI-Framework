@@ -115,7 +115,14 @@ HRESULT CControl::GetTemplateChild(const WCHAR* pName, CObjectWithType** ppObjec
 
     IFC(EnsureTemplate());
 
-    IFC(m_TemplateNamescope->FindName(pName, ppObject));
+    if(m_TemplateNamescope != NULL)
+    {
+        IFC(m_TemplateNamescope->FindName(pName, ppObject));
+    }
+    else
+    {
+        *ppObject = NULL;
+    }
 
 Cleanup:
     return hr;

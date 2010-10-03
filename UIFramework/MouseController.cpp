@@ -3,7 +3,6 @@
 CMouseController::CMouseController() : m_RootElement(NULL),
                                        m_MouseOverElement(NULL),
                                        m_CaptureElement(NULL),
-                                       m_FocusManager(NULL),
                                        m_Position(0, 0)
 {
 }
@@ -13,20 +12,24 @@ CMouseController::~CMouseController()
     ReleaseObject(m_RootElement);
     ReleaseObject(m_MouseOverElement);
     ReleaseObject(m_CaptureElement);
-    ReleaseObject(m_FocusManager);
 }
 
-HRESULT CMouseController::Initialize(CFocusManager* pFocusManager, CUIElement* pRootElement)
+HRESULT CMouseController::Initialize()
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pFocusManager);
-    IFCPTR(pRootElement);
+Cleanup:
+    return hr;
+}
 
-    m_FocusManager = pFocusManager;
-    AddRefObject(m_FocusManager);
+HRESULT CMouseController::SetRootElement(CUIElement* pElement)
+{
+    HRESULT hr = S_OK;
 
-    m_RootElement = pRootElement;
+    ReleaseObject(m_RootElement);
+
+    m_RootElement = pElement;
+
     AddRefObject(m_RootElement);
 
 Cleanup:
@@ -36,35 +39,17 @@ Cleanup:
 HRESULT CMouseController::InjectMouseButton(MouseButton::Value Button, MouseButtonState::Value State, BOOL* pConsumed)
 {
     HRESULT hr = S_OK;
-    BOOL Handled = FALSE;
 
+    if(m_CaptureElement == NULL)
     {
         CMouseInputHitTestFilter Filter;
-        CMouseButtonHitTestCallback Callback(this, m_Position, Button, State, &Handled);
+        CMouseButtonHitTestCallback Callback(this, m_Position, Button, State, pConsumed);
 
         IFC(HitTestTree(m_RootElement, m_Position, &Filter, &Callback));
     }
-
-    if(pConsumed)
+    else
     {
-        *pConsumed = Handled;
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CMouseController::InjectMouseButton(MouseButton::Value Button, MouseButtonState::Value State, Point2F Location, BOOL* pConsumed)
-{
-    HRESULT hr = S_OK;
-
-    IFC(InjectMouseMove(Location));
-
-    {
-        CMouseInputHitTestFilter Filter;
-        CMouseButtonHitTestCallback Callback(this, Location, Button, State, pConsumed);
-
-        IFC(HitTestTree(m_RootElement, Location, &Filter, &Callback));
+        IFC(RaiseMouseButton(m_Position, Button, State, pConsumed));
     }
 
 Cleanup:
@@ -75,10 +60,17 @@ HRESULT CMouseController::InjectMouseMove(Point2F Location, BOOL* pConsumed)
 {
     HRESULT hr = S_OK;
 
-    CMouseInputHitTestFilter Filter;
-    CMouseMoveHitTestCallback Callback(this, Location, pConsumed);
+    if(m_CaptureElement == NULL)
+    {
+        CMouseInputHitTestFilter Filter;
+        CMouseMoveHitTestCallback Callback(this, Location, pConsumed);
 
-    IFC(HitTestTree(m_RootElement, Location, &Filter, &Callback));
+        IFC(HitTestTree(m_RootElement, Location, &Filter, &Callback));
+    }
+    else
+    {
+        IFC(RaiseMouseMove(Location, pConsumed));
+    }
 
     m_Position = Location;
 
@@ -129,14 +121,15 @@ HRESULT CMouseController::RaiseMouseMove(Point2F Location, BOOL* pHandled)
     HRESULT hr = S_OK;
     CMouseEventArgs* pEventArgs = NULL;
     BOOL Handled = FALSE;
+    CUIElement* pTargetElement = NULL;
 
-    //TODO: Raise event to element that has requested mouse capture.
+    pTargetElement = (m_CaptureElement != NULL) ? m_CaptureElement : m_MouseOverElement;
 
-    if(m_MouseOverElement)
+    if(pTargetElement != NULL)
     {
         IFC(CMouseEventArgs::Create(&CUIElement::MouseMoveEvent, Location, &pEventArgs));
 
-        IFC(m_MouseOverElement->RaiseEvent(pEventArgs));
+        IFC(pTargetElement->RaiseEvent(pEventArgs));
 
         Handled = pEventArgs->IsHandled();
     }
@@ -157,14 +150,15 @@ HRESULT CMouseController::RaiseMouseButton(Point2F Location, MouseButton::Value 
     HRESULT hr = S_OK;
     CMouseButtonEventArgs* pEventArgs = NULL;
     BOOL Handled = FALSE;
+    CUIElement* pTargetElement = NULL;
 
-    //TODO: Raise event to element that has requested mouse capture.
+    pTargetElement = (m_CaptureElement != NULL) ? m_CaptureElement : m_MouseOverElement;
 
-    if(m_MouseOverElement)
+    if(pTargetElement != NULL)
     {
         IFC(CMouseButtonEventArgs::Create(&CUIElement::MouseButtonEvent, Location, Button, State, &pEventArgs));
 
-        IFC(m_MouseOverElement->RaiseEvent(pEventArgs));
+        IFC(pTargetElement->RaiseEvent(pEventArgs));
 
         Handled = pEventArgs->IsHandled();
     }
@@ -177,5 +171,32 @@ HRESULT CMouseController::RaiseMouseButton(Point2F Location, MouseButton::Value 
 Cleanup:
     ReleaseObject(pEventArgs);
 
+    return hr;
+}
+
+HRESULT CMouseController::SetCapture(CUIElement* pElement)
+{
+    HRESULT hr = S_OK;
+
+    if(m_CaptureElement == NULL)
+    {
+        m_CaptureElement = pElement;
+        AddRefObject(m_CaptureElement);
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CMouseController::ReleaseCapture(CUIElement* pElement)
+{
+    HRESULT hr = S_OK;
+
+    if(m_CaptureElement == pElement)
+    {
+        ReleaseObject(m_CaptureElement);
+    }
+
+Cleanup:
     return hr;
 }

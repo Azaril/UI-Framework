@@ -48,6 +48,15 @@ class CScrollViewer : public CContentControl,
 
         virtual void OnCommandExecuted( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnHorizontalOffsetChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnVerticalOffsetChanged );
+
+        HRESULT OnHorizontalOffsetChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnVerticalOffsetChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+
         CScrollContentPresenter* m_ScrollPresenter;
 
         CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_ExtentHeight;

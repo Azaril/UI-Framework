@@ -2,6 +2,7 @@
 
 #include "RangeBase.h"
 #include "StaticRoutedCommand.h"
+#include "Track.h"
 
 class CScrollBar : public CRangeBase
 {
@@ -33,6 +34,9 @@ class CScrollBar : public CRangeBase
 
         HRESULT Initialize( CProviders* pProviders );
 
+        virtual HRESULT PostTemplateApplied();
+        virtual HRESULT PreTemplateRevoked();
+
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         HRESULT GetEffectiveOrientation( Orientation::Value* pOrientation );
@@ -46,6 +50,7 @@ class CScrollBar : public CRangeBase
 
         CTypedLayeredValue< CScrollBar, COrientationValue > m_Orientation;
         CTypedLayeredValue< CScrollBar, CFloatValue > m_ViewportSize;
+        CTrack* m_Track;
 };
 
 template< >

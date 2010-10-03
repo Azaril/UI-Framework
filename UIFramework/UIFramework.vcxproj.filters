@@ -613,6 +613,18 @@
     <ClCompile Include="ScrollBar.cpp">
       <Filter>Framework\UI\Visuals\Elements\Controls\Range</Filter>
     </ClCompile>
+    <ClCompile Include="BindingBase.cpp">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClCompile>
+    <ClCompile Include="BindingManager.cpp">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClCompile>
+    <ClCompile Include="BindingContext.cpp">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClCompile>
+    <ClCompile Include="SourcedBinding.cpp">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1136,6 +1148,18 @@
     </ClInclude>
     <ClInclude Include="ScrollBar.h">
       <Filter>Framework\UI\Visuals\Elements\Controls\Range</Filter>
+    </ClInclude>
+    <ClInclude Include="BindingBase.h">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClInclude>
+    <ClInclude Include="BindingManager.h">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClInclude>
+    <ClInclude Include="BindingContext.h">
+      <Filter>Framework\UI\Binding</Filter>
+    </ClInclude>
+    <ClInclude Include="SourcedBinding.h">
+      <Filter>Framework\UI\Binding</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

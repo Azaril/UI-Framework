@@ -79,6 +79,26 @@ void CScrollContentPresenter::DirtyChildTransform()
     m_ChildTransformDirty = TRUE;
 }
 
+HRESULT CScrollContentPresenter::SetHorizontalOffset(FLOAT Offset)
+{
+    HRESULT hr = S_OK;
+    
+    IFC(SetScrollOffsets(Offset, m_VerticalOffset));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollContentPresenter::SetVerticalOffset(FLOAT Offset)
+{
+    HRESULT hr = S_OK;
+    
+    IFC(SetScrollOffsets(m_HorizontalOffset, Offset));
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CScrollContentPresenter::SetScrollOffsets(FLOAT XOffset, FLOAT YOffset)
 {
     HRESULT hr = S_OK;

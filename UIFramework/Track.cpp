@@ -2,6 +2,7 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 #include "BasicTypes.h"
+#include "DragDeltaEventArgs.h"
 #include <math.h>
 
 //
@@ -59,6 +60,7 @@ CTrack::CTrack() : m_Thumb(this, &CTrack::ThumbProperty),
 
 CTrack::~CTrack()
 {
+    m_ThumbDragDeltaConnection.disconnect();
 }
 
 HRESULT CTrack::Initialize(CProviders* pProviders)
@@ -67,7 +69,64 @@ HRESULT CTrack::Initialize(CProviders* pProviders)
 
     IFC(CControl::Initialize(pProviders));
 
+    IFC(AddHandler(&CThumb::DragDeltaEvent, boost::bind(&CTrack::OnThumbDragDelta, this, _1, _2), &m_ThumbDragDeltaConnection));
+
 Cleanup:
+    return hr;
+}
+
+void CTrack::OnThumbDragDelta(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+{
+    HRESULT hr = S_OK;
+    CDragDeltaEventArgs* pDragEventArgs = NULL;
+    Orientation::Value Orient;
+    BOOL DirectionReversed = FALSE;
+    FLOAT TrackValue = 0.0f;
+    
+    IFC(CastType(pRoutedEventArgs, &pDragEventArgs));
+
+    IFC(GetEffectiveOrientation(&Orient));
+    IFC(GetEffectiveDirectionReversed(&DirectionReversed));
+    IFC(GetEffectiveTrackValue(&TrackValue));
+
+    if(Orient == Orientation::Vertical)
+    {
+        FLOAT Delta = pDragEventArgs->GetVerticalDelta() * m_Density * (DirectionReversed ? 1.0f : -1.0f);
+
+        IFC(SetTrackValue(TrackValue + Delta));
+    }
+    else
+    {
+        FLOAT Delta = pDragEventArgs->GetHorizontalDelta() * m_Density * (DirectionReversed ? -1.0f : 1.0f);
+
+        IFC(SetTrackValue(TrackValue + Delta));
+    }
+
+    pRoutedEventArgs->SetHandled();
+
+Cleanup:
+    ;
+}
+
+HRESULT CTrack::SetTrackValue(FLOAT Value)
+{
+    HRESULT hr = S_OK;
+    FLOAT Minimum = 0;
+    FLOAT Maximum = 0;
+    CFloatValue* pValue = NULL;
+
+    IFC(GetEffectiveMaximum(&Maximum));
+    IFC(GetEffectiveMinimum(&Minimum));
+
+    Value = std::min(std::max(Value, Minimum), Maximum);
+
+    IFC(CFloatValue::Create(Value, &pValue));
+
+    IFC(SetValue(&ValueProperty, pValue));
+
+Cleanup:
+    ReleaseObject(pValue);
+
     return hr;
 }
 

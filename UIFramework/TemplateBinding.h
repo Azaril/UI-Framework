@@ -5,19 +5,18 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 #include "RoutedEventArgs.h"
+#include "SourcedBinding.h"
 
-class CTemplateBinding : public CBinding
+class CTemplateBinding : public CSourcedBinding
 {
     public:
         DECLARE_FACTORY1( CTemplateBinding, CProviders* );
 
-        DECLARE_TYPE_WITH_BASE( TypeIndex::TemplateBinding, CBinding );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::TemplateBinding, CSourcedBinding );
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-
-        virtual HRESULT GetBoundValue( CObjectWithType** ppValue );
 
         virtual HRESULT SetTarget( CPropertyObject* pTarget, CProperty* pTargetProperty );
         virtual HRESULT ClearTarget();
@@ -38,13 +37,9 @@ class CTemplateBinding : public CBinding
         void OnTargetAttached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
         void OnTargetDetached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
-        void OnSourcePropertyChanged( CPropertyObject* pObject, CProperty* pProperty );
-
         events::signals::connection m_TargetAttachedConnection;
         events::signals::connection m_TargetDetachedConnection;
         CStringValue* m_Property;
-        CProperty* m_ResolvedProperty;
-        events::signals::connection m_PropertyChangedConnection;
 };
 
 template< >

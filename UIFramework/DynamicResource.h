@@ -5,16 +5,14 @@
 #include "StaticPropertyInformation.h"
 #include "RoutedEventArgs.h"
 
-class CDynamicResource : public CBinding
+class CDynamicResource : public CBindingBase
 {
     public:
         DECLARE_FACTORY1( CDynamicResource, CProviders* );
 
-        DECLARE_TYPE_WITH_BASE( TypeIndex::DynamicResource, CBinding );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::DynamicResource, CBindingBase );
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
-
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
 
         virtual HRESULT GetBoundValue( CObjectWithType** ppValue );
 
@@ -33,6 +31,7 @@ class CDynamicResource : public CBinding
         HRESULT Initialize( CProviders* pProviders );
 
         virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
 
         void OnTargetAttached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
         void OnTargetDetached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );

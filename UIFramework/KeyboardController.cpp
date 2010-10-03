@@ -13,17 +13,27 @@ CKeyboardController::~CKeyboardController()
     ReleaseObject(m_RootElement);
 }
 
-HRESULT CKeyboardController::Initialize(CFocusManager* pFocusManager, CUIElement* pRootElement)
+HRESULT CKeyboardController::Initialize(CFocusManager* pFocusManager)
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pFocusManager);
-    IFCPTR(pRootElement);
 
     m_FocusManager = pFocusManager;
     AddRefObject(m_FocusManager);
 
-    m_RootElement = pRootElement;
+Cleanup:
+    return hr;
+}
+
+HRESULT CKeyboardController::SetRootElement(CUIElement* pElement)
+{
+    HRESULT hr = S_OK;
+
+    ReleaseObject(m_RootElement);
+
+    m_RootElement = pElement;
+
     AddRefObject(m_RootElement);
 
 Cleanup:

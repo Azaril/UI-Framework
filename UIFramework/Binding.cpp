@@ -1,16 +1,23 @@
 #include "Binding.h"
 #include "StaticPropertyInformation.h"
+#include "DelegatingPropertyInformation.h"
 
-CBinding::CBinding() : m_Target(NULL),
-                       m_TargetProperty(NULL),
-                       m_Providers(NULL)
+//
+// Property Defaults
+//
+//DEFINE_GET_DEFAULT( BindingDirection, CBindingDirectionValue, BindingDirection::OneWay );
+
+//
+// Properties
+//
+//CStaticProperty CBinding::BindingDirectionProperty( L"BindingDirection", TypeIndex::BindingDirection, StaticPropertyFlags::None, &GET_DEFAULT( BindingDirection ) );
+
+CBinding::CBinding()// : m_BindingDirection(BindingDirection::OneWay)
 {
 }
 
 CBinding::~CBinding()
 {
-    ReleaseObject(m_TargetProperty);
-    ReleaseObject(m_Providers);
 }
 
 HRESULT CBinding::Initialize(CProviders* pProviders)
@@ -19,79 +26,93 @@ HRESULT CBinding::Initialize(CProviders* pProviders)
 
     IFCPTR(pProviders);
 
-    m_Providers = pProviders;
-    AddRefObject(m_Providers);
+    IFC(CSourcedBinding::Initialize(pProviders));
 
 Cleanup:
     return hr;
 }
 
-HRESULT CBinding::CreatePropertyInformation(CPropertyInformation** ppInformation)
+//BindingDirection::Value CBinding::GetBindingDirection()
+//{
+//    return m_BindingDirection;
+//}
+
+//HRESULT CBinding::CreatePropertyInformation(CPropertyInformation** ppInformation)
+//{
+//    HRESULT hr = S_OK;
+//    CStaticPropertyInformation* pStaticInformation = NULL;
+//    CPropertyInformation* pBaseInformation = NULL;
+//    CDelegatingPropertyInformation* pDelegatingPropertyInformation = NULL;
+//
+//    CStaticProperty* Properties[] = 
+//    {
+//        &BindingDirectionProperty
+//    };
+//    
+//    IFCPTR(ppInformation);
+//
+//    IFC(CStaticPropertyInformation::Create(Properties, ARRAYSIZE(Properties), &pStaticInformation));
+//    IFC(CBindingBase::CreatePropertyInformation(&pBaseInformation));
+//    IFC(CDelegatingPropertyInformation::Create(pStaticInformation, pBaseInformation, &pDelegatingPropertyInformation));
+//
+//    *ppInformation = pDelegatingPropertyInformation;
+//    pDelegatingPropertyInformation = NULL;
+//
+//Cleanup:
+//    ReleaseObject(pStaticInformation);
+//    ReleaseObject(pBaseInformation);
+//    ReleaseObject(pDelegatingPropertyInformation);
+//
+//    return hr;
+//}
+
+HRESULT CBinding::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
-    CStaticPropertyInformation* pStaticInformation = NULL;
+    //CBindingDirectionValue* pBindingDirection = NULL;
 
-    IFCPTR(ppInformation);
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
 
-    IFC(CStaticPropertyInformation::Create(NULL, 0, &pStaticInformation));
+    //if(pProperty == &CBinding::BindingDirectionProperty)
+    //{
+    //    IFCPTR(pValue);
 
-    *ppInformation = pStaticInformation;
-    pStaticInformation = NULL;
+    //    IFC(CastType(pValue, &pBindingDirection));
 
-Cleanup:
-    ReleaseObject(pStaticInformation);
-
-    return hr;
-}
-
-HRESULT CBinding::SetTarget(CPropertyObject* pTarget, CProperty* pTargetProperty)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pTarget);
-    IFCPTR(pTargetProperty);
-
-    IFCEXPECT(m_Target == NULL);
-    IFCEXPECT(m_TargetProperty == NULL);
-
-    m_Target = pTarget;
-
-    m_TargetProperty = pTargetProperty;
-    AddRefObject(m_TargetProperty);
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CBinding::ClearTarget()
-{
-    HRESULT hr = S_OK;
-
-    m_Target = NULL;
-
-    ReleaseObject(m_TargetProperty);
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CBinding::AddChangeListener(const BindingInvalidatedHandler& Handler, events::signals::connection* pConnection)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pConnection);
-
-    *pConnection = m_InvalidatedSignal.connect(Handler);
+    //    m_BindingDirection = pBindingDirection->GetValue();
+    //}
+    //else
+    //{
+        IFC(CBindingBase::SetValueInternal(pProperty, pValue));
+    //}
 
 Cleanup:
     return hr;
 }
 
-HRESULT CBinding::InvalidateBinding()
+HRESULT CBinding::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
+    //CBindingDirectionValue* pBindingDirection = NULL;
 
-    m_InvalidatedSignal(this);
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    //if(pProperty == &CBinding::BindingDirectionProperty)
+    //{
+    //    IFC(CBindingDirectionValue::Create(m_BindingDirection, &pBindingDirection));
+
+    //    *ppValue = pBindingDirection;
+    //    pBindingDirection = NULL;
+    //}
+    //else
+    //{
+        IFC(CBindingBase::GetValue(pProperty, ppValue));
+    //}
+
+Cleanup:
+    //ReleaseObject(pBindingDirection);
 
     return hr;
 }

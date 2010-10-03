@@ -23,10 +23,16 @@ CStaticProperty CScrollViewer::ExtentHeightProperty( L"ExtentHeight", TypeIndex:
 CStaticProperty CScrollViewer::ExtentWidthProperty( L"ExtentWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ExtentWidth ) );
 CStaticProperty CScrollViewer::ViewportWidthProperty( L"ViewportWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportWidth ) );
 CStaticProperty CScrollViewer::ViewportHeightProperty( L"ViewportHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportHeight ) );
-CStaticProperty CScrollViewer::HorizontalOffsetProperty( L"HorizontalOffset", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( HorizontalOffset ) );
-CStaticProperty CScrollViewer::VerticalOffsetProperty( L"VerticalOffset", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( VerticalOffset ) );
+CStaticProperty CScrollViewer::HorizontalOffsetProperty( L"HorizontalOffset", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( HorizontalOffset ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnHorizontalOffsetChanged ) );
+CStaticProperty CScrollViewer::VerticalOffsetProperty( L"VerticalOffset", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( VerticalOffset ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnVerticalOffsetChanged ) );
 CStaticProperty CScrollViewer::ScrollableWidthProperty( L"ScrollableWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ScrollableWidth ) );
 CStaticProperty CScrollViewer::ScrollableHeightProperty( L"ScrollableHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ScrollableHeight ) );
+
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnHorizontalOffsetChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnVerticalOffsetChanged );
 
 CScrollViewer::CScrollViewer() : m_ExtentHeight(this, &CScrollViewer::ExtentHeightProperty),
                                  m_ExtentWidth(this, &CScrollViewer::ExtentWidthProperty),
@@ -99,7 +105,7 @@ HRESULT CScrollViewer::PreTemplateRevoked()
 {
     HRESULT hr = S_OK;
     
-    if(m_ScrollPresenter)
+    if(m_ScrollPresenter != NULL)
     {
         IFC(m_ScrollPresenter->SetScrollOwner(NULL));
 
@@ -159,7 +165,7 @@ HRESULT CScrollViewer::LineUp()
 {
     HRESULT hr = S_OK;
 
-    if(m_ScrollPresenter)
+    if(m_ScrollPresenter != NULL)
     {
         IFC(m_ScrollPresenter->LineUp());
     }
@@ -172,7 +178,7 @@ HRESULT CScrollViewer::LineDown()
 {
     HRESULT hr = S_OK;
 
-    if(m_ScrollPresenter)
+    if(m_ScrollPresenter != NULL)
     {
         IFC(m_ScrollPresenter->LineDown());
     }
@@ -186,7 +192,7 @@ HRESULT CScrollViewer::InvalidateScrollInformation()
     HRESULT hr = S_OK;
     CFloatValue* pValue = NULL;
 
-    if(m_ScrollPresenter)
+    if(m_ScrollPresenter != NULL)
     {
         SizeF Extent = m_ScrollPresenter->GetExtent();
         SizeF Viewport = m_ScrollPresenter->GetViewport();
@@ -233,6 +239,42 @@ HRESULT CScrollViewer::InvalidateScrollInformation()
 Cleanup:
     ReleaseObject(pValue);
 
+    return hr;
+}
+
+HRESULT CScrollViewer::OnHorizontalOffsetChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue )
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pFloatValue = NULL;
+
+    IFCPTR(pNewValue);
+
+    if(m_ScrollPresenter != NULL)
+    {
+        IFC(CastType(pNewValue, &pFloatValue));
+
+        IFC(m_ScrollPresenter->SetHorizontalOffset(pFloatValue->GetValue()));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollViewer::OnVerticalOffsetChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue )
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pFloatValue = NULL;
+
+    IFCPTR(pNewValue);
+
+    if(m_ScrollPresenter != NULL)
+    {
+        IFC(CastType(pNewValue, &pFloatValue));
+
+        IFC(m_ScrollPresenter->SetVerticalOffset(pFloatValue->GetValue()));
+    }
+
+Cleanup:
     return hr;
 }
 

@@ -7,6 +7,9 @@
 #include "FocusManager.h"
 #include "KeyboardEventArgs.h"
 #include "StaticCommandInformation.h"
+#include "BindingManager.h"
+#include "MouseController.h"
+#include "KeyboardController.h"
 
 //
 // Property Defaults
@@ -1021,6 +1024,21 @@ CNamescope* CUIElement::GetNamescope()
     return m_Context.GetNamescope();
 }
 
+CMouseController* CUIElement::GetMouseController()
+{
+    return m_Context.GetMouseController();
+}
+
+CKeyboardController* CUIElement::GetKeyboardController()
+{
+    return m_Context.GetKeyboardController();
+}
+
+CStaticTreeData* CUIElement::GetStaticTreeData()
+{
+    return m_Context.GetStaticTreeData();
+}
+
 CProviders* CUIElement::GetProviders()
 {
     return m_Providers;
@@ -1029,6 +1047,11 @@ CProviders* CUIElement::GetProviders()
 CTypeConverter* CUIElement::GetTypeConverter()
 {
     return GetProviders()->GetTypeConverter();
+}
+
+CBindingManager* CUIElement::GetBindingManager()
+{
+    return GetProviders()->GetBindingManager();
 }
 
 HRESULT CUIElement::NotifyParent(CUINotification* pNotification)
@@ -1899,6 +1922,57 @@ void CUIElement::OnKey(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventA
 
 Cleanup:
     ReleaseObject(pNewEventArgs);
+}
+
+HRESULT CUIElement::SetLocalBindingValue(CPropertyObject* pTarget, CProperty* pTargetProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CUIElement* pUIElement = NULL;
+
+    IFC(CastType(pTarget, &pUIElement));
+
+    IFC(pUIElement->SetValue(pTargetProperty, pValue));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::SetBinding(CProperty* pProperty, CBindingBase* pBinding)
+{
+    HRESULT hr = S_OK;
+
+    IFC(GetBindingManager()->SetBinding(this, pProperty, pBinding, &CUIElement::SetLocalBindingValue));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::CaptureMouse()
+{
+    HRESULT hr = S_OK;
+    CMouseController* pMouseController = NULL;
+
+    pMouseController = GetMouseController();
+    IFCPTR(pMouseController);
+
+    IFC(pMouseController->SetCapture(this));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::ReleaseMouse()
+{
+    HRESULT hr = S_OK;
+    CMouseController* pMouseController = NULL;
+
+    pMouseController = GetMouseController();
+    IFCPTR(pMouseController);
+
+    IFC(pMouseController->ReleaseCapture(this));
+
+Cleanup:
+    return hr;
 }
 
 CEventHandlerChain::CEventHandlerChain() : m_RoutedEvent(NULL)

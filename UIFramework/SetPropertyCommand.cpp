@@ -1,4 +1,5 @@
 #include "SetPropertyCommand.h"
+#include "BindingBase.h"
 
 CSetPropertyCommand::CSetPropertyCommand() : m_Property(NULL)
 {
@@ -29,6 +30,7 @@ HRESULT CSetPropertyCommand::Execute(CParserCommandContext& Context)
     CObjectWithType* pValue = NULL;
     CTypeConverter* pTypeConverter = NULL;
     CObjectWithType* pConvertedType = NULL;
+    CBindingBase* pBinding = NULL;
 
     IFC(Context.GetObject(&pValue));
 
@@ -36,22 +38,31 @@ HRESULT CSetPropertyCommand::Execute(CParserCommandContext& Context)
 
     IFC(Context.GetObject(&pParent));
 
-    if(pValue->IsTypeOf(m_Property->GetType()) || pValue->IsTypeOf(TypeIndex::Binding))
+    if(pValue->IsTypeOf(TypeIndex::BindingBase))
     {
-        pConvertedType = pValue;
-        AddRefObject(pConvertedType);
+        IFC(CastType(pValue, &pBinding));
+
+        IFC(pParent->SetBinding(m_Property, pBinding));
     }
     else
     {
-        CConversionContext Context(pParent, m_Property, Context.GetProviders());
+        if(pValue->IsTypeOf(m_Property->GetType()))
+        {
+            pConvertedType = pValue;
+            AddRefObject(pConvertedType);
+        }
+        else
+        {
+            CConversionContext Context(pParent, m_Property, Context.GetProviders());
 
-        pTypeConverter = Context.GetProviders()->GetTypeConverter();
-        IFCPTR(pTypeConverter);
+            pTypeConverter = Context.GetProviders()->GetTypeConverter();
+            IFCPTR(pTypeConverter);
 
-        IFC(pTypeConverter->Convert(&Context, pValue, &pConvertedType));
+            IFC(pTypeConverter->Convert(&Context, pValue, &pConvertedType));
+        }
+
+        IFC(pParent->SetValue(m_Property, pConvertedType));
     }
-
-    IFC(pParent->SetValue(m_Property, pConvertedType));
 
 Cleanup:
     ReleaseObject(pParent);

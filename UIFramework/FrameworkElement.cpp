@@ -2,6 +2,7 @@
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
 #include "BasicTypes.h"
+#include "BindingManager.h"
 
 //
 // Property Defaults
@@ -82,7 +83,7 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
     }
 
     {
-        CUIAttachContext ChildContext(this, GetTemplateParentForChildren(), GetFocusManager(), GetNamescopeForChildren());
+        CUIAttachContext ChildContext(GetStaticTreeData(), this, GetTemplateParentForChildren(), GetNamescopeForChildren());
 
         for(UINT32 i = 0; i < m_Children->GetCount(); i++)
         {
@@ -239,7 +240,7 @@ void CFrameworkElement::OnChildAdded(CUIElement* pElement)
 
     if(IsAttached())
     {
-        CUIAttachContext ChildContext(this, GetTemplateParentForChildren(), GetFocusManager(), GetNamescopeForChildren());
+        CUIAttachContext ChildContext(GetStaticTreeData(), this, GetTemplateParentForChildren(), GetNamescopeForChildren());
 
         IFC(pElement->OnAttach(ChildContext));
     }
@@ -412,7 +413,30 @@ Cleanup:
 HRESULT CFrameworkElement::SetStyleValue(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
-    CObjectWithType* pConvertedType = NULL;
+    CLayeredValue* pLayeredValue = NULL;
+    CBindingBase* pBinding = NULL;
+
+    IFCPTR(pProperty);
+    IFCPTR(pValue);
+
+    if(pValue->IsTypeOf(TypeIndex::BindingBase))
+    {
+        IFC(CastType(pValue, &pBinding));
+
+        IFC(SetStyleBinding(pProperty, pBinding));
+    }
+    else
+    {
+        IFC(SetStyleValueInternal(pProperty, pValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CFrameworkElement::SetStyleValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
     CLayeredValue* pLayeredValue = NULL;
 
     IFCPTR(pProperty);
@@ -422,8 +446,28 @@ HRESULT CFrameworkElement::SetStyleValue(CProperty* pProperty, CObjectWithType* 
 
     IFC(pLayeredValue->SetStyleValue(pValue));
 
-    //TODO: Resolve this for layered properties.
-    IFC(RaisePropertyChanged(pProperty));
+Cleanup:
+    return hr;
+}
+
+HRESULT CFrameworkElement::SetStyleBinding(CProperty* pProperty, CBindingBase* pBinding)
+{
+    HRESULT hr = S_OK;
+
+    IFC(GetBindingManager()->SetBinding(this, pProperty, pBinding, &CFrameworkElement::SetStyleBindingValue));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CFrameworkElement::SetStyleBindingValue(CPropertyObject* pTarget, CProperty* pTargetProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CFrameworkElement* pElement = NULL;
+
+    IFC(CastType(pTarget, &pElement));
+
+    IFC(pElement->SetStyleValueInternal(pTargetProperty, pValue));
 
 Cleanup:
     return hr;
