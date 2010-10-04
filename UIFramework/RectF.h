@@ -53,7 +53,7 @@ inline bool operator==( const RectF& Val1, const RectF& Val2 )
 
 inline bool operator!=( const RectF& Val1, const RectF& Val2 )
 {
-    return (Val1.left != Val2.left || Val1.top != Val2.top || Val1.right != Val2.right || Val1.bottom == Val2.bottom);
+    return (Val1.left != Val2.left || Val1.top != Val2.top || Val1.right != Val2.right || Val1.bottom != Val2.bottom);
 }
 
 #include "SizeF.h"

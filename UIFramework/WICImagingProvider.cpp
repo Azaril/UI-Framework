@@ -23,12 +23,15 @@ HRESULT CWICImagingProvider::Initialize()
 {
     HRESULT hr = S_OK;
 
-    if(SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED)))
+    if(FAILED(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_Factory)))
     {
-        m_UninitializeCOM = TRUE;
-    }
+        if(SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED)))
+        {
+            m_UninitializeCOM = TRUE;
 
-    IFC(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_Factory));
+            IFC(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_Factory));
+        }
+    }
 
 Cleanup:
     return hr;

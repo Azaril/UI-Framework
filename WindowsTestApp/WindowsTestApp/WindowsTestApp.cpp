@@ -44,7 +44,15 @@ ATOM MyRegisterClass( HINSTANCE hInstance );
 HRESULT InitInstance( HINSTANCE hInstance, int nCmdShow, HWND* pWindow );
 LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
-CRenderTarget* g_RenderTarget = NULL;
+#if defined(BUILD_D2D)
+
+CD2DHWNDRenderTarget* g_RenderTarget = NULL;
+
+#elif defined(BUILD_IRRLICHT)
+
+
+#endif
+
 CUIHost* g_UIHost = NULL;
 CMouseController* g_MouseController = NULL;
 CKeyboardController* g_KeyboardController = NULL;
@@ -58,10 +66,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     HWND hWnd = NULL;
     MSG msg = { 0 };
 	HACCEL hAccelTable = NULL;
+    CD2DHWNDRenderTarget* pRenderTarget = NULL;
 
 #endif
 
-    CRenderTarget* pRenderTarget = NULL;
     CUIHost* pUIHost = NULL;
     CRootUIElement* pRootElement = NULL; 
     CUIElement* pParsedRoot = NULL;
@@ -308,6 +316,26 @@ Cleanup:
    return hr;
 }
 
+HRESULT UpdateRenderTargetSize(HWND Window)
+{
+    HRESULT hr = S_OK;
+    RECT ClientSize = { 0 };
+    
+    IFCEXPECT(GetClientRect(Window, &ClientSize));
+
+    if(g_RenderTarget != NULL)
+    {
+        ID2D1HwndRenderTarget* pRenderTarget = g_RenderTarget->GetD2DHWNDRenderTarget();
+                    
+        IFC(pRenderTarget->Resize(D2D1::SizeU(ClientSize.right - ClientSize.left, ClientSize.bottom - ClientSize.top)));
+    }
+
+Cleanup:
+    return hr;
+}
+
+BOOL g_Sizing = FALSE;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     HRESULT hr = S_OK;
@@ -318,13 +346,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
         case WM_SIZE:
             {
-                if(wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED)
+                if(!g_Sizing)
                 {
-                    //TODO: Support resize.
-                    //ID2D1HwndRenderTarget* pRenderTarget = g_RenderTarget->GetD2DHWNDRenderTarget();
-                    
-                    //IFC(pRenderTarget->Resize(D2D1::SizeU(LOWORD(lParam), HIWORD(lParam))));
+                    if(wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED)
+                    {
+                        IFC(UpdateRenderTargetSize(hWnd));
+                    }
                 }
+
+                break;
+            }
+
+        case WM_ENTERSIZEMOVE:
+            {
+                g_Sizing = TRUE;
+
+                break;
+            }
+
+        case WM_EXITSIZEMOVE:
+            {
+                g_Sizing = FALSE;
+
+                IFC(UpdateRenderTargetSize(hWnd));
+
                 break;
             }
 

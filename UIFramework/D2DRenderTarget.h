@@ -5,7 +5,7 @@
 #include <d2d1.h>
 #include <d2d1helper.h>
 
-class CD2DRenderTarget : public CRenderTarget
+class UIFRAMEWORK_API CD2DRenderTarget : public CRenderTarget
 {
     public:
         virtual SizeF GetSize();

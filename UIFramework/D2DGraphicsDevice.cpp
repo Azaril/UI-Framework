@@ -39,7 +39,7 @@ HRESULT CD2DGraphicsDevice::Initialize()
     CreateFactory = (D2D1CreateFactoryFunc)GetProcAddress(m_D2DModule, "D2D1CreateFactory");
     IFCPTR(CreateFactory);
 
-    IFC(CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), NULL, (void**)&m_Factory));
+    IFC(CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, __uuidof(ID2D1Factory), NULL, (void**)&m_Factory));
 
     IFC(CreateTextProvider(&m_TextProvider));
 
@@ -49,7 +49,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DGraphicsDevice::CreateHWNDRenderTarget(HWND Window, CRenderTarget** ppRenderTarget)
+HRESULT CD2DGraphicsDevice::CreateHWNDRenderTarget(HWND Window, CD2DHWNDRenderTarget** ppRenderTarget)
 {
     HRESULT hr = S_OK;
     RECT ClientRect = { 0 };

@@ -3,7 +3,7 @@
 #include "Factory.h"
 #include "D2DRenderTarget.h"
 
-class CD2DHWNDRenderTarget : public CD2DRenderTarget
+class UIFRAMEWORK_API CD2DHWNDRenderTarget : public CD2DRenderTarget
 {
     public:
         DECLARE_FACTORY1( CD2DHWNDRenderTarget, ID2D1HwndRenderTarget* );

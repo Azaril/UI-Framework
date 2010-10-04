@@ -369,7 +369,7 @@ HRESULT ConvertStringToColorF(CConversionContext* pContext, CObjectWithType* pVa
             {
                 if(HexDigits < 8)
                 {
-                    HexValues[HexDigits] = Token - L'a';
+                    HexValues[HexDigits] = (Token - L'a') + 0x0A;
                     ++HexDigits;
                 }
                 else
@@ -381,7 +381,7 @@ HRESULT ConvertStringToColorF(CConversionContext* pContext, CObjectWithType* pVa
             {
                 if(HexDigits < 8)
                 {
-                    HexValues[HexDigits] = Token - L'A';
+                    HexValues[HexDigits] = (Token - L'A') + 0x0A;
                     ++HexDigits;
                 }
                 else
