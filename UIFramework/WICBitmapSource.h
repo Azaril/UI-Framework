@@ -14,6 +14,8 @@ class CWICBitmapSource : public CBitmapSource
 
         virtual HRESULT GetSize( SizeU* pSize );
 
+        HRESULT AssociateStream( IStream* pStream );
+
     protected:
         CWICBitmapSource();
         virtual ~CWICBitmapSource();
@@ -21,4 +23,5 @@ class CWICBitmapSource : public CBitmapSource
         HRESULT Initialize( IWICBitmapSource* pSource );
 
         IWICBitmapSource* m_Source;
+        IStream* m_Stream;
 };

@@ -9,6 +9,8 @@ class CGeometry : public CObjectWithType
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Geometry, CObjectWithType );
 
+        virtual HRESULT GetBounds( RectF* pBounds ) = 0;
+        virtual HRESULT GetBounds( const Matrix3X2F& Transform, RectF* pBounds ) = 0;
         virtual HRESULT FillContainsPoint( const Point2F& LocalPoint, BOOL* pContainsPoint ) = 0;
 };
 

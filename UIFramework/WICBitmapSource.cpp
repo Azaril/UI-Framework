@@ -1,12 +1,14 @@
 #include "WICBitmapSource.h"
 
-CWICBitmapSource::CWICBitmapSource() : m_Source(NULL)
+CWICBitmapSource::CWICBitmapSource() : m_Source(NULL),
+                                       m_Stream(NULL)
 {
 }
 
 CWICBitmapSource::~CWICBitmapSource()
 {
     ReleaseObject(m_Source);
+    ReleaseObject(m_Stream);
 }
 
 HRESULT CWICBitmapSource::Initialize(IWICBitmapSource* pSource)
@@ -34,6 +36,20 @@ HRESULT CWICBitmapSource::GetSize(SizeU* pSize)
     IFCPTR(pSize);
 
     IFC(m_Source->GetSize(&pSize->width, &pSize->height));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CWICBitmapSource::AssociateStream(IStream* pStream)
+{
+    HRESULT hr = S_OK;
+
+    ReleaseObject(m_Stream);
+
+    m_Stream = pStream;
+
+    AddRefObject(m_Stream);
 
 Cleanup:
     return hr;

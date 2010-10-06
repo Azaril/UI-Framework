@@ -17,7 +17,7 @@ class CBrush : public CRefCountedObjectBase< CPropertyObject >,
         DECLARE_TYPE_WITH_BASE( TypeIndex::Brush, CPropertyObject );
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
-
+        
         virtual BOOL IsShareable() { return true; }
 
         virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );

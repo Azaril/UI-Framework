@@ -46,4 +46,7 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
         CGraphicsBrush* m_StrokeGraphicsBrush;
         FLOAT m_StrokeThickness;
         Matrix3X2F m_FillBrushTransform;
+        Matrix3X2F m_StrokeBrushTransform;
+        Matrix3X2F m_ModifyFillBrushTransform;
+        BOOL m_UpdateFillTransform;
 };

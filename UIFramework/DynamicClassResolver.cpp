@@ -108,13 +108,13 @@ ClassInformation Classes[] =
         &CCanvas::CreateEventInformation,
         &CCanvas::CreateCommandInformation),
 
-    //ClassInformation(
-    //    L"Grid",
-    //    TypeIndex::Grid,
-    //    &StaticClassFactory< CGrid >::Create,
-    //    &CGrid::CreatePropertyInformation,
-    //    &CGrid::CreateEventInformation,
-    //    &CGrid::CreateCommandInformation),
+    ClassInformation(
+        L"Grid",
+        TypeIndex::Grid,
+        &StaticClassFactory< CGrid >::Create,
+        &CGrid::CreatePropertyInformation,
+        &CGrid::CreateEventInformation,
+        &CGrid::CreateCommandInformation),
 
     ClassInformation(
         L"Image",

@@ -25,6 +25,8 @@ class UIFRAMEWORK_API CImage : public CFrameworkElement
         // Properties
         //
         static CStaticProperty SourceProperty;
+        static CStaticProperty StretchProperty;
+        static CStaticProperty StretchDirectionProperty;
 
     protected:
         CImage();
@@ -43,16 +45,26 @@ class UIFRAMEWORK_API CImage : public CFrameworkElement
         HRESULT RebuildGeometry();
         HRESULT ReleaseGeometry();
 
+        HRESULT ComputeSize( SizeF AvailableSize, SizeF& UsedSize );
+
         //
         // Property Change Handlers
         //
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnSourceChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnStretchChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnStretchDirectionChanged );
 
         HRESULT OnSourceChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnStretchChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnStretchDirectionChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
         HRESULT GetEffectiveSource( CObjectWithType** ppSource );
+        HRESULT GetEffectiveStretch( Stretch::Value* pStretch );
+        HRESULT GetEffectiveStretchDirection( StretchDirection::Value* pStretchDirection );
 
         CTypedLayeredValue< CImage, CObjectWithType > m_Source;
+        CTypedLayeredValue< CImage, CStretchValue > m_Stretch;
+        CTypedLayeredValue< CImage, CStretchDirectionValue > m_StretchDirection;
         CImageBrush* m_ImageBrush;
         CGeometryVisual* m_ImageVisual;
         BOOL m_GeometryDirty;

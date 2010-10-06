@@ -80,6 +80,27 @@ namespace Orientation
     };
 }
 
+namespace Stretch
+{
+    enum Value
+    {
+        Fill,
+        None,
+        Uniform,
+        UniformToFill
+    };
+}
+
+namespace StretchDirection
+{
+    enum Value
+    {
+        Both,
+        UpOnly,
+        DownOnly,
+    };
+}
+
 namespace Key
 {
     enum Value

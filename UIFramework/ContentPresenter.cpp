@@ -255,14 +255,9 @@ HRESULT CContentPresenter::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     if(m_ContentChild != NULL)
     {
         IFC(m_ContentChild->Arrange(MakeRect(AvailableSize)));
+    }
 
-        UsedSize = m_ContentChild->GetFinalSize();
-    }
-    else
-    {
-        UsedSize.width = 0;
-        UsedSize.height = 0;
-    }
+    UsedSize = AvailableSize;
       
 Cleanup:
     return hr;

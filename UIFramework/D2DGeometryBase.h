@@ -14,6 +14,30 @@ class CD2DGeometryBase : public T
             return m_Geometry;
         }
 
+        virtual HRESULT GetBounds( RectF* pBounds )
+        {
+            HRESULT hr = S_OK;
+
+            IFCPTR(pBounds);
+
+            IFC(m_Geometry->GetBounds(NULL, pBounds));
+
+        Cleanup:
+            return hr;
+        }
+
+        virtual HRESULT GetBounds( const Matrix3X2F& Transform, RectF* pBounds )
+        {
+            HRESULT hr = S_OK;
+
+            IFCPTR(pBounds);
+
+            IFC(m_Geometry->GetBounds(&Transform, pBounds));
+
+        Cleanup:
+            return hr;
+        }
+
         virtual HRESULT FillContainsPoint( const Point2F& LocalPoint, BOOL* pContainsPoint )
         {
             HRESULT hr = S_OK;

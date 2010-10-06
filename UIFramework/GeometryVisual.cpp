@@ -5,9 +5,11 @@ CGeometryVisual::CGeometryVisual() : m_Geometry(NULL),
                                      m_StrokeBrush(NULL),
                                      m_FillGraphicsBrush(NULL),
                                      m_StrokeGraphicsBrush(NULL),
-                                     m_StrokeThickness(1.0f)
+                                     m_StrokeThickness(1.0f),
+                                     m_UpdateFillTransform(TRUE)
 {
     m_FillBrushTransform = Matrix3X2F::Identity();
+    m_ModifyFillBrushTransform = Matrix3X2F::Identity();
 }
 
 CGeometryVisual::~CGeometryVisual()
@@ -74,7 +76,9 @@ HRESULT CGeometryVisual::SetFillBrushTransform(const Matrix3X2F& Transform)
 {
     HRESULT hr = S_OK;
 
-    m_FillBrushTransform = Transform;
+    m_ModifyFillBrushTransform = Transform;
+
+    m_UpdateFillTransform = TRUE;
 
     return hr;
 }
@@ -109,9 +113,9 @@ HRESULT CGeometryVisual::InternalSetFillBrush(CBrush* pBrush)
 
     if(m_FillBrush)
     {
-        IFC(AddVisualResource(m_FillBrush));
-
         AddRefObject(m_FillBrush);
+
+        IFC(AddVisualResource(m_FillBrush));        
     }
 
 Cleanup:
@@ -203,6 +207,7 @@ HRESULT CGeometryVisual::PreRender(CPreRenderContext& Context)
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
+    BOOL GenerateStrokeTransform = FALSE;
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
@@ -213,6 +218,10 @@ HRESULT CGeometryVisual::PreRender(CPreRenderContext& Context)
         {
             m_FillGraphicsBrush = NULL;
         }
+        else
+        {
+            m_UpdateFillTransform = TRUE;
+        }
     }
 
     if(m_StrokeBrush != NULL && m_StrokeGraphicsBrush == NULL)
@@ -220,6 +229,37 @@ HRESULT CGeometryVisual::PreRender(CPreRenderContext& Context)
         if(FAILED(m_StrokeBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_StrokeGraphicsBrush)))
         {
             m_StrokeGraphicsBrush = NULL;
+        }
+        else
+        {
+            GenerateStrokeTransform = TRUE;
+        }
+    }
+
+    if(m_UpdateFillTransform || GenerateStrokeTransform)
+    {
+        RectF GeometryBounds;
+
+        IFC(m_Geometry->GetBounds(&GeometryBounds));
+
+        if(m_UpdateFillTransform)
+        {
+            m_UpdateFillTransform = FALSE;
+
+            m_FillBrushTransform = m_ModifyFillBrushTransform * Matrix3X2F::Scale(GeometryBounds.right - GeometryBounds.left, GeometryBounds.bottom - GeometryBounds.top) * Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top);
+
+            //FLOAT GeometryWidth = GeometryBounds.right - GeometryBounds.left;
+            //FLOAT ScaleX = GeometryWidth / Bounds.width;
+
+            //FLOAT GeometryHeight = GeometryBounds.bottom - GeometryBounds.top;
+            //FLOAT ScaleY = GeometryHeight / Bounds.height;
+
+            //m_FillBrushTransform = Matrix3X2F::Scale(ScaleX, ScaleY);
+        }
+
+        if(GenerateStrokeTransform)
+        {
+            m_StrokeBrushTransform = Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top) * Matrix3X2F::Scale(GeometryBounds.right - GeometryBounds.left, GeometryBounds.bottom - GeometryBounds.top);
         }
     }
 
@@ -235,16 +275,21 @@ HRESULT CGeometryVisual::RenderTransformed(CRenderContext& Context)
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
 
-    if(m_Geometry != NULL && m_FillGraphicsBrush != NULL)
+    if(m_Geometry != NULL)
     {
-        IFC(m_FillGraphicsBrush->SetTransform(m_FillBrushTransform));
+        if(m_FillGraphicsBrush != NULL)
+        {
+            IFC(m_FillGraphicsBrush->SetTransform(m_FillBrushTransform));
 
-        IFC(pRenderTarget->FillGeometry(m_Geometry, m_FillGraphicsBrush));
-    }
+            IFC(pRenderTarget->FillGeometry(m_Geometry, m_FillGraphicsBrush));
+        }
 
-    if(m_Geometry != NULL && m_StrokeGraphicsBrush != NULL)
-    {
-        IFC(pRenderTarget->DrawGeometry(m_Geometry, m_StrokeGraphicsBrush, m_StrokeThickness));
+        if(m_StrokeGraphicsBrush != NULL)
+        {
+            IFC(m_StrokeGraphicsBrush->SetTransform(m_FillBrushTransform));
+
+            IFC(pRenderTarget->DrawGeometry(m_Geometry, m_StrokeGraphicsBrush, m_StrokeThickness));
+        }
     }
 
 Cleanup:

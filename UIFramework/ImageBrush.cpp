@@ -67,7 +67,7 @@ HRESULT CImageBrush::InternalSetSource(CObjectWithType* pSource)
 {
     HRESULT hr = S_OK;
 
-    IFCEXPECT(pSource->IsTypeOf(TypeIndex::String) || pSource->IsTypeOf(TypeIndex::BitmapSource));
+    IFCEXPECT(pSource == NULL || pSource->IsTypeOf(TypeIndex::String) || pSource->IsTypeOf(TypeIndex::BitmapSource));
 
     if(pSource != m_Source)
     {
@@ -172,7 +172,11 @@ HRESULT CImageBrush::CreateBitmapFromSource(CGraphicsDevice* pGraphicsDevice, CB
 
     IFCPTR(ppBitmapSource);
 
-    if(m_Source->IsTypeOf(TypeIndex::String))
+    if(m_Source == NULL)
+    {
+        pBitmapSource = NULL;
+    }
+    else if(m_Source->IsTypeOf(TypeIndex::String))
     {
         CStringValue* pStringValue = (CStringValue*)m_Source;
 
@@ -275,7 +279,7 @@ HRESULT CImageBrush::GetGraphicsBrush(CGraphicsDevice* pGraphicsDevice, CRenderT
     //}
 
     //TODO: Find a way to keep a single instance per render target.
-    IFC(pRenderTarget->LoadBitmap(pBitmapSource, &pBitmap));
+    IFC_NOTRACE(pRenderTarget->LoadBitmap(pBitmapSource, &pBitmap));
 
     IFC(pRenderTarget->CreateBitmapBrush(pBitmap, ppGraphicsBrush));
 

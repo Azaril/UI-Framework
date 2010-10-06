@@ -26,6 +26,7 @@ DEFINE_GET_DEFAULT( VerticalAlignment, CVerticalAlignmentValue, VerticalAlignmen
 DEFINE_GET_DEFAULT( Margin, CRectFValue, RectF(0, 0, 0, 0) );
 DEFINE_GET_DEFAULT( Focusable, CBoolValue, FALSE );
 DEFINE_GET_DEFAULT( Opacity, CFloatValue, 1.0f );
+DEFINE_GET_DEFAULT( Namescope, CBoolValue, FALSE );
 
 //
 // Properties
@@ -42,6 +43,7 @@ CStaticProperty CUIElement::VerticalAlignmentProperty( L"VerticalAlignment", Typ
 CStaticProperty CUIElement::MarginProperty( L"Margin", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT( Margin ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged ) );
 CStaticProperty CUIElement::FocusableProperty( L"Focusable", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( Focusable ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnFocusableChanged ) );
 CStaticProperty CUIElement::OpacityProperty( L"Opacity", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Opacity ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnOpacityChanged ) );
+CStaticProperty CUIElement::NamescopeProperty( L"Namescope", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( Namescope ) );
 
 //
 // Property Change Handlers
@@ -112,6 +114,7 @@ CUIElement::CUIElement() : m_Attached(FALSE),
                            m_Margin(this, &CUIElement::MarginProperty),
                            m_Focusable(this, &CUIElement::FocusableProperty),
                            m_Opacity(this, &CUIElement::OpacityProperty),
+                           m_Namescope(this, &CUIElement::NamescopeProperty),
                            m_Layer(NULL),
                            m_ClipToLayoutBounds(FALSE)
 {
@@ -376,12 +379,25 @@ HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
     CRoutedEventArgs* pAttachedEventArgs = NULL;
+    BOOL IsNamescope = FALSE;
+    CNamescope* pNamescope = NULL;
 
     IFCEXPECT(!IsAttached());
 
     m_Attached = TRUE;
 
-    m_Context = Context;
+    IFC(GetEffectiveNamescope(&IsNamescope));
+
+    if(IsNamescope)
+    {
+        IFC(CNamescope::Create(&pNamescope));
+
+        m_Context = CUIAttachContext(Context.GetStaticTreeData(), Context.GetParent(), Context.GetTemplateParent(), pNamescope);
+    }
+    else
+    {
+        m_Context = Context;
+    }
 
     m_NotifiedParentMeasureDirty = FALSE;
     m_NotifiedParentArrangeDirty = FALSE;
@@ -394,6 +410,7 @@ HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
     IFC(RaiseEvent(pAttachedEventArgs));
     
 Cleanup:
+    ReleaseObject(pNamescope);
     ReleaseObject(pAttachedEventArgs);
 
     return hr;
@@ -744,6 +761,36 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::GetEffectiveNamescope(BOOL* pNamescope)
+{
+    HRESULT hr = S_OK;
+    CBoolValue* pEffectiveValue = NULL;
+
+    IFC(m_Namescope.GetTypedEffectiveValue(&pEffectiveValue));
+
+    *pNamescope = pEffectiveValue->GetValue();
+
+Cleanup:
+    ReleaseObject(pEffectiveValue);
+
+    return hr;
+}
+
+HRESULT CUIElement::SetIsNamescope(BOOL IsNamescope)
+{
+    HRESULT hr = S_OK;
+    CBoolValue* pValue = NULL;
+
+    IFC(CBoolValue::Create(IsNamescope, &pValue));
+
+    IFC(SetValue(&CUIElement::NamescopeProperty, pValue));
+
+Cleanup:
+    ReleaseObject(pValue);
+
+    return hr;
+}
+
 SizeF CUIElement::GetDesiredSize()
 {
     return m_DesiredSize;
@@ -836,11 +883,13 @@ HRESULT CUIElement::Arrange(RectF Bounds)
 
             IFC(ArrangeInternal(ArrangeSize, UsedArrangeSize));
 
+            m_FinalSize = UsedArrangeSize;
+
             SizeF ClippedSize(std::min(UsedArrangeSize.width, MaxSize.width), std::min(UsedArrangeSize.height, MaxSize.height));
 
             NeedsClipBounds |= (ClippedSize.width < UsedArrangeSize.width) ||  (ClippedSize.height < UsedArrangeSize.height);
 
-            SizeF ClientSize(std::max(0.0f, ArrangeSize.width), std::max(0.0f, ArrangeSize.height));
+            SizeF ClientSize(std::max(0.0f, OriginalArrangeSize.width - MarginWidth), std::max(0.0f, OriginalArrangeSize.height - MarginHeight));
 
             NeedsClipBounds |= (ClientSize.width < ClippedSize.width) || (ClientSize.height < ClippedSize.height);
 
@@ -857,7 +906,6 @@ HRESULT CUIElement::Arrange(RectF Bounds)
             IFC(SetVisualTransform(VisualTransform));
 
             m_ClipToLayoutBounds = NeedsClipBounds;
-            m_FinalSize = ClippedSize;
         }
         else
         {
@@ -872,7 +920,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::ComputeAlignmentOffset(SizeF ClientSize, SizeF RenderSize, SizeF Offset)
+HRESULT CUIElement::ComputeAlignmentOffset(SizeF ClientSize, SizeF RenderSize, SizeF& Offset)
 {
     HRESULT hr = S_OK;
 
@@ -892,7 +940,7 @@ HRESULT CUIElement::ComputeAlignmentOffset(SizeF ClientSize, SizeF RenderSize, S
         VertAlign = VerticalAlignment::Top;
     }
 
-    if(HorzAlign == HorizontalAlignment::Center ||  HorzAlign == HorizontalAlignment::Stretch)
+    if(HorzAlign == HorizontalAlignment::Center || HorzAlign == HorizontalAlignment::Stretch)
     {
         Offset.width = (ClientSize.width - RenderSize.width) * 0.5f;
     }
@@ -905,7 +953,7 @@ HRESULT CUIElement::ComputeAlignmentOffset(SizeF ClientSize, SizeF RenderSize, S
         Offset.width = 0;
     }
 
-    if(VertAlign == VerticalAlignment::Center ||  VertAlign == VerticalAlignment::Stretch)
+    if(VertAlign == VerticalAlignment::Center || VertAlign == VerticalAlignment::Stretch)
     {
         Offset.height = (ClientSize.height - RenderSize.height) * 0.5f;
     }
@@ -926,8 +974,7 @@ HRESULT CUIElement::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
 
-    UsedSize.width = 0;
-    UsedSize.height = 0;
+    UsedSize = AvailableSize;
 
     return hr;
 }
@@ -1158,7 +1205,8 @@ HRESULT CUIElement::CreatePropertyInformation(CPropertyInformation **ppInformati
         &VerticalAlignmentProperty,
         &MarginProperty,
         &FocusableProperty,
-        &OpacityProperty
+        &OpacityProperty,
+        &NamescopeProperty
     };
     
     IFCPTR(ppInformation);
@@ -1263,7 +1311,7 @@ HRESULT CUIElement::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
     }
     else if(pProperty == &CUIElement::MaximumWidthProperty)
     {
-        *ppLayeredValue = &m_MinimumWidth;
+        *ppLayeredValue = &m_MaximumWidth;
     }
     else if(pProperty == &CUIElement::MaximumHeightProperty)
     {
@@ -1292,6 +1340,10 @@ HRESULT CUIElement::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLaye
     else if(pProperty == &CUIElement::OpacityProperty)
     {
         *ppLayeredValue = &m_Opacity;
+    }
+    else if(pProperty == &CUIElement::NamescopeProperty)
+    {
+        *ppLayeredValue = &m_Namescope;
     }
     else
     {

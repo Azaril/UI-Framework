@@ -32,7 +32,7 @@
 #define IFCOOM_NOTRACE(ptr) if((ptr) == NULL) { hr = E_OUTOFMEMORY; goto Cleanup; };
 #define IFCEXPECT_NOTRACE(expr) if(!(expr)) { hr = E_UNEXPECTED; goto Cleanup; };
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(UIFRAMEWORK_EXPORTS)
 
 #define DEBUG_OUT_HR(expr, res) logging::DebugOut(L"%s(%u): %s\n", __WFILE__, __LINE__, L#expr);
 
@@ -43,9 +43,9 @@
 
 #else
 
-#define IFC IFCNOTRACE
-#define IFCPTR(ptr) IFCPTR_NOTRACE
-#define IFCOOM(ptr) IFCOOM_NOTRACE
-#define IFCEXPECT(expr) IFCEXPECT_NOTRACE
+#define IFC(expr) IFC_NOTRACE(expr)
+#define IFCPTR(ptr) IFCPTR_NOTRACE(ptr)
+#define IFCOOM(ptr) IFCOOM_NOTRACE(ptr)
+#define IFCEXPECT(expr) IFCEXPECT_NOTRACE(expr)
 
 #endif

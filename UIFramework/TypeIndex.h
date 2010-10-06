@@ -73,6 +73,8 @@ namespace TypeIndex
             Orientation,
             BindingDirection,
             BitmapSource,
+            Stretch,
+            StretchDirection,
             GradientStop,
             RoutedEvent,
             RoutedEventArgs,

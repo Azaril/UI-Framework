@@ -23,7 +23,9 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::HorizontalAlignment, ConvertStringToHorizontalAlignment },
     { TypeIndex::String, TypeIndex::VerticalAlignment, ConvertStringToVerticalAlignment },
     { TypeIndex::String, TypeIndex::Command, ConvertStringToCommand },
-    { TypeIndex::String, TypeIndex::BindingDirection, ConvertStringToBindingDirection }
+    { TypeIndex::String, TypeIndex::BindingDirection, ConvertStringToBindingDirection },
+    { TypeIndex::String, TypeIndex::Stretch, ConvertStringToStretch },
+    { TypeIndex::String, TypeIndex::StretchDirection, ConvertStringToStretchDirection }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -1128,6 +1130,53 @@ HRESULT ConvertStringToBindingDirection(CConversionContext* pContext, CObjectWit
     CBindingDirectionValue* pOutValue = NULL;
 
     IFC(ConvertStringToEnum(pContext, pValue, g_BindingDirections, ARRAYSIZE(g_BindingDirections), TRUE, &pOutValue));
+
+    *ppConvertedValue = pOutValue;
+    pOutValue = NULL;
+
+Cleanup:
+    ReleaseObject(pOutValue);
+
+    return hr;
+}
+
+const EnumHolder< Stretch::Value > g_Stretch[] =
+{
+    { L"Fill", Stretch::Fill },
+    { L"None", Stretch::None },
+    { L"Uniform", Stretch::Uniform },
+    { L"UniformToFill", Stretch::UniformToFill }
+};
+
+HRESULT ConvertStringToStretch(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    CStretchValue* pOutValue = NULL;
+
+    IFC(ConvertStringToEnum(pContext, pValue, g_Stretch, ARRAYSIZE(g_Stretch), TRUE, &pOutValue));
+
+    *ppConvertedValue = pOutValue;
+    pOutValue = NULL;
+
+Cleanup:
+    ReleaseObject(pOutValue);
+
+    return hr;
+}
+
+const EnumHolder< StretchDirection::Value > g_StretchDirection[] =
+{
+    { L"Both", StretchDirection::Both },
+    { L"UpOnly", StretchDirection::UpOnly },
+    { L"DownOnly", StretchDirection::DownOnly }
+};
+
+HRESULT ConvertStringToStretchDirection(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    CStretchDirectionValue* pOutValue = NULL;
+
+    IFC(ConvertStringToEnum(pContext, pValue, g_StretchDirection, ARRAYSIZE(g_StretchDirection), TRUE, &pOutValue));
 
     *ppConvertedValue = pOutValue;
     pOutValue = NULL;

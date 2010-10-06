@@ -17,3 +17,5 @@ HRESULT ConvertStringToHorizontalAlignment( CConversionContext* pContext, CObjec
 HRESULT ConvertStringToVerticalAlignment( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToCommand( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToBindingDirection( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToStretch( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToStretchDirection( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );

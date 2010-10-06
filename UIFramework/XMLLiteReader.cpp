@@ -5,7 +5,8 @@
 CXMLLiteReader::CXMLLiteReader() : m_XMLLiteModule(NULL),
                                    m_CreateXmlReader(NULL),
                                    m_ShlwapiModule(NULL),
-                                   m_SHCreateStreamOnFileW(NULL)
+                                   m_SHCreateStreamOnFileW(NULL),
+                                   m_SHCreateMemStream(NULL)
 {
 }
 

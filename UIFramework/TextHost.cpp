@@ -88,8 +88,9 @@ HRESULT CTextHost::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
         IFC(pMetrics->GetBounds(&TextBounds));
     }
 
-    UsedSize.width = TextBounds.right - TextBounds.left;
-    UsedSize.height = TextBounds.bottom - TextBounds.top;
+    UsedSize = AvailableSize;
+    //UsedSize.width = TextBounds.right - TextBounds.left;
+    //UsedSize.height = TextBounds.bottom - TextBounds.top;
 
 Cleanup:
     ReleaseObject(pMetrics);

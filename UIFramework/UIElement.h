@@ -290,6 +290,8 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         HRESULT CaptureMouse();
         HRESULT ReleaseMouse();
 
+        HRESULT SetIsNamescope( BOOL IsNamescope );
+
         virtual HRESULT SetBinding( CProperty* pProperty, CBindingBase* pBinding );
 
         //
@@ -307,6 +309,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         static CStaticProperty MarginProperty;
         static CStaticProperty FocusableProperty;
         static CStaticProperty OpacityProperty;
+        static CStaticProperty NamescopeProperty;
 
         //
         // Events
@@ -387,6 +390,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         HRESULT GetEffectiveMargin( RectF* pMargin );
         HRESULT GetEffectiveFocusable( BOOL* pFocusable );
         HRESULT GetEffectiveOpacity( FLOAT* pOpacity );
+        HRESULT GetEffectiveNamescope( BOOL* pNamescope );
 
         virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
@@ -406,7 +410,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         virtual void OnKey( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
         HRESULT GetMinMaxSize( SizeF& MinimumSize, SizeF& MaximumSize );
-        HRESULT ComputeAlignmentOffset( SizeF ClientSize, SizeF RenderSize, SizeF Offset );
+        HRESULT ComputeAlignmentOffset( SizeF ClientSize, SizeF RenderSize, SizeF& Offset );
         
         static HRESULT SetLocalBindingValue( CPropertyObject* pTarget, CProperty* pTargetProperty, CObjectWithType* pValue );
 
@@ -456,6 +460,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         CTypedLayeredValue< CUIElement, CRectFValue > m_Margin;
         CTypedLayeredValue< CUIElement, CBoolValue > m_Focusable;
         CTypedLayeredValue< CUIElement, CFloatValue > m_Opacity;
+        CTypedLayeredValue< CUIElement, CBoolValue > m_Namescope;
 
         BOOL m_MeasureDirty;
         BOOL m_ArrangeDirty;

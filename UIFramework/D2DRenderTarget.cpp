@@ -236,7 +236,7 @@ HRESULT CD2DRenderTarget::LoadBitmap(CBitmapSource* pSource, CBitmap** ppBitmap)
     ID2D1Bitmap* pD2DBitmap = NULL;
     CD2DBitmap* pBitmap = NULL;
 
-    IFCPTR(pSource);
+    IFCPTR_NOTRACE(pSource);
     IFCPTR(ppBitmap);
 
     pWICBitmapSource = (CWICBitmapSource*)pSource;

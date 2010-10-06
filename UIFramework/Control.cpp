@@ -338,14 +338,9 @@ HRESULT CControl::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     if(pChild != NULL)
     {
         IFC(pChild->Arrange(MakeRect(AvailableSize)));
+    }
 
-        UsedSize = pChild->GetFinalSize();
-    }
-    else
-    {
-        UsedSize.width = 0;
-        UsedSize.height = 0;
-    }
+    UsedSize = AvailableSize;
       
 Cleanup:
     ReleaseObject(pChild);
