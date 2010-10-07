@@ -4,6 +4,8 @@ UIFramework/Release/*
 
 WindowsTestApp/Debug/*
 WindowsTestApp/Release/*
+WindowsTestApp/WindowsTestApp/Debug/*
+WindowsTestApp/WindowsTestApp/Release/*
 WindowsTestApp/ipch/*
 
 # Visual studio files
