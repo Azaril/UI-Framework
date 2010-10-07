@@ -1,0 +1,12 @@
+# Intermediate files
+UIFramework/Debug/*
+UIFramework/Release/*
+
+WindowsTestApp/Debug/*
+WindowsTestApp/Release/*
+WindowsTestApp/ipch/*
+
+# Visual studio files
+*.vcxproj.user
+*.sdf
+*.suo
