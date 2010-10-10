@@ -423,6 +423,9 @@ HRESULT CUIElement::OnDetach(CUIDetachContext& Context)
 
     IFCEXPECT(IsAttached());
 
+    //TODO: Unfiy when dirtiness is actually required.
+    IFC(InvalidateMeasure());
+
     m_Attached = FALSE;
 
     m_Context.Reset();
