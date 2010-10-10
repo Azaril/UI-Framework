@@ -4,4 +4,6 @@
 
 #include <vector>
 
+using std::vector;
+
 #pragma pop_macro("new")

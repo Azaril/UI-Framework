@@ -16,6 +16,7 @@
 #include "LayeredValue.h"
 #include "BasicTypes.h"
 #include "StaticPropertyInformation.h"
+#include "Animatable.h"
 
 class CUIElement;
 class CNamescope;
@@ -26,9 +27,10 @@ class CKeyboardController;
 class CStaticTreeData
 {
     public:
-        CStaticTreeData( CFocusManager* pFocusManager, CMouseController* pMouseController, CKeyboardController* pKeyboardController ) : m_FocusManager(pFocusManager),
-                                                                                                                                        m_MouseController(pMouseController),
-                                                                                                                                        m_KeyboardController(pKeyboardController)
+        CStaticTreeData( CFocusManager* pFocusManager, CMouseController* pMouseController, CKeyboardController* pKeyboardController, CTimeSource* pTimeSource ) : m_FocusManager(pFocusManager),
+                                                                                                                                                                  m_MouseController(pMouseController),
+                                                                                                                                                                  m_KeyboardController(pKeyboardController),
+                                                                                                                                                                  m_TimeSource(pTimeSource)
         {
         }
 
@@ -47,10 +49,16 @@ class CStaticTreeData
             return m_KeyboardController;
         }
 
+        CTimeSource* GetTimeSource()
+        {
+            return m_TimeSource;
+        }
+
     protected:
         CFocusManager* m_FocusManager;
         CMouseController* m_MouseController;
         CKeyboardController* m_KeyboardController;
+        CTimeSource* m_TimeSource;
 };
 
 class CUIAttachContext
@@ -112,6 +120,11 @@ class CUIAttachContext
         CKeyboardController* GetKeyboardController()
         {
             return (m_StaticData != NULL) ? m_StaticData->GetKeyboardController() :  NULL;
+        }
+
+        CTimeSource* GetTimeSource()
+        {
+            return (m_StaticData != NULL) ? m_StaticData->GetTimeSource() : NULL;
         }
 
         CStaticTreeData* GetStaticTreeData()
@@ -233,7 +246,8 @@ class CEventHandlerChain : public CRefCountedObject
         events::signal< void ( CObjectWithType*, CRoutedEventArgs* ) > m_Handlers;
 };
 
-class UIFRAMEWORK_API CUIElement : public CVisual
+class UIFRAMEWORK_API CUIElement : public CVisual,
+                                   public CAnimatable
 {
     public:
         DELEGATE_REFCOUNTING( CVisual );
@@ -277,6 +291,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         CBindingManager* GetBindingManager();
         CMouseController* GetMouseController();
         CKeyboardController* GetKeyboardController();
+        virtual CTimeSource* GetTimeSource();
 
         virtual HRESULT SetVisibility( Visibility::Value State );
 
@@ -418,6 +433,9 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         void CleanArrange();
 
         CStaticTreeData* GetStaticTreeData();
+
+        virtual HRESULT GetAnimationBaseValue( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual HRESULT SetAnimationValue( CProperty* pProperty, CObjectWithType* pValue );
 
         //
         // Property Change Handlers

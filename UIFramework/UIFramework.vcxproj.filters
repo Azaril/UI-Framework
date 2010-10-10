@@ -107,6 +107,9 @@
     <Filter Include="Framework\UI\Visuals\Elements\Controls\Range">
       <UniqueIdentifier>{026601eb-d6e4-4efc-a130-230356d06edf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\UI\Animation\Float">
+      <UniqueIdentifier>{5a1a9377-6de0-4023-9d94-acdce0ebcf9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -448,9 +451,6 @@
     <ClCompile Include="StaticRoutedCommand.cpp">
       <Filter>Framework\UI\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationContainer.cpp">
-      <Filter>Framework\UI\Animation</Filter>
-    </ClCompile>
     <ClCompile Include="EditableTextLayout.cpp">
       <Filter>Framework\Text</Filter>
     </ClCompile>
@@ -624,6 +624,36 @@
     </ClCompile>
     <ClCompile Include="SourcedBinding.cpp">
       <Filter>Framework\UI\Binding</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animatable.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeSink.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeSource.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeController.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeValue.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="FloatAnimationBase.cpp">
+      <Filter>Framework\UI\Animation\Float</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationClock.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTimeline.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="FloatAnimation.cpp">
+      <Filter>Framework\UI\Animation\Float</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -969,9 +999,6 @@
     <ClInclude Include="StaticRoutedCommand.h">
       <Filter>Framework\UI\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationContainer.h">
-      <Filter>Framework\UI\Animation</Filter>
-    </ClInclude>
     <ClInclude Include="EditableTextLayout.h">
       <Filter>Framework\Text</Filter>
     </ClInclude>
@@ -1160,6 +1187,36 @@
     </ClInclude>
     <ClInclude Include="SourcedBinding.h">
       <Filter>Framework\UI\Binding</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationController.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animatable.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeSink.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeSource.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeController.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeValue.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="FloatAnimationBase.h">
+      <Filter>Framework\UI\Animation\Float</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTimeline.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationClock.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="FloatAnimation.h">
+      <Filter>Framework\UI\Animation\Float</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

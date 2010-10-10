@@ -89,6 +89,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animatable.cpp" />
+    <ClCompile Include="AnimationClock.cpp" />
+    <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="AnimationTimeline.cpp" />
     <ClCompile Include="BindingBase.cpp" />
     <ClCompile Include="BindingContext.cpp" />
     <ClCompile Include="BindingManager.cpp" />
@@ -97,6 +101,8 @@
     <ClCompile Include="DragDeltaEventArgs.cpp" />
     <ClCompile Include="ErrorChecking.cpp" />
     <ClCompile Include="Factory.cpp" />
+    <ClCompile Include="FloatAnimation.cpp" />
+    <ClCompile Include="FloatAnimationBase.cpp" />
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RangeBase.cpp" />
@@ -126,6 +132,10 @@
     <ClCompile Include="ImagingProvider.cpp" />
     <ClCompile Include="SourcedBinding.cpp" />
     <ClCompile Include="Thumb.cpp" />
+    <ClCompile Include="TimeController.cpp" />
+    <ClCompile Include="TimeSink.cpp" />
+    <ClCompile Include="TimeSource.cpp" />
+    <ClCompile Include="TimeValue.cpp" />
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="WICBitmapSource.cpp" />
     <ClCompile Include="WICImagingProvider.cpp" />
@@ -213,7 +223,6 @@
     <ClCompile Include="RoutedCommand.cpp" />
     <ClCompile Include="RoutedCommandEventArgs.cpp" />
     <ClCompile Include="StaticRoutedCommand.cpp" />
-    <ClCompile Include="AnimationContainer.cpp" />
     <ClCompile Include="EditableTextLayout.cpp" />
     <ClCompile Include="TextEditor.cpp" />
     <ClCompile Include="TextFormat.cpp" />
@@ -263,6 +272,10 @@
     <ClCompile Include="Types.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animatable.h" />
+    <ClInclude Include="AnimationClock.h" />
+    <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="AnimationTimeline.h" />
     <ClInclude Include="BindingBase.h" />
     <ClInclude Include="BindingContext.h" />
     <ClInclude Include="BindingManager.h" />
@@ -272,6 +285,8 @@
     <ClInclude Include="DragDeltaEventArgs.h" />
     <ClInclude Include="ErrorChecking.h" />
     <ClInclude Include="Factory.h" />
+    <ClInclude Include="FloatAnimation.h" />
+    <ClInclude Include="FloatAnimationBase.h" />
     <ClInclude Include="Logging.h" />
     <ClInclude Include="RangeBase.h" />
     <ClInclude Include="RefCounted.h" />
@@ -300,6 +315,10 @@
     <ClInclude Include="ImagingProvider.h" />
     <ClInclude Include="SourcedBinding.h" />
     <ClInclude Include="Thumb.h" />
+    <ClInclude Include="TimeController.h" />
+    <ClInclude Include="TimeSink.h" />
+    <ClInclude Include="TimeSource.h" />
+    <ClInclude Include="TimeValue.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="WICBitmapSource.h" />
     <ClInclude Include="WICImagingProvider.h" />
@@ -388,7 +407,6 @@
     <ClInclude Include="RoutedCommand.h" />
     <ClInclude Include="RoutedCommandEventArgs.h" />
     <ClInclude Include="StaticRoutedCommand.h" />
-    <ClInclude Include="AnimationContainer.h" />
     <ClInclude Include="EditableTextLayout.h" />
     <ClInclude Include="TextEditor.h" />
     <ClInclude Include="TextFormat.h" />

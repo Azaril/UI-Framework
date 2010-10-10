@@ -7,6 +7,7 @@
 #include "MouseController.h"
 #include "KeyboardController.h"
 #include "FocusManager.h"
+#include "TimeController.h"
 
 class UIFRAMEWORK_API CUIHost : public CRefCountedObject
 {
@@ -19,7 +20,7 @@ class UIFRAMEWORK_API CUIHost : public CRefCountedObject
 
         HRESULT GetMouseController( CMouseController** ppController );
         HRESULT GetKeyboardController( CKeyboardController** ppController );
-
+        HRESULT GetTimeController( CTimeController** ppController );
         HRESULT GetFocusManager( CFocusManager** ppFocusManager );
 
     protected:
@@ -36,5 +37,6 @@ class UIFRAMEWORK_API CUIHost : public CRefCountedObject
         CFocusManager* m_FocusManager;
         CMouseController* m_MouseController;
         CKeyboardController* m_KeyboardController;
+        CTimeController* m_TimeController;
         CStaticTreeData* m_TreeData;
 };

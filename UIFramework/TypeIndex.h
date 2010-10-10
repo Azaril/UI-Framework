@@ -67,6 +67,7 @@ namespace TypeIndex
             Point2F,
             Visibility,
             Bool,
+            Duration,
             RectangleEdge,
             HorizontalAlignment,
             VerticalAlignment,

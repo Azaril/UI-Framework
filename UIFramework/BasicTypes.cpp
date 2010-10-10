@@ -80,6 +80,58 @@ Cleanup:
     return hr;
 }
 
+CDurationValue::CDurationValue() : m_Forever(FALSE),
+                                   m_Automatic(FALSE)
+{
+}
+
+CDurationValue::~CDurationValue()
+{
+}
+
+HRESULT CDurationValue::Initialize(const CTimeSpan& Time)
+{
+    HRESULT hr = S_OK;
+
+    m_TimeSpan = Time;
+
+    return hr;
+}
+
+BOOL CDurationValue::Equals(CObjectWithType* pOther)
+{
+    if(pOther && pOther->GetType() == GetType())
+    {
+        CDurationValue* pTypedOther = (CDurationValue*)pOther;
+
+        return (m_Automatic && pTypedOther->IsAutomatic()) || 
+               (m_Forever && pTypedOther->IsForever()) || 
+               (m_TimeSpan == *pTypedOther->GetTimeSpan());
+    }
+
+    return FALSE;
+}
+
+BOOL CDurationValue::IsAutomatic()
+{
+    return m_Automatic;
+}
+
+BOOL CDurationValue::IsForever()
+{
+    return m_Forever;
+}
+
+BOOL CDurationValue::HasTimeSpan()
+{
+    return (!m_Automatic && !m_Forever);
+}
+
+const CTimeSpan* CDurationValue::GetTimeSpan()
+{
+    return (!m_Automatic && !m_Forever) ? &m_TimeSpan : NULL;
+}
+
 //
 // CStringValue
 //

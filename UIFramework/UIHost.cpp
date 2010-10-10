@@ -6,7 +6,8 @@ CUIHost::CUIHost() : m_RenderTarget(NULL),
                      m_MouseController(NULL),
                      m_KeyboardController(NULL),
                      m_FocusManager(NULL),
-                     m_TreeData(NULL)
+                     m_TreeData(NULL),
+                     m_TimeController(NULL)
 {
     m_LastLayoutSize.width = 0;
     m_LastLayoutSize.height = 0;
@@ -14,6 +15,13 @@ CUIHost::CUIHost() : m_RenderTarget(NULL),
 
 CUIHost::~CUIHost()
 {
+    if(m_TimeController)
+    {
+        m_TimeController->Disconnect();
+
+        ReleaseObject(m_TimeController);
+    }
+
     ReleaseObject(m_FocusManager);
     ReleaseObject(m_KeyboardController);
     ReleaseObject(m_MouseController);
@@ -40,7 +48,9 @@ HRESULT CUIHost::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRe
 
     IFC(CKeyboardController::Create(m_FocusManager, &m_KeyboardController));
 
-    m_TreeData = new CStaticTreeData(m_FocusManager, m_MouseController, m_KeyboardController);
+    IFC(CTimeController::Create(CTime::Now(), &m_TimeController));
+
+    m_TreeData = new CStaticTreeData(m_FocusManager, m_MouseController, m_KeyboardController, m_TimeController);
     IFCOOM(m_TreeData);
 
     IFC(CRootUIElement::Create(pGraphicsDevice, pRenderTarget, pProviders, m_TreeData, &m_RootElement));
@@ -99,6 +109,19 @@ HRESULT CUIHost::GetFocusManager(CFocusManager** ppFocusManager)
 
     *ppFocusManager = m_FocusManager;
     AddRefObject(m_FocusManager);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIHost::GetTimeController(CTimeController** ppTimeController)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppTimeController);
+
+    *ppTimeController = m_TimeController;
+    AddRefObject(m_TimeController);
 
 Cleanup:
     return hr;

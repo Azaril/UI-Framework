@@ -5,6 +5,7 @@
 #include "Factory.h"
 #include "PropertyObject.h"
 #include "Enums.h"
+#include "TimeValue.h"
 
 template< typename T, TypeIndex::Value TypeID >
 class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
@@ -178,4 +179,36 @@ template< >
 struct ObjectTypeTraits< CStringValue >
 {
     static const TypeIndex::Value Type = TypeIndex::String;
+};
+
+class CDurationValue : public CRefCountedObjectBase< CObjectWithType >
+{
+    public:
+        DECLARE_FACTORY1( CDurationValue, const CTimeSpan& );
+
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Duration, CObjectWithType );
+
+        virtual BOOL Equals( CObjectWithType* pOther );
+
+        BOOL IsForever();
+        BOOL IsAutomatic();
+
+        BOOL HasTimeSpan();
+        const CTimeSpan* GetTimeSpan();
+
+    protected:
+        CDurationValue();
+        virtual ~CDurationValue();
+
+        HRESULT Initialize( const CTimeSpan& Time );
+
+        CTimeSpan m_TimeSpan;
+        BOOL m_Forever : 1;
+        BOOL m_Automatic : 1;
+};
+
+template< >
+struct ObjectTypeTraits< CDurationValue >
+{
+    static const TypeIndex::Value Type = TypeIndex::Duration;
 };

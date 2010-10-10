@@ -8,10 +8,14 @@
 class CLayeredValue
 {
     public:
-        virtual HRESULT SetStyleValue( CObjectWithType* pObject ) = 0;
         virtual HRESULT SetLocalValue( CObjectWithType* pObject ) = 0;
         virtual HRESULT GetLocalValue( CObjectWithType** ppValue ) = 0;
         virtual HRESULT ClearLocalValue( ) = 0;
+
+        virtual HRESULT SetStyleValue( CObjectWithType* pObject ) = 0;
+        
+        virtual HRESULT SetAnimationValue( CObjectWithType* pObject ) = 0;
+
         virtual HRESULT GetEffectiveValue( CObjectWithType** ppValue ) = 0;
         virtual HRESULT SetEffectiveValue( CObjectWithType* pValue ) = 0;
 };
@@ -20,12 +24,13 @@ namespace EffectiveValue
 {
     enum Value
     {
-        None    = 0x00,
-        Default = 0x01,
-        Style   = 0x02,
-        Local   = 0x04,
+        None        = 0x00,
+        Default     = 0x01,
+        Style       = 0x02,
+        Local       = 0x04,
+        Animation   = 0x08,
 
-        Last    = Local
+        Last        = Animation
     };
 }
 
@@ -41,7 +46,6 @@ struct ValueLayer
     }
     
     CObjectWithType* Value;
-    events::signals::connection BindingInvalidationConnection;
 };
 
 template< typename OwnerType, typename T >
@@ -113,6 +117,16 @@ class CTypedLocalLayeredValue : public CLayeredValue
             return hr;
         }
 
+        virtual HRESULT SetAnimationValue( CObjectWithType* pObject )
+        {
+            HRESULT hr = S_OK;
+
+            IFC(SetValueToLayer(m_AnimationLayer, EffectiveValue::Animation, pObject));
+
+        Cleanup:
+            return hr;
+        }
+
         HRESULT RaiseValueChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue )
         {
             HRESULT hr = S_OK;
@@ -170,6 +184,8 @@ class CTypedLocalLayeredValue : public CLayeredValue
 
             switch(m_ActualEffectiveValue)
             {
+                    //NOTE: Set the local value but let the animation override it.
+                case EffectiveValue::Animation:
                     //NOTE: This case needs to be supported if the default value is a binding object.
                 case EffectiveValue::Default:
                 case EffectiveValue::Local:
@@ -221,6 +237,13 @@ class CTypedLocalLayeredValue : public CLayeredValue
 
             switch(ValueToGet)
             {
+                case EffectiveValue::Animation:
+                    {
+                        IFC_NOTRACE(GetValueFromLayer(m_AnimationLayer, ppValue));
+
+                        break;
+                    }
+
                 case EffectiveValue::Local:
                     {
                         IFC_NOTRACE(GetValueFromLayer(m_LocalLayer, ppValue));
@@ -278,7 +301,6 @@ class CTypedLocalLayeredValue : public CLayeredValue
             }
 
             ReleaseObject(Layer.Value);
-            Layer.BindingInvalidationConnection.disconnect();
 
             m_EffectiveValue = (EffectiveValue::Value)(m_EffectiveValue & (~ValueType));
 
@@ -315,41 +337,9 @@ class CTypedLocalLayeredValue : public CLayeredValue
                 AddRefObject(pOldValue);
             }
 
-            //if(Layer.Value)
-            //{
-            //    if(Layer.Value->IsTypeOf(TypeIndex::Binding) && ((CBinding*)Layer.Value)->GetBindingDirection() == BindingDirection::TwoWay)
-            //    {
-            //        CBinding* pBinding = (CBinding*)Layer.Value;
-
-            //        IFC(pBinding->SetSourceValue(pValue));
-
-            //        goto Cleanup;
-            //    }
-            //    else if(Layer.Value->IsTypeOf(TypeIndex::BindingBase))
-            //    {
-            //        CBinding* pOldBinding = (CBinding*)Layer.Value; 
-
-            //        IFC(pOldBinding->ClearTarget());
-            //    }
-            //}
-
-            //ReleaseObject(Layer.Value);
-            //Layer.BindingInvalidationConnection.disconnect();
-
             if(pValue)
             {
-                /*if(pValue->IsTypeOf(TypeIndex::BindingBase))
-                {
-                    CBinding* pBinding = (CBinding*)pValue;
-
-                    Layer.Value = (CBinding*)pBinding;
-                    AddRefObject(pValue);
-
-                    IFC(pBinding->SetTarget(m_Owner, m_Property));
-
-                    IFC(pBinding->AddChangeListener(bind(&ThisType::OnBindingInvalidated, this, ValueType, _1), &Layer.BindingInvalidationConnection));
-                }
-                else */if(pValue->IsTypeOf(ObjectTypeTraits< T >::Type))
+                if(pValue->IsTypeOf(ObjectTypeTraits< T >::Type))
                 {
                     Layer.Value = (T*)pValue;
                     AddRefObject(pValue);
@@ -409,37 +399,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
 
             if(Layer.Value)
             {
-                /*if(Layer.Value->IsTypeOf(TypeIndex::BindingBase))
-                {
-                    CBinding* pBinding = (CBinding*)Layer.Value;
-
-                    IFC_NOTRACE(pBinding->GetBoundValue(&pBoundValue));
-
-                    if(pBoundValue)
-                    {
-                        if(pBoundValue->IsTypeOf(ObjectTypeTraits< T >::Type))
-                        {
-                            *ppEffectiveValue = pBoundValue;
-                            pBoundValue = NULL;
-                        }
-                        else
-                        {
-                            CTypeConverter* pTypeConverter = NULL;
-                            CProviders* pProviders = NULL;
-
-                            pProviders = GetProviders();
-
-                            IFCPTR(pProviders);
-
-                            pTypeConverter = pProviders->GetTypeConverter();
-
-                            CConversionContext Context(m_Owner, m_Property, pProviders);
-
-                            hr = pTypeConverter->Convert(&Context, pBoundValue, ppEffectiveValue);
-                        }
-                    }
-                }
-                else */if(Layer.Value->IsTypeOf(ObjectTypeTraits< T >::Type))
+                if(Layer.Value->IsTypeOf(ObjectTypeTraits< T >::Type))
                 {
                     *ppEffectiveValue = Layer.Value;
                     AddRefObject(Layer.Value);
@@ -460,31 +420,6 @@ class CTypedLocalLayeredValue : public CLayeredValue
             return hr;
         }
 
-        //void OnBindingInvalidated( EffectiveValue::Value BindingValueChanged, CBinding* pBinding )
-        //{
-        //    HRESULT hr = S_OK;
-        //    CObjectWithType* pOldValue = NULL;
-        //    CObjectWithType* pNewValue = NULL;
-
-        //    if(BindingValueChanged >= m_ActualEffectiveValue)
-        //    {
-        //        IFCPTR(pBinding);
-
-        //        pOldValue = m_EffectiveValueObject;
-        //        m_EffectiveValueObject = NULL;
-
-        //        m_IsInvalidated = TRUE;
-
-        //        IFC(GetEffectiveValue(&pNewValue));
-
-        //        IFC(RaiseValueChanged(pOldValue, pNewValue));
-        //    }
-
-        //Cleanup:
-        //    ReleaseObject(pOldValue);
-        //    ReleaseObject(pNewValue);
-        //}
-
         EffectiveValue::Value m_EffectiveValue;
         EffectiveValue::Value m_ActualEffectiveValue;
         OwnerType* m_Owner;
@@ -492,6 +427,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
         CObjectWithType* m_EffectiveValueObject;
         BOOL m_IsInvalidated;
         ValueLayer m_LocalLayer;
+        ValueLayer m_AnimationLayer;
 };
 
 template< typename OwnerType, typename T >

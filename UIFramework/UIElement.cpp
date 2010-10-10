@@ -2027,6 +2027,37 @@ Cleanup:
     return hr;
 }
 
+CTimeSource* CUIElement::GetTimeSource()
+{
+    return m_Context.GetTimeSource();
+}
+
+HRESULT CUIElement::GetAnimationBaseValue(CProperty* pProperty, CObjectWithType** ppValue)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    IFC(GetEffectiveValue(pProperty, ppValue));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CUIElement::SetAnimationValue(CProperty* pProperty, CObjectWithType* pValue)
+{
+    HRESULT hr = S_OK;
+    CLayeredValue* pLayeredValue = NULL;
+
+    IFC(GetLayeredValue(pProperty, &pLayeredValue));
+
+    IFC(pLayeredValue->SetAnimationValue(pValue));
+
+Cleanup:
+    return hr;
+}
+
 CEventHandlerChain::CEventHandlerChain() : m_RoutedEvent(NULL)
 {
 }
