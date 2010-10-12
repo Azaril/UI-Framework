@@ -19,3 +19,4 @@ HRESULT ConvertStringToCommand( CConversionContext* pContext, CObjectWithType* p
 HRESULT ConvertStringToBindingDirection( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToStretch( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
 HRESULT ConvertStringToStretchDirection( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+HRESULT ConvertStringToOrientation( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );

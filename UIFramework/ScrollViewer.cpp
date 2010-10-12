@@ -15,22 +15,30 @@ DEFINE_GET_DEFAULT( HorizontalOffset, CFloatValue, 0.0f );
 DEFINE_GET_DEFAULT( VerticalOffset, CFloatValue, 0.0f );
 DEFINE_GET_DEFAULT( ScrollableWidth, CFloatValue, 0.0f );
 DEFINE_GET_DEFAULT( ScrollableHeight, CFloatValue, 0.0f );
+DEFINE_GET_DEFAULT( ComputedVerticalScrollBarVisibility, CVisibilityValue, Visibility::Collapsed );
+DEFINE_GET_DEFAULT( ComputedHorizontalScrollBarVisibility, CVisibilityValue, Visibility::Collapsed );
 
 //
 // Properties
 //
-CStaticProperty CScrollViewer::ExtentHeightProperty( L"ExtentHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ExtentHeight ) );
-CStaticProperty CScrollViewer::ExtentWidthProperty( L"ExtentWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ExtentWidth ) );
-CStaticProperty CScrollViewer::ViewportWidthProperty( L"ViewportWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportWidth ) );
-CStaticProperty CScrollViewer::ViewportHeightProperty( L"ViewportHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportHeight ) );
+CStaticProperty CScrollViewer::ExtentHeightProperty( L"ExtentHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ExtentHeight ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnExtentHeightChanged ) );
+CStaticProperty CScrollViewer::ExtentWidthProperty( L"ExtentWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ExtentWidth ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnExtentWidthChanged ) );
+CStaticProperty CScrollViewer::ViewportWidthProperty( L"ViewportWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportWidth ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnViewportWidthChanged ) );
+CStaticProperty CScrollViewer::ViewportHeightProperty( L"ViewportHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportHeight ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnViewportHeightChanged ) );
 CStaticProperty CScrollViewer::HorizontalOffsetProperty( L"HorizontalOffset", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( HorizontalOffset ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnHorizontalOffsetChanged ) );
 CStaticProperty CScrollViewer::VerticalOffsetProperty( L"VerticalOffset", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( VerticalOffset ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnVerticalOffsetChanged ) );
 CStaticProperty CScrollViewer::ScrollableWidthProperty( L"ScrollableWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ScrollableWidth ) );
 CStaticProperty CScrollViewer::ScrollableHeightProperty( L"ScrollableHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ScrollableHeight ) );
+CStaticProperty CScrollViewer::ComputedHorizontalScrollBarVisibilityProperty( L"ComputedHorizontalScrollBarVisibility", TypeIndex::Visibility, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ComputedVerticalScrollBarVisibility ) );
+CStaticProperty CScrollViewer::ComputedVerticalScrollBarVisibilityProperty( L"ComputedVerticalScrollBarVisibility", TypeIndex::Visibility, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ComputedHorizontalScrollBarVisibility ) );
 
 //
 // Property Change Handlers
 //
+DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnExtentHeightChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnExtentWidthChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnViewportWidthChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnViewportHeightChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnHorizontalOffsetChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnVerticalOffsetChanged );
 
@@ -42,7 +50,10 @@ CScrollViewer::CScrollViewer() : m_ExtentHeight(this, &CScrollViewer::ExtentHeig
                                  m_VerticalOffset(this, &CScrollViewer::VerticalOffsetProperty),
                                  m_ScrollableWidth(this, &CScrollViewer::ScrollableWidthProperty),
                                  m_ScrollableHeight(this, &CScrollViewer::ScrollableHeightProperty),
-                                 m_ScrollPresenter(NULL)
+                                 m_ComputedHorizontalScrollBarVisibility(this, &CScrollViewer::ComputedHorizontalScrollBarVisibilityProperty),
+                                 m_ComputedVerticalScrollBarVisibility(this, &CScrollViewer::ComputedVerticalScrollBarVisibilityProperty),
+                                 m_ScrollPresenter(NULL),
+                                 m_InMeasure(FALSE)
 {
 }
 
@@ -67,6 +78,100 @@ Cleanup:
     return hr;
 }
 
+HRESULT CScrollViewer::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+{
+    HRESULT hr = S_OK;
+    CUIElement* pChild = NULL;
+    ScrollBarVisibility::Value ScrollVerticalVisibility;
+    ScrollBarVisibility::Value ScrollHorizontalVisibility;
+
+    IFC(GetEffectiveVerticalScrollBarVisibility(&ScrollVerticalVisibility));
+    IFC(GetEffectiveHorizontalScrollBarVisibility(&ScrollHorizontalVisibility));
+
+    BOOL AutoVerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Auto);
+    BOOL AutoHorizontalVisibility = (ScrollHorizontalVisibility == ScrollBarVisibility::Auto);
+    BOOL VerticalDisableScrollBar = (ScrollVerticalVisibility == ScrollBarVisibility::Disabled);
+    BOOL HorizontalDisableScrollBar = (ScrollHorizontalVisibility == ScrollBarVisibility::Disabled);
+    Visibility::Value VerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Visible) ? Visibility::Visible : Visibility::Collapsed;
+    Visibility::Value HorizontalVisibility = (ScrollHorizontalVisibility == ScrollBarVisibility::Visible) ? Visibility::Visible : Visibility::Collapsed;
+
+    m_InMeasure = TRUE;
+
+    IFC(SetComputedVerticalScrollBarVisibility(VerticalVisibility));
+    IFC(SetComputedHorizontalScrollBarVisibility(HorizontalVisibility));
+
+    if(m_ScrollPresenter != NULL)
+    {
+        IFC(m_ScrollPresenter->SetCanScrollVertically(!VerticalDisableScrollBar));
+        IFC(m_ScrollPresenter->SetCanScrollHorizontally(!HorizontalDisableScrollBar));
+    }
+
+    IFC(GetTemplateChild(&pChild));
+
+    if(pChild != NULL)
+    {
+        IFC(pChild->Measure(AvailableSize));
+    }
+
+    if (pChild != NULL && m_ScrollPresenter != NULL && (AutoVerticalVisibility || AutoHorizontalVisibility))
+    {
+        SizeF CurrentExtent = m_ScrollPresenter->GetExtent();
+        SizeF CurrentViewport = m_ScrollPresenter->GetViewport();
+
+        BOOL MakeHorizontalBarVisible = AutoHorizontalVisibility && (CurrentExtent.width > CurrentViewport.width);
+        BOOL MakeVerticalBarVisible = AutoVerticalVisibility && (CurrentExtent.height > CurrentViewport.height);
+
+        if(MakeVerticalBarVisible)
+        {
+            IFC(SetComputedVerticalScrollBarVisibility(Visibility::Visible));
+        }
+
+        if(MakeHorizontalBarVisible)
+        {
+            IFC(SetComputedHorizontalScrollBarVisibility(Visibility::Visible));
+        }
+
+        if(MakeVerticalBarVisible || MakeHorizontalBarVisible)
+        {
+            IFC(pChild->InvalidateMeasure());
+
+            IFC(pChild->Measure(AvailableSize));
+        }
+
+        if(MakeVerticalBarVisible && MakeHorizontalBarVisible && (MakeVerticalBarVisible != MakeHorizontalBarVisible))
+        {
+            SizeF SecondPassCurrentExtent = m_ScrollPresenter->GetExtent();
+            SizeF SecondPassCurrentViewport = m_ScrollPresenter->GetViewport();
+
+            BOOL SecondPassMakeHorizontalBarVisible = !MakeHorizontalBarVisible && (SecondPassCurrentExtent.width > SecondPassCurrentViewport.width);
+            BOOL SecondPassMakeVerticalBarVisible = !MakeVerticalBarVisible && (SecondPassCurrentExtent.height > SecondPassCurrentViewport.height);
+
+            if(SecondPassMakeHorizontalBarVisible)
+            {
+                IFC(SetComputedHorizontalScrollBarVisibility(Visibility::Visible));
+            }
+            else if(SecondPassMakeVerticalBarVisible)
+            {
+                IFC(SetComputedVerticalScrollBarVisibility(Visibility::Visible));
+            }
+
+            if(SecondPassMakeHorizontalBarVisible || SecondPassMakeVerticalBarVisible)
+            {
+                IFC(pChild->InvalidateMeasure());
+
+                IFC(pChild->Measure(AvailableSize));
+            }
+        }
+    }
+
+Cleanup:
+    ReleaseObject(pChild);
+
+    m_InMeasure = FALSE;
+
+    return hr;
+}
+
 HRESULT CScrollViewer::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
@@ -87,6 +192,36 @@ Cleanup:
     return hr;
 }
 
+HRESULT CScrollViewer::SetComputedVerticalScrollBarVisibility(Visibility::Value ScrollVisibility)
+{
+    HRESULT hr = S_OK;
+    CVisibilityValue* pValue = NULL;
+
+    IFC(CVisibilityValue::Create(ScrollVisibility, &pValue));
+
+    IFC(SetValueReadOnly(&ComputedVerticalScrollBarVisibilityProperty, pValue));
+
+Cleanup:
+    ReleaseObject(pValue);
+
+    return hr;
+}
+
+HRESULT CScrollViewer::SetComputedHorizontalScrollBarVisibility(Visibility::Value ScrollVisibility)
+{
+    HRESULT hr = S_OK;
+    CVisibilityValue* pValue = NULL;
+
+    IFC(CVisibilityValue::Create(ScrollVisibility, &pValue));
+
+    IFC(SetValueReadOnly(&ComputedHorizontalScrollBarVisibilityProperty, pValue));
+
+Cleanup:
+    ReleaseObject(pValue);
+
+    return hr;
+}
+
 HRESULT CScrollViewer::PostTemplateApplied()
 {
     HRESULT hr = S_OK;
@@ -96,6 +231,28 @@ HRESULT CScrollViewer::PostTemplateApplied()
     IFC(GetTemplateChild(L"PART_ScrollContentPresenter", &m_ScrollPresenter));
 
     IFC(m_ScrollPresenter->SetScrollOwner(this));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollViewer::GetEffectiveVerticalScrollBarVisibility(ScrollBarVisibility::Value* pVisibility)
+{
+    HRESULT hr = S_OK;
+
+    //TODO: Use property.
+    *pVisibility = ScrollBarVisibility::Auto;
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollViewer::GetEffectiveHorizontalScrollBarVisibility(ScrollBarVisibility::Value* pVisibility)
+{
+    HRESULT hr = S_OK;
+
+    //TODO: Use property.
+    *pVisibility = ScrollBarVisibility::Auto;
 
 Cleanup:
     return hr;
@@ -192,7 +349,7 @@ HRESULT CScrollViewer::InvalidateScrollInformation()
     HRESULT hr = S_OK;
     CFloatValue* pValue = NULL;
 
-    if(m_ScrollPresenter != NULL)
+    if(m_ScrollPresenter != NULL && !m_InMeasure)
     {
         SizeF Extent = m_ScrollPresenter->GetExtent();
         SizeF Viewport = m_ScrollPresenter->GetViewport();
@@ -239,6 +396,46 @@ HRESULT CScrollViewer::InvalidateScrollInformation()
 Cleanup:
     ReleaseObject(pValue);
 
+    return hr;
+}
+
+HRESULT CScrollViewer::OnExtentHeightChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollViewer::OnExtentWidthChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollViewer::OnViewportWidthChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InvalidateMeasure());
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CScrollViewer::OnViewportHeightChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+{
+    HRESULT hr = S_OK;
+
+    IFC(InvalidateMeasure());
+
+Cleanup:
     return hr;
 }
 
@@ -294,7 +491,9 @@ HRESULT CScrollViewer::CreatePropertyInformation(CPropertyInformation **ppInform
         &HorizontalOffsetProperty,
         &VerticalOffsetProperty,
         &ScrollableWidthProperty,
-        &ScrollableHeightProperty
+        &ScrollableHeightProperty,
+        &ComputedHorizontalScrollBarVisibilityProperty,
+        &ComputedVerticalScrollBarVisibilityProperty
     };
     
     IFCPTR(ppInformation);
@@ -353,6 +552,14 @@ HRESULT CScrollViewer::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppL
     else if(pProperty == &CScrollViewer::ScrollableHeightProperty)
     {
         *ppLayeredValue = &m_ScrollableHeight;
+    }
+    else if(pProperty == &CScrollViewer::ComputedHorizontalScrollBarVisibilityProperty)
+    {
+        *ppLayeredValue = &m_ComputedHorizontalScrollBarVisibility;
+    }
+    else if(pProperty == &CScrollViewer::ComputedVerticalScrollBarVisibilityProperty)
+    {
+        *ppLayeredValue = &m_ComputedVerticalScrollBarVisibility;
     }
     else
     {

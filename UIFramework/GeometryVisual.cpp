@@ -93,6 +93,8 @@ HRESULT CGeometryVisual::InternalSetGeometry(CGeometry* pGeometry)
 
     AddRefObject(m_Geometry);
 
+    m_UpdateFillTransform = TRUE;
+
     return hr;
 }
 

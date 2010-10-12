@@ -14,7 +14,12 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::ScrollContentPresenter, CContentPresenter );
 
+        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+
         virtual HRESULT Arrange( RectF Bounds );
+
+        HRESULT SetCanScrollVertically( BOOL CanScroll );
+        HRESULT SetCanScrollHorizontally( BOOL CanScroll );
 
         HRESULT LineUp();
         HRESULT LineDown();
@@ -30,11 +35,19 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 
         HRESULT SetScrollOwner( IScrollOwner* pOwner );
 
+        //
+        // Properties
+        //
+        static CStaticProperty CanScrollVerticallyProperty;
+        static CStaticProperty CanScrollHorizontallyProperty;
+
     protected:
         CScrollContentPresenter();
         virtual ~CScrollContentPresenter();
 
         HRESULT Initialize( CProviders* pProviders );
+
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         virtual HRESULT OnContentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
@@ -52,8 +65,17 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 
         HRESULT SetScrollOffsets( FLOAT XOffset, FLOAT YOffset );
 
-        BOOL CanScrollHorizontally();
-        BOOL CanScrollVertically();
+        HRESULT GetEffectiveCanScrollVertically( BOOL* pCanScroll );
+        HRESULT GetEffectiveCanScrollHorizontally( BOOL* pCanScroll );
+
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnCanScrollVerticallyChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnCanScrollHorizontallyChanged );
+
+        HRESULT OnCanScrollVerticallyChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnCanScrollHorizontallyChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
         FLOAT m_VerticalOffset;
         FLOAT m_HorizontalOffset;
@@ -61,7 +83,11 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
         Matrix3X2F m_ChildrenTransform;
         BOOL m_ChildTransformDirty;
         SizeF m_Extent;
+        SizeF m_Viewport;
         IScrollOwner* m_ScrollOwner;
+
+        CTypedLayeredValue< CScrollContentPresenter, CBoolValue > m_CanScrollVertically;
+        CTypedLayeredValue< CScrollContentPresenter, CBoolValue > m_CanScrollHorizontally;
 };
 
 template< >

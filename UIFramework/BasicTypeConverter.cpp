@@ -25,7 +25,8 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::Command, ConvertStringToCommand },
     { TypeIndex::String, TypeIndex::BindingDirection, ConvertStringToBindingDirection },
     { TypeIndex::String, TypeIndex::Stretch, ConvertStringToStretch },
-    { TypeIndex::String, TypeIndex::StretchDirection, ConvertStringToStretchDirection }
+    { TypeIndex::String, TypeIndex::StretchDirection, ConvertStringToStretchDirection },
+    { TypeIndex::String, TypeIndex::Orientation, ConvertStringToOrientation }    
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -1177,6 +1178,28 @@ HRESULT ConvertStringToStretchDirection(CConversionContext* pContext, CObjectWit
     CStretchDirectionValue* pOutValue = NULL;
 
     IFC(ConvertStringToEnum(pContext, pValue, g_StretchDirection, ARRAYSIZE(g_StretchDirection), TRUE, &pOutValue));
+
+    *ppConvertedValue = pOutValue;
+    pOutValue = NULL;
+
+Cleanup:
+    ReleaseObject(pOutValue);
+
+    return hr;
+}
+
+const EnumHolder< Orientation::Value > g_Orientation[] =
+{
+    { L"Horizontal", Orientation::Horizontal },
+    { L"Vertical", Orientation::Vertical }
+};
+
+HRESULT ConvertStringToOrientation(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+{
+    HRESULT hr = S_OK;
+    COrientationValue* pOutValue = NULL;
+
+    IFC(ConvertStringToEnum(pContext, pValue, g_Orientation, ARRAYSIZE(g_Orientation), TRUE, &pOutValue));
 
     *ppConvertedValue = pOutValue;
     pOutValue = NULL;

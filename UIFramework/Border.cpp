@@ -213,8 +213,6 @@ HRESULT CBorder::RebuildGeometry()
         IFC(m_BorderVisual->SetGeometry(pRoundedRectangleGeometry));
     }
 
-    //IFC(m_BorderVisual->SetFillBrushTransform(Matrix3X2F::Scale(Rectangle.right - Rectangle.left, Rectangle.bottom - Rectangle.top)));
-
 Cleanup:
     ReleaseObject(pRectangleGeometry);
     ReleaseObject(pRoundedRectangleGeometry);

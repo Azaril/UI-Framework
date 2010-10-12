@@ -34,6 +34,8 @@ class CScrollViewer : public CContentControl,
         static CStaticProperty VerticalOffsetProperty;
         static CStaticProperty ScrollableWidthProperty;
         static CStaticProperty ScrollableHeightProperty;
+        static CStaticProperty ComputedHorizontalScrollBarVisibilityProperty;
+        static CStaticProperty ComputedVerticalScrollBarVisibilityProperty;
 
     protected:
         CScrollViewer();
@@ -43,17 +45,33 @@ class CScrollViewer : public CContentControl,
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
+        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+
         virtual HRESULT PostTemplateApplied();
         virtual HRESULT PreTemplateRevoked();
 
         virtual void OnCommandExecuted( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
+        HRESULT GetEffectiveVerticalScrollBarVisibility( ScrollBarVisibility::Value* pVisibility );
+        HRESULT GetEffectiveHorizontalScrollBarVisibility( ScrollBarVisibility::Value* pVisibility );
+
+        HRESULT SetComputedVerticalScrollBarVisibility( Visibility::Value ScrollVisibility );
+        HRESULT SetComputedHorizontalScrollBarVisibility( Visibility::Value ScrollVisibility );
+
         //
         // Property Change Handlers
         //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnExtentHeightChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnExtentWidthChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnViewportWidthChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnViewportHeightChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnHorizontalOffsetChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnVerticalOffsetChanged );
 
+        HRESULT OnExtentHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnExtentWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnViewportWidthChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        HRESULT OnViewportHeightChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnHorizontalOffsetChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnVerticalOffsetChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
@@ -67,8 +85,11 @@ class CScrollViewer : public CContentControl,
         CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_VerticalOffset;
         CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_ScrollableWidth;
         CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_ScrollableHeight;
+        CTypedLocalLayeredValue< CScrollViewer, CVisibilityValue > m_ComputedHorizontalScrollBarVisibility;
+        CTypedLocalLayeredValue< CScrollViewer, CVisibilityValue > m_ComputedVerticalScrollBarVisibility;
 
     private:
+        BOOL m_InMeasure;
         events::signals::connection m_RoutedCommandExecutedConnection;
 };
 

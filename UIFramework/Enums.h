@@ -101,6 +101,17 @@ namespace StretchDirection
     };
 }
 
+namespace ScrollBarVisibility
+{
+    enum Value
+    {
+        Disabled,
+        Auto,
+        Hidden,
+        Visible
+    };
+}
+
 namespace Key
 {
     enum Value
