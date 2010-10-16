@@ -11,14 +11,11 @@ CRootUIElement::~CRootUIElement()
     Finalize();
 }
 
-HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders, CStaticTreeData* pTreeData)
+HRESULT CRootUIElement::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pGraphicsDevice);
-    IFCPTR(pRenderTarget);
     IFCPTR(pProviders);
-    IFCPTR(pTreeData);
 
     IFC(CFrameworkElement::Initialize(pProviders));
 
@@ -26,6 +23,20 @@ HRESULT CRootUIElement::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarg
 
     m_Providers = pProviders;
     AddRefObject(m_Providers);
+
+Cleanup:
+    return hr;
+}
+
+HRESULT CRootUIElement::SetContext(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CStaticTreeData* pTreeData)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(pGraphicsDevice);
+    IFCPTR(pRenderTarget);
+    IFCPTR(pTreeData);
+
+    IFCEXPECT(!IsAttached());
 
     {
         CVisualAttachContext VisualContext(NULL, pGraphicsDevice);

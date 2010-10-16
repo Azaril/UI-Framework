@@ -23,14 +23,16 @@ class CNamescope;
 class CFocusManager;
 class CMouseController;
 class CKeyboardController;
+class CLayoutManager;
 
 class CStaticTreeData
 {
     public:
-        CStaticTreeData( CFocusManager* pFocusManager, CMouseController* pMouseController, CKeyboardController* pKeyboardController, CTimeSource* pTimeSource ) : m_FocusManager(pFocusManager),
-                                                                                                                                                                  m_MouseController(pMouseController),
-                                                                                                                                                                  m_KeyboardController(pKeyboardController),
-                                                                                                                                                                  m_TimeSource(pTimeSource)
+        CStaticTreeData( CFocusManager* pFocusManager, CMouseController* pMouseController, CKeyboardController* pKeyboardController, CTimeSource* pTimeSource, CLayoutManager* pLayoutManager ) : m_FocusManager(pFocusManager),
+                                                                                                                                                                                                  m_MouseController(pMouseController),
+                                                                                                                                                                                                  m_KeyboardController(pKeyboardController),
+                                                                                                                                                                                                  m_TimeSource(pTimeSource),
+                                                                                                                                                                                                  m_LayoutManager(pLayoutManager)
         {
         }
 
@@ -54,11 +56,17 @@ class CStaticTreeData
             return m_TimeSource;
         }
 
+        CLayoutManager* GetLayoutManager()
+        {
+            return m_LayoutManager;
+        }
+
     protected:
         CFocusManager* m_FocusManager;
         CMouseController* m_MouseController;
         CKeyboardController* m_KeyboardController;
         CTimeSource* m_TimeSource;
+        CLayoutManager* m_LayoutManager;
 };
 
 class CUIAttachContext
@@ -125,6 +133,11 @@ class CUIAttachContext
         CTimeSource* GetTimeSource()
         {
             return (m_StaticData != NULL) ? m_StaticData->GetTimeSource() : NULL;
+        }
+
+        CLayoutManager* GetLayoutManager()
+        {
+            return (m_StaticData != NULL) ? m_StaticData->GetLayoutManager() : NULL;
         }
 
         CStaticTreeData* GetStaticTreeData()
@@ -276,6 +289,8 @@ class UIFRAMEWORK_API CUIElement : public CVisual,
         virtual HRESULT Arrange( RectF Bounds );
         SizeF GetFinalSize();
 
+        HRESULT EnsureLayout();
+
         virtual HRESULT InvalidateMeasure();
         virtual HRESULT InvalidateArrange();
 
@@ -292,6 +307,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual,
         CMouseController* GetMouseController();
         CKeyboardController* GetKeyboardController();
         virtual CTimeSource* GetTimeSource();
+        CLayoutManager* GetLayoutManager();
 
         virtual HRESULT SetVisibility( Visibility::Value State );
 

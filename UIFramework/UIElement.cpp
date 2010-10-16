@@ -10,6 +10,7 @@
 #include "BindingManager.h"
 #include "MouseController.h"
 #include "KeyboardController.h"
+#include "LayoutManager.h"
 
 //
 // Property Defaults
@@ -500,6 +501,20 @@ Cleanup:
     ReleaseObject(pWidth);
     ReleaseObject(pHeight);
 
+    return hr;
+}
+
+HRESULT CUIElement::EnsureLayout()
+{
+    HRESULT hr = S_OK;
+    CLayoutManager* pLayoutManager = NULL;
+
+    pLayoutManager = GetLayoutManager();
+    IFCPTR(pLayoutManager);
+
+    IFC(pLayoutManager->EnsureLayout());    
+
+Cleanup:
     return hr;
 }
 
@@ -2035,6 +2050,11 @@ CTimeSource* CUIElement::GetTimeSource()
     return m_Context.GetTimeSource();
 }
 
+CLayoutManager* CUIElement::GetLayoutManager()
+{
+    return m_Context.GetLayoutManager();
+}
+
 HRESULT CUIElement::GetAnimationBaseValue(CProperty* pProperty, CObjectWithType** ppValue)
 {
     HRESULT hr = S_OK;
@@ -2300,6 +2320,12 @@ extern "C" __declspec(dllexport)
 HRESULT CUIElement_Focus(CUIElement* pElement, BOOL* pSetFocus)
 {
     return pElement->Focus(pSetFocus);
+}
+
+extern "C" __declspec(dllexport)
+HRESULT CUIElement_EnsureLayout(CUIElement* pElement)
+{
+    return pElement->EnsureLayout();
 }
 
 //

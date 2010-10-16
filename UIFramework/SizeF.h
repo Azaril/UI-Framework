@@ -34,3 +34,8 @@ inline bool operator==( const SizeF& Val1, const SizeF& Val2 )
 {
     return (Val1.width == Val2.width && Val1.height == Val2.height);
 }
+
+inline bool operator!=( const SizeF& Val1, const SizeF& Val2 )
+{
+    return (Val1.width != Val2.width || Val1.height != Val2.height);
+}

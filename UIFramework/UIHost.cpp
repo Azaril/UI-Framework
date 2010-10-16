@@ -7,10 +7,9 @@ CUIHost::CUIHost() : m_RenderTarget(NULL),
                      m_KeyboardController(NULL),
                      m_FocusManager(NULL),
                      m_TreeData(NULL),
-                     m_TimeController(NULL)
+                     m_TimeController(NULL),
+                     m_LayoutManager(NULL)
 {
-    m_LastLayoutSize.width = 0;
-    m_LastLayoutSize.height = 0;
 }
 
 CUIHost::~CUIHost()
@@ -22,10 +21,11 @@ CUIHost::~CUIHost()
         ReleaseObject(m_TimeController);
     }
 
+    ReleaseObject(m_RootElement);
+    ReleaseObject(m_LayoutManager);
     ReleaseObject(m_FocusManager);
     ReleaseObject(m_KeyboardController);
     ReleaseObject(m_MouseController);
-    ReleaseObject(m_RootElement);
     ReleaseObject(m_RenderTarget);
 
     delete m_TreeData;
@@ -42,21 +42,22 @@ HRESULT CUIHost::Initialize(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRe
     m_RenderTarget = pRenderTarget;
     AddRefObject(m_RenderTarget);
 
+    IFC(CRootUIElement::Create(pProviders, &m_RootElement));
+
     IFC(CFocusManager::Create(&m_FocusManager));
 
-    IFC(CMouseController::Create(&m_MouseController));
+    IFC(CMouseController::Create(m_RootElement, &m_MouseController));
 
-    IFC(CKeyboardController::Create(m_FocusManager, &m_KeyboardController));
+    IFC(CKeyboardController::Create(m_FocusManager, m_RootElement, &m_KeyboardController));
 
     IFC(CTimeController::Create(CTime::Now(), &m_TimeController));
 
-    m_TreeData = new CStaticTreeData(m_FocusManager, m_MouseController, m_KeyboardController, m_TimeController);
+    IFC(CLayoutManager::Create(m_RootElement, &m_LayoutManager));
+
+    m_TreeData = new CStaticTreeData(m_FocusManager, m_MouseController, m_KeyboardController, m_TimeController, m_LayoutManager);
     IFCOOM(m_TreeData);
 
-    IFC(CRootUIElement::Create(pGraphicsDevice, pRenderTarget, pProviders, m_TreeData, &m_RootElement));
-
-    IFC(m_MouseController->SetRootElement(m_RootElement));
-    IFC(m_KeyboardController->SetRootElement(m_RootElement));
+    IFC(m_RootElement->SetContext(pGraphicsDevice, pRenderTarget, m_TreeData));
 
 Cleanup:
     return hr;
@@ -127,41 +128,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIHost::EnsureLayout()
-{
-    HRESULT hr = S_OK;
-
-    SizeF AvailableSize;
-    SizeF DesiredSize;
-
-    AvailableSize = m_RenderTarget->GetSize();
-
-    if(m_LastLayoutSize.width != AvailableSize.width || m_LastLayoutSize.height != AvailableSize.height)
-    {
-        m_RootElement->InvalidateMeasure();
-
-        m_LastLayoutSize = AvailableSize;
-    }
-
-    if(m_RootElement->IsMeasureDirty())
-    {
-        IFC(m_RootElement->Measure(AvailableSize));
-    }
-
-    if(m_RootElement->IsArrangeDirty())
-    {
-        IFC(m_RootElement->Arrange(MakeRect(AvailableSize)));
-    }
-
-Cleanup:
-    return hr;
-}
-
 HRESULT CUIHost::Render()
 {
     HRESULT hr = S_OK;
 
-    IFC(EnsureLayout());
+    IFC(m_LayoutManager->SetLayoutSize(m_RenderTarget->GetSize()));
+
+    IFC(m_LayoutManager->EnsureLayout());
 
     {
         CPreRenderContext PreRenderContext(m_RenderTarget);

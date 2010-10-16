@@ -14,22 +14,11 @@ CMouseController::~CMouseController()
     ReleaseObject(m_CaptureElement);
 }
 
-HRESULT CMouseController::Initialize()
+HRESULT CMouseController::Initialize(CUIElement* pRootElement)
 {
     HRESULT hr = S_OK;
 
-Cleanup:
-    return hr;
-}
-
-HRESULT CMouseController::SetRootElement(CUIElement* pElement)
-{
-    HRESULT hr = S_OK;
-
-    ReleaseObject(m_RootElement);
-
-    m_RootElement = pElement;
-
+    m_RootElement = pRootElement;
     AddRefObject(m_RootElement);
 
 Cleanup:

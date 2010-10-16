@@ -185,3 +185,30 @@ Visibility::Value CVisibilityValue_GetValue(CVisibilityValue* pValue)
 {
     return pValue->GetValue();
 }
+
+//
+// CFloatValue
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CFloatValue_TypeIndex()
+{
+    return TypeIndex::Float;
+}
+
+extern "C" __declspec(dllexport)
+CObjectWithType* CFloatValue_CastTo_CObjectWithType(CFloatValue* pValue)
+{
+    return pValue;
+}
+
+extern "C" __declspec(dllexport)
+CFloatValue* CObjectWithType_CastTo_CFloatValue(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::Float)) ? (CFloatValue*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+float CFloatValue_GetValue(CFloatValue* pValue)
+{
+    return pValue->GetValue();
+}

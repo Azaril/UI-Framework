@@ -8,6 +8,7 @@
 #include "KeyboardController.h"
 #include "FocusManager.h"
 #include "TimeController.h"
+#include "LayoutManager.h"
 
 class UIFRAMEWORK_API CUIHost : public CRefCountedObject
 {
@@ -29,14 +30,12 @@ class UIFRAMEWORK_API CUIHost : public CRefCountedObject
 
         HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders );
 
-        HRESULT EnsureLayout();
-
         CRenderTarget* m_RenderTarget;
         CRootUIElement* m_RootElement;
-        SizeF m_LastLayoutSize;
         CFocusManager* m_FocusManager;
         CMouseController* m_MouseController;
         CKeyboardController* m_KeyboardController;
         CTimeController* m_TimeController;
         CStaticTreeData* m_TreeData;
+        CLayoutManager* m_LayoutManager;
 };

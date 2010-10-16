@@ -569,3 +569,84 @@ HRESULT CScrollViewer::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppL
 Cleanup:
     return hr;
 }
+
+//
+// CScrollViewer
+//
+extern "C" __declspec(dllexport)
+TypeIndex::Value CScrollViewer_TypeIndex()
+{
+    return TypeIndex::ScrollViewer;
+}
+
+extern "C" __declspec(dllexport)
+CContentControl* CScrollViewer_CastTo_CContentControl(CScrollViewer* pScrollViewer)
+{
+    return pScrollViewer;
+}
+
+extern "C" __declspec(dllexport)
+CScrollViewer* CObjectWithType_CastTo_CScrollViewer(CObjectWithType* pObject)
+{
+    return (pObject->IsTypeOf(TypeIndex::ScrollViewer)) ? (CScrollViewer*)pObject : NULL;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_ExtentHeightProperty()
+{
+    return &CScrollViewer::ExtentHeightProperty;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_ExtentWidthProperty()
+{
+    return &CScrollViewer::ExtentWidthProperty;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_ViewportWidthProperty()
+{
+    return &CScrollViewer::ViewportWidthProperty;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_ViewportHeightProperty()
+{
+    return &CScrollViewer::ViewportHeightProperty;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_HorizontalOffsetProperty()
+{
+    return &CScrollViewer::HorizontalOffsetProperty;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_VerticalOffsetProperty()
+{
+    return &CScrollViewer::VerticalOffsetProperty;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_ScrollableWidthProperty()
+{
+    return &CScrollViewer::ScrollableWidthProperty;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_ScrollableHeightProperty()
+{
+    return &CScrollViewer::ScrollableHeightProperty;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_ComputedHorizontalScrollBarVisibilityProperty()
+{
+    return &CScrollViewer::ComputedHorizontalScrollBarVisibilityProperty;
+}
+
+extern "C" __declspec(dllexport)
+CProperty* CScrollViewer_ComputedVerticalScrollBarVisibilityProperty()
+{
+    return &CScrollViewer::ComputedVerticalScrollBarVisibilityProperty;
+}
