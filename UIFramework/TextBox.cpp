@@ -228,9 +228,8 @@ HRESULT CTextBox::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue
 
     if(pProperty == &CTextBox::TextProperty)
     {
-        IFC(CastType(pValue, &pStringValue));
-
-        IFC(m_TextEditor->SetText(pStringValue->GetValue(), pStringValue->GetLength()));
+        //NOTE: Don't do anything here, the value changed notification will propogate 
+        //      the value to the layout.
     }
     else
     {

@@ -84,6 +84,7 @@ HRESULT CScrollViewer::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     CUIElement* pChild = NULL;
     ScrollBarVisibility::Value ScrollVerticalVisibility;
     ScrollBarVisibility::Value ScrollHorizontalVisibility;
+    SizeF ElementDesiredSize;
 
     IFC(GetEffectiveVerticalScrollBarVisibility(&ScrollVerticalVisibility));
     IFC(GetEffectiveHorizontalScrollBarVisibility(&ScrollHorizontalVisibility));
@@ -163,6 +164,13 @@ HRESULT CScrollViewer::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
             }
         }
     }
+
+    if(pChild != NULL)
+    {
+        ElementDesiredSize = pChild->GetDesiredSize();
+    }
+
+    DesiredSize = ElementDesiredSize;
 
 Cleanup:
     ReleaseObject(pChild);
