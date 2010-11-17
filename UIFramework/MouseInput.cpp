@@ -10,7 +10,12 @@ HRESULT CMouseInputHitTestFilter::Filter(CVisual* pVisual, HitTestFilterBehavior
 
     if(pVisual->IsTypeOf(TypeIndex::UIElement))
     {
-        *pFilterBehavior = HitTestFilterBehavior::Continue;
+        BOOL HitTestVisible = FALSE;
+        CUIElement* pElement = (CUIElement*)pVisual;
+
+        IFC(pElement->IsHitTestVisible(&HitTestVisible));
+
+        *pFilterBehavior = HitTestVisible ? HitTestFilterBehavior::Continue : HitTestFilterBehavior::ContinueSkipSelfAndChildren;
     }
     else
     {

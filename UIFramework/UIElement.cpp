@@ -2081,6 +2081,25 @@ Cleanup:
     return hr;
 }
 
+HRESULT CUIElement::IsHitTestVisible(BOOL* pVisible)
+{
+    HRESULT hr = S_OK;
+    Visibility::Value EffectiveVisibility;
+    BOOL HitTestVisible = TRUE;
+
+    IFC(GetEffectiveVisibility(&EffectiveVisibility));
+
+    if(HitTestVisible)
+    {
+        HitTestVisible = (EffectiveVisibility == Visibility::Visible);
+    }
+
+    *pVisible = HitTestVisible;
+
+Cleanup:
+    return hr;
+}
+
 CEventHandlerChain::CEventHandlerChain() : m_RoutedEvent(NULL)
 {
 }

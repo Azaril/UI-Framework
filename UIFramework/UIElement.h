@@ -318,6 +318,8 @@ class UIFRAMEWORK_API CUIElement : public CVisual,
         HRESULT Focus( BOOL* pSetFocus );
         BOOL IsFocusable();
 
+        HRESULT IsHitTestVisible( BOOL* pVisible );
+
         HRESULT CaptureMouse();
         HRESULT ReleaseMouse();
 
