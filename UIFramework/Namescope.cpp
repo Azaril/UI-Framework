@@ -79,7 +79,6 @@ Cleanup:
 HRESULT CNamescope::UnregisterName(const WCHAR* pName, CObjectWithType* pObject)
 {
     HRESULT hr = S_OK;
-    CNamedObjectHolder* pHolder = NULL;
 
     IFCPTR(pName);
     IFCPTR(pObject);

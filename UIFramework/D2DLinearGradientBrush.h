@@ -9,10 +9,15 @@ class CD2DLinearGradientBrush : public CD2DBrush
         DECLARE_FACTORY1( CD2DLinearGradientBrush, ID2D1LinearGradientBrush* );
 
     protected:
-        CD2DLinearGradientBrush();
-        virtual ~CD2DLinearGradientBrush();
+        CD2DLinearGradientBrush(
+			);
 
-        HRESULT Initialize( ID2D1LinearGradientBrush* pBrush );
+        virtual ~CD2DLinearGradientBrush(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in ID2D1LinearGradientBrush* pBrush 
+			);
 
         ID2D1LinearGradientBrush* m_LinearGradientBrush;
 };

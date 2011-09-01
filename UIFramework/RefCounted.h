@@ -6,14 +6,16 @@ template< typename T = Nothing >
 class UIFRAMEWORK_API CRefCountedObjectBase : public T
 {
     public:
-        virtual INT32 AddRef()
+        virtual INT32 AddRef(
+            )
         {
             ++m_Ref;
             
             return m_Ref;
         }
         
-        virtual INT32 Release()
+        virtual INT32 Release(
+            )
         {
             INT32 Ref = --m_Ref;
             
@@ -26,11 +28,14 @@ class UIFRAMEWORK_API CRefCountedObjectBase : public T
         }
 
     protected:
-        CRefCountedObjectBase() : m_Ref(1)
+        CRefCountedObjectBase(
+            ) 
+            : m_Ref(1)
         {
         }
     
-        virtual ~CRefCountedObjectBase()
+        virtual ~CRefCountedObjectBase(
+            )
         {
         }
         
@@ -41,14 +46,16 @@ template< >
 class UIFRAMEWORK_API CRefCountedObjectBase< Nothing >
 {
     public:
-        virtual INT32 AddRef()
+        virtual INT32 AddRef(
+            )
         {
             ++m_Ref;
             
             return m_Ref;
         }
         
-        virtual INT32 Release()
+        virtual INT32 Release(
+            )
         {
             INT32 Ref = --m_Ref;
             
@@ -61,11 +68,14 @@ class UIFRAMEWORK_API CRefCountedObjectBase< Nothing >
         }
 
     protected:
-        CRefCountedObjectBase() : m_Ref(1)
+        CRefCountedObjectBase(
+            ) 
+            : m_Ref(1)
         {
         }
     
-        virtual ~CRefCountedObjectBase()
+        virtual ~CRefCountedObjectBase(
+            )
         {
         }
         
@@ -75,7 +85,9 @@ class UIFRAMEWORK_API CRefCountedObjectBase< Nothing >
 typedef CRefCountedObjectBase< > CRefCountedObject;
 
 template< typename T >
-inline void AddRefObject( T*& pObj )
+inline void AddRefObject( 
+    __in_opt T*& pObj 
+    )
 {
     if(pObj)
     {
@@ -84,7 +96,9 @@ inline void AddRefObject( T*& pObj )
 }
 
 template< typename T >
-inline void ReleaseObject( T*& pObj )
+inline void ReleaseObject(
+    __in_opt T*& pObj 
+    )
 {
     if(pObj)
     {
@@ -94,11 +108,13 @@ inline void ReleaseObject( T*& pObj )
 }
 
 #define DELEGATE_REFCOUNTING( base )    \
-virtual INT32 AddRef()  \
+virtual INT32 AddRef( \
+    )  \
 {   \
     return base::AddRef();  \
 }   \
-virtual INT32 Release() \
+virtual INT32 Release( \
+    ) \
 {   \
     return base::Release(); \
 }

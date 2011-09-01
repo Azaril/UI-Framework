@@ -9,10 +9,15 @@ class CD2DBitmapBrush : public CD2DBrush
         DECLARE_FACTORY1( CD2DBitmapBrush, ID2D1BitmapBrush* );
 
     protected:
-        CD2DBitmapBrush();
-        virtual ~CD2DBitmapBrush();
+        CD2DBitmapBrush(
+			);
 
-        HRESULT Initialize( ID2D1BitmapBrush* pBrush );
+        virtual ~CD2DBitmapBrush(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in ID2D1BitmapBrush* pBrush 
+			);
 
         ID2D1BitmapBrush* m_BitmapBrush;
 };

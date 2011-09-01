@@ -2,27 +2,35 @@
 #include "TextEventArgs.h"
 #include "KeyboardEventArgs.h"
 
-CTextEditor::CTextEditor() : m_Host(NULL),
-                             m_Layout(NULL),
-                             m_CaretPosition(0),
-                             m_AcceptsEnter(TRUE)
+CTextEditor::CTextEditor(
+	) 
+	: m_Host(NULL)
+	, m_Layout(NULL)
+	, m_CaretPosition(0)
+	, m_AcceptsEnter(TRUE)
 {
 }
 
-CTextEditor::~CTextEditor()
+CTextEditor::~CTextEditor(
+	)
 {
-    SetTextHost(NULL);
-    SetTextLayout(NULL);
+    IGNOREHR(SetTextHost(NULL));
+    IGNOREHR(SetTextLayout(NULL));
 }
 
-HRESULT CTextEditor::Initialize()
+__checkReturn HRESULT 
+CTextEditor::Initialize(
+	)
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-HRESULT CTextEditor::SetTextHost(CUIElement* pElement)
+__checkReturn HRESULT 
+CTextEditor::SetTextHost(
+	__in_opt CUIElement* pElement
+	)
 {
     HRESULT hr = S_OK;
 
@@ -50,7 +58,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextEditor::SetTextLayout(CEditableTextLayout* pLayout)
+__checkReturn HRESULT 
+CTextEditor::SetTextLayout(
+	__in_opt CEditableTextLayout* pLayout
+	)
 {
     HRESULT hr = S_OK;
 
@@ -76,7 +87,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextEditor::SetText(const WCHAR* pText, UINT32 TextLength)
+__checkReturn HRESULT 
+CTextEditor::SetText(
+	__in_ecount_opt(TextLength) const WCHAR* pText, 
+	UINT32 TextLength
+	)
 {
     HRESULT hr = S_OK;
 
@@ -95,7 +110,9 @@ Cleanup:
     return hr;
 }
 
-const WCHAR* CTextEditor::GetText()
+__out_opt const WCHAR* 
+CTextEditor::GetText(
+	)
 {
     if(m_Layout)
     {
@@ -105,7 +122,11 @@ const WCHAR* CTextEditor::GetText()
     return NULL;
 }
 
-void CTextEditor::OnText(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+void 
+CTextEditor::OnText(
+	__in CObjectWithType* pSender,
+	__in CRoutedEventArgs* pRoutedEventArgs
+	)
 {
     HRESULT hr = S_OK;
     CTextEventArgs* pTextEventArgs = NULL;
@@ -126,7 +147,11 @@ Cleanup:
     ;
 }
 
-HRESULT CTextEditor::HandleText(const WCHAR* pText, UINT32 TextLength)
+__checkReturn HRESULT 
+CTextEditor::HandleText(
+	__in_ecount(TextLength) const WCHAR* pText, 
+	UINT32 TextLength
+	)
 {
     HRESULT hr = S_OK;
 
@@ -138,7 +163,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextEditor::InsertText(UINT32 StartPosition, const WCHAR* pText, UINT32 TextLength)
+__checkReturn HRESULT
+CTextEditor::InsertText(
+	UINT32 StartPosition, 
+	__in_ecount(TextLength) const WCHAR* pText, 
+	UINT32 TextLength
+	)
 {
     HRESULT hr = S_OK;
 
@@ -157,7 +187,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextEditor::RemoveText(UINT32 StartPosition, UINT32 Length)
+__checkReturn HRESULT 
+CTextEditor::RemoveText(
+	UINT32 StartPosition, 
+	UINT32 Length
+	)
 {
     HRESULT hr = S_OK;
 
@@ -181,7 +215,11 @@ Cleanup:
     return hr;
 }
 
-void CTextEditor::OnKeyDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+void 
+CTextEditor::OnKeyDown(
+	__in CObjectWithType* pSender, 
+	__in CRoutedEventArgs* pRoutedEventArgs
+	)
 {
     HRESULT hr = S_OK;
     CKeyEventArgs* pKeyEventArgs = NULL;
@@ -196,7 +234,6 @@ void CTextEditor::OnKeyDown(CObjectWithType* pSender, CRoutedEventArgs* pRoutedE
     {
         switch(pKeyEventArgs->GetKey())
         {
-            //TODO: Switch to key enumeration.
             case Key::Backspace:
                 {
                     IFC(HandleBackspace(&Handled));
@@ -222,7 +259,11 @@ Cleanup:
     ;
 }
 
-void CTextEditor::OnKeyUp(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+void 
+CTextEditor::OnKeyUp(
+	__in CObjectWithType* pSender,
+	__in CRoutedEventArgs* pRoutedEventArgs
+	)
 {
     HRESULT hr = S_OK;
     CKeyEventArgs* pKeyEventArgs = NULL;
@@ -240,7 +281,10 @@ Cleanup:
     ;
 }
 
-HRESULT CTextEditor::HandleBackspace(BOOL* pConsumed)
+__checkReturn HRESULT 
+CTextEditor::HandleBackspace(
+	__out BOOL* pConsumed
+	)
 {
     HRESULT hr = S_OK;
     BOOL Handled = TRUE;
@@ -266,7 +310,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextEditor::HandleEnter(BOOL* pConsumed)
+__checkReturn HRESULT 
+CTextEditor::HandleEnter(
+	__out BOOL* pConsumed
+	)
 {
     HRESULT hr = S_OK;
     BOOL Handled = FALSE;
@@ -287,18 +334,25 @@ Cleanup:
     return hr;
 }
 
-BOOL CTextEditor::HasSelection()
+BOOL 
+CTextEditor::HasSelection(
+	)
 {
     //TODO: Implement selection.
     return FALSE;
 }
 
-void CTextEditor::SetAcceptsEnter(BOOL AcceptsEnter)
+void 
+CTextEditor::SetAcceptsEnter(
+	BOOL AcceptsEnter
+	)
 {
     m_AcceptsEnter = AcceptsEnter;
 }
 
-HRESULT CTextEditor::DeleteSelection()
+__checkReturn HRESULT 
+CTextEditor::DeleteSelection(
+	)
 {
     HRESULT hr = S_OK;
 

@@ -8,7 +8,12 @@ class CTimeSource
         virtual INT32 AddRef() = 0;
         virtual INT32 Release() = 0;
 
-        virtual HRESULT AddSink( CTimeSink* pSink ) = 0;
-        virtual HRESULT RemoveSink( CTimeSink* pSink ) = 0;
+        virtual __checkReturn HRESULT AddSink(
+            __in CTimeSink* pSink 
+            ) = 0;
+
+        virtual __checkReturn HRESULT RemoveSink(
+            __in CTimeSink* pSink 
+            ) = 0;
 };
 

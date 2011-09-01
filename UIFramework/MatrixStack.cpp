@@ -1,18 +1,22 @@
 #include "MatrixStack.h"
 #include "ErrorChecking.h"
 
-CMatrixStack::CMatrixStack()
+CMatrixStack::CMatrixStack(
+	)
 {
     m_Identity = Matrix3X2F::Identity();
     
     m_MatrixStack.push_back(m_Identity);
 }
 
-CMatrixStack::~CMatrixStack()
+CMatrixStack::~CMatrixStack(
+	)
 {
 }
 
-const Matrix3X2F& CMatrixStack::GetTop()
+const Matrix3X2F& 
+CMatrixStack::GetTop(
+	)
 {
     if(!m_MatrixStack.empty())
     {
@@ -22,7 +26,9 @@ const Matrix3X2F& CMatrixStack::GetTop()
     return m_Identity;
 }
 
-HRESULT CMatrixStack::Push()
+__checkReturn HRESULT 
+CMatrixStack::Push(
+	)
 {
     HRESULT hr = S_OK;
 
@@ -31,7 +37,9 @@ HRESULT CMatrixStack::Push()
     return hr;
 }
 
-HRESULT CMatrixStack::Pop()
+__checkReturn HRESULT 
+CMatrixStack::Pop(
+	)
 {
     HRESULT hr = S_OK;
 
@@ -43,7 +51,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMatrixStack::LoadIdentity()
+__checkReturn HRESULT 
+CMatrixStack::LoadIdentity(
+	)
 {
     HRESULT hr = S_OK;
 
@@ -53,7 +63,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMatrixStack::LoadMatrix(const Matrix3X2F& Matrix)
+__checkReturn HRESULT 
+CMatrixStack::LoadMatrix(
+	const Matrix3X2F& Matrix
+	)
 {
     HRESULT hr =  S_OK;
 
@@ -69,7 +82,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMatrixStack::MultMatrix(const Matrix3X2F& Matrix)
+__checkReturn HRESULT 
+CMatrixStack::MultMatrix(
+	const Matrix3X2F& Matrix
+	)
 {
     HRESULT hr =  S_OK;
 
@@ -85,7 +101,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMatrixStack::MultMatrixLocal(const Matrix3X2F& Matrix)
+__checkReturn HRESULT 
+CMatrixStack::MultMatrixLocal(
+	const Matrix3X2F& Matrix
+	)
 {
     HRESULT hr =  S_OK;
 

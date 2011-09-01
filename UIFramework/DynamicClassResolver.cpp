@@ -31,7 +31,10 @@ template< typename FromType >
 class StaticClassFactory
 {
     public:
-        static HRESULT Create(CProviders* pProviders, CPropertyObject** ppObject)
+        static HRESULT Create(
+			__in CProviders* pProviders,
+			__deref_out CPropertyObject** ppObject
+			)
         {
             HRESULT hr = S_OK;
             FromType* pNewObject = NULL;
@@ -317,7 +320,9 @@ ClassInformation Classes[] =
         NULL)
 };
 
-HRESULT LoadDefaultTypes(CDynamicClassResolver* pClassResolver)
+__checkReturn HRESULT LoadDefaultTypes(
+	__in CDynamicClassResolver* pClassResolver
+	)
 {
     HRESULT hr = S_OK;
 
@@ -332,11 +337,13 @@ Cleanup:
     return hr;
 }
 
-CDynamicClassResolver::CDynamicClassResolver()
+CDynamicClassResolver::CDynamicClassResolver(
+	)
 {
 }
 
-CDynamicClassResolver::~CDynamicClassResolver()
+CDynamicClassResolver::~CDynamicClassResolver(
+	)
 {
     for(ClassContainer::iterator It = m_Classes.begin(); It != m_Classes.end(); ++It)
     {
@@ -346,7 +353,9 @@ CDynamicClassResolver::~CDynamicClassResolver()
     m_Classes.clear();
 }
 
-HRESULT CDynamicClassResolver::Initialize()
+__checkReturn HRESULT 
+CDynamicClassResolver::Initialize(
+	)
 {
     HRESULT hr = S_OK;
 
@@ -356,7 +365,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::RegisterClass(const ClassInformation& Info)
+__checkReturn HRESULT 
+CDynamicClassResolver::RegisterClass(
+	const ClassInformation& Info
+	)
 {
     HRESULT hr = S_OK;
     CDynamicResolvedClass* pClass = NULL;
@@ -369,7 +381,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveType(TypeIndex::Value ClassType, CResolvedClass** ppResolvedClass)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveType(
+	TypeIndex::Value ClassType, 
+	__deref_out CResolvedClass** ppResolvedClass
+	)
 {
     HRESULT hr = S_OK;
 
@@ -395,7 +411,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveType(const WCHAR* pTypeName, CResolvedClass** ppResolvedClass)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveType(
+	__in_z const WCHAR* pTypeName, 
+	__deref_out CResolvedClass** ppResolvedClass
+	)
 {
     HRESULT hr = S_OK;
 
@@ -422,7 +442,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveProperties(TypeIndex::Value ClassType, CPropertyInformation** ppProperties)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveProperties(
+	TypeIndex::Value ClassType, 
+	__deref_out CPropertyInformation** ppProperties
+	)
 {
     HRESULT hr = S_OK;
     CResolvedClass* pResolvedClass = NULL;
@@ -439,7 +463,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveProperties(const WCHAR* pTypeName, CPropertyInformation** ppProperties)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveProperties(
+	__in_z const WCHAR* pTypeName, 
+	__deref_out CPropertyInformation** ppProperties
+	)
 {
     HRESULT hr = S_OK;
     CResolvedClass* pResolvedClass = NULL;
@@ -457,7 +485,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveProperty(const WCHAR* pPropertyName, TypeIndex::Value ImplicitClass, CProperty** ppProperty)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveProperty(
+	__in_z const WCHAR* pPropertyName,
+	TypeIndex::Value ImplicitClass, 
+	__deref_out CProperty** ppProperty
+	)
 {
     HRESULT hr = S_OK;
     CResolvedClass* pImplicitClass = NULL;
@@ -479,7 +512,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveProperty(const WCHAR* pPropertyName, CPropertyInformation* pImplicitClassProperties, CProperty** ppProperty)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveProperty(
+	__in_z const WCHAR* pPropertyName, 
+	__in_opt CPropertyInformation* pImplicitClassProperties,
+	__deref_out CProperty** ppProperty
+	)
 {
     HRESULT hr = S_OK;
     WCHAR* pClassType = NULL;
@@ -525,7 +563,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveEvent(const WCHAR* pEventName, TypeIndex::Value ImplicitClass, CRoutedEvent** ppRoutedEvent)
+__checkReturn HRESULT
+CDynamicClassResolver::ResolveEvent(
+	const WCHAR* pEventName, 
+	TypeIndex::Value ImplicitClass,
+	__deref_out CRoutedEvent** ppRoutedEvent
+	)
 {
     HRESULT hr = S_OK;
     CResolvedClass* pImplicitClass = NULL;
@@ -550,7 +593,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveEvent(const WCHAR* pEventName, CEventInformation* pImplicitClassEvents, CRoutedEvent** ppRoutedEvent)
+__checkReturn HRESULT
+CDynamicClassResolver::ResolveEvent(
+	__in_z const WCHAR* pEventName, 
+	__in_opt CEventInformation* pImplicitClassEvents, 
+	__deref_out CRoutedEvent** ppRoutedEvent
+	)
 {
     HRESULT hr = S_OK;
     WCHAR* pClassType = NULL;
@@ -596,7 +644,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveEvents(TypeIndex::Value ClassType, CEventInformation** ppEvents)
+__checkReturn HRESULT
+CDynamicClassResolver::ResolveEvents(
+	TypeIndex::Value ClassType, 
+	__deref_out CEventInformation** ppEvents
+	)
 {
     HRESULT hr = S_OK;
     CResolvedClass* pResolvedClass = NULL;
@@ -613,7 +665,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveEvents(const WCHAR* pTypeName, CEventInformation** ppEvents)
+__checkReturn HRESULT
+CDynamicClassResolver::ResolveEvents(
+	__in_z const WCHAR* pTypeName,
+	__deref_out CEventInformation** ppEvents
+	)
 {
     HRESULT hr = S_OK;
     CResolvedClass* pResolvedClass = NULL;
@@ -631,7 +687,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveCommand(const WCHAR* pCommandName, TypeIndex::Value ImplicitClass, CCommand** ppCommand)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveCommand(
+	__in_z const WCHAR* pCommandName, 
+	TypeIndex::Value ImplicitClass,
+	__deref_out CCommand** ppCommand
+	)
 {
     HRESULT hr = S_OK;
     CResolvedClass* pImplicitClass = NULL;
@@ -656,7 +717,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveCommand(const WCHAR* pCommandName, CCommandInformation* pImplicitClassCommands, CCommand** ppCommand)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveCommand(
+	__in_z const WCHAR* pCommandName, 
+	__in_opt CCommandInformation* pImplicitClassCommands, 
+	__deref_out CCommand** ppCommand
+	)
 {
     HRESULT hr = S_OK;
     WCHAR* pClassType = NULL;
@@ -702,7 +768,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveCommands(TypeIndex::Value ClassType, CCommandInformation** ppCommands)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveCommands(
+	TypeIndex::Value ClassType, 
+	__deref_out CCommandInformation** ppCommands
+	)
 {
     HRESULT hr = S_OK;
     CResolvedClass* pResolvedClass = NULL;
@@ -719,7 +789,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicClassResolver::ResolveCommands(const WCHAR* pTypeName, CCommandInformation** ppCommands)
+__checkReturn HRESULT 
+CDynamicClassResolver::ResolveCommands(
+	__in_z const WCHAR* pTypeName, 
+	__deref_out CCommandInformation** ppCommands
+	)
 {
     HRESULT hr = S_OK;
     CResolvedClass* pResolvedClass = NULL;

@@ -5,5 +5,7 @@
 class CParserCommand : public CRefCountedObject
 {
     public:
-        virtual HRESULT Execute( CParserCommandContext& Context ) = 0;
+        virtual __checkReturn HRESULT Execute( 
+			CParserCommandContext& Context 
+			) = 0;
 };

@@ -15,20 +15,52 @@ class CContentPropertyNodeCallback : public CPropertyNodeCallback
         DECLARE_FACTORY3( CContentPropertyNodeCallback, CParseContext*, CPropertyInformation*, CXMLElementStart* );
         DECLARE_FACTORY3( CContentPropertyNodeCallback, CParseContext*, CPropertyInformation*, CXMLText* );
 
-        virtual BOOL IsComplete();
+        __override virtual BOOL IsComplete(
+			);
 
-        virtual HRESULT OnElementStart( CXMLElementStart* pElementStart, BOOL& Consumed );
-        virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd, BOOL& Consumed );
-        virtual HRESULT OnText( CXMLText* pText, BOOL& Consumed );
-        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute, BOOL& Consumed );
+        __override virtual __checkReturn HRESULT OnElementStart( 
+			__in CXMLElementStart* pElementStart, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnElementEnd( 
+			__in CXMLElementEnd* pElementEnd, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnText( 
+			__in CXMLText* pText, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnAttribute(
+			__in CXMLAttribute* pAttribute,
+			BOOL& Consumed 
+			);
 
     protected:
-        CContentPropertyNodeCallback();
-        virtual ~CContentPropertyNodeCallback();
+        CContentPropertyNodeCallback(
+			);
 
-        HRESULT Initialize( CParseContext* pParseContext, CPropertyInformation* pPropertyInformation );
-        HRESULT Initialize( CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLElementStart* pXMLStart );
-        HRESULT Initialize( CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLText* pXMLText );
+        virtual ~CContentPropertyNodeCallback(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in CParseContext* pParseContext, 
+			__in CPropertyInformation* pPropertyInformation 
+			);
+
+        __checkReturn HRESULT Initialize(
+			__in CParseContext* pContext, 
+			__in CPropertyInformation* pPropertyInformation, 
+			__in CXMLElementStart* pXMLStart 
+			);
+
+        __checkReturn HRESULT Initialize(
+			__in CParseContext* pContext, 
+			__in CPropertyInformation* pPropertyInformation, 
+			__in CXMLText* pXMLText 
+			);
 
         BOOL m_Complete;
         BOOL m_SetTextValue;

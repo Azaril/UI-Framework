@@ -2,18 +2,24 @@
 #include "BasicTypes.h"
 #include "ParserUtilities.h"
 
-CParserCallback::CParserCallback() : m_ChildNode(NULL),
-                                     m_ParseContext(NULL)
+CParserCallback::CParserCallback(
+	) 
+	: m_ChildNode(NULL)
+	, m_ParseContext(NULL)
 {
 }
 
-CParserCallback::~CParserCallback()
+CParserCallback::~CParserCallback(
+	)
 {
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_ParseContext);
 }
 
-HRESULT CParserCallback::Initialize(CParseContext* pContext)
+__checkReturn HRESULT 
+CParserCallback::Initialize(
+	__in CParseContext* pContext
+	)
 {
     HRESULT hr = S_OK;
 
@@ -26,7 +32,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserCallback::OnElementStart(CXMLElementStart* pElementStart)
+__override __checkReturn HRESULT 
+CParserCallback::OnElementStart(
+	__in CXMLElementStart* pElementStart
+	)
 {
     HRESULT hr = S_OK;
 
@@ -47,7 +56,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserCallback::OnElementEnd(CXMLElementEnd* pElementEnd)
+__override __checkReturn HRESULT
+CParserCallback::OnElementEnd(
+	__in CXMLElementEnd* pElementEnd
+	)
 {
     HRESULT hr = S_OK;
     BOOL Consumed = FALSE;
@@ -62,7 +74,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserCallback::OnText(CXMLText* pText)
+__override __checkReturn HRESULT 
+CParserCallback::OnText(
+	__in CXMLText* pText
+	)
 {
     HRESULT hr = S_OK;
     BOOL Consumed = FALSE;
@@ -77,7 +92,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserCallback::OnAttribute(CXMLAttribute* pAttribute)
+__override __checkReturn HRESULT 
+CParserCallback::OnAttribute(
+	__in CXMLAttribute* pAttribute
+	)
 {
     HRESULT hr = S_OK;
     BOOL Consumed = FALSE;

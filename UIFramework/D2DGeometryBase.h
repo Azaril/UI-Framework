@@ -9,12 +9,15 @@ template< typename T >
 class CD2DGeometryBase : public T
 {
     public:
-        virtual ID2D1Geometry* GetD2DGeometry()
+        virtual __out ID2D1Geometry* GetD2DGeometry(
+			)
         {
             return m_Geometry;
         }
 
-        virtual HRESULT GetBounds( RectF* pBounds )
+        virtual __checkReturn HRESULT GetBounds(
+			__out RectF* pBounds 
+			)
         {
             HRESULT hr = S_OK;
 
@@ -26,7 +29,10 @@ class CD2DGeometryBase : public T
             return hr;
         }
 
-        virtual HRESULT GetBounds( const Matrix3X2F& Transform, RectF* pBounds )
+        virtual __checkReturn HRESULT GetBounds( 
+			const Matrix3X2F& Transform, 
+			__out RectF* pBounds 
+			)
         {
             HRESULT hr = S_OK;
 
@@ -38,7 +44,10 @@ class CD2DGeometryBase : public T
             return hr;
         }
 
-        virtual HRESULT FillContainsPoint( const Point2F& LocalPoint, BOOL* pContainsPoint )
+        virtual __checkReturn HRESULT FillContainsPoint(
+			const Point2F& LocalPoint, 
+			BOOL* pContainsPoint 
+			)
         {
             HRESULT hr = S_OK;
 
@@ -51,16 +60,21 @@ class CD2DGeometryBase : public T
         }
 
     protected:
-        CD2DGeometryBase() : m_Geometry(NULL)
+        CD2DGeometryBase(
+			) 
+			: m_Geometry(NULL)
         {
         }
 
-        virtual ~CD2DGeometryBase()
+        virtual ~CD2DGeometryBase(
+			)
         {
             ReleaseObject(m_Geometry);
         }
 
-        HRESULT Initialize( ID2D1Geometry* pGeometry )
+        __checkReturn HRESULT Initialize(
+			__in ID2D1Geometry* pGeometry 
+			)
         {
             HRESULT hr = S_OK;
 

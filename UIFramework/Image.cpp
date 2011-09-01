@@ -377,8 +377,8 @@ SizeF ComputeScaleFactor(SizeF AvailableSize, SizeF ContentSize, Stretch::Value 
 
     if((ContentStretch == Stretch::Uniform || ContentStretch == Stretch::UniformToFill || ContentStretch == Stretch::Fill) && (ConstrainedWidth || ConstrainedHeight))
     {
-        ScaleX = (ContentSize.width == 0.0f) ? 0.0 : AvailableSize.width / ContentSize.width;
-        ScaleY = (ContentSize.height == 0.0f) ? 0.0 : AvailableSize.height / ContentSize.height;
+        ScaleX = (ContentSize.width == 0.0f) ? 0.0f : AvailableSize.width / ContentSize.width;
+        ScaleY = (ContentSize.height == 0.0f) ? 0.0f : AvailableSize.height / ContentSize.height;
 
         if(!ConstrainedWidth)
         {
@@ -463,10 +463,12 @@ HRESULT CImage::ComputeSize(SizeF AvailableSize, SizeF& UsedSize)
         IFC(m_ImageBrush->GetSize(&ImageSize));
     }
 
-    SizeF ScaleFactor = ComputeScaleFactor(AvailableSize, SizeF(ImageSize.width, ImageSize.height), ImageStretch, ImageStretchDirection);
+	{
+		SizeF ScaleFactor = ComputeScaleFactor(AvailableSize, SizeF((FLOAT)ImageSize.width, (FLOAT)ImageSize.height), ImageStretch, ImageStretchDirection);
 
-    UsedSize.width = ScaleFactor.width * ((FLOAT)ImageSize.width);
-    UsedSize.height = ScaleFactor.height * ((FLOAT)ImageSize.height);
+		UsedSize.width = ScaleFactor.width * ((FLOAT)ImageSize.width);
+		UsedSize.height = ScaleFactor.height * ((FLOAT)ImageSize.height);
+	}
 
 Cleanup:
     return hr;

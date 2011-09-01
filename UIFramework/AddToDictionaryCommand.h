@@ -12,13 +12,20 @@ class CAddToDictionaryCommand : public CParserCommand
     public:
         DECLARE_FACTORY1( CAddToDictionaryCommand, CProperty* );
 
-        virtual HRESULT Execute( CParserCommandContext& Context );
+        __override virtual __checkReturn HRESULT Execute( 
+			CParserCommandContext& Context 
+			);
 
     protected:
-        CAddToDictionaryCommand();
-        virtual ~CAddToDictionaryCommand();
+        CAddToDictionaryCommand(
+			);
 
-        HRESULT Initialize( CProperty* pProperty );
+        virtual ~CAddToDictionaryCommand(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in CProperty* pProperty 
+			);
 
         CProperty* m_Property;
 };

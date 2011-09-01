@@ -1,12 +1,17 @@
 #include "ParserCommandContext.h"
 
-CParserCommandContext::CParserCommandContext(CProviders* pProviders, IParserCallback* pCallback) : m_Providers(pProviders),
-                                                                                                   m_Callback(pCallback)
+CParserCommandContext::CParserCommandContext(
+	__in CProviders* pProviders, 
+	__in IParserCallback* pCallback
+	) 
+	: m_Providers(pProviders)
+	, m_Callback(pCallback)
 {
     AddRefObject(m_Providers);
 }
 
-CParserCommandContext::~CParserCommandContext()
+CParserCommandContext::~CParserCommandContext(
+	)
 {
     for(std::vector< CObjectWithType* >::iterator It = m_ObjectStack.begin(); It != m_ObjectStack.end(); ++It)
     {
@@ -16,12 +21,17 @@ CParserCommandContext::~CParserCommandContext()
     ReleaseObject(m_Providers);
 }
 
-CProviders* CParserCommandContext::GetProviders()
+__out CProviders* 
+CParserCommandContext::GetProviders(
+	)
 {
     return m_Providers;
 }
 
-HRESULT CParserCommandContext::GetObject(CObjectWithType** ppObject)
+__checkReturn HRESULT 
+CParserCommandContext::GetObject(
+	__deref_out CObjectWithType** ppObject
+	)
 {
     HRESULT hr = S_OK;
     CObjectWithType* pObject = NULL;
@@ -40,7 +50,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserCommandContext::PushObject(CObjectWithType* pObject)
+__checkReturn HRESULT 
+CParserCommandContext::PushObject(
+	__in CObjectWithType* pObject
+	)
 {
     HRESULT hr = S_OK;
 
@@ -58,7 +71,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserCommandContext::PopObject()
+__checkReturn HRESULT 
+CParserCommandContext::PopObject(
+	)
 {
     HRESULT hr = S_OK;
     CObjectWithType* pObject = NULL;

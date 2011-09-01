@@ -8,7 +8,9 @@ class CMarkupExtension : public CRefCountedObjectBase< CPropertyObject >
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::MarkupExtension, CPropertyObject );
 
-        virtual HRESULT ExecuteMarkup( CObjectWithType** ppObject ) = 0;
+        virtual __checkReturn HRESULT ExecuteMarkup( 
+			__deref_out CObjectWithType** ppObject
+			) = 0;
 
     protected:
 };

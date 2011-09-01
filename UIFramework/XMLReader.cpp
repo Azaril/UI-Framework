@@ -5,7 +5,10 @@
 #include "XMLLiteReader.h"
 #endif
 
-HRESULT CreateXMLReader(CXMLReader** ppReader)
+__checkReturn HRESULT 
+CreateXMLReader(
+	__deref_out CXMLReader** ppReader
+	)
 {
     HRESULT hr = S_OK;
     

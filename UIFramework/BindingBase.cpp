@@ -71,7 +71,6 @@ HRESULT CBindingBase::ClearTarget()
 
     ReleaseObject(m_TargetProperty);
 
-Cleanup:
     return hr;
 }
 

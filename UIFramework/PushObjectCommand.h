@@ -11,13 +11,20 @@ class CPushObjectCommand : public CParserCommand
     public:
         DECLARE_FACTORY1( CPushObjectCommand, CObjectWithType* );
 
-        virtual HRESULT Execute( CParserCommandContext& Context );
+        __override virtual HRESULT Execute( 
+			CParserCommandContext& Context 
+			);
 
     protected:
-        CPushObjectCommand();
-        virtual ~CPushObjectCommand();
+        CPushObjectCommand(
+			);
 
-        HRESULT Initialize( CObjectWithType* pValue );
+        virtual ~CPushObjectCommand(
+			);
+
+        __checkReturn HRESULT Initialize(
+			__in CObjectWithType* pValue 
+			);
 
         CObjectWithType* m_Value;
 };

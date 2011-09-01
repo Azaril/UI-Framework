@@ -81,7 +81,6 @@ HRESULT CScrollBar::PreTemplateRevoked()
         ReleaseObject(m_Track);
     }    
 
-Cleanup:
     return hr;
 }
 

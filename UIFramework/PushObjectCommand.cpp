@@ -1,15 +1,21 @@
 #include "PushObjectCommand.h"
 
-CPushObjectCommand::CPushObjectCommand() : m_Value(NULL)
+CPushObjectCommand::CPushObjectCommand(
+	) 
+	: m_Value(NULL)
 {
 }
 
-CPushObjectCommand::~CPushObjectCommand()
+CPushObjectCommand::~CPushObjectCommand(
+	)
 {
     ReleaseObject(m_Value);
 }
 
-HRESULT CPushObjectCommand::Initialize(CObjectWithType* pValue)
+__checkReturn HRESULT 
+CPushObjectCommand::Initialize(
+	__in CObjectWithType* pValue
+	)
 {
     HRESULT hr = S_OK;
 
@@ -22,7 +28,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPushObjectCommand::Execute(CParserCommandContext& Context)
+__override __checkReturn HRESULT 
+CPushObjectCommand::Execute(
+	CParserCommandContext& Context
+	)
 {
     HRESULT hr = S_OK;
 

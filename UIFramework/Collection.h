@@ -18,6 +18,9 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
     public:
         typedef ICollectionSubscriber< T > SubscriberType;
 
+        typedef std::vector< T* > CollectionType;
+        typedef std::vector< SubscriberType* > SubscriberCollectionType;
+
         DECLARE_FACTORY( CCollection< T > );
 
         virtual HRESULT AddObject( CObjectWithType* pObject )
@@ -149,6 +152,6 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
             return hr;
         }
 
-        std::vector< T* > m_Collection;
-        std::vector< SubscriberType* > m_Subscribers;
+        CollectionType m_Collection;
+        SubscriberCollectionType m_Subscribers;
 };

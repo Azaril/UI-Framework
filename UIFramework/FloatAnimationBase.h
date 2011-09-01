@@ -5,10 +5,14 @@
 class UIFRAMEWORK_API CFloatAnimationBase : public CAnimationTimeline
 {
     public:
-        virtual TypeIndex::Value GetProvidedType();
+        __override virtual TypeIndex::Value GetProvidedType(
+            );
 
     protected:
-        CFloatAnimationBase();
-        virtual ~CFloatAnimationBase();
+        CFloatAnimationBase(
+            );
+
+        virtual ~CFloatAnimationBase(
+            );
 };
 

@@ -5,7 +5,9 @@
 #include "RefCounted.h"
 
 #define DECLARE_FACTORY( ThisType ) \
-static HRESULT Create( ThisType** ppOut ) \
+static __checkReturn HRESULT Create( \
+	__deref_out ThisType** ppOut \
+	) \
 { \
     HRESULT hr = S_OK; \
     ThisType* pObj = NULL; \
@@ -21,7 +23,10 @@ Cleanup: \
 }
 
 #define DECLARE_FACTORY1( ThisType, Arg1Type ) \
-static HRESULT Create( Arg1Type Arg1, ThisType** ppOut ) \
+static __checkReturn HRESULT Create( \
+	Arg1Type Arg1, \
+	__deref_out ThisType** ppOut \
+	) \
 { \
     HRESULT hr = S_OK; \
     ThisType* pObj = NULL; \
@@ -37,7 +42,11 @@ Cleanup: \
 }
 
 #define DECLARE_FACTORY2( ThisType, Arg1Type, Arg2Type ) \
-static HRESULT Create( Arg1Type Arg1, Arg2Type Arg2, ThisType** ppOut ) \
+static __checkReturn HRESULT Create( \
+	Arg1Type Arg1, \
+	Arg2Type Arg2, \
+	__deref_out ThisType** ppOut \
+	) \
 { \
     HRESULT hr = S_OK; \
     ThisType* pObj = NULL; \
@@ -53,7 +62,12 @@ Cleanup: \
 }
 
 #define DECLARE_FACTORY3( ThisType, Arg1Type, Arg2Type, Arg3Type ) \
-static HRESULT Create( Arg1Type Arg1, Arg2Type Arg2, Arg3Type Arg3, ThisType** ppOut ) \
+static __checkReturn HRESULT Create( \
+	Arg1Type Arg1, \
+	Arg2Type Arg2, \
+	Arg3Type Arg3, \
+	__deref_out ThisType** ppOut \
+	) \
 { \
     HRESULT hr = S_OK; \
     ThisType* pObj = NULL; \
@@ -69,7 +83,13 @@ Cleanup: \
 }
 
 #define DECLARE_FACTORY4( ThisType, Arg1Type, Arg2Type, Arg3Type, Arg4Type ) \
-static HRESULT Create( Arg1Type Arg1, Arg2Type Arg2, Arg3Type Arg3, Arg4Type Arg4, ThisType** ppOut ) \
+static __checkReturn HRESULT Create( \
+	Arg1Type Arg1, \
+	Arg2Type Arg2, \
+	Arg3Type Arg3, \
+	Arg4Type Arg4, \
+	__deref_out ThisType** ppOut \
+	) \
 { \
     HRESULT hr = S_OK; \
     ThisType* pObj = NULL; \
@@ -85,7 +105,14 @@ Cleanup: \
 }
 
 #define DECLARE_FACTORY5( ThisType, Arg1Type, Arg2Type, Arg3Type, Arg4Type, Arg5Type ) \
-static HRESULT Create( Arg1Type Arg1, Arg2Type Arg2, Arg3Type Arg3, Arg4Type Arg4, Arg5Type Arg5, ThisType** ppOut ) \
+static __checkReturn HRESULT Create( \
+	Arg1Type Arg1, \
+	Arg2Type Arg2, \
+	Arg3Type Arg3, \
+	Arg4Type Arg4, \
+	Arg5Type Arg5, \
+	__deref_out ThisType** ppOut \
+	) \
 { \
     HRESULT hr = S_OK; \
     ThisType* pObj = NULL; \
@@ -101,7 +128,15 @@ Cleanup: \
 }
 
 #define DECLARE_FACTORY6( ThisType, Arg1Type, Arg2Type, Arg3Type, Arg4Type, Arg5Type, Arg6Type ) \
-static HRESULT Create( Arg1Type Arg1, Arg2Type Arg2, Arg3Type Arg3, Arg4Type Arg4, Arg5Type Arg5, Arg6Type, ThisType** ppOut ) \
+static __checkReturn HRESULT Create( \
+	Arg1Type Arg1, \
+	Arg2Type Arg2, \
+	Arg3Type Arg3, \
+	Arg4Type Arg4, \
+	Arg5Type Arg5, \
+	Arg6Type Arg6, \
+	__deref_out ThisType** ppOut \
+	) \
 { \
     HRESULT hr = S_OK; \
     ThisType* pObj = NULL; \

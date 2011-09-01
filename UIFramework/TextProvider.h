@@ -7,9 +7,27 @@
 class CTextProvider : public CRefCountedObject
 {
     public:
-        virtual HRESULT CreateFormat( const WCHAR* pFontName, FLOAT FontSize, const WCHAR* pLocaleName, CTextFormat** ppTextFormat ) = 0;
-        virtual HRESULT GetDefaultFormat( CTextFormat** ppTextFormat ) = 0;
+        virtual __checkReturn HRESULT CreateFormat( 
+			__in_z const WCHAR* pFontName, 
+			FLOAT FontSize, 
+			__in_z const WCHAR* pLocaleName, 
+			__deref_out CTextFormat** ppTextFormat 
+			) = 0;
 
-        virtual HRESULT CreateTextLayout( const WCHAR* pText, UINT32 CharacterCount, CTextFormat* pTextFormat, const SizeF& Size, CTextLayout** ppTextLayout ) = 0;
-        virtual HRESULT CreateEditableTextLayout( const SizeF& Size, CEditableTextLayout** ppEditableTextLayout ) = 0;
+        virtual __checkReturn HRESULT GetDefaultFormat(
+			__deref_out CTextFormat** ppTextFormat 
+			) = 0;
+
+        virtual __checkReturn HRESULT CreateTextLayout(
+			__in_ecount(CharacterCount) const WCHAR* pText, 
+			UINT32 CharacterCount, 
+			__in CTextFormat* pTextFormat, 
+			const SizeF& Size, 
+			__deref_out CTextLayout** ppTextLayout
+			) = 0;
+
+        virtual __checkReturn HRESULT CreateEditableTextLayout( 
+			const SizeF& Size, 
+			__deref_out CEditableTextLayout** ppEditableTextLayout 
+			) = 0;
 };

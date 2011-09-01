@@ -6,24 +6,47 @@
 
 #include <Wincodec.h>
 
-typedef HRESULT (WINAPI *SHCreateStreamOnFileWFunc)( LPCWSTR pszFile, DWORD grfMode, IStream** ppstm );
-typedef IStream* (WINAPI *SHCreateMemStreamFunc)( const BYTE *pInit, UINT cbInit );
+typedef HRESULT (WINAPI *SHCreateStreamOnFileWFunc)(
+	LPCWSTR pszFile, 
+	DWORD grfMode, 
+	IStream** ppstm 
+	);
+
+typedef IStream* (WINAPI *SHCreateMemStreamFunc)(
+	const BYTE *pInit, 
+	UINT cbInit 
+	);
 
 class CWICImagingProvider : public CImagingProvider
 {
     public:
         DECLARE_FACTORY( CWICImagingProvider );
 
-        virtual HRESULT LoadBitmapFromFile( const WCHAR* pPath, CBitmapSource** ppBitmapSource );
-        virtual HRESULT LoadBitmapFromMemory( const BYTE* pData, UINT32 DataSize, CBitmapSource** ppBitmapSource );
+        __override virtual __checkReturn HRESULT LoadBitmapFromFile(
+			__in_z const WCHAR* pPath, 
+			CBitmapSource** ppBitmapSource 
+			);
+
+        __override virtual __checkReturn HRESULT LoadBitmapFromMemory(
+			__in_bcount(DataSize) const BYTE* pData, 
+			UINT32 DataSize,
+			__deref_out CBitmapSource** ppBitmapSource
+			);
 
     protected:
-        CWICImagingProvider();
-        virtual ~CWICImagingProvider();
+        CWICImagingProvider(
+			);
 
-        HRESULT Initialize();
+        virtual ~CWICImagingProvider(
+			);
 
-        HRESULT LoadBitmapFromDecoder( IWICBitmapDecoder* pDecoder, CWICBitmapSource** ppBitmapSource );
+        __checkReturn HRESULT Initialize(
+			);
+
+        __checkReturn HRESULT LoadBitmapFromDecoder( 
+			__in IWICBitmapDecoder* pDecoder, 
+			__deref_out CWICBitmapSource** ppBitmapSource 
+			);
 
         IWICImagingFactory* m_Factory;
         BOOL m_UninitializeCOM;

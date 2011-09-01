@@ -12,7 +12,8 @@ struct RectU
     : D2D1_RECT_U
 #endif
 {
-    RectU()
+    RectU(
+        )
     {
         left = 0;
         top = 0;
@@ -20,7 +21,12 @@ struct RectU
         bottom = 0;
     }
 
-    RectU(UINT32 Left, UINT32 Top, UINT32 Right, UINT32 Bottom)
+    RectU(
+        UINT32 Left, 
+        UINT32 Top,
+        UINT32 Right,
+        UINT32 Bottom
+        )
     {
         left = Left;
         top = Top;

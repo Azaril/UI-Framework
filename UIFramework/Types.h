@@ -17,7 +17,10 @@
 
 #else
 
-inline FLOAT _wtof(const WCHAR* pStr)
+inline FLOAT 
+_wtof(
+    __in_z const WCHAR* pStr
+    )
 {
     return wcstof(pStr, NULL);
 }

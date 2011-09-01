@@ -7,16 +7,24 @@
 #include "D2DRectangleGeometry.h"
 #include "D2DRoundedRectangleGeometry.h"
 
-typedef HRESULT (WINAPI *D2D1CreateFactoryFunc)( __in D2D1_FACTORY_TYPE factoryType, __in REFIID riid, __in_opt CONST D2D1_FACTORY_OPTIONS *pFactoryOptions, __out void **ppIFactory );
+typedef HRESULT (WINAPI *D2D1CreateFactoryFunc)( 
+	__in D2D1_FACTORY_TYPE factoryType, 
+	__in REFIID riid, 
+	__in_opt CONST D2D1_FACTORY_OPTIONS *pFactoryOptions, 
+	__out void **ppIFactory 
+	);
 
-CD2DGraphicsDevice::CD2DGraphicsDevice() : m_D2DModule(NULL),
-                                           m_Factory(NULL),
-                                           m_TextProvider(NULL),
-                                           m_ImagingProvider(NULL)
+CD2DGraphicsDevice::CD2DGraphicsDevice(
+	) 
+	: m_D2DModule(NULL)
+	, m_Factory(NULL)
+	, m_TextProvider(NULL)
+	, m_ImagingProvider(NULL)
 {
 }
 
-CD2DGraphicsDevice::~CD2DGraphicsDevice()
+CD2DGraphicsDevice::~CD2DGraphicsDevice(
+	)
 {
     ReleaseObject(m_Factory);
     ReleaseObject(m_TextProvider);
@@ -28,7 +36,9 @@ CD2DGraphicsDevice::~CD2DGraphicsDevice()
     }
 }
 
-HRESULT CD2DGraphicsDevice::Initialize()
+__checkReturn HRESULT 
+CD2DGraphicsDevice::Initialize(
+	)
 {
     HRESULT hr = S_OK;
     D2D1CreateFactoryFunc CreateFactory = NULL;
@@ -49,7 +59,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DGraphicsDevice::CreateHWNDRenderTarget(HWND Window, CD2DHWNDRenderTarget** ppRenderTarget)
+__checkReturn HRESULT 
+CD2DGraphicsDevice::CreateHWNDRenderTarget(
+	HWND Window, 
+	__deref_out CD2DHWNDRenderTarget** ppRenderTarget
+	)
 {
     HRESULT hr = S_OK;
     RECT ClientRect = { 0 };
@@ -78,7 +92,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DGraphicsDevice::CreateDXGISurfaceRenderTarget(IDXGISurface* pSurface, CRenderTarget** ppRenderTarget)
+__checkReturn HRESULT 
+CD2DGraphicsDevice::CreateDXGISurfaceRenderTarget(
+	__in IDXGISurface* pSurface, 
+	__deref_out CRenderTarget** ppRenderTarget
+	)
 {
     HRESULT hr = S_OK;
     ID2D1RenderTarget* pD2DRenderTarget = NULL;
@@ -101,19 +119,10 @@ Cleanup:
     return hr;
 }
 
-//HRESULT CD2DGraphicsDevice::CreateRenderTarget(const SizeF& Size, CRenderTarget** ppRenderTarget)
-//{
-//    HRESULT hr = S_OK;
-//
-//    IFCPTR(ppRenderTarget);
-//
-//    IFC(m_Factory->CreateC
-//
-//Cleanup:
-//    return hr;
-//}
-
-HRESULT CD2DGraphicsDevice::GetTextProvider(CTextProvider** ppTextProvider)
+__override __checkReturn HRESULT 
+CD2DGraphicsDevice::GetTextProvider(
+	__deref_out CTextProvider** ppTextProvider
+	)
 {
     HRESULT hr = S_OK;
 
@@ -126,7 +135,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DGraphicsDevice::GetImagingProvider(CImagingProvider** ppImagingProvider)
+__override __checkReturn HRESULT 
+CD2DGraphicsDevice::GetImagingProvider(
+	CImagingProvider** ppImagingProvider
+	)
 {
     HRESULT hr = S_OK;
 
@@ -139,7 +151,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DGraphicsDevice::CreateTextProvider(CTextProvider** ppTextProvider)
+__checkReturn HRESULT 
+CD2DGraphicsDevice::CreateTextProvider(
+	__deref_out CTextProvider** ppTextProvider
+	)
 {
     HRESULT hr = S_OK;
     CDirectWriteTextProvider* pDirectWriteTextProvider = NULL;
@@ -161,7 +176,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DGraphicsDevice::CreateImagingProvider(CImagingProvider** ppImagingProvider)
+__checkReturn HRESULT 
+CD2DGraphicsDevice::CreateImagingProvider(
+	__deref_out CImagingProvider** ppImagingProvider
+	)
 {
     HRESULT hr = S_OK;
     CWICImagingProvider* pWICImagingProvider = NULL;
@@ -183,7 +201,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DGraphicsDevice::CreateRectangleGeometry(const RectF& Rectangle, CRectangleGeometry** ppRectangleGeometry)
+__override __checkReturn HRESULT 
+CD2DGraphicsDevice::CreateRectangleGeometry(
+	const RectF& Rectangle, 
+	__deref_out CRectangleGeometry** ppRectangleGeometry
+	)
 {
     HRESULT hr = S_OK;
     ID2D1RectangleGeometry* pD2DRectangleGeometry = NULL;
@@ -205,7 +227,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DGraphicsDevice::CreateRoundedRectangleGeometry(const RectF& Rectangle, FLOAT CornerRadius, CRoundedRectangleGeometry** ppRoundedRectangleGeometry)
+__override __checkReturn HRESULT 
+CD2DGraphicsDevice::CreateRoundedRectangleGeometry(
+	const RectF& Rectangle, 
+	FLOAT CornerRadius, 
+	__deref_out CRoundedRectangleGeometry** ppRoundedRectangleGeometry
+	)
 {
     HRESULT hr = S_OK;
     ID2D1RoundedRectangleGeometry* pD2DRoundedRectangleGeometry = NULL;

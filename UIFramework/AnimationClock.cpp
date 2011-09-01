@@ -2,21 +2,28 @@
 #include "AnimationTimeline.h"
 #include "BasicTypes.h"
 
-CAnimationClock::CAnimationClock() : m_RunningDuration(CTimeSpan::Zero()),
-                                     m_Timeline(NULL),
-                                     m_TimeSource(NULL),
-                                     m_Connected(FALSE),
-                                     m_ClockState(ClockState::Active),
-                                     m_Progress(0)
+CAnimationClock::CAnimationClock(
+    ) 
+    : m_RunningDuration(CTimeSpan::Zero())
+    , m_Timeline(NULL)
+    , m_TimeSource(NULL)
+    , m_Connected(FALSE)
+    , m_ClockState(ClockState::Active)
+    , m_Progress(0)
 {
 }
 
-CAnimationClock::~CAnimationClock()
+CAnimationClock::~CAnimationClock(
+    )
 {
     ReleaseObject(m_Timeline);
 }
 
-HRESULT CAnimationClock::Initialize(CTimeSource* pTimeSource, CAnimationTimeline* pTimeline)
+__checkReturn HRESULT 
+CAnimationClock::Initialize(
+    __in CTimeSource* pTimeSource, 
+    __in CAnimationTimeline* pTimeline
+    )
 {
     HRESULT hr = S_OK;
 
@@ -35,7 +42,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CAnimationClock::AddChangeListener(const ClockChangedHandler& Handler, events::signals::connection* pConnection)
+__checkReturn HRESULT 
+CAnimationClock::AddChangeListener(
+    const ClockChangedHandler& Handler, 
+    __out events::signals::connection* pConnection
+    )
 {
     HRESULT hr = S_OK;
 
@@ -54,7 +65,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CAnimationClock::AddCompletedListener(const ClockCompletedHandler& Handler, events::signals::connection* pConnection)
+__checkReturn HRESULT 
+CAnimationClock::AddCompletedListener(
+    const ClockCompletedHandler& Handler, 
+    __out events::signals::connection* pConnection
+    )
 {
     HRESULT hr = S_OK;
 
@@ -66,17 +81,24 @@ Cleanup:
     return hr;
 }
 
-void CAnimationClock::RaiseValueChanged()
+void 
+CAnimationClock::RaiseValueChanged(
+    )
 {
     m_ValueChanged(this);
 }
 
-void CAnimationClock::RaiseCompleted()
+void 
+CAnimationClock::RaiseCompleted(    
+    )
 {
     m_Completed(this);
 }
 
-HRESULT CAnimationClock::OnTimeUpdate(const CTimeSpan& TimeDelta)
+__checkReturn HRESULT 
+CAnimationClock::OnTimeUpdate(
+    const CTimeSpan& TimeDelta
+    )
 {
     HRESULT hr = S_OK;
     CDurationValue* pDuration = NULL;
@@ -133,7 +155,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CAnimationClock::GetCurrentValue(CObjectWithType* pDefaultInitialValue, CObjectWithType* pDefaultFinalValue, CObjectWithType** ppObject)
+__checkReturn HRESULT 
+CAnimationClock::GetCurrentValue(
+    __in CObjectWithType* pDefaultInitialValue, 
+    __in CObjectWithType* pDefaultFinalValue,
+    __deref_out CObjectWithType** ppObject
+    )
 {
     HRESULT hr = S_OK;
 
@@ -143,10 +170,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CAnimationClock::GetCurrentProgress(FLOAT* pProgress)
+__checkReturn HRESULT 
+CAnimationClock::GetCurrentProgress(
+    __out FLOAT* pProgress
+    )
 {
     HRESULT hr = S_OK;
-    CDurationValue* pDuration = NULL;
 
     IFCPTR(pProgress);
 

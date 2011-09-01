@@ -3,15 +3,22 @@
 #include "DirectWriteTextLayout.h"
 #include "DirectWriteEditableTextLayout.h"
 
-typedef HRESULT (WINAPI *DWriteCreateFactoryFunc)( __in DWRITE_FACTORY_TYPE factoryType, __in REFIID iid, __out IUnknown **factory );
+typedef HRESULT (WINAPI *DWriteCreateFactoryFunc)(
+	__in DWRITE_FACTORY_TYPE factoryType, 
+	__in REFIID iid, 
+	__deref_out IUnknown** ppFactory 
+	);
 
-CDirectWriteTextProvider::CDirectWriteTextProvider() : m_DWriteModule(NULL),
-                                                       m_Factory(NULL),
-                                                       m_DefaultFormat(NULL)
+CDirectWriteTextProvider::CDirectWriteTextProvider(
+	) 
+	: m_DWriteModule(NULL)
+	, m_Factory(NULL)
+	, m_DefaultFormat(NULL)
 {
 }
 
-CDirectWriteTextProvider::~CDirectWriteTextProvider()
+CDirectWriteTextProvider::~CDirectWriteTextProvider(
+	)
 {
     ReleaseObject(m_DefaultFormat);
     ReleaseObject(m_Factory);
@@ -22,7 +29,9 @@ CDirectWriteTextProvider::~CDirectWriteTextProvider()
     }
 }
 
-HRESULT CDirectWriteTextProvider::Initialize()
+__checkReturn HRESULT 
+CDirectWriteTextProvider::Initialize(
+	)
 {
     HRESULT hr = S_OK;
     DWriteCreateFactoryFunc CreateFactory = NULL;
@@ -41,7 +50,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteTextProvider::CreateFormat(const WCHAR* pFontName, FLOAT FontSize, const WCHAR* pLocaleName, CTextFormat** ppTextFormat)
+__override __checkReturn HRESULT 
+CDirectWriteTextProvider::CreateFormat(
+	__in_z const WCHAR* pFontName, 
+	FLOAT FontSize, 
+	__in_z const WCHAR* pLocaleName, 
+	__deref_out CTextFormat** ppTextFormat
+	)
 {
     HRESULT hr = S_OK;
     IDWriteTextFormat* pDirectWriteTextFormat = NULL;
@@ -65,7 +80,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteTextProvider::GetDefaultFormat(CTextFormat** ppTextFormat)
+__override __checkReturn HRESULT 
+CDirectWriteTextProvider::GetDefaultFormat(
+	__deref_out CTextFormat** ppTextFormat
+	)
 {
     HRESULT hr = S_OK;
 
@@ -78,7 +96,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteTextProvider::CreateTextLayout(const WCHAR* pText, UINT32 CharacterCount, CTextFormat* pTextFormat, const SizeF& Size, CTextLayout** ppTextLayout)
+__override __checkReturn HRESULT 
+CDirectWriteTextProvider::CreateTextLayout(
+	__in_ecount(CharacterCount) const WCHAR* pText, 
+	UINT32 CharacterCount, 
+	__in CTextFormat* pTextFormat, 
+	const SizeF& Size, 
+	__deref_out CTextLayout** ppTextLayout
+	)
 {
     HRESULT hr = S_OK;
     CDirectWriteTextFormat* pDirectWriteTextFormat = NULL;
@@ -105,7 +130,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteTextProvider::CreateEditableTextLayout(const SizeF& Size, CEditableTextLayout** ppEditableTextLayout)
+__override __checkReturn HRESULT 
+CDirectWriteTextProvider::CreateEditableTextLayout(
+	const SizeF& Size, 
+	__deref_out CEditableTextLayout** ppEditableTextLayout
+	)
 {
     HRESULT hr = S_OK;
     CDirectWriteEditableTextLayout* pDirectWriteEditableTextLayout = NULL;

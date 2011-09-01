@@ -85,7 +85,7 @@ struct ObjectTypeTraits< CRectangleEdgeValue >
     static const TypeIndex::Value Type = TypeIndex::RectangleEdge;
 };
 
-typedef CBasicValue< bool, TypeIndex::Bool > CBoolValue;
+typedef CBasicValue< BOOL, TypeIndex::Bool > CBoolValue;
 
 template< >
 struct ObjectTypeTraits< CBoolValue >

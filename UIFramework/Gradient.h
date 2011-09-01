@@ -13,12 +13,16 @@ struct GradientStop
     : D2D1_GRADIENT_STOP
 #endif
 {
-    GradientStop()
+    GradientStop(
+		)
     {
         position = 0;
     }
 
-    GradientStop(FLOAT Position, ColorF Color)
+    GradientStop(
+		FLOAT Position, 
+		ColorF Color
+		)
     {
         position = Position;
         color = Color;

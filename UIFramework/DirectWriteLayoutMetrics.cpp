@@ -1,14 +1,19 @@
 #include "DirectWriteLayoutMetrics.h"
 
-CDirectWriteLayoutMetrics::CDirectWriteLayoutMetrics()
+CDirectWriteLayoutMetrics::CDirectWriteLayoutMetrics(
+	)
 {
 }
 
-CDirectWriteLayoutMetrics::~CDirectWriteLayoutMetrics()
+CDirectWriteLayoutMetrics::~CDirectWriteLayoutMetrics(
+	)
 {
 }
 
-HRESULT CDirectWriteLayoutMetrics::Initialize(const DWRITE_TEXT_METRICS& Metrics)
+__checkReturn HRESULT 
+CDirectWriteLayoutMetrics::Initialize(
+	const DWRITE_TEXT_METRICS& Metrics
+	)
 {
     HRESULT hr = S_OK;
 
@@ -17,7 +22,10 @@ HRESULT CDirectWriteLayoutMetrics::Initialize(const DWRITE_TEXT_METRICS& Metrics
     return hr;
 }
 
-HRESULT CDirectWriteLayoutMetrics::GetBounds(RectF* pBounds)
+__override __checkReturn HRESULT 
+CDirectWriteLayoutMetrics::GetBounds(
+	__out RectF* pBounds
+	)
 {
     HRESULT hr = S_OK;
 

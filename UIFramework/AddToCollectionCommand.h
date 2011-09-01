@@ -12,13 +12,20 @@ class CAddToCollectionCommand : public CParserCommand
     public:
         DECLARE_FACTORY1( CAddToCollectionCommand, CProperty* );
 
-        virtual HRESULT Execute( CParserCommandContext& Context );
+        __override virtual __checkReturn HRESULT Execute(
+			CParserCommandContext& Context 
+			);
 
     protected:
-        CAddToCollectionCommand();
-        virtual ~CAddToCollectionCommand();
+        CAddToCollectionCommand(
+			);
 
-        HRESULT Initialize( CProperty* pProperty );
+        virtual ~CAddToCollectionCommand(
+			);
+
+        __checkReturn HRESULT Initialize(
+			__in CProperty* pProperty 
+			);
 
         CProperty* m_Property;
 };

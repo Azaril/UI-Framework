@@ -10,18 +10,39 @@ class CParserNodeCallback : public CRefCountedObject,
                             public CParserXMLCallback
 {
     public:
-        virtual BOOL IsComplete() = 0;
+        virtual BOOL IsComplete(
+			) = 0;
 
-        virtual HRESULT OnElementStart( CXMLElementStart* pElementStart, BOOL& Consumed );
-        virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd, BOOL& Consumed );
-        virtual HRESULT OnText( CXMLText* pText, BOOL& Consumed );
-        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute, BOOL& Consumed );
+        __override virtual __checkReturn HRESULT OnElementStart( 
+			__in CXMLElementStart* pElementStart,
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnElementEnd(
+			__in CXMLElementEnd* pElementEnd, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnText(
+			__in CXMLText* pText, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnAttribute(
+			__in CXMLAttribute* pAttribute, 
+			BOOL& Consumed 
+			);
 
     protected:
-        CParserNodeCallback();
-        virtual ~CParserNodeCallback();
+        CParserNodeCallback(
+			);
 
-        HRESULT Initialize( CParseContext* pContext );
+        virtual ~CParserNodeCallback(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in CParseContext* pContext 
+			);
 
         CParseContext* m_Context;
 };

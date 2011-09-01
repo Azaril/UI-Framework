@@ -1,15 +1,21 @@
 #include "D2DBitmap.h"
 
-CD2DBitmap::CD2DBitmap() : m_Bitmap(NULL)
+CD2DBitmap::CD2DBitmap(
+	) 
+	: m_Bitmap(NULL)
 {
 }
 
-CD2DBitmap::~CD2DBitmap()
+CD2DBitmap::~CD2DBitmap(
+	)
 {
     ReleaseObject(m_Bitmap);
 }
 
-HRESULT CD2DBitmap::Initialize(ID2D1Bitmap* pBitmap)
+__checkReturn HRESULT 
+CD2DBitmap::Initialize(
+	__in ID2D1Bitmap* pBitmap
+	)
 {
     HRESULT hr = S_OK;
 
@@ -22,7 +28,9 @@ Cleanup:
     return hr;
 }
 
-ID2D1Bitmap* CD2DBitmap::GetD2DBitmap()
+__out ID2D1Bitmap* 
+CD2DBitmap::GetD2DBitmap(
+	)
 {
     return m_Bitmap;
 }

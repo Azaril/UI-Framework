@@ -1,22 +1,29 @@
 #include "EvaluateMarkupExtensionCommand.h"
 #include "MarkupExtension.h"
 
-CEvaluateMarkupExtensionCommand::CEvaluateMarkupExtensionCommand()
+CEvaluateMarkupExtensionCommand::CEvaluateMarkupExtensionCommand(
+	)
 {
 }
 
-CEvaluateMarkupExtensionCommand::~CEvaluateMarkupExtensionCommand()
+CEvaluateMarkupExtensionCommand::~CEvaluateMarkupExtensionCommand(
+	)
 {
 }
 
-HRESULT CEvaluateMarkupExtensionCommand::Initialize()
+__checkReturn HRESULT 
+CEvaluateMarkupExtensionCommand::Initialize(
+	)
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-HRESULT CEvaluateMarkupExtensionCommand::Execute(CParserCommandContext& Context)
+__override __checkReturn HRESULT 
+CEvaluateMarkupExtensionCommand::Execute(
+	CParserCommandContext& Context
+	)
 {
     HRESULT hr = S_OK;
     CObjectWithType* pCurrentObject = NULL;

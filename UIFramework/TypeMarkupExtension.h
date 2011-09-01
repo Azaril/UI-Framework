@@ -13,11 +13,18 @@ class CTypeMarkupExtension : public CMarkupExtension
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::TypeMarkupExtension, CMarkupExtension );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+			__deref_out CPropertyInformation** ppInformation 
+			);
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        __override virtual __checkReturn HRESULT GetValue( 
+			__in CProperty* pProperty, 
+			__deref_out CObjectWithType** ppValue 
+			);
 
-        virtual HRESULT ExecuteMarkup( CObjectWithType** ppObject );
+        __override virtual __checkReturn HRESULT ExecuteMarkup(
+			__deref_out CObjectWithType** ppObject 
+			);
 
         //
         // Properties
@@ -25,12 +32,20 @@ class CTypeMarkupExtension : public CMarkupExtension
         static CStaticProperty TypeNameProperty;
 
     protected:
-        CTypeMarkupExtension();
-        virtual ~CTypeMarkupExtension();
+        CTypeMarkupExtension(
+			);
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CTypeMarkupExtension(
+			);
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Initialize( 
+			__in CProviders* pProviders 
+			);
+
+        __override virtual HRESULT SetValueInternal( 
+			__in CProperty* pProperty, 
+			__in CObjectWithType* pValue 
+			);
 
         CStringValue* m_TypeName;
         CProviders* m_Providers;

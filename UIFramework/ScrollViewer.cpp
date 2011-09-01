@@ -251,7 +251,6 @@ HRESULT CScrollViewer::GetEffectiveVerticalScrollBarVisibility(ScrollBarVisibili
     //TODO: Use property.
     *pVisibility = ScrollBarVisibility::Auto;
 
-Cleanup:
     return hr;
 }
 
@@ -262,7 +261,6 @@ HRESULT CScrollViewer::GetEffectiveHorizontalScrollBarVisibility(ScrollBarVisibi
     //TODO: Use property.
     *pVisibility = ScrollBarVisibility::Auto;
 
-Cleanup:
     return hr;
 }
 

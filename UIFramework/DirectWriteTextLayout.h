@@ -10,16 +10,28 @@ class CDirectWriteTextLayout : public CTextLayout
     public:
         DECLARE_FACTORY1( CDirectWriteTextLayout, IDWriteTextLayout* );
 
-        HRESULT GetDirectWriteTextLayout( IDWriteTextLayout** ppLayout );
+        __checkReturn HRESULT GetDirectWriteTextLayout( 
+			__deref_out IDWriteTextLayout** ppLayout
+			);
 
-        virtual HRESULT SetMaxSize( const SizeF& Size );
-        virtual HRESULT GetMetrics( CTextLayoutMetrics** ppMetrics );
+        __override virtual __checkReturn HRESULT SetMaxSize(
+			const SizeF& Size 
+			);
+
+        __override virtual __checkReturn HRESULT GetMetrics(
+			__deref_out CTextLayoutMetrics** ppMetrics 
+			);
 
     protected:
-        CDirectWriteTextLayout();
-        virtual ~CDirectWriteTextLayout();
+        CDirectWriteTextLayout(
+			);
 
-        HRESULT Initialize( IDWriteTextLayout* pLayout );
+        virtual ~CDirectWriteTextLayout(
+			);
+
+        __checkReturn HRESULT Initialize(
+			__in IDWriteTextLayout* pLayout 
+			);
 
         IDWriteTextLayout* m_Layout;
 };

@@ -14,7 +14,9 @@ struct Matrix3X2F
     : D2D_MATRIX_3X2_F
 #endif
 {  
-    inline Matrix3X2F operator*(const Matrix3X2F& Other) const
+    inline Matrix3X2F operator*(
+		const Matrix3X2F& Other
+		) const
     {
         Matrix3X2F Result;
 
@@ -28,17 +30,21 @@ struct Matrix3X2F
         return Result;
     }
     
-    inline Point2F TransformPoint(const Point2F& Point) const
+    inline Point2F TransformPoint(
+		const Point2F& Point
+		) const
     {
         return Point2F(Point.x * _11 + Point.y * _21 + _31, Point.x * _12 + Point.y * _22 + _32);
     }
 
-    inline FLOAT Determinant()
+    inline FLOAT Determinant(
+        )
     {
         return (_11 * _22) - (_12 * _21);
     }
     
-    inline BOOL IsInvertible()
+    inline BOOL IsInvertible(
+        )
     {
         FLOAT Det = Determinant();
         
@@ -57,7 +63,8 @@ struct Matrix3X2F
         return TRUE;
     }
     
-    inline BOOL Invert()
+    inline BOOL Invert(
+        )
     {
         FLOAT Det = Determinant();
         
@@ -85,7 +92,8 @@ struct Matrix3X2F
         return TRUE;
     }
     
-    static inline Matrix3X2F Identity()
+    static inline Matrix3X2F Identity(
+        )
     {
         Matrix3X2F Result;
         
@@ -99,7 +107,9 @@ struct Matrix3X2F
         return Result;
     }
     
-    static inline Matrix3X2F Translation(const SizeF& Size)
+    static inline Matrix3X2F Translation(
+        const SizeF& Size
+        )
     {
         Matrix3X2F Result;
         
@@ -113,12 +123,18 @@ struct Matrix3X2F
         return Result;
     }
     
-    static inline Matrix3X2F Translation(FLOAT x, FLOAT y)
+    static inline Matrix3X2F Translation(
+        FLOAT x, 
+        FLOAT y
+        )
     {
         return Translation(SizeF(x, y));
     }
     
-    static inline Matrix3X2F Scale(const SizeF& Size, const Point2F& Center = Point2F(0, 0))
+    static inline Matrix3X2F Scale(
+        const SizeF& Size, 
+        const Point2F& Center = Point2F(0, 0)
+        )
     {
         Matrix3X2F Result;
         
@@ -132,7 +148,11 @@ struct Matrix3X2F
         return Result;
     }
     
-    static inline Matrix3X2F Scale(FLOAT x, FLOAT y, const Point2F& Center = Point2F(0, 0))
+    static inline Matrix3X2F Scale(
+        FLOAT x, 
+        FLOAT y, 
+        const Point2F& Center = Point2F(0, 0)
+        )
     {
         return Scale(SizeF(x, y), Center);
     }
@@ -147,7 +167,11 @@ struct Matrix3X2F
 #endif
 };
 
-inline Point2F operator*(const Point2F& Point, const Matrix3X2F& Matrix)
+inline Point2F
+operator*(
+    const Point2F& Point, 
+    const Matrix3X2F& Matrix
+    )
 {
     return Matrix.TransformPoint(Point);
 } 

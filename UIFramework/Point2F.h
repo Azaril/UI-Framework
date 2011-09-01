@@ -12,13 +12,17 @@ struct Point2F
     : D2D1_POINT_2F
 #endif
 {
-    Point2F()
+    Point2F(
+        )
     {
         x = 0;
         y = 0;
     }
 
-    Point2F(FLOAT X, FLOAT Y)
+    Point2F(
+        FLOAT X, 
+        FLOAT Y
+        )
     {
         x = X;
         y = Y;
@@ -30,7 +34,11 @@ struct Point2F
 #endif    
 };
 
-inline bool operator==( const Point2F& Val1, const Point2F& Val2 )
+inline bool 
+operator==(
+    const Point2F& Val1,
+    const Point2F& Val2 
+    )
 {
     return (Val1.x == Val2.x && Val1.y == Val2.y);
 }

@@ -11,16 +11,22 @@
 #include "DirectWriteEditableTextLayout.h"
 #include "WICBitmapSource.h"
 
-CD2DRenderTarget::CD2DRenderTarget() : m_RenderTarget(NULL)
+CD2DRenderTarget::CD2DRenderTarget(
+	) 
+	: m_RenderTarget(NULL)
 {
 }
 
-CD2DRenderTarget::~CD2DRenderTarget()
+CD2DRenderTarget::~CD2DRenderTarget(
+	)
 {
     ReleaseObject(m_RenderTarget);
 }
 
-HRESULT CD2DRenderTarget::Initialize(ID2D1RenderTarget* pRenderTarget)
+__checkReturn HRESULT
+CD2DRenderTarget::Initialize(
+	__in ID2D1RenderTarget* pRenderTarget
+	)
 {
     HRESULT hr = S_OK;
 
@@ -33,14 +39,18 @@ Cleanup:
     return hr;
 }
 
-SizeF CD2DRenderTarget::GetSize()
+SizeF 
+CD2DRenderTarget::GetSize(
+	)
 {
     D2D1_SIZE_F Size = m_RenderTarget->GetSize();
 
     return SizeF(Size.width, Size.height);
 }
 
-HRESULT CD2DRenderTarget::BeginRendering()
+__checkReturn HRESULT 
+CD2DRenderTarget::BeginRendering(
+	)
 {
     HRESULT hr = S_OK;
 
@@ -49,7 +59,9 @@ HRESULT CD2DRenderTarget::BeginRendering()
     return hr;
 }
 
-HRESULT CD2DRenderTarget::EndRendering()
+__checkReturn HRESULT 
+CD2DRenderTarget::EndRendering(
+	)
 {
     HRESULT hr = S_OK;
 
@@ -59,7 +71,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::SetTransform(const Matrix3X2F& Transform)
+__checkReturn HRESULT 
+CD2DRenderTarget::SetTransform(
+	const Matrix3X2F& Transform
+	)
 {
     HRESULT hr = S_OK;
 
@@ -68,7 +83,10 @@ HRESULT CD2DRenderTarget::SetTransform(const Matrix3X2F& Transform)
     return hr;
 }
 
-HRESULT CD2DRenderTarget::Clear(ColorF Color)
+__checkReturn HRESULT
+CD2DRenderTarget::Clear(
+	const ColorF& Color
+	)
 {
     HRESULT hr = S_OK;
 
@@ -77,7 +95,11 @@ HRESULT CD2DRenderTarget::Clear(ColorF Color)
     return hr;
 }
 
-HRESULT CD2DRenderTarget::CreateSolidBrush(ColorF Color, CGraphicsBrush** ppBrush)
+__checkReturn HRESULT 
+CD2DRenderTarget::CreateSolidBrush(
+	const ColorF& Color, 
+	__deref_out CGraphicsBrush** ppBrush
+	)
 {
     HRESULT hr = S_OK;
     ID2D1SolidColorBrush* pD2DSolidColorBrush = NULL;
@@ -99,7 +121,14 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::CreateLinearGradientBrush(const Point2F& StartPoint, const Point2F& EndPoint, GradientStop* pGradientStops, UINT32 GradientStopCount, CGraphicsBrush** ppBrush)
+__checkReturn HRESULT 
+CD2DRenderTarget::CreateLinearGradientBrush(
+	const Point2F& StartPoint, 
+	const Point2F& EndPoint, 
+	__in_ecount(GradientStopCount) const GradientStop* pGradientStops, 
+	UINT32 GradientStopCount, 
+	__deref_out CGraphicsBrush** ppBrush
+	)
 {
     HRESULT hr = S_OK;
     D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES BrushProperties = { 0 };
@@ -129,7 +158,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::GetDefaultBrush(DefaultBrush::Value Type, CGraphicsBrush** ppBrush)
+__checkReturn HRESULT 
+CD2DRenderTarget::GetDefaultBrush(
+	DefaultBrush::Value Type, 
+	__deref_out CGraphicsBrush** ppBrush
+	)
 {
     HRESULT hr = S_OK;
 
@@ -154,7 +187,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::DrawRectangle(const RectF& Size, CGraphicsBrush* pBrush)
+__checkReturn HRESULT 
+CD2DRenderTarget::DrawRectangle(
+	const RectF& Size, 
+	__in const CGraphicsBrush* pBrush
+	)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
@@ -169,7 +206,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::FillRectangle(const RectF& Size, CGraphicsBrush* pBrush)
+__checkReturn HRESULT 
+CD2DRenderTarget::FillRectangle(
+	const RectF& Size,
+	__in const CGraphicsBrush* pBrush
+	)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
@@ -184,7 +225,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::RenderTextLayout(const Point2F& Origin, CTextLayout* pTextLayout, CGraphicsBrush* pBrush)
+__checkReturn HRESULT 
+CD2DRenderTarget::RenderTextLayout(
+	const Point2F& Origin, 
+	__in const CTextLayout* pTextLayout, 
+	__in const CGraphicsBrush* pBrush
+	)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
@@ -229,7 +275,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::LoadBitmap(CBitmapSource* pSource, CBitmap** ppBitmap)
+__checkReturn HRESULT 
+CD2DRenderTarget::LoadBitmap(
+	__in const CBitmapSource* pSource, 
+	__deref_out CBitmap** ppBitmap
+	)
 {
     HRESULT hr = S_OK;
     CWICBitmapSource* pWICBitmapSource = NULL;
@@ -255,7 +305,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::CreateBitmapBrush(CBitmap* pBitmap, CGraphicsBrush** pBrush)
+__checkReturn HRESULT 
+CD2DRenderTarget::CreateBitmapBrush(
+	__in const CBitmap* pBitmap, 
+	__deref_out CGraphicsBrush** pBrush
+	)
 {
     HRESULT hr = S_OK;
     CD2DBitmap* pD2DBitmap = NULL;
@@ -282,7 +336,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::FillGeometry(CGeometry* pGeometry, CGraphicsBrush* pBrush)
+__checkReturn HRESULT 
+CD2DRenderTarget::FillGeometry(
+	__in const CGeometry* pGeometry,
+	__in const CGraphicsBrush* pBrush
+	)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
@@ -322,7 +380,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::UnwrapGeometry(CGeometry* pGeometry, ID2D1Geometry** ppD2DGeometry)
+__checkReturn HRESULT 
+CD2DRenderTarget::UnwrapGeometry(
+	__in const CGeometry* pGeometry, 
+	__deref_out ID2D1Geometry** ppD2DGeometry
+	)
 {
     HRESULT hr = S_OK;
     ID2D1Geometry* pUnwrappedGeometry = NULL;
@@ -363,7 +425,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::DrawGeometry(CGeometry* pGeometry, CGraphicsBrush* pBrush, FLOAT StrokeThickness)
+__checkReturn HRESULT 
+CD2DRenderTarget::DrawGeometry(
+	__in const CGeometry* pGeometry, 
+	__in const CGraphicsBrush* pBrush, 
+	FLOAT StrokeThickness
+	)
 {
     HRESULT hr = S_OK;
     CD2DBrush* pD2DBrush = NULL;
@@ -384,7 +451,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::CreateLayer(CLayer** ppLayer)
+__checkReturn HRESULT 
+CD2DRenderTarget::CreateLayer(
+	__deref_out CLayer** ppLayer
+	)
 {
     HRESULT hr = S_OK;
     ID2D1Layer* pD2DLayer = NULL;
@@ -404,7 +474,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::PushLayer(CLayer* pLayer, const RectF& ClippingRect, FLOAT Opacity, CGeometry* pClippingGeometry)
+__checkReturn HRESULT 
+CD2DRenderTarget::PushLayer(
+	__in const CLayer* pLayer, 
+	const RectF& ClippingRect,
+	FLOAT Opacity, 
+	__in_opt const CGeometry* pClippingGeometry
+	)
 {
     HRESULT hr = S_OK;
     CD2DLayer* pD2DLayer = NULL;
@@ -425,7 +501,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CD2DRenderTarget::PopLayer()
+__checkReturn HRESULT 
+CD2DRenderTarget::PopLayer(
+	)
 {
     HRESULT hr = S_OK;
 

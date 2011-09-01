@@ -2,16 +2,22 @@
 #include "XMLReader.h"
 #include "ParserCallback.h"
 
-CParser::CParser() : m_Providers(NULL)
+CParser::CParser(
+	) 
+	: m_Providers(NULL)
 {
 }
 
-CParser::~CParser()
+CParser::~CParser(
+	)
 {
     ReleaseObject(m_Providers);
 }
 
-HRESULT CParser::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CParser::Initialize(
+	__in CProviders* pProviders
+	)
 {
     HRESULT hr = S_OK;
 
@@ -24,7 +30,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParser::LoadFromFile(const WCHAR* pPath, CObjectWithType** ppRootObject)
+__checkReturn HRESULT 
+CParser::LoadFromFile(
+	__in_z const WCHAR* pPath, 
+	__deref_out CObjectWithType** ppRootObject
+	)
 {
     HRESULT hr = S_OK;
     CXMLReader* pXMLReader = NULL;
@@ -58,7 +68,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParser::LoadFromString(const WCHAR* pMarkup, CObjectWithType** ppRootObject)
+__checkReturn HRESULT 
+CParser::LoadFromString(
+	__in_z const WCHAR* pMarkup,
+	__deref_out CObjectWithType** ppRootObject
+	)
 {
     HRESULT hr = S_OK;
     CXMLReader* pXMLReader = NULL;
@@ -95,26 +109,42 @@ Cleanup:
 //
 // CParser
 //
-extern "C" __declspec(dllexport)
-void CParser_AddRef(CParser* pParser)
+extern "C" __declspec(dllexport) 
+void 
+CParser_AddRef(
+	__in CParser* pParser
+	)
 {
     pParser->AddRef();
 }
 
-extern "C" __declspec(dllexport)
-void CParser_Release(CParser* pParser)
+extern "C" __declspec(dllexport) 
+void 
+CParser_Release(
+	__in CParser* pParser
+	)
 {
     pParser->Release();
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CParser_LoadFromFile(CParser* pParser, const WCHAR* pPath, CObjectWithType** ppRootObject)
+__checkReturn HRESULT 
+CParser_LoadFromFile(
+	__in CParser* pParser, 
+	__in_z const WCHAR* pPath, 
+	__deref_out CObjectWithType** ppRootObject
+	)
 {
     return pParser->LoadFromFile(pPath, ppRootObject);
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CParser_LoadFromString(CParser* pParser, const WCHAR* pMarkup, CObjectWithType** ppRootObject)
+__checkReturn HRESULT 
+CParser_LoadFromString(
+	__in CParser* pParser, 
+	__in_z const WCHAR* pMarkup, 
+	__deref_out CObjectWithType** ppRootObject
+	)
 {
     return pParser->LoadFromString(pMarkup, ppRootObject);
 }

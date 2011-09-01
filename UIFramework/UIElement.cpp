@@ -453,7 +453,6 @@ HRESULT CUIElement::SetSize(SizeF Size)
     //IFC(InternalSetWidth(Size.width));
     //IFC(InternalSetHeight(Size.height));
 
-Cleanup:
     return hr;
 }
 
@@ -609,7 +608,6 @@ HRESULT CUIElement::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     DesiredSize.width = 0;
     DesiredSize.height = 0;
 
-Cleanup:
     return hr;
 }
 
@@ -1491,7 +1489,6 @@ HRESULT CUIElement::OnFocusableChanged(CObjectWithType* pOldValue, CObjectWithTy
 {
     HRESULT hr = S_OK;
 
-Cleanup:
     return hr;
 }
 
@@ -1501,7 +1498,6 @@ HRESULT CUIElement::OnOpacityChanged(CObjectWithType* pOldValue, CObjectWithType
     
     //TODO: Invalidate render.
 
-Cleanup:
     return hr;
 }
 
@@ -1516,7 +1512,6 @@ BOOL CUIElement::IsFocusable()
         Focusable = EffectiveFocusable && (EffectiveVisibility == Visibility::Visible);
     }
 
-Cleanup:
     return Focusable;
 }
 

@@ -18,39 +18,93 @@ namespace DefaultBrush
     };
 }
 
-class CRenderTarget : public CRefCountedObject
+class UIFRAMEWORK_API CRenderTarget : public CRefCountedObject
 {
     public:
-        virtual SizeF GetSize() = 0;
+        virtual SizeF GetSize(
+			) = 0;
 
-        virtual HRESULT BeginRendering() = 0;
-        virtual HRESULT EndRendering() = 0;
+        virtual __checkReturn HRESULT BeginRendering(
+			) = 0;
 
-        virtual HRESULT SetTransform( const Matrix3X2F& Transform ) = 0;
+        virtual __checkReturn HRESULT EndRendering(
+			) = 0;
 
-        virtual HRESULT Clear( ColorF Color ) = 0;
+        virtual __checkReturn HRESULT SetTransform( 
+			const Matrix3X2F& Transform 
+			) = 0;
 
-        virtual HRESULT CreateSolidBrush( ColorF Color, CGraphicsBrush** ppBrush ) = 0;
-        virtual HRESULT CreateLinearGradientBrush( const Point2F& StartPoint, const Point2F& EndPoint, GradientStop* pGradientStops, UINT32 GradientStopCount, CGraphicsBrush** ppBrush ) = 0;
-        virtual HRESULT GetDefaultBrush( DefaultBrush::Value Type, CGraphicsBrush** ppBrush ) = 0;
+        virtual __checkReturn HRESULT Clear( 
+			const ColorF& Color 
+			) = 0;
+
+        virtual __checkReturn HRESULT CreateSolidBrush( 
+			const ColorF& Color, 
+			__deref_out CGraphicsBrush** ppBrush 
+			) = 0;
+
+        virtual __checkReturn HRESULT CreateLinearGradientBrush( 
+			const Point2F& StartPoint, 
+			const Point2F& EndPoint, 
+			__in_ecount(GradientStopCount) const GradientStop* pGradientStops,
+			UINT32 GradientStopCount, 
+			__deref_out CGraphicsBrush** ppBrush
+			) = 0;
+
+        virtual __checkReturn HRESULT GetDefaultBrush( 
+			DefaultBrush::Value Type, 
+			__deref_out CGraphicsBrush** ppBrush 
+			) = 0;
 
         //TODO: Support border/stroke.
-        virtual HRESULT DrawRectangle( const RectF& Size, CGraphicsBrush* pBrush ) = 0;
-        virtual HRESULT FillRectangle( const RectF& Size, CGraphicsBrush* pBrush ) = 0;
+        virtual __checkReturn HRESULT DrawRectangle( 
+			const RectF& Size,
+			__in const CGraphicsBrush* pBrush 
+			) = 0;
 
-        //virtual HRESULT CreateCompatibleRenderTarget() = 0;
+        virtual __checkReturn HRESULT FillRectangle( 
+			const RectF& Size, 
+			__in const CGraphicsBrush* pBrush 
+			) = 0;
 
-        virtual HRESULT RenderTextLayout( const Point2F& Origin, CTextLayout* pTextLayout, CGraphicsBrush* pBrush ) = 0;
+        virtual __checkReturn HRESULT RenderTextLayout( 
+			const Point2F& Origin, 
+			__in const CTextLayout* pTextLayout, 
+			__in const CGraphicsBrush* pBrush 
+			) = 0;
 
-        virtual HRESULT LoadBitmap( CBitmapSource* pSource, CBitmap** ppBitmap ) = 0;
+        virtual __checkReturn HRESULT LoadBitmap(
+			__in const CBitmapSource* pSource, 
+			__deref_out CBitmap** ppBitmap 
+			) = 0;
 
-        virtual HRESULT CreateBitmapBrush( CBitmap* pBitmap, CGraphicsBrush** pBrush ) = 0;
+        virtual __checkReturn HRESULT CreateBitmapBrush( 
+			__in const CBitmap* pBitmap, 
+			__deref_out CGraphicsBrush** pBrush 
+			) = 0;
 
-        virtual HRESULT DrawGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush, FLOAT StrokeThickness = 1.0f ) = 0;
-        virtual HRESULT FillGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush ) = 0;
+        virtual __checkReturn HRESULT DrawGeometry( 
+			__in const CGeometry* pGeometry, 
+			__in const CGraphicsBrush* pBrush,
+			FLOAT StrokeThickness = 1.0f 
+			) = 0;
 
-        virtual HRESULT CreateLayer( CLayer** ppLayer ) = 0;
+        virtual __checkReturn HRESULT FillGeometry(
+			__in const CGeometry* pGeometry, 
+			__in const CGraphicsBrush* pBrush 
+			) = 0;
 
-        virtual HRESULT PushLayer( CLayer* pLayer, const RectF& ClippingRect, FLOAT Opacity, CGeometry* pClippingGeometry ) = 0;
-        virtual HRESULT PopLayer() = 0;
+        virtual __checkReturn HRESULT CreateLayer( 
+			__deref_out CLayer** ppLayer 
+			) = 0;
+
+        virtual __checkReturn HRESULT PushLayer(
+			__in const CLayer* pLayer, 
+			const RectF& ClippingRect,
+			FLOAT Opacity, 
+			__in_opt const CGeometry* pClippingGeometry 
+			) = 0;
+
+        virtual __checkReturn HRESULT PopLayer(
+			) = 0;
 };

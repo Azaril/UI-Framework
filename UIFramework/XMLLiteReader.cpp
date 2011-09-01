@@ -2,15 +2,18 @@
 #include <Shlwapi.h>
 #include <strsafe.h>
 
-CXMLLiteReader::CXMLLiteReader() : m_XMLLiteModule(NULL),
-                                   m_CreateXmlReader(NULL),
-                                   m_ShlwapiModule(NULL),
-                                   m_SHCreateStreamOnFileW(NULL),
-                                   m_SHCreateMemStream(NULL)
+CXMLLiteReader::CXMLLiteReader(
+	) 
+	: m_XMLLiteModule(NULL)
+	, m_CreateXmlReader(NULL)
+	, m_ShlwapiModule(NULL)
+	, m_SHCreateStreamOnFileW(NULL)
+	, m_SHCreateMemStream(NULL)
 {
 }
 
-CXMLLiteReader::~CXMLLiteReader()
+CXMLLiteReader::~CXMLLiteReader(
+	)
 {
     if(m_XMLLiteModule)
     {
@@ -18,10 +21,11 @@ CXMLLiteReader::~CXMLLiteReader()
     }
 }
 
-HRESULT CXMLLiteReader::Initialize()
+__checkReturn HRESULT 
+CXMLLiteReader::Initialize(
+	)
 {
     HRESULT hr = S_OK;
-    CreateXmlReaderFunc CreateXmlReader = NULL;
 
     m_XMLLiteModule = LoadLibrary(L"XMLLite.dll");
     IFCEXPECT(m_XMLLiteModule != NULL);
@@ -42,7 +46,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteReader::LoadFromFile(const WCHAR* pPath, CXMLReaderCallback* pCallback)
+__checkReturn HRESULT 
+CXMLLiteReader::LoadFromFile(
+	__in_z const WCHAR* pPath, 
+	__in CXMLReaderCallback* pCallback
+	)
 {
     HRESULT hr = S_OK;
     IStream* pStream = NULL;
@@ -60,7 +68,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteReader::LoadFromString(const WCHAR* pText, CXMLReaderCallback* pCallback)
+__checkReturn HRESULT 
+CXMLLiteReader::LoadFromString(
+	__in_z const WCHAR* pText, 
+	__in CXMLReaderCallback* pCallback
+	)
 {
     HRESULT hr = S_OK;
     IStream* pStream = NULL;
@@ -79,7 +91,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteReader::LoadFromStream(IStream* pStream, CXMLReaderCallback* pCallback)
+__checkReturn HRESULT 
+CXMLLiteReader::LoadFromStream(
+	__in IStream* pStream, 
+	__in CXMLReaderCallback* pCallback
+	)
 {
     HRESULT hr = S_OK;
     IXmlReader* pReader = NULL;
@@ -99,7 +115,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* pCallback)
+__checkReturn HRESULT 
+CXMLLiteReader::ProcessReader(
+	__in IXmlReader* pReader,
+	__in CXMLReaderCallback* pCallback
+	)
 {
     HRESULT hr = S_OK;
     WCHAR* pNameCopy = NULL;
@@ -147,7 +167,7 @@ HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* p
                         IFC(RaiseElementEnd(pNameCopy, NameLength, pCallback));
                     }
 
-                    delete pNameCopy;
+                    delete [] pNameCopy;
                     pNameCopy = NULL;
 
                     break;
@@ -167,7 +187,7 @@ HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* p
 
                     IFC(RaiseElementEnd(pNameCopy, NameLength, pCallback));
 
-                    delete pNameCopy;
+                    delete [] pNameCopy;
                     pNameCopy = NULL;
 
                     break;
@@ -184,12 +204,17 @@ HRESULT CXMLLiteReader::ProcessReader(IXmlReader* pReader, CXMLReaderCallback* p
     while(SUCCEEDED(hr));
 
 Cleanup:
-    delete pNameCopy;
+    delete [] pNameCopy;
 
     return hr;
 }
 
-HRESULT CXMLLiteReader::RaiseElementStart(const WCHAR* pName, UINT32 NameLength, CXMLReaderCallback* pCallback)
+__checkReturn HRESULT 
+CXMLLiteReader::RaiseElementStart(
+	__in_ecount(NameLength) const WCHAR* pName, 
+	UINT32 NameLength, 
+	__in CXMLReaderCallback* pCallback
+	)
 {
     HRESULT hr = S_OK;
 
@@ -206,7 +231,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteReader::RaiseElementEnd(const WCHAR* pName, UINT32 NameLength, CXMLReaderCallback* pCallback)
+__checkReturn HRESULT
+CXMLLiteReader::RaiseElementEnd(
+	__in_ecount(NameLength) const WCHAR* pName,
+	UINT32 NameLength,
+	__in CXMLReaderCallback* pCallback
+	)
 {
     HRESULT hr = S_OK;
 
@@ -223,7 +253,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteReader::RaiseText(IXmlReader* pReader, CXMLReaderCallback* pCallback)
+__checkReturn HRESULT 
+CXMLLiteReader::RaiseText(
+	__in IXmlReader* pReader, 
+	__in CXMLReaderCallback* pCallback
+	)
 {
     HRESULT hr = S_OK;
 
@@ -240,7 +274,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteReader::RaiseAttribute(IXmlReader* pReader, CXMLReaderCallback* pCallback)
+__checkReturn HRESULT 
+CXMLLiteReader::RaiseAttribute(
+	__in IXmlReader* pReader, 
+	__in CXMLReaderCallback* pCallback
+	)
 {
     HRESULT hr = S_OK;
 
@@ -257,16 +295,22 @@ Cleanup:
     return hr;
 }
 
-CXMLLiteXMLElementStart::CXMLLiteXMLElementStart(const WCHAR* pElementName, UINT32 NameLength) : m_Name(pElementName),
-                                                                                                 m_NameLength(NameLength)
+CXMLLiteXMLElementStart::CXMLLiteXMLElementStart(
+	__in_ecount(NameLength) const WCHAR* pElementName, 
+	UINT32 NameLength
+	) 
+	: m_Name(pElementName)
+	, m_NameLength(NameLength)
 {
 }
 
-HRESULT CXMLLiteXMLElementStart::GetName(const WCHAR** ppNameBuffer, UINT32* pNameBufferLength)
+__override __checkReturn HRESULT 
+CXMLLiteXMLElementStart::GetName(
+	__deref_out_ecount(*pNameBufferLength) const WCHAR** ppNameBuffer, 
+	__out UINT32* pNameBufferLength
+	)
 {
     HRESULT hr = S_OK;
-    const WCHAR* pInternalBuffer = NULL;
-    UINT32 InternalBufferLength = 0;
 
     IFCPTR(ppNameBuffer);
     IFCPTR(pNameBufferLength);
@@ -278,16 +322,22 @@ Cleanup:
     return hr;
 }
 
-CXMLLiteXMLElementEnd::CXMLLiteXMLElementEnd(const WCHAR* pElementName, UINT32 NameLength) : m_Name(pElementName),
-                                                                                             m_NameLength(NameLength)
+CXMLLiteXMLElementEnd::CXMLLiteXMLElementEnd(
+	__in_ecount(NameLength) const WCHAR* pElementName, 
+	UINT32 NameLength
+	) 
+	: m_Name(pElementName)
+	, m_NameLength(NameLength)
 {
 }
 
-HRESULT CXMLLiteXMLElementEnd::GetName(const WCHAR** ppNameBuffer, UINT32* pNameBufferLength)
+__override __checkReturn HRESULT 
+CXMLLiteXMLElementEnd::GetName(
+	__deref_out_ecount(*pNameBufferLength) const WCHAR** ppNameBuffer,
+	__out UINT32* pNameBufferLength
+	)
 {
     HRESULT hr = S_OK;
-    const WCHAR* pInternalBuffer = NULL;
-    UINT32 InternalBufferLength = 0;
 
     IFCPTR(ppNameBuffer);
     IFCPTR(pNameBufferLength);
@@ -299,11 +349,18 @@ Cleanup:
     return hr;
 }
 
-CXMLLiteXMLText::CXMLLiteXMLText(IXmlReader* pReader) : m_Reader(pReader)
+CXMLLiteXMLText::CXMLLiteXMLText(
+	__in IXmlReader* pReader
+	) 
+	: m_Reader(pReader)
 {
 }
 
-HRESULT CXMLLiteXMLText::GetText(const WCHAR** ppText, UINT32* pTextLength)
+__override __checkReturn HRESULT 
+CXMLLiteXMLText::GetText(
+	__deref_out_ecount(*pTextLength) const WCHAR** ppText, 
+	__out UINT32* pTextLength
+	)
 {
     HRESULT hr = S_OK;
 
@@ -316,11 +373,18 @@ Cleanup:
     return hr;
 }
 
-CXMLLiteXMLAttribute::CXMLLiteXMLAttribute(IXmlReader* pReader) : m_Reader(pReader)
+CXMLLiteXMLAttribute::CXMLLiteXMLAttribute(
+	__in IXmlReader* pReader
+	) 
+	: m_Reader(pReader)
 {
 }
 
-HRESULT CXMLLiteXMLAttribute::GetName(const WCHAR** ppNameBuffer, UINT32* pNameBufferLength)
+__override __checkReturn HRESULT
+CXMLLiteXMLAttribute::GetName(
+	__deref_out_ecount(*pNameBufferLength) const WCHAR** ppNameBuffer, 
+	__out UINT32* pNameBufferLength
+	)
 {
     HRESULT hr = S_OK;
 
@@ -333,7 +397,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteXMLAttribute::GetValue(const WCHAR** ppValueBuffer, UINT32* pValueBufferLength)
+__override __checkReturn HRESULT 
+CXMLLiteXMLAttribute::GetValue(
+	__deref_out_ecount(*pValueBufferLength) const WCHAR** ppValueBuffer, 
+	__out UINT32* pValueBufferLength
+	)
 {
     HRESULT hr = S_OK;
 
@@ -346,7 +414,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteXMLAttribute::GetPrefix(const WCHAR** ppPrefix, UINT32* pPrefixBufferLength)
+__override __checkReturn HRESULT 
+CXMLLiteXMLAttribute::GetPrefix(
+	__deref_out_ecount(*pPrefixBufferLength) const WCHAR** ppPrefix, 
+	__out UINT32* pPrefixBufferLength
+	)
 {
     HRESULT hr = S_OK;
 
@@ -359,7 +431,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CXMLLiteXMLAttribute::GetNamespaceUri(const WCHAR** ppNamespaceUri, UINT32* pNamespaceUriLength)
+__override __checkReturn HRESULT 
+CXMLLiteXMLAttribute::GetNamespaceUri(
+	__deref_out_ecount(*pNamespaceUriLength) const WCHAR** ppNamespaceUri, 
+	__out UINT32* pNamespaceUriLength
+	)
 {
     HRESULT hr = S_OK;
 

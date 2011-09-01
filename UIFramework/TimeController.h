@@ -20,21 +20,43 @@ class UIFRAMEWORK_API CTimeController : public CRefCountedObjectBase< CTimeSourc
     public:
         DECLARE_FACTORY1( CTimeController, const CTime& );
 
-        HRESULT UpdateTime( const CTime& Time );
-        HRESULT Disconnect();
+        __checkReturn HRESULT UpdateTime( 
+            const CTime& Time 
+            );
 
-        virtual HRESULT AddSink( CTimeSink* pSink );
-        virtual HRESULT RemoveSink( CTimeSink* pSink );
+        __checkReturn HRESULT Disconnect(
+            );
+
+        __override virtual __checkReturn HRESULT AddSink( 
+            __in CTimeSink* pSink 
+            );
+
+        __override virtual __checkReturn HRESULT RemoveSink(
+            __in CTimeSink* pSink 
+            );
 
     protected:
-        CTimeController();
-        virtual ~CTimeController();
+        CTimeController(
+            );
 
-        HRESULT Initialize( const CTime& Time );
+        virtual ~CTimeController(
+            );
 
-        HRESULT CallSinks( const CTimeSpan& Delta );
-        HRESULT AddSinkInternal( CTimeSink* pSink );
-        HRESULT RemoveSinkInternal( CTimeSink* pSink );
+        __checkReturn HRESULT Initialize(
+            const CTime& Time 
+            );
+
+        __checkReturn HRESULT CallSinks( 
+            const CTimeSpan& Delta 
+            );
+
+        __checkReturn HRESULT AddSinkInternal(
+            __in CTimeSink* pSink 
+            );
+
+        __checkReturn HRESULT RemoveSinkInternal( 
+            __in CTimeSink* pSink 
+            );
 
         CTime m_LastTime;
         vector< CTimeSink* > m_Sinks;
@@ -43,24 +65,34 @@ class UIFRAMEWORK_API CTimeController : public CRefCountedObjectBase< CTimeSourc
         class CAsyncOp
         {
             public:
-                CAsyncOp( AsyncTimeControllerOp::Value Op, CTimeSink* pSink ) : m_Operation(Op),
-                                                                                m_Sink(pSink)
+                CAsyncOp( 
+                    AsyncTimeControllerOp::Value Op, 
+                    __in CTimeSink* pSink 
+                    ) 
+                    : m_Operation(Op)
+                    , m_Sink(pSink)
                 {
                     AddRefObject(m_Sink);
                 }
 
-                CAsyncOp( const CAsyncOp& Other ) : m_Operation(Other.m_Operation),
-                                                    m_Sink(Other.m_Sink)
+                CAsyncOp(
+                    const CAsyncOp& Other 
+                    ) 
+                    : m_Operation(Other.m_Operation)
+                    , m_Sink(Other.m_Sink)
                 {
                     AddRefObject(m_Sink);
                 }
 
-                ~CAsyncOp()
+                ~CAsyncOp(
+                    )
                 {
                     ReleaseObject(m_Sink);
                 }
 
-                CAsyncOp& operator=( CAsyncOp& Other )
+                CAsyncOp& operator=( 
+                    CAsyncOp& Other 
+                    )
                 {
                     m_Operation = Other.m_Operation;
                     m_Sink = Other.m_Sink;
@@ -70,12 +102,14 @@ class UIFRAMEWORK_API CTimeController : public CRefCountedObjectBase< CTimeSourc
                     return *this;
                 }
 
-                AsyncTimeControllerOp::Value GetOperation()
+                AsyncTimeControllerOp::Value GetOperation(
+                    )
                 {
                     return m_Operation;
                 }
 
-                CTimeSink* GetSink()
+                CTimeSink* GetSink(
+                    )
                 {
                     return m_Sink;
                 }

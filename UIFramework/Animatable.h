@@ -8,22 +8,44 @@ class CAnimationTimeline;
 class CAnimationClock;
 class CAnimationInfo;
 
+EXPIMP_TEMPLATE template class UIFRAMEWORK_API std::vector< CAnimationInfo* >;
+
 class UIFRAMEWORK_API CAnimatable
 {
     public:
-        virtual HRESULT BeginAnimation( CProperty* pProperty, CAnimationTimeline* pTimeline );
+        virtual HRESULT BeginAnimation( 
+            __in CProperty* pProperty,
+            __in CAnimationTimeline* pTimeline 
+            );
 
-        virtual HRESULT ApplyAnimationClock( CProperty* pProperty, CAnimationClock* pClock );
+        virtual HRESULT ApplyAnimationClock(
+            __in CProperty* pProperty, 
+            __in CAnimationClock* pClock 
+            );
 
     protected:
-        CAnimatable();
-        virtual ~CAnimatable();
+        CAnimatable(
+            );
 
-        virtual CTimeSource* GetTimeSource() = 0;
-        virtual HRESULT GetAnimationBaseValue( CProperty* pProperty, CObjectWithType** ppValue ) = 0;
-        virtual HRESULT SetAnimationValue( CProperty* pProperty, CObjectWithType* pValue ) = 0;
+        virtual ~CAnimatable(
+            );
 
-        void OnClockChanged( CAnimationInfo* pInfo );
+        virtual __out CTimeSource* GetTimeSource(
+            ) = 0;
+
+        virtual __checkReturn HRESULT GetAnimationBaseValue(
+            __in CProperty* pProperty,
+            __deref_out CObjectWithType** ppValue 
+            ) = 0;
+
+        virtual __checkReturn HRESULT SetAnimationValue(
+            __in CProperty* pProperty,
+            __in CObjectWithType* pValue 
+            ) = 0;
+
+        void OnClockChanged(
+            __in CAnimationInfo* pInfo 
+            );
 
         std::vector< CAnimationInfo* > m_Animations;
 };
@@ -31,19 +53,38 @@ class UIFRAMEWORK_API CAnimatable
 class CAnimationInfo : public CRefCountedObject
 {
     public:
-        CAnimationInfo( CProperty* pProperty, CObjectWithType* pInitialValue, CAnimationClock* pClock );
-        ~CAnimationInfo();
+        CAnimationInfo( 
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pInitialValue, 
+            __in CAnimationClock* pClock 
+            );
 
-        CProperty* GetProperty();
-        void SetProperty( CProperty* pProperty );
+        virtual ~CAnimationInfo(
+            );
 
-        CAnimationClock* GetClock();
-        void SetClock( CAnimationClock* pClock );
+        __out CProperty* GetProperty(
+            );
 
-        void SetConnection(events::signals::connection Connection);
-        void Disconnect();
+        void SetProperty( 
+            __in CProperty* pProperty 
+            );
 
-        CObjectWithType* GetInitialValue();
+        __out CAnimationClock* GetClock(
+            );
+
+        void SetClock( 
+            __in CAnimationClock* pClock 
+            );
+
+        void SetConnection(
+            events::signals::connection Connection
+            );
+
+        void Disconnect(
+            );
+
+        __out CObjectWithType* GetInitialValue(
+            );
 
     protected:
         CProperty* m_Property;

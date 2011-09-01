@@ -13,20 +13,43 @@ class CElementNodeCallback : public CParserNodeCallback
     public:
         DECLARE_FACTORY2( CElementNodeCallback, CParseContext*, CXMLElementStart* );
 
-        CStringValue* GetKey();
+        CStringValue* GetKey(
+			);
 
-        virtual BOOL IsComplete();
+        __override virtual BOOL IsComplete(
+			);
 
-        virtual HRESULT OnElementStart( CXMLElementStart* pElementStart, BOOL& Consumed );
-        virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd, BOOL& Consumed );
-        virtual HRESULT OnText( CXMLText* pText, BOOL& Consumed );
-        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute, BOOL& Consumed );
+        __override virtual __checkReturn HRESULT OnElementStart( 
+			__in CXMLElementStart* pElementStart, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnElementEnd( 
+			__in CXMLElementEnd* pElementEnd, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnText( 
+			__in CXMLText* pText, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnAttribute( 
+			__in CXMLAttribute* pAttribute, 
+			BOOL& Consumed 
+			);
 
     protected:
-        CElementNodeCallback();
-        virtual ~CElementNodeCallback();
+        CElementNodeCallback(
+			);
 
-        HRESULT Initialize( CParseContext* pContext, CXMLElementStart* pXMLStart );
+        virtual ~CElementNodeCallback(
+			);
+
+        __checkReturn HRESULT Initialize(
+			__in CParseContext* pContext, 
+			__in CXMLElementStart* pXMLStart 
+			);
 
         CPropertyNodeCallback* m_ChildNode;
         CResolvedClass* m_ResolvedClass;

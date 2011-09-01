@@ -1,26 +1,33 @@
 #include "TimeController.h"
 
-CTimeController::CTimeController() : m_LastTime(CTime::Now()),
-                                     m_CallingSinks(FALSE)
+CTimeController::CTimeController(
+    ) 
+    : m_LastTime(CTime::Now())
+    , m_CallingSinks(FALSE)
 {
 }
 
-CTimeController::~CTimeController()
+CTimeController::~CTimeController(
+    )
 {
     Disconnect();
 }
 
-HRESULT CTimeController::Initialize(const CTime& Time)
+__checkReturn HRESULT 
+CTimeController::Initialize(
+    const CTime& Time
+    )
 {
     HRESULT hr = S_OK;
 
     m_LastTime = Time;
 
-Cleanup:
     return hr;
 }
 
-HRESULT CTimeController::Disconnect()
+__checkReturn HRESULT 
+CTimeController::Disconnect(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -34,7 +41,10 @@ HRESULT CTimeController::Disconnect()
     return hr;
 }
 
-HRESULT CTimeController::UpdateTime(const CTime& Time)
+__checkReturn HRESULT 
+CTimeController::UpdateTime(
+    const CTime& Time
+    )
 {
     HRESULT hr = S_OK;
     CTimeSpan TimeDelta = Time - m_LastTime;
@@ -69,7 +79,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTimeController::CallSinks(const CTimeSpan& Delta)
+__checkReturn HRESULT
+CTimeController::CallSinks(
+    const CTimeSpan& Delta
+    )
 {
     HRESULT hr = S_OK;
 
@@ -86,7 +99,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTimeController::AddSink(CTimeSink* pSink)
+__override __checkReturn HRESULT 
+CTimeController::AddSink(
+    __in CTimeSink* pSink
+    )
 {
     HRESULT hr = S_OK;
 
@@ -107,7 +123,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTimeController::AddSinkInternal(CTimeSink* pSink)
+__checkReturn HRESULT 
+CTimeController::AddSinkInternal(
+    __in CTimeSink* pSink
+    )
 {
     HRESULT hr = S_OK;
 
@@ -121,7 +140,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTimeController::RemoveSink(CTimeSink* pSink)
+__override __checkReturn HRESULT 
+CTimeController::RemoveSink(
+    __in CTimeSink* pSink
+    )
 {
     HRESULT hr = S_OK;
 
@@ -142,7 +164,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTimeController::RemoveSinkInternal(CTimeSink* pSink)
+__checkReturn HRESULT 
+CTimeController::RemoveSinkInternal(
+    __in CTimeSink* pSink
+    )
 {
     HRESULT hr = S_OK;
 

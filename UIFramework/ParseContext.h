@@ -11,21 +11,40 @@ class CParseContext : public CRefCountedObject
     public:
         DECLARE_FACTORY1( CParseContext, CProviders* );
 
-        CProviders* GetProviders();
-        CClassResolver* GetClassResolver();
-        CTypeConverter* GetTypeConverter();
-        
-        HRESULT GetCommandList( CParserCommandList** ppCommandList );
-        HRESULT PushCommandList( CParserCommandList* pCommandList );
-        HRESULT PopCommandList();
+        __out CProviders* GetProviders(
+			);
 
-        HRESULT AddCommand( CParserCommand* pCommand );
+        __out CClassResolver* GetClassResolver(
+			);
+
+        __out CTypeConverter* GetTypeConverter(
+			);
+        
+        __checkReturn HRESULT GetCommandList( 
+			__deref_out CParserCommandList** ppCommandList 
+			);
+
+        __checkReturn HRESULT PushCommandList( 
+			__in CParserCommandList* pCommandList 
+			);
+
+        __checkReturn HRESULT PopCommandList(
+			);
+
+        __checkReturn HRESULT AddCommand( 
+			__in CParserCommand* pCommand 
+			);
 
     protected:
-        CParseContext();
-        virtual ~CParseContext();
+        CParseContext(
+			);
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CParseContext(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in CProviders* pProviders 
+			);
 
         CProviders* m_Providers;
         CClassResolver* m_ClassResolver;

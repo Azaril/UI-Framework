@@ -9,6 +9,8 @@ class CTimeSink
         virtual INT32 AddRef() = 0;
         virtual INT32 Release() = 0;
 
-        virtual HRESULT OnTimeUpdate( const CTimeSpan& TimeDelta ) = 0;
+        virtual __checkReturn HRESULT OnTimeUpdate( 
+            const CTimeSpan& TimeDelta 
+            ) = 0;
 };
 

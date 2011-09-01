@@ -10,14 +10,24 @@ class CRenderTarget;
 class UIFRAMEWORK_API CGraphicsDevice : public CRefCountedObject
 {
 	public:
-        //virtual HRESULT CreateRenderTarget( const SizeF& Size, CRenderTarget** ppRenderTarget ) = 0;
+        virtual __checkReturn HRESULT GetTextProvider( 
+			__deref_out CTextProvider** ppTextProvider 
+			) = 0;
 
-        virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider ) = 0;
+        virtual __checkReturn HRESULT GetImagingProvider( 
+			__deref_out CImagingProvider** ppImagingProvider 
+			) = 0;
 
-        virtual HRESULT GetImagingProvider( CImagingProvider** ppImagingProvider ) = 0;
+        virtual __checkReturn HRESULT CreateRectangleGeometry( 
+			const RectF& Rectangle, 
+			__deref_out CRectangleGeometry** ppRectangleGeometry 
+			) = 0;
 
-        virtual HRESULT CreateRectangleGeometry( const RectF& Rectangle, CRectangleGeometry** ppRectangleGeometry ) = 0;
-        virtual HRESULT CreateRoundedRectangleGeometry( const RectF& Rectangle, FLOAT CornerRadius, CRoundedRectangleGeometry** ppRectangleGeometry ) = 0;
+        virtual __checkReturn HRESULT CreateRoundedRectangleGeometry( 
+			const RectF& Rectangle, 
+			FLOAT CornerRadius, 
+			__deref_out CRoundedRectangleGeometry** ppRectangleGeometry 
+			) = 0;
 };
 
 //HRESULT CreateGraphicsDevice( CGraphicsDevice** ppGraphicsDevice );

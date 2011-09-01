@@ -10,10 +10,15 @@ class CD2DRoundedRectangleGeometry : public CD2DGeometryBase< CRefCountedObjectB
         DECLARE_FACTORY1( CD2DRoundedRectangleGeometry, ID2D1RoundedRectangleGeometry* );
 
     protected:
-        CD2DRoundedRectangleGeometry();
-        virtual ~CD2DRoundedRectangleGeometry();
+        CD2DRoundedRectangleGeometry(
+			);
 
-        HRESULT Initialize( ID2D1RoundedRectangleGeometry* pRectangleGeometry );
+        virtual ~CD2DRoundedRectangleGeometry(
+			);
+
+        __checkReturn HRESULT Initialize(
+			__in ID2D1RoundedRectangleGeometry* pRectangleGeometry 
+			);
 
         ID2D1RoundedRectangleGeometry* m_RoundedRectangleGeometry;
 };

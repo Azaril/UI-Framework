@@ -5,6 +5,14 @@
 class CImagingProvider : public CRefCountedObject
 {
     public:
-        virtual HRESULT LoadBitmapFromFile( const WCHAR* pPath, CBitmapSource** ppBitmapSource ) = 0;
-        virtual HRESULT LoadBitmapFromMemory( const BYTE* pData, UINT32 DataSize, CBitmapSource** ppBitmapSource ) = 0;
+        virtual __checkReturn HRESULT LoadBitmapFromFile(
+			__in_z const WCHAR* pPath, 
+			CBitmapSource** ppBitmapSource 
+			) = 0;
+
+        virtual __checkReturn HRESULT LoadBitmapFromMemory(
+			__in_bcount(DataSize) const BYTE* pData, 
+			UINT32 DataSize,
+			__deref_out CBitmapSource** ppBitmapSource
+			) = 0;
 };

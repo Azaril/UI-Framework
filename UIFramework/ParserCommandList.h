@@ -10,14 +10,25 @@ class CParserCommandList : public CRefCountedObjectBase< CObjectWithType >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::ParserCommandList, CObjectWithType );
 
-        virtual HRESULT Execute( IParserCallback* pCallback, CObjectWithType** ppObject );
-        virtual HRESULT AddCommand( CParserCommand* pCommand );
+        virtual HRESULT Execute(
+			__in_opt IParserCallback* pCallback, 
+			__deref_out CObjectWithType** ppObject 
+			);
+
+        virtual HRESULT AddCommand(
+			__in CParserCommand* pCommand 
+			);
 
     protected:
-        CParserCommandList();
-        virtual ~CParserCommandList();
+        CParserCommandList(
+			);
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CParserCommandList(
+			);
+
+        __checkReturn HRESULT Initialize(
+			CProviders* pProviders 
+			);
 
         CProviders* m_Providers;
         std::vector< CParserCommand* > m_Commands;

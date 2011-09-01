@@ -13,18 +13,41 @@ class CRichPropertyNodeCallback : public CPropertyNodeCallback
     public:
         DECLARE_FACTORY3( CRichPropertyNodeCallback, CParseContext*, CPropertyInformation*, CXMLElementStart* );
 
-        virtual BOOL IsComplete();
+        __override virtual BOOL IsComplete(
+			);
+
+        __override virtual __checkReturn HRESULT OnElementStart( 
+			__in CXMLElementStart* pElementStart, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnElementEnd( 
+			__in CXMLElementEnd* pElementEnd, 
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnText( 
+			__in CXMLText* pText,
+			BOOL& Consumed 
+			);
+
+        __override virtual __checkReturn HRESULT OnAttribute( 
+			__in CXMLAttribute* pAttribute, 
+			BOOL& Consumed
+			);
 
     protected:
-        CRichPropertyNodeCallback();
-        virtual ~CRichPropertyNodeCallback();
+        CRichPropertyNodeCallback(
+			);
 
-        virtual HRESULT OnElementStart( CXMLElementStart* pElementStart, BOOL& Consumed );
-        virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd, BOOL& Consumed );
-        virtual HRESULT OnText( CXMLText* pText, BOOL& Consumed );
-        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute, BOOL& Consumed );
+        virtual ~CRichPropertyNodeCallback(
+			);
 
-        HRESULT Initialize( CParseContext* pContext, CPropertyInformation* pProperties, CXMLElementStart* pXMLStart );
+        __checkReturn HRESULT Initialize( 
+			__in CParseContext* pContext, 
+			__in CPropertyInformation* pProperties, 
+			__in CXMLElementStart* pXMLStart 
+			);
 
         BOOL m_Complete;
         BOOL m_SetTextValue;

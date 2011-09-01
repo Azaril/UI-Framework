@@ -9,7 +9,10 @@
 #include "SetPropertyCommand.h"
 #include "EvaluateMarkupExtensionCommand.h"
 
-BOOL IsAttribute(const WCHAR* pText)
+BOOL 
+IsAttribute(
+	__in_z const WCHAR* pText
+	)
 {
     if(pText != NULL)
     {
@@ -19,7 +22,12 @@ BOOL IsAttribute(const WCHAR* pText)
     return FALSE;
 }
 
-HRESULT ElementStartToParserCallback(CParseContext* pContext, CXMLElementStart* pStart, CElementNodeCallback** ppCallback)
+__checkReturn HRESULT 
+ElementStartToParserCallback(
+	__in CParseContext* pContext,
+	__in CXMLElementStart* pStart,
+	__deref_out CElementNodeCallback** ppCallback
+	)
 {
     HRESULT hr = S_OK;
     CElementNodeCallback* pElementCallback = NULL;
@@ -39,7 +47,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT ElementStartToParserCallback(CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLElementStart* pStart, CPropertyNodeCallback** ppCallback)
+__checkReturn HRESULT 
+ElementStartToParserCallback(
+	__in CParseContext* pContext, 
+	__in CPropertyInformation* pPropertyInformation, 
+	__in CXMLElementStart* pStart, 
+	__deref_out CPropertyNodeCallback** ppCallback
+	)
 {
     HRESULT hr = S_OK;
     CRichPropertyNodeCallback* pRichPropertyCallback = NULL;
@@ -75,7 +89,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT TextToParserCallback(CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLText* pText, CPropertyNodeCallback** ppCallback)
+__checkReturn HRESULT 
+TextToParserCallback(
+	__in CParseContext* pContext, 
+	__in CPropertyInformation* pPropertyInformation,
+	__in CXMLText* pText, 
+	__deref_out CPropertyNodeCallback** ppCallback
+	)
 {
     HRESULT hr = S_OK;
     CContentPropertyNodeCallback* pContentPropertyCallback = NULL;
@@ -113,7 +133,13 @@ namespace MarkupExtensionParseState
     };
 }
 
-HRESULT ParseMarkupExtensionInternal(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, UINT32* pCharactersConsumed)
+__checkReturn HRESULT 
+ParseMarkupExtensionInternal(
+	__in CParseContext* pContext, 
+	__in_ecount(ValueLength) const WCHAR* pValue, 
+	UINT32 ValueLength, 
+	__out UINT32* pCharactersConsumed
+	)
 {
     HRESULT hr = S_OK;
     const WCHAR* pParsePoint = NULL;
@@ -424,7 +450,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ParseMarkupExtension(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength)
+__checkReturn HRESULT 
+ParseMarkupExtension(
+	__in CParseContext* pContext, 
+	__in_ecount(ValueLength) const WCHAR* pValue, 
+	UINT32 ValueLength
+	)
 {
     HRESULT hr = S_OK;
     UINT32 ConsumedCharacters = 0;
@@ -441,7 +472,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT AddPushValueCommand(CParseContext* pContext, CObjectWithType* pValue)
+__checkReturn HRESULT 
+AddPushValueCommand(
+	__in CParseContext* pContext, 
+	__in CObjectWithType* pValue
+	)
 {
     HRESULT hr = S_OK;
     CPushObjectCommand* pPushObjectCommand = NULL;
@@ -459,7 +494,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT AddSetPropertyCommand(CParseContext* pContext, CProperty* pProperty, CStringValue* pKeyString)
+__checkReturn HRESULT 
+AddSetPropertyCommand(
+	__in CParseContext* pContext, 
+	__in CProperty* pProperty, 
+	__in_opt CStringValue* pKeyString
+	)
 {
     HRESULT hr = S_OK;
     CAddToDictionaryCommand* pAddToDictionaryCommand = NULL;
@@ -504,7 +544,11 @@ Cleanup:
     return hr;
 }
 
-BOOL IsMarkupExtension(const WCHAR* pValue, UINT32 ValueLength)
+BOOL 
+IsMarkupExtension(
+	__in_ecount(ValueLength) const WCHAR* pValue, 
+	UINT32 ValueLength
+	)
 {
     if(ValueLength > 0 && pValue)
     {
@@ -515,7 +559,12 @@ BOOL IsMarkupExtension(const WCHAR* pValue, UINT32 ValueLength)
     return FALSE;
 }
 
-HRESULT EvaluateAndAddAttribute(CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength)
+__checkReturn HRESULT 
+EvaluateAndAddAttribute(
+	__in CParseContext* pContext, 
+	__in_ecount(ValueLength) const WCHAR* pValue, 
+	UINT32 ValueLength
+	)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -537,7 +586,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT AddCreateObjectCommand(CParseContext* pContext, CResolvedClass* pClass)
+__checkReturn HRESULT 
+AddCreateObjectCommand(
+	__in CParseContext* pContext, 
+	__in CResolvedClass* pClass
+	)
 {
     HRESULT hr = S_OK;
     CCreateObjectCommand* pCreateObjectCommand = NULL;
@@ -555,7 +608,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT AddEvaluateMarkupExtensionCommand(CParseContext* pContext)
+__checkReturn HRESULT 
+AddEvaluateMarkupExtensionCommand(
+	__in CParseContext* pContext
+	)
 {
     HRESULT hr = S_OK;
     CEvaluateMarkupExtensionCommand* pEvaluateCommand = NULL;

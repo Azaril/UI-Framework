@@ -51,7 +51,6 @@ HRESULT CScrollContentPresenter::LineUp()
 
     SetScrollOffsets(m_HorizontalOffset, m_VerticalOffset - 10);
 
-Cleanup:
     return hr;
 }
 
@@ -61,7 +60,6 @@ HRESULT CScrollContentPresenter::LineDown()
 
     SetScrollOffsets(m_HorizontalOffset, m_VerticalOffset + 10);
 
-Cleanup:
     return hr;
 }
 
@@ -133,7 +131,6 @@ HRESULT CScrollContentPresenter::SetScrollOffsets(FLOAT XOffset, FLOAT YOffset)
 
     DirtyScrollInformation();
 
-Cleanup:
     return hr;
 }
 

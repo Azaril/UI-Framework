@@ -1,10 +1,13 @@
 #include "ParserCommandList.h"
 
-CParserCommandList::CParserCommandList() : m_Providers(NULL)
+CParserCommandList::CParserCommandList(
+	) 
+	: m_Providers(NULL)
 {
 }
 
-CParserCommandList::~CParserCommandList()
+CParserCommandList::~CParserCommandList(
+	)
 {
     for(std::vector< CParserCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
     {
@@ -16,7 +19,10 @@ CParserCommandList::~CParserCommandList()
     ReleaseObject(m_Providers);
 }
 
-HRESULT CParserCommandList::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CParserCommandList::Initialize(
+	__in CProviders* pProviders
+	)
 {
     HRESULT hr = S_OK;
 
@@ -29,7 +35,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserCommandList::Execute(IParserCallback* pCallback, CObjectWithType** ppObject)
+__checkReturn HRESULT 
+CParserCommandList::Execute(
+	__in_opt IParserCallback* pCallback, 
+	__deref_out CObjectWithType** ppObject
+	)
 {
     HRESULT hr = S_OK;
 
@@ -46,7 +56,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserCommandList::AddCommand(CParserCommand* pCommand)
+__checkReturn HRESULT 
+CParserCommandList::AddCommand(
+	__in CParserCommand* pCommand
+	)
 {
     HRESULT hr = S_OK;
 

@@ -1,15 +1,21 @@
 #include "ParserNodeCallback.h"
 
-CParserNodeCallback::CParserNodeCallback() : m_Context(NULL)
+CParserNodeCallback::CParserNodeCallback(
+	) 
+	: m_Context(NULL)
 {
 }
 
-CParserNodeCallback::~CParserNodeCallback()
+CParserNodeCallback::~CParserNodeCallback(
+	)
 {
     ReleaseObject(m_Context);
 }
 
-HRESULT CParserNodeCallback::Initialize(CParseContext* pContext)
+__checkReturn HRESULT 
+CParserNodeCallback::Initialize(
+	__in CParseContext* pContext
+	)
 {
     HRESULT hr = S_OK;
 
@@ -22,7 +28,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserNodeCallback::OnElementStart(CXMLElementStart* pElementStart, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CParserNodeCallback::OnElementStart(
+	__in CXMLElementStart* pElementStart, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -34,7 +44,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CParserNodeCallback::OnElementEnd(
+	__in CXMLElementEnd* pElementEnd,
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -46,7 +60,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CParserNodeCallback::OnText(
+	__in CXMLText* pText,
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -58,7 +76,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParserNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consumed)
+__override __checkReturn HRESULT
+CParserNodeCallback::OnAttribute(
+	__in CXMLAttribute* pAttribute,
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 

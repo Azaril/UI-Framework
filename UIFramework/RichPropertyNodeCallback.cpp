@@ -2,24 +2,32 @@
 #include "ParserUtilities.h"
 #include "BasicTypes.h"
 
-CRichPropertyNodeCallback::CRichPropertyNodeCallback() : m_Complete(FALSE),
-                                                         m_ChildNode(NULL),
-                                                         m_Property(NULL),
-                                                         m_SetTextValue(FALSE),
-                                                         m_SetObjectValue(FALSE),
-                                                         m_IsTemplate(FALSE),
-                                                         m_ChildCommandList(NULL)
+CRichPropertyNodeCallback::CRichPropertyNodeCallback(
+	) 
+	: m_Complete(FALSE)
+	, m_ChildNode(NULL)
+	, m_Property(NULL)
+	, m_SetTextValue(FALSE)
+	, m_SetObjectValue(FALSE)
+	, m_IsTemplate(FALSE)
+	, m_ChildCommandList(NULL)
 {
 }
 
-CRichPropertyNodeCallback::~CRichPropertyNodeCallback()
+CRichPropertyNodeCallback::~CRichPropertyNodeCallback(
+	)
 {
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_Property);
     ReleaseObject(m_ChildCommandList);
 }
 
-HRESULT CRichPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyInformation* pProperties, CXMLElementStart* pXMLStart)
+__checkReturn HRESULT 
+CRichPropertyNodeCallback::Initialize(
+	__in CParseContext* pContext, 
+	__in CPropertyInformation* pProperties, 
+	__in CXMLElementStart* pXMLStart
+	)
 {
     HRESULT hr = S_OK;
     const WCHAR* pElementName = NULL;
@@ -47,7 +55,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRichPropertyNodeCallback::OnElementStart(CXMLElementStart* pElementStart, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CRichPropertyNodeCallback::OnElementStart(
+	__in CXMLElementStart* pElementStart, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -75,7 +87,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRichPropertyNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CRichPropertyNodeCallback::OnElementEnd(
+	__in CXMLElementEnd* pElementEnd, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -113,7 +129,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRichPropertyNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CRichPropertyNodeCallback::OnText(
+	__in CXMLText* pText, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -154,7 +174,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRichPropertyNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CRichPropertyNodeCallback::OnAttribute(
+	__in CXMLAttribute* pAttribute, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -175,7 +199,9 @@ Cleanup:
     return hr;
 }
 
-BOOL CRichPropertyNodeCallback::IsComplete()
+__override BOOL 
+CRichPropertyNodeCallback::IsComplete(
+	)
 {
     return m_Complete;
 }

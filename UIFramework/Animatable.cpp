@@ -1,15 +1,21 @@
 #include "Animatable.h"
 #include "AnimationTimeline.h"
 
-CAnimatable::CAnimatable()
+CAnimatable::CAnimatable(
+    )
 {
 }
 
-CAnimatable::~CAnimatable()
+CAnimatable::~CAnimatable(
+    )
 {
 }
 
-HRESULT CAnimatable::BeginAnimation(CProperty* pProperty, CAnimationTimeline* pTimeline)
+__checkReturn HRESULT 
+CAnimatable::BeginAnimation(
+    __in CProperty* pProperty,
+    __in CAnimationTimeline* pTimeline
+    )
 {
     HRESULT hr = S_OK;
     CAnimationClock* pClock = NULL;
@@ -33,7 +39,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CAnimatable::ApplyAnimationClock(CProperty* pProperty, CAnimationClock* pClock)
+__checkReturn HRESULT 
+CAnimatable::ApplyAnimationClock(
+    __in CProperty* pProperty,
+    __in CAnimationClock* pClock
+    )
 {
     HRESULT hr = S_OK;
     CObjectWithType* pCurrentValue = NULL;
@@ -82,7 +92,10 @@ Cleanup:
     return hr;
 }
 
-void CAnimatable::OnClockChanged(CAnimationInfo* pInfo)
+void 
+CAnimatable::OnClockChanged(
+    __in CAnimationInfo* pInfo
+    )
 {
     HRESULT hr = S_OK;
     CAnimationClock* pClock = NULL;
@@ -101,16 +114,22 @@ Cleanup:
     ReleaseObject(pValue);
 }
 
-CAnimationInfo::CAnimationInfo( CProperty* pProperty, CObjectWithType* pInitialValue, CAnimationClock* pClock ) : m_Property(pProperty),
-                                                                                                    m_InitialValue(pInitialValue),
-                                                                                                    m_Clock(pClock)
+CAnimationInfo::CAnimationInfo( 
+    __in CProperty* pProperty,
+    __in CObjectWithType* pInitialValue,
+    __in CAnimationClock* pClock 
+    ) 
+    : m_Property(pProperty)
+    , m_InitialValue(pInitialValue)
+    , m_Clock(pClock)
 {
     AddRefObject(m_Property);
     AddRefObject(m_Clock);
     AddRefObject(m_InitialValue);
 }
 
-CAnimationInfo::~CAnimationInfo()
+CAnimationInfo::~CAnimationInfo(
+    )
 {
     ReleaseObject(m_Property);
     ReleaseObject(m_Clock);
@@ -119,12 +138,17 @@ CAnimationInfo::~CAnimationInfo()
     m_ChangeConnection.disconnect();
 }
 
-CProperty* CAnimationInfo::GetProperty()
+__out CProperty*
+CAnimationInfo::GetProperty(
+    )
 {
     return m_Property;
 }
 
-void CAnimationInfo::SetProperty(CProperty* pProperty)
+void 
+CAnimationInfo::SetProperty(
+    __in CProperty* pProperty
+    )
 {
     ReleaseObject(m_Property);
 
@@ -133,12 +157,17 @@ void CAnimationInfo::SetProperty(CProperty* pProperty)
     AddRefObject(m_Property);
 }
 
-CAnimationClock* CAnimationInfo::GetClock()
+__out CAnimationClock*
+CAnimationInfo::GetClock(
+    )
 {
     return m_Clock;
 }
 
-void CAnimationInfo::SetClock(CAnimationClock* pClock)
+void
+CAnimationInfo::SetClock(
+    __in CAnimationClock* pClock
+    )
 {
     ReleaseObject(m_Clock);
 
@@ -147,17 +176,24 @@ void CAnimationInfo::SetClock(CAnimationClock* pClock)
     AddRefObject(m_Clock);
 }
 
-void CAnimationInfo::SetConnection(events::signals::connection Connection)
+void 
+CAnimationInfo::SetConnection(
+    events::signals::connection Connection
+    )
 {
     m_ChangeConnection = Connection;
 }
 
-void CAnimationInfo::Disconnect()
+void 
+CAnimationInfo::Disconnect(
+    )
 {
     m_ChangeConnection.disconnect();
 }
 
-CObjectWithType* CAnimationInfo::GetInitialValue()
+__out CObjectWithType*
+CAnimationInfo::GetInitialValue(
+    )
 {
     return m_InitialValue;
 }

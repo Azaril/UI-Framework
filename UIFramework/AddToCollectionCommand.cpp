@@ -1,15 +1,21 @@
 #include "AddToCollectionCommand.h"
 
-CAddToCollectionCommand::CAddToCollectionCommand() : m_Property(NULL)
+CAddToCollectionCommand::CAddToCollectionCommand(
+	) 
+	: m_Property(NULL)
 {
 }
 
-CAddToCollectionCommand::~CAddToCollectionCommand()
+CAddToCollectionCommand::~CAddToCollectionCommand(
+	)
 {
     ReleaseObject(m_Property);
 }
 
-HRESULT CAddToCollectionCommand::Initialize(CProperty* pProperty)
+__checkReturn HRESULT 
+CAddToCollectionCommand::Initialize(
+	__in CProperty* pProperty
+	)
 {
     HRESULT hr = S_OK;
 
@@ -22,7 +28,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CAddToCollectionCommand::Execute(CParserCommandContext& Context)
+__override __checkReturn HRESULT 
+CAddToCollectionCommand::Execute(
+	CParserCommandContext& Context
+	)
 {
     HRESULT hr = S_OK;
     CObjectWithType* pValueObject = NULL;

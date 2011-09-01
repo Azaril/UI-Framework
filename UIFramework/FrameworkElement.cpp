@@ -294,7 +294,7 @@ HRESULT CFrameworkElement::OnNameChanged(CObjectWithType* pOldValue, CObjectWith
 
     if(m_RegisteredName)
     {
-        if(pNamescope)
+        if(pNamescope != NULL)
         {
             IFC(pNamescope->UnregisterName(m_RegisteredName->GetValue(), this));
         }
@@ -302,7 +302,7 @@ HRESULT CFrameworkElement::OnNameChanged(CObjectWithType* pOldValue, CObjectWith
         ReleaseObject(m_RegisteredName);
     }
 
-    if(pNamescope && pNewValue)
+    if(pNamescope != NULL && pNewValue != NULL)
     {
         CStringValue* pNewName = NULL;
 
@@ -413,7 +413,6 @@ Cleanup:
 HRESULT CFrameworkElement::SetStyleValue(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
-    CLayeredValue* pLayeredValue = NULL;
     CBindingBase* pBinding = NULL;
 
     IFCPTR(pProperty);

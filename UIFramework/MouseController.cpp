@@ -21,7 +21,6 @@ HRESULT CMouseController::Initialize(CUIElement* pRootElement)
     m_RootElement = pRootElement;
     AddRefObject(m_RootElement);
 
-Cleanup:
     return hr;
 }
 
@@ -173,7 +172,6 @@ HRESULT CMouseController::SetCapture(CUIElement* pElement)
         AddRefObject(m_CaptureElement);
     }
 
-Cleanup:
     return hr;
 }
 
@@ -186,6 +184,5 @@ HRESULT CMouseController::ReleaseCapture(CUIElement* pElement)
         ReleaseObject(m_CaptureElement);
     }
 
-Cleanup:
     return hr;
 }

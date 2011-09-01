@@ -86,7 +86,6 @@ HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
     for(UINT32 i = 0; i < ChildCount; i++)
     {
-        BOOL LastChild = (i == ChildCount - 1);
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementAvailableSize(std::max(0.0f, AvailableSize.width - AccumulatedWidth), std::max(0.0f, AvailableSize.height - AccumulatedHeight));

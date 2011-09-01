@@ -13,7 +13,8 @@ struct ColorF
     : D2D1_COLOR_F
 #endif
 {
-    ColorF()
+    ColorF(
+		)
     {
         r = 0;
         g = 0;
@@ -21,7 +22,12 @@ struct ColorF
         a = 0;
     }
 
-    ColorF(FLOAT Red, FLOAT Green, FLOAT Blue, FLOAT Alpha)
+    ColorF(
+		FLOAT Red, 
+		FLOAT Green, 
+		FLOAT Blue, 
+		FLOAT Alpha
+		)
     {
         r = Red;
         g = Green;
@@ -29,7 +35,10 @@ struct ColorF
         a = Alpha;
     }
 
-    ColorF(Color::Value Color, FLOAT Alpha = 1.0f)
+    ColorF(
+		Color::Value Color, 
+		FLOAT Alpha = 1.0f
+		)
     {
         r = ((Color & (0xFF << 16)) >> 16) / 255.0f;
         g = ((Color & (0xFF << 8)) >> 8) / 255.0f;
@@ -45,7 +54,11 @@ struct ColorF
 #endif    
 };
 
-inline bool operator==( const ColorF& Val1, const ColorF& Val2 )
+inline bool 
+operator==(
+	const ColorF& Val1, 
+	const ColorF& Val2 
+	)
 {
     return (Val1.r == Val2.r && Val1.g == Val2.g && Val1.b == Val2.b && Val1.a == Val2.a);
 }

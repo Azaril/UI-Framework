@@ -72,7 +72,6 @@ Cleanup:
 HRESULT CVisual::OnVisualDetach(CVisualDetachContext& Context)
 {
     HRESULT hr = S_OK;
-    CVisual* pVisual = NULL;
 
     IFCEXPECT(m_VisualAttached);
 

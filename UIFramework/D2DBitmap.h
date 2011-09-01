@@ -10,13 +10,19 @@ class CD2DBitmap : public CBitmap
     public:
         DECLARE_FACTORY1( CD2DBitmap, ID2D1Bitmap* );
 
-        ID2D1Bitmap* GetD2DBitmap();
+        __out ID2D1Bitmap* GetD2DBitmap(
+			);
 
     protected:
-        CD2DBitmap();
-        virtual ~CD2DBitmap();
+        CD2DBitmap(
+			);
 
-        HRESULT Initialize( ID2D1Bitmap* pBitmap );
+        virtual ~CD2DBitmap(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in ID2D1Bitmap* pBitmap 
+			);
 
         ID2D1Bitmap* m_Bitmap;
 };

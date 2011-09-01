@@ -3,14 +3,17 @@
 EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_WICImagingFactory = { 0xcacaf262, 0x9370, 0x4615, { 0xa1, 0x3b,  0x9f,  0x55,  0x39,  0xda,  0x4c,  0xa } };
 EXTERN_C const GUID DECLSPEC_SELECTANY GUID_WICPixelFormat32bppPBGRA = { 0x6fddc324, 0x4e03, 0x4bfe, { 0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x10 } };
 
-CWICImagingProvider::CWICImagingProvider() : m_Factory(NULL),
-                                             m_UninitializeCOM(FALSE),
-                                             m_ShlwapiModule(NULL),
-                                             m_SHCreateMemStream(NULL)
+CWICImagingProvider::CWICImagingProvider(
+	) 
+	: m_Factory(NULL)
+	, m_UninitializeCOM(FALSE)
+	, m_ShlwapiModule(NULL)
+	, m_SHCreateMemStream(NULL)
 {
 }
 
-CWICImagingProvider::~CWICImagingProvider()
+CWICImagingProvider::~CWICImagingProvider(
+	)
 {
     ReleaseObject(m_Factory);
 
@@ -20,7 +23,9 @@ CWICImagingProvider::~CWICImagingProvider()
     }
 }
 
-HRESULT CWICImagingProvider::Initialize()
+__checkReturn HRESULT 
+CWICImagingProvider::Initialize(
+	)
 {
     HRESULT hr = S_OK;
 
@@ -44,7 +49,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CWICImagingProvider::LoadBitmapFromDecoder(IWICBitmapDecoder* pDecoder, CWICBitmapSource** ppBitmapSource)
+__checkReturn HRESULT 
+CWICImagingProvider::LoadBitmapFromDecoder(
+	__in IWICBitmapDecoder* pDecoder, 
+	__deref_out CWICBitmapSource** ppBitmapSource
+	)
 {
     HRESULT hr = S_OK;
     CWICBitmapSource* pWICBitmapSource = NULL;
@@ -73,7 +82,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CWICImagingProvider::LoadBitmapFromFile(const WCHAR* pPath, CBitmapSource** ppBitmapSource)
+__override __checkReturn HRESULT 
+CWICImagingProvider::LoadBitmapFromFile(
+	__in_z const WCHAR* pPath, 
+	CBitmapSource** ppBitmapSource
+	)
 {
     HRESULT hr = S_OK;
     CWICBitmapSource* pBitmapSource = NULL;
@@ -95,7 +108,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CWICImagingProvider::LoadBitmapFromMemory(const BYTE* pData, UINT32 DataSize, CBitmapSource** ppBitmapSource)
+__override __checkReturn HRESULT 
+CWICImagingProvider::LoadBitmapFromMemory(
+	__in_bcount(DataSize) const BYTE* pData, 
+	UINT32 DataSize,
+	__deref_out CBitmapSource** ppBitmapSource
+	)
 {
     HRESULT hr = S_OK;
     CWICBitmapSource* pBitmapSource = NULL;

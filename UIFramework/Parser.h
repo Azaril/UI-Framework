@@ -11,11 +11,21 @@ class UIFRAMEWORK_API CParser : public CRefCountedObject
     public:
         DECLARE_FACTORY1( CParser, CProviders* );
 
-        HRESULT LoadFromFile( const WCHAR* pPath, CObjectWithType** ppRootObject );
-        HRESULT LoadFromString( const WCHAR* pMarkup, CObjectWithType** ppRootObject );
+        __checkReturn HRESULT LoadFromFile( 
+			__in_z const WCHAR* pPath,
+			__deref_out CObjectWithType** ppRootObject 
+			);
+
+        __checkReturn HRESULT LoadFromString( 
+			__in_z const WCHAR* pMarkup, 
+			__deref_out CObjectWithType** ppRootObject 
+			);
 
         template< typename T >
-        HRESULT LoadFromFile( const WCHAR* pPath, T** ppRootObject )
+        __checkReturn HRESULT LoadFromFile( 
+			__in_z const WCHAR* pPath, 
+			__deref_out T** ppRootObject 
+			)
         {
             HRESULT hr = S_OK;
             CObjectWithType* pRoot = NULL;
@@ -41,7 +51,10 @@ class UIFRAMEWORK_API CParser : public CRefCountedObject
         }
 
         template< typename T >
-        HRESULT LoadFromString( const WCHAR* pMarkup, T** ppRootObject )
+        __checkReturn HRESULT LoadFromString( 
+			__in_z const WCHAR* pMarkup, 
+			__deref_out T** ppRootObject 
+			)
         {
             HRESULT hr = S_OK;
             CObjectWithType* pRoot = NULL;
@@ -67,10 +80,15 @@ class UIFRAMEWORK_API CParser : public CRefCountedObject
         }
 
     protected:
-        CParser();
-        virtual ~CParser();
+        CParser(
+			);
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CParser(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in CProviders* pProviders 
+			);
 
         CProviders* m_Providers;
 };

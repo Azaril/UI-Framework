@@ -7,13 +7,30 @@ class CEditableTextLayout : public CTextLayout
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::EditableTextLayout, CTextLayout );
 
-        virtual UINT32 GetStartPosition() = 0;
-        virtual UINT32 GetEndPosition() = 0;
+        virtual UINT32 GetStartPosition(
+			) = 0;
 
-        virtual HRESULT SetText( const WCHAR* pText, UINT32 TextLength ) = 0;
-        virtual HRESULT ClearText() = 0;
-        virtual HRESULT InsertText( UINT32 Position, const WCHAR* pText, UINT32 TextLength ) = 0;
-        virtual HRESULT RemoveText( UINT32 Position, UINT32 Length ) = 0;
+        virtual UINT32 GetEndPosition(
+			) = 0;
 
-        virtual const WCHAR* GetText() = 0;
+        virtual __checkReturn HRESULT SetText( 
+			__in_ecount_opt(TextLength) const WCHAR* pText, 
+			UINT32 TextLength 
+			) = 0;
+
+        virtual __checkReturn HRESULT ClearText(
+			) = 0;
+
+        virtual __checkReturn HRESULT InsertText(
+			UINT32 Position, 
+			__in_ecount(TextLength) const WCHAR* pText,
+			UINT32 TextLength
+			) = 0;
+
+        virtual __checkReturn HRESULT RemoveText( 
+			UINT32 Position, 
+			UINT32 Length 
+			) = 0;
+
+        virtual __out const WCHAR* GetText() = 0;
 };

@@ -9,10 +9,16 @@ class UIFRAMEWORK_API CD2DSurfaceRenderTarget : public CD2DRenderTarget
         DECLARE_FACTORY2( CD2DSurfaceRenderTarget, IDXGISurface*, ID2D1RenderTarget* );
 
     protected:
-        CD2DSurfaceRenderTarget();
-        virtual ~CD2DSurfaceRenderTarget();
+        CD2DSurfaceRenderTarget(
+			);
 
-        HRESULT Initialize( IDXGISurface* pSurface, ID2D1RenderTarget* pRenderTarget );
+        virtual ~CD2DSurfaceRenderTarget(
+			);
+
+        __checkReturn HRESULT Initialize(
+			__in IDXGISurface* pSurface, 
+			__in ID2D1RenderTarget* pRenderTarget 
+			);
 
         IDXGISurface* m_Surface;
 };

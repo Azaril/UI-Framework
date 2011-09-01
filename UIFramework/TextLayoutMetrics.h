@@ -5,5 +5,7 @@
 class CTextLayoutMetrics : public CRefCountedObject
 {
     public:
-        virtual HRESULT GetBounds( RectF* pBounds ) = 0;
+        virtual __checkReturn HRESULT GetBounds(
+			__out RectF* pBounds
+			) = 0;
 };

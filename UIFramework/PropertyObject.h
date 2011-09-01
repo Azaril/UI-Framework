@@ -59,12 +59,12 @@ class CCommandInformation : public CRefCountedObject
 };
 
 #define DECLARE_TYPE( type ) \
-virtual TypeIndex::Value GetType() { return type; } \
-virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type; }
+virtual TypeIndex::Value GetType() const { return type; } \
+virtual BOOL IsTypeOf( TypeIndex::Value Type ) const { return Type == type; }
 
 #define DECLARE_TYPE_WITH_BASE( type, base ) \
-virtual TypeIndex::Value GetType() { return type; } \
-virtual BOOL IsTypeOf( TypeIndex::Value Type ) { return Type == type || base::IsTypeOf(Type); }
+virtual TypeIndex::Value GetType() const { return type; } \
+virtual BOOL IsTypeOf( TypeIndex::Value Type ) const { return Type == type || base::IsTypeOf(Type); }
 
 class UIFRAMEWORK_API CObjectWithType
 {
@@ -173,7 +173,7 @@ struct ObjectTypeTraits< CPropertyObject >
     static const TypeIndex::Value Type = TypeIndex::PropertyObject;
 };
 
-class CObjectCollection : public CObjectWithType
+class UIFRAMEWORK_API CObjectCollection : public CObjectWithType
 {
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Collection, CObjectWithType );
@@ -188,7 +188,7 @@ struct ObjectTypeTraits< CObjectCollection >
     static const TypeIndex::Value Type = TypeIndex::Collection;
 };
 
-class CObjectDictionary : public CObjectWithType
+class UIFRAMEWORK_API CObjectDictionary : public CObjectWithType
 {
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Dictionary, CObjectWithType );

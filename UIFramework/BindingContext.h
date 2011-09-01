@@ -2,7 +2,7 @@
 
 #include "RefCounted.h"
 
-class CBindingContext : public CRefCountedObject
+class UIFRAMEWORK_API CBindingContext : public CRefCountedObject
 {
     public:
 };

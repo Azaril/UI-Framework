@@ -12,13 +12,17 @@ struct SizeU
     : D2D1_SIZE_U
 #endif
 {
-    SizeU()
+    SizeU(
+        )
     {
         width = 0;
         height = 0;
     }
     
-    SizeU(UINT32 Width, UINT32 Height)
+    SizeU(
+        UINT32 Width,
+        UINT32 Height
+        )
     {
         width = Width;
         height = Height;

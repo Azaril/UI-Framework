@@ -5,17 +5,35 @@
 
 #include <XmlLite.h>
 
-typedef HRESULT (WINAPI *CreateXmlReaderFunc)( REFIID riid, void** ppvObject, IMalloc* pMalloc );
+typedef HRESULT (WINAPI *CreateXmlReaderFunc)(
+	REFIID riid, 
+	void** ppvObject, 
+	IMalloc* pMalloc 
+	);
 
-typedef HRESULT (WINAPI *SHCreateStreamOnFileWFunc)( LPCWSTR pszFile, DWORD grfMode, IStream** ppstm );
-typedef IStream* (WINAPI *SHCreateMemStreamFunc)( const BYTE *pInit, UINT cbInit );
+typedef HRESULT (WINAPI *SHCreateStreamOnFileWFunc)( 
+	LPCWSTR pszFile, 
+	DWORD grfMode, 
+	IStream** ppstm 
+	);
+
+typedef IStream* (WINAPI *SHCreateMemStreamFunc)( 
+	const BYTE *pInit, 
+	UINT cbInit 
+	);
 
 class CXMLLiteXMLElementStart : public CXMLElementStart
 {
     public:
-        CXMLLiteXMLElementStart( const WCHAR* pElementName, UINT32 NameLength );
+        CXMLLiteXMLElementStart( 
+			__in_ecount(NameLength) const WCHAR* pElementName, 
+			UINT32 NameLength 
+			);
 
-        virtual HRESULT GetName( const WCHAR** ppNameBuffer, UINT32* pNameBufferLength );
+        __override virtual __checkReturn HRESULT GetName(
+			__deref_out_ecount(*pNameBufferLength) const WCHAR** ppNameBuffer, 
+			__out UINT32* pNameBufferLength 
+			);
 
     protected:
         const WCHAR* m_Name;
@@ -25,9 +43,15 @@ class CXMLLiteXMLElementStart : public CXMLElementStart
 class CXMLLiteXMLElementEnd : public CXMLElementEnd
 {
     public:
-        CXMLLiteXMLElementEnd( const WCHAR* pElementName, UINT32 NameLength );
+        CXMLLiteXMLElementEnd( 
+			__in_ecount(NameLength) const WCHAR* pElementName, 
+			UINT32 NameLength 
+			);
 
-        virtual HRESULT GetName( const WCHAR** ppNameBuffer, UINT32* pNameBufferLength );
+        __override virtual __checkReturn HRESULT GetName( 
+			__deref_out_ecount(*pNameBufferLength) const WCHAR** ppNameBuffer, 
+			__out UINT32* pNameBufferLength 
+			);
 
     protected:
         const WCHAR* m_Name;
@@ -37,9 +61,14 @@ class CXMLLiteXMLElementEnd : public CXMLElementEnd
 class CXMLLiteXMLText : public CXMLText
 {
     public:
-        CXMLLiteXMLText( IXmlReader* pReader );
+        CXMLLiteXMLText( 
+			__in IXmlReader* pReader 
+			);
 
-        virtual HRESULT GetText( const WCHAR** ppText, UINT32* pTextLength );
+        __override virtual __checkReturn HRESULT GetText( 
+			__deref_out_ecount(*pTextLength) const WCHAR** ppText, 
+			__out UINT32* pTextLength 
+			);
 
     protected:
         IXmlReader* m_Reader;
@@ -48,12 +77,29 @@ class CXMLLiteXMLText : public CXMLText
 class CXMLLiteXMLAttribute : public CXMLAttribute
 {
     public:
-        CXMLLiteXMLAttribute( IXmlReader* pReader );
+        CXMLLiteXMLAttribute( 
+			__in IXmlReader* pReader 
+			);
 
-        virtual HRESULT GetPrefix( const WCHAR** ppPrefix, UINT32* pPrefixBufferLength );
-        virtual HRESULT GetNamespaceUri( const WCHAR** ppNamespaceUri, UINT32* pNamespaceUriLength );
-        virtual HRESULT GetName( const WCHAR** ppNameBuffer, UINT32* pNameBufferLength );
-        virtual HRESULT GetValue( const WCHAR** ppValueBuffer, UINT32* pValueBufferLength );
+        __override virtual __checkReturn HRESULT GetPrefix( 
+			__deref_out_ecount(*pPrefixBufferLength) const WCHAR** ppPrefix,
+			__out UINT32* pPrefixBufferLength 
+			);
+
+        __override virtual __checkReturn HRESULT GetNamespaceUri(
+			__deref_out_ecount(*pNamespaceUriLength) const WCHAR** ppNamespaceUri, 
+			__out UINT32* pNamespaceUriLength 
+			);
+
+        __override virtual __checkReturn HRESULT GetName( 
+			__deref_out_ecount(*pNameBufferLength) const WCHAR** ppNameBuffer, 
+			__out UINT32* pNameBufferLength 
+			);
+
+        __override virtual __checkReturn HRESULT GetValue( 
+			__deref_out_ecount(*pValueBufferLength) const WCHAR** ppValueBuffer,
+			__out UINT32* pValueBufferLength 
+			);
 
     protected:
         IXmlReader* m_Reader;
@@ -64,21 +110,57 @@ class CXMLLiteReader : public CXMLReader
     public:
         DECLARE_FACTORY( CXMLLiteReader );
 
-        virtual HRESULT LoadFromFile( const WCHAR* pPath, CXMLReaderCallback* pCallback );
-        virtual HRESULT LoadFromString( const WCHAR* pText, CXMLReaderCallback* pCallback );
-        virtual HRESULT LoadFromStream( IStream* pStream, CXMLReaderCallback* pCallback );
+        __override virtual __checkReturn HRESULT LoadFromFile(
+			__in_z const WCHAR* pPath, 
+			__in CXMLReaderCallback* pCallback 
+			);
+
+        __override virtual __checkReturn HRESULT LoadFromString( 
+			__in_z const WCHAR* pText,
+			__in CXMLReaderCallback* pCallback 
+			);
+
+        virtual __checkReturn HRESULT LoadFromStream(
+			__in IStream* pStream,
+			__in CXMLReaderCallback* pCallback 
+			);
 
     protected:
-        CXMLLiteReader();
-        virtual ~CXMLLiteReader();
+        CXMLLiteReader(
+			);
 
-        HRESULT Initialize();
+        virtual ~CXMLLiteReader(
+			);
 
-        HRESULT ProcessReader( IXmlReader* pReader, CXMLReaderCallback* pCallback );
-        HRESULT RaiseElementStart( const WCHAR* pName, UINT32 NameLength, CXMLReaderCallback* pCallback );
-        HRESULT RaiseElementEnd( const WCHAR* pName, UINT32 NameLength, CXMLReaderCallback* pCallback );
-        HRESULT RaiseText( IXmlReader* pReader, CXMLReaderCallback* pCallback );
-        HRESULT RaiseAttribute( IXmlReader* pReader, CXMLReaderCallback* pCallback );
+        __checkReturn HRESULT Initialize(
+			);
+
+        __checkReturn HRESULT ProcessReader(
+			__in IXmlReader* pReader, 
+			__in CXMLReaderCallback* pCallback 
+			);
+
+        __checkReturn HRESULT RaiseElementStart( 
+			__in_ecount(NameLength) const WCHAR* pName, 
+			UINT32 NameLength, 
+			__in CXMLReaderCallback* pCallback 
+			);
+
+        __checkReturn HRESULT RaiseElementEnd( 
+			__in_ecount(NameLength) const WCHAR* pName,
+			UINT32 NameLength,
+			__in CXMLReaderCallback* pCallback 
+			);
+
+        __checkReturn HRESULT RaiseText( 
+			__in IXmlReader* pReader,
+			__in CXMLReaderCallback* pCallback 
+			);
+
+        __checkReturn HRESULT RaiseAttribute( 
+			__in IXmlReader* pReader, 
+			__in CXMLReaderCallback* pCallback 
+			);
 
         HMODULE m_XMLLiteModule;
         CreateXmlReaderFunc m_CreateXmlReader;

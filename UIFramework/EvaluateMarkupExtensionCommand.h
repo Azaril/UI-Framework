@@ -12,11 +12,17 @@ class CEvaluateMarkupExtensionCommand : public CParserCommand
     public:
         DECLARE_FACTORY( CEvaluateMarkupExtensionCommand );
 
-        virtual HRESULT Execute( CParserCommandContext& Context );
+        __override virtual HRESULT __checkReturn Execute( 
+			CParserCommandContext& Context 
+			);
 
     protected:
-        CEvaluateMarkupExtensionCommand();
-        virtual ~CEvaluateMarkupExtensionCommand();
+        CEvaluateMarkupExtensionCommand(
+			);
 
-        HRESULT Initialize();
+        virtual ~CEvaluateMarkupExtensionCommand(
+			);
+
+        __checkReturn HRESULT Initialize(
+			);
 };

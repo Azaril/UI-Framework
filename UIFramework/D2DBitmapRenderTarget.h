@@ -6,5 +6,4 @@
 class CD2DBitmapRenderTarget : public CD2DRenderTarget
 {
     public:
-        //DECLARE_FACTORY2( CD2DBitmapRenderTarget, 
 };

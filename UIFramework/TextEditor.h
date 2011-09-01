@@ -8,33 +8,80 @@ class CTextEditor : public CRefCountedObject
     public:
         DECLARE_FACTORY( CTextEditor );
 
-        HRESULT SetTextHost( CUIElement* pElement );
-        HRESULT SetTextLayout( CEditableTextLayout* pLayout );
-        HRESULT SetText( const WCHAR* pText, UINT32 TextLength );
+        __checkReturn HRESULT SetTextHost(
+			__in_opt CUIElement* pElement 
+			);
 
-        const WCHAR* GetText();
+        __checkReturn HRESULT SetTextLayout(
+			__in_opt CEditableTextLayout* pLayout 
+			);
 
-        void SetAcceptsEnter( BOOL AcceptsEnter );
+        __checkReturn HRESULT SetText( 
+			__in_ecount_opt(TextLength) const WCHAR* pText, 
+			UINT32 TextLength 
+			);
+
+        __out_opt const WCHAR* GetText(
+			);
+
+        void SetAcceptsEnter( 
+			BOOL AcceptsEnter 
+			);
 
     protected:
-        CTextEditor();
-        virtual ~CTextEditor();
+        CTextEditor(
+			);
 
-        HRESULT Initialize();
+        virtual ~CTextEditor(
+			);
 
-        void OnText( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
-        void OnKeyDown( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
-        void OnKeyUp( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+        __checkReturn HRESULT Initialize(
+			);
 
-        HRESULT InsertText( UINT32 StartPosition, const WCHAR* pText, UINT32 TextLength );
-        HRESULT RemoveText( UINT32 StartPosition, UINT32 Length );
+        void OnText( 
+			__in CObjectWithType* pSender,
+			__in CRoutedEventArgs* pRoutedEventArgs 
+			);
 
-        HRESULT HandleText( const WCHAR* pText, UINT32 TextLength );
-        HRESULT HandleBackspace( BOOL* pConsumed );
-        HRESULT HandleEnter( BOOL* pConsumed );
+        void OnKeyDown(
+			__in CObjectWithType* pSender, 
+			__in CRoutedEventArgs* pRoutedEventArgs 
+			);
 
-        BOOL HasSelection();
-        HRESULT DeleteSelection();
+        void OnKeyUp(
+			__in CObjectWithType* pSender, 
+			__in CRoutedEventArgs* pRoutedEventArgs 
+			);
+
+        __checkReturn HRESULT InsertText(
+			UINT32 StartPosition, 
+			__in_ecount(TextLength) const WCHAR* pText, 
+			UINT32 TextLength 
+			);
+
+        __checkReturn HRESULT RemoveText( 
+			UINT32 StartPosition,
+			UINT32 Length 
+			);
+
+        __checkReturn HRESULT HandleText(
+			__in_ecount(TextLength) const WCHAR* pText, 
+			UINT32 TextLength
+			);
+
+        __checkReturn HRESULT HandleBackspace(
+			__out BOOL* pConsumed 
+			);
+
+        __checkReturn HRESULT HandleEnter(
+			__out BOOL* pConsumed 
+			);
+
+        BOOL HasSelection(
+			);
+
+        __checkReturn HRESULT DeleteSelection(
+			);
 
         CUIElement* m_Host;
         CEditableTextLayout* m_Layout;

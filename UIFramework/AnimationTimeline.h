@@ -14,21 +14,40 @@ typedef TimelineCompletedSignal::slot_type TimelineCompletedHandler;
 class UIFRAMEWORK_API CAnimationTimeline : public CRefCountedObjectBase< CPropertyObject >
 {
     public:
-        virtual TypeIndex::Value GetProvidedType() = 0;
+        virtual TypeIndex::Value GetProvidedType(
+            ) = 0;
 
-        HRESULT AddCompletedListener( const TimelineCompletedHandler& Handler, events::signals::connection* pConnection );
+        __checkReturn __checkReturn HRESULT AddCompletedListener( 
+            const TimelineCompletedHandler& Handler, 
+            __out events::signals::connection* pConnection 
+            );
 
-        virtual HRESULT GetDuration( CDurationValue** ppDuration );
+        virtual __checkReturn HRESULT GetDuration( 
+            __deref_out CDurationValue** ppDuration 
+            );
 
-        virtual HRESULT CreateClock( CTimeSource* pTimeSource, CAnimationClock** ppClock );
+        virtual __checkReturn HRESULT CreateClock( 
+            __in CTimeSource* pTimeSource,
+            __deref_out CAnimationClock** ppClock 
+            );
 
-        virtual HRESULT GetCurrentValue( CAnimationClock* pClock, CObjectWithType* pDefaultInitialValue, CObjectWithType* pDefaultFinalValue, CObjectWithType** ppValue ) = 0;
+        virtual __checkReturn HRESULT GetCurrentValue( 
+            __in CAnimationClock* pClock, 
+            __in CObjectWithType* pDefaultInitialValue, 
+            __in CObjectWithType* pDefaultFinalValue, 
+            __deref_out CObjectWithType** ppValue 
+            ) = 0;
 
     protected:
-        CAnimationTimeline();
-        virtual ~CAnimationTimeline();
+        CAnimationTimeline(
+            );
 
-        void OnClockCompleted( CAnimationClock* pClock );
+        virtual ~CAnimationTimeline(
+            );
+
+        void OnClockCompleted( 
+            __in CAnimationClock* pClock 
+            );
 
         TimelineCompletedSignal m_Completed;
         CDurationValue* m_Duration;

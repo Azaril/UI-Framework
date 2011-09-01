@@ -7,7 +7,10 @@
 
 #include <float.h>
 
-inline int isfinite(double Val)
+inline int 
+isfinite(
+	double Val
+	)
 {
     return _finite(Val);
 }

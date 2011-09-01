@@ -12,13 +12,20 @@ class CCreateObjectCommand : public CParserCommand
     public:
         DECLARE_FACTORY1( CCreateObjectCommand, CResolvedClass* );
 
-        virtual HRESULT Execute( CParserCommandContext& Context );
+        __override virtual __checkReturn HRESULT Execute(
+			CParserCommandContext& Context 
+			);
 
     protected:
-        CCreateObjectCommand();
-        virtual ~CCreateObjectCommand();
+        CCreateObjectCommand(
+			);
 
-        HRESULT Initialize( CResolvedClass* pResolvedClass );
+        virtual ~CCreateObjectCommand(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in CResolvedClass* pResolvedClass 
+			);
 
         CResolvedClass* m_ResolvedClass;
 };

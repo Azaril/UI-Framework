@@ -12,13 +12,20 @@ class CSetPropertyCommand : public CParserCommand
     public:
         DECLARE_FACTORY1( CSetPropertyCommand, CProperty* );
 
-        virtual HRESULT Execute( CParserCommandContext& Context );
+        __override virtual __checkReturn HRESULT Execute( 
+			CParserCommandContext& Context 
+			);
 
     protected:
-        CSetPropertyCommand();
-        virtual ~CSetPropertyCommand();
+        CSetPropertyCommand(
+			);
 
-        HRESULT Initialize( CProperty* pProperty );
+        virtual ~CSetPropertyCommand(
+			);
+
+        HRESULT Initialize( 
+			__in CProperty* pProperty 
+			);
 
         CProperty* m_Property;
 };

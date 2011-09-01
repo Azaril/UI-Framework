@@ -10,29 +10,63 @@ class CDirectWriteEditableTextLayout : public CEditableTextLayout
     public:
         DECLARE_FACTORY2( CDirectWriteEditableTextLayout, CTextProvider*, const SizeF& );
 
-        HRESULT GetDirectWriteTextLayout( IDWriteTextLayout** ppLayout );
+        __checkReturn HRESULT GetDirectWriteTextLayout(
+			__deref_out IDWriteTextLayout** ppLayout 
+			);
 
-        virtual HRESULT SetMaxSize( const SizeF& Size );
-        virtual HRESULT GetMetrics( CTextLayoutMetrics** ppMetrics );
+        __override virtual __checkReturn HRESULT SetMaxSize(
+			const SizeF& Size 
+			);
 
-        virtual UINT32 GetStartPosition();
-        virtual UINT32 GetEndPosition();
+        __override virtual __checkReturn HRESULT GetMetrics(
+			__deref_out CTextLayoutMetrics** ppMetrics 
+			);
 
-        virtual HRESULT SetText( const WCHAR* pText, UINT32 TextLength );
-        virtual HRESULT ClearText();
-        virtual HRESULT InsertText( UINT32 Position, const WCHAR* pText, UINT32 TextLength );
-        virtual HRESULT RemoveText( UINT32 Position, UINT32 Length );
+        __override virtual UINT32 GetStartPosition(
+			);
 
-        virtual const WCHAR* GetText();
+        __override virtual UINT32 GetEndPosition(
+			);
+
+        __override virtual __checkReturn HRESULT SetText(
+			__in_ecount_opt(TextLength) const WCHAR* pText, 
+			UINT32 TextLength 
+			);
+
+        __override virtual __checkReturn HRESULT ClearText(
+			);
+
+        __override virtual __checkReturn HRESULT InsertText(
+			UINT32 Position, 
+			__in_ecount(TextLength) const WCHAR* pText, 
+			UINT32 TextLength 
+			);
+
+        __override virtual __checkReturn HRESULT RemoveText(
+			UINT32 Position, 
+			UINT32 Length 
+			);
+
+        __override virtual const WCHAR* GetText(
+			);
 
     protected:
-        CDirectWriteEditableTextLayout();
-        virtual ~CDirectWriteEditableTextLayout();
+        CDirectWriteEditableTextLayout(
+			);
 
-        HRESULT Initialize( CTextProvider* pTextProvider, const SizeF& MaxSize );
+        virtual ~CDirectWriteEditableTextLayout(
+			);
 
-        HRESULT InvalidateLayout();
-        HRESULT EnsureLayout();
+        __checkReturn HRESULT Initialize( 
+			__in CTextProvider* pTextProvider,
+			const SizeF& MaxSize 
+			);
+
+        __checkReturn HRESULT InvalidateLayout(
+			);
+
+        __checkReturn HRESULT EnsureLayout(
+			);
 
         CTextProvider* m_TextProvider;
         std::wstring m_Text;

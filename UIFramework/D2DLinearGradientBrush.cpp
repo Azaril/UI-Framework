@@ -1,15 +1,21 @@
 #include "D2DLinearGradientBrush.h"
 
-CD2DLinearGradientBrush::CD2DLinearGradientBrush() : m_LinearGradientBrush(NULL)
+CD2DLinearGradientBrush::CD2DLinearGradientBrush(
+	) 
+	: m_LinearGradientBrush(NULL)
 {
 }
 
-CD2DLinearGradientBrush::~CD2DLinearGradientBrush()
+CD2DLinearGradientBrush::~CD2DLinearGradientBrush(
+	)
 {
     ReleaseObject(m_LinearGradientBrush);
 }
 
-HRESULT CD2DLinearGradientBrush::Initialize(ID2D1LinearGradientBrush* pBrush)
+__checkReturn HRESULT 
+CD2DLinearGradientBrush::Initialize(
+	__in ID2D1LinearGradientBrush* pBrush
+	)
 {
     HRESULT hr = S_OK;
 

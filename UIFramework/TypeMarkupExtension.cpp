@@ -4,20 +4,26 @@
 //
 // Properties
 //
-CStaticProperty CTypeMarkupExtension::TypeNameProperty( L"TypeName", TypeIndex::String, StaticPropertyFlags::None );
+CStaticProperty CTypeMarkupExtension::TypeNameProperty(L"TypeName", TypeIndex::String, StaticPropertyFlags::None);
 
-CTypeMarkupExtension::CTypeMarkupExtension() : m_TypeName(NULL),
-                                               m_Providers(NULL)
+CTypeMarkupExtension::CTypeMarkupExtension(
+	) 
+	: m_TypeName(NULL)
+	, m_Providers(NULL)
 {
 }
 
-CTypeMarkupExtension::~CTypeMarkupExtension()
+CTypeMarkupExtension::~CTypeMarkupExtension(
+	)
 {
     ReleaseObject(m_TypeName);
     ReleaseObject(m_Providers);
 }
 
-HRESULT CTypeMarkupExtension::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CTypeMarkupExtension::Initialize(
+	__in CProviders* pProviders
+	)
 {
     HRESULT hr = S_OK;
 
@@ -30,7 +36,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTypeMarkupExtension::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CTypeMarkupExtension::CreatePropertyInformation(
+	__deref_out CPropertyInformation **ppInformation
+	)
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -53,7 +62,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTypeMarkupExtension::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT
+CTypeMarkupExtension::SetValueInternal(
+	CProperty* pProperty,
+	CObjectWithType* pValue
+	)
 {
     HRESULT hr = S_OK;
 
@@ -79,7 +92,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTypeMarkupExtension::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CTypeMarkupExtension::GetValue(
+	__in CProperty* pProperty,
+	__deref_out CObjectWithType** ppValue
+	)
 {
     HRESULT hr = S_OK;
 
@@ -100,7 +117,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTypeMarkupExtension::ExecuteMarkup(CObjectWithType** ppObject)
+__override __checkReturn HRESULT
+CTypeMarkupExtension::ExecuteMarkup(
+	__deref_out CObjectWithType** ppObject
+	)
 {
     HRESULT hr = S_OK;
     CClassResolver* pClassResolver = NULL;

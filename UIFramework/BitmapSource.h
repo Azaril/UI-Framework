@@ -8,7 +8,9 @@ class CBitmapSource : public CRefCountedObjectBase< CObjectWithType >
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::BitmapSource, CObjectWithType );
 
-        virtual HRESULT GetSize( SizeU* pSize ) = 0;
+        virtual __checkReturn HRESULT GetSize( 
+			__out SizeU* pSize 
+			) = 0;
 };
 
 template< >

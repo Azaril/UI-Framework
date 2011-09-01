@@ -2,24 +2,31 @@
 #include "ParserUtilities.h"
 #include "BasicTypes.h"
 
-CContentPropertyNodeCallback::CContentPropertyNodeCallback() : m_ChildNode(NULL),
-                                                               m_Complete(FALSE),
-                                                               m_Property(NULL),
-                                                               m_SetTextValue(FALSE),
-                                                               m_SetObjectValue(FALSE),
-                                                               m_IsTemplate(FALSE),
-                                                               m_ChildCommandList(NULL)
+CContentPropertyNodeCallback::CContentPropertyNodeCallback(
+	) 
+	: m_ChildNode(NULL)
+	, m_Complete(FALSE)
+	, m_Property(NULL)
+	, m_SetTextValue(FALSE)
+	, m_SetObjectValue(FALSE)
+	, m_IsTemplate(FALSE)
+	, m_ChildCommandList(NULL)
 {
 }
 
-CContentPropertyNodeCallback::~CContentPropertyNodeCallback()
+CContentPropertyNodeCallback::~CContentPropertyNodeCallback(
+	)
 {
     ReleaseObject(m_ChildCommandList);
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_Property);
 }
 
-HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyInformation* pPropertyInformation)
+__checkReturn HRESULT 
+CContentPropertyNodeCallback::Initialize(
+	__in CParseContext* pContext, 
+	__in CPropertyInformation* pPropertyInformation
+	)
 {
     HRESULT hr = S_OK;
     CPropertyInformation* pProperties = NULL;
@@ -46,7 +53,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLElementStart* pXMLStart)
+__checkReturn HRESULT 
+CContentPropertyNodeCallback::Initialize(
+	__in CParseContext* pContext, 
+	__in CPropertyInformation* pPropertyInformation, 
+	__in CXMLElementStart* pXMLStart
+	)
 {
     HRESULT hr = S_OK;
 
@@ -63,7 +75,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::Initialize(CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLText* pXMLText)
+__checkReturn HRESULT 
+CContentPropertyNodeCallback::Initialize(
+	__in CParseContext* pContext, 
+	__in CPropertyInformation* pPropertyInformation, 
+	__in CXMLText* pXMLText
+	)
 {
     HRESULT hr = S_OK;
     BOOL Consumed = FALSE;
@@ -81,7 +98,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::OnElementStart(CXMLElementStart* pElementStart, BOOL& Consumed)
+__checkReturn HRESULT 
+CContentPropertyNodeCallback::OnElementStart(
+	__in CXMLElementStart* pElementStart, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -109,7 +130,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, BOOL& Consumed)
+__checkReturn HRESULT
+CContentPropertyNodeCallback::OnElementEnd(
+	__in CXMLElementEnd* pElementEnd, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -147,7 +172,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
+__checkReturn HRESULT 
+CContentPropertyNodeCallback::OnText(
+	__in CXMLText* pText, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -191,7 +220,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPropertyNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consumed)
+__checkReturn HRESULT
+CContentPropertyNodeCallback::OnAttribute(
+	__in CXMLAttribute* pAttribute,
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -212,7 +245,9 @@ Cleanup:
     return hr;
 }
 
-BOOL CContentPropertyNodeCallback::IsComplete()
+BOOL 
+CContentPropertyNodeCallback::IsComplete(
+	)
 {
     return m_Complete;
 }

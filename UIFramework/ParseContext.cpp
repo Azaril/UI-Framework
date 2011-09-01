@@ -1,12 +1,15 @@
 #include "ParseContext.h"
 
-CParseContext::CParseContext() : m_Providers(NULL),
-                                 m_ClassResolver(NULL),
-                                 m_TypeConverter(NULL)
+CParseContext::CParseContext(
+	) 
+	: m_Providers(NULL)
+	, m_ClassResolver(NULL)
+	, m_TypeConverter(NULL)
 {
 }
 
-CParseContext::~CParseContext()
+CParseContext::~CParseContext(
+	)
 {
     ReleaseObject(m_ClassResolver);
     ReleaseObject(m_TypeConverter);
@@ -20,7 +23,10 @@ CParseContext::~CParseContext()
     m_CommandLists.clear();
 }
 
-HRESULT CParseContext::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CParseContext::Initialize(
+	__in CProviders* pProviders
+	)
 {
     HRESULT hr = S_OK;
 
@@ -41,22 +47,31 @@ Cleanup:
     return hr;
 }
 
-CProviders* CParseContext::GetProviders()
+__out CProviders* 
+CParseContext::GetProviders(
+	)
 {
     return m_Providers;
 }
 
-CClassResolver* CParseContext::GetClassResolver()
+__out CClassResolver* 
+CParseContext::GetClassResolver(
+	)
 {
     return m_ClassResolver;
 }
 
-CTypeConverter* CParseContext::GetTypeConverter()
+__out CTypeConverter* 
+CParseContext::GetTypeConverter(
+	)
 {
     return m_TypeConverter;
 }
 
-HRESULT CParseContext::GetCommandList(CParserCommandList** ppCommandList)
+__checkReturn HRESULT 
+CParseContext::GetCommandList(
+	__deref_out CParserCommandList** ppCommandList
+	)
 {
     HRESULT hr = S_OK;
     CParserCommandList* pList = NULL;
@@ -74,7 +89,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParseContext::PushCommandList(CParserCommandList* pCommandList)
+__checkReturn HRESULT 
+CParseContext::PushCommandList(
+	__in CParserCommandList* pCommandList
+	)
 {
     HRESULT hr = S_OK;
 
@@ -87,7 +105,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParseContext::PopCommandList()
+__checkReturn HRESULT 
+CParseContext::PopCommandList(
+	)
 {
     HRESULT hr = S_OK;
     CParserCommandList* pList = NULL;
@@ -103,7 +123,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CParseContext::AddCommand(CParserCommand* pCommand)
+__checkReturn HRESULT 
+CParseContext::AddCommand(
+	__in CParserCommand* pCommand
+	)
 {
     HRESULT hr = S_OK;
     CParserCommandList* pCommandList = NULL;

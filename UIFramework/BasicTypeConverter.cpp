@@ -103,7 +103,7 @@ HRESULT ConvertStringToEnum(CConversionContext* pContext, CObjectWithType* pValu
 
     for(UINT32 i = 0; i < EnumCount; i++)
     {
-        INT32 Result = CaseSensitive ? wcscmp(pStringValue->GetValue(), pEnums[i].StringValue) : wcsicmp(pStringValue->GetValue(), pEnums[i].StringValue);
+        INT32 Result = CaseSensitive ? wcscmp(pStringValue->GetValue(), pEnums[i].StringValue) : _wcsicmp(pStringValue->GetValue(), pEnums[i].StringValue);
 
         if(Result == 0)
         {
@@ -129,7 +129,7 @@ HRESULT ConvertStringToVisibility(CConversionContext* pContext, CObjectWithType*
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
     CVisibilityValue* pVisibilityValue = NULL;
-    Visibility::Value Value;
+    Visibility::Value Value = Visibility::Visible;
 
     IFCPTR(pValue);
     IFCPTR(ppConvertedValue);
@@ -360,7 +360,7 @@ HRESULT ConvertStringToColorF(CConversionContext* pContext, CObjectWithType* pVa
             {
                 if(HexDigits < 8)
                 {
-                    HexValues[HexDigits] = Token - L'0';
+                    HexValues[HexDigits] = (BYTE)(Token - L'0');
                     ++HexDigits;
                 }
                 else
@@ -372,7 +372,7 @@ HRESULT ConvertStringToColorF(CConversionContext* pContext, CObjectWithType* pVa
             {
                 if(HexDigits < 8)
                 {
-                    HexValues[HexDigits] = (Token - L'a') + 0x0A;
+                    HexValues[HexDigits] = (BYTE)((Token - L'a') + 0x0A);
                     ++HexDigits;
                 }
                 else
@@ -384,7 +384,7 @@ HRESULT ConvertStringToColorF(CConversionContext* pContext, CObjectWithType* pVa
             {
                 if(HexDigits < 8)
                 {
-                    HexValues[HexDigits] = (Token - L'A') + 0x0A;
+                    HexValues[HexDigits] = (BYTE)((Token - L'A') + 0x0A);
                     ++HexDigits;
                 }
                 else
@@ -657,7 +657,7 @@ Cleanup:
 HRESULT ConvertStringToRectangleEdge(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
-    RectangleEdge::Value Value;
+	RectangleEdge::Value Value = RectangleEdge::Left;
     CStringValue* pStringValue = NULL;
     CRectangleEdgeValue* pRectangleEdgeValue = NULL;
 
@@ -703,7 +703,7 @@ Cleanup:
 HRESULT ConvertStringToBool(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
-    bool Value;
+    BOOL Value = TRUE;
     CStringValue* pStringValue = NULL;
     CBoolValue* pBoolValue = NULL;
 
@@ -997,7 +997,7 @@ Cleanup:
 HRESULT ConvertStringToHorizontalAlignment(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
-    HorizontalAlignment::Value Value;
+	HorizontalAlignment::Value Value = HorizontalAlignment::Stretch;
     CStringValue* pStringValue = NULL;
     CHorizontalAlignmentValue* pAlignmentValue = NULL;
 
@@ -1043,7 +1043,7 @@ Cleanup:
 HRESULT ConvertStringToVerticalAlignment(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
 {
     HRESULT hr = S_OK;
-    VerticalAlignment::Value Value;
+	VerticalAlignment::Value Value = VerticalAlignment::Stretch;
     CStringValue* pStringValue = NULL;
     CVerticalAlignmentValue* pAlignmentValue = NULL;
 

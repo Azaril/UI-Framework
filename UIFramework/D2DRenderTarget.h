@@ -8,43 +8,107 @@
 class UIFRAMEWORK_API CD2DRenderTarget : public CRenderTarget
 {
     public:
-        virtual SizeF GetSize();
+        __override virtual SizeF GetSize(
+			);
 
-        virtual HRESULT BeginRendering();
-        virtual HRESULT EndRendering();
+        __override virtual __checkReturn HRESULT BeginRendering(
+			);
 
-        virtual HRESULT SetTransform( const Matrix3X2F& Transform );
+        __override virtual __checkReturn HRESULT EndRendering(
+			);
 
-        virtual HRESULT Clear( ColorF Color );
+        __override virtual __checkReturn HRESULT SetTransform( 
+			const Matrix3X2F& Transform 
+			);
 
-        virtual HRESULT CreateSolidBrush( ColorF Color, CGraphicsBrush** ppBrush );
-        virtual HRESULT CreateLinearGradientBrush( const Point2F& StartPoint, const Point2F& EndPoint, GradientStop* pGradientStops, UINT32 GradientStopCount, CGraphicsBrush** ppBrush );
-        virtual HRESULT GetDefaultBrush( DefaultBrush::Value Type, CGraphicsBrush** ppBrush );
+        __override virtual __checkReturn HRESULT Clear( 
+			const ColorF& Color 
+			);
 
-        virtual HRESULT DrawRectangle( const RectF& Size, CGraphicsBrush* pBrush );
-        virtual HRESULT FillRectangle( const RectF& Size, CGraphicsBrush* pBrush );
+        __override virtual __checkReturn HRESULT CreateSolidBrush( 
+			const ColorF& Color, 
+			__deref_out CGraphicsBrush** ppBrush 
+			);
 
-        virtual HRESULT RenderTextLayout( const Point2F& Origin, CTextLayout* pTextLayout, CGraphicsBrush* pBrush );
+        __override virtual __checkReturn HRESULT CreateLinearGradientBrush( 	
+			const Point2F& StartPoint, 
+			const Point2F& EndPoint, 
+			__in_ecount(GradientStopCount) const GradientStop* pGradientStops, 
+			UINT32 GradientStopCount, 
+			__deref_out CGraphicsBrush** ppBrush 
+			);
 
-        virtual HRESULT LoadBitmap( CBitmapSource* pSource, CBitmap** ppBitmap );
+        __override virtual __checkReturn HRESULT GetDefaultBrush(
+			DefaultBrush::Value Type, 
+			__deref_out CGraphicsBrush** ppBrush 
+			);
 
-        virtual HRESULT CreateBitmapBrush( CBitmap* pBitmap, CGraphicsBrush** CGraphicsBrush );
+        __override virtual __checkReturn HRESULT DrawRectangle( 
+			const RectF& Size, 
+			__in const CGraphicsBrush* pBrush 
+			);
 
-        virtual HRESULT DrawGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush, FLOAT StrokeThickness = 1.0f );
-        virtual HRESULT FillGeometry( CGeometry* pGeometry, CGraphicsBrush* pBrush );
+        __override virtual __checkReturn HRESULT FillRectangle(
+			const RectF& Size,
+			__in const CGraphicsBrush* pBrush 
+			);
 
-        virtual HRESULT CreateLayer( CLayer** ppLayer );
+        __override virtual __checkReturn HRESULT RenderTextLayout( 
+			const Point2F& Origin, 
+			__in const CTextLayout* pTextLayout, 
+			__in const CGraphicsBrush* pBrush 
+			);
 
-        virtual HRESULT PushLayer( CLayer* pLayer, const RectF& ClippingRect, FLOAT Opacity, CGeometry* pClippingGeometry );
-        virtual HRESULT PopLayer();
+        __override virtual __checkReturn HRESULT LoadBitmap( 
+			__in const CBitmapSource* pSource, 
+			__deref_out CBitmap** ppBitmap 
+			);
+
+        __override virtual __checkReturn HRESULT CreateBitmapBrush(
+			__in const CBitmap* pBitmap,
+			__deref_out CGraphicsBrush** CGraphicsBrush 
+			);
+
+        __override virtual __checkReturn HRESULT DrawGeometry( 
+			__in const CGeometry* pGeometry, 
+			__in const CGraphicsBrush* pBrush, 
+			FLOAT StrokeThickness = 1.0f 
+			);
+
+        __override virtual __checkReturn HRESULT FillGeometry( 
+			__in const CGeometry* pGeometry, 
+			__in const CGraphicsBrush* pBrush
+			);
+
+        __override virtual __checkReturn HRESULT CreateLayer(
+			__deref_out CLayer** ppLayer
+			);
+
+        __override virtual __checkReturn HRESULT PushLayer(
+			__in const CLayer* pLayer, 
+			const RectF& ClippingRect,
+			FLOAT Opacity, 
+			__in const CGeometry* pClippingGeometry
+			);
+
+        __override virtual __checkReturn HRESULT PopLayer(
+			);
 
     protected:
-        CD2DRenderTarget();
-        virtual ~CD2DRenderTarget();
+        CD2DRenderTarget(
+			);
 
-        HRESULT Initialize( ID2D1RenderTarget* pRenderTarget );
+        virtual ~CD2DRenderTarget(
+			);
 
-        HRESULT UnwrapGeometry( CGeometry* pGeometry, ID2D1Geometry** ppD2DGeometry );
+        __checkReturn HRESULT Initialize(
+			__in ID2D1RenderTarget* pRenderTarget 
+			);
+
+        __checkReturn HRESULT UnwrapGeometry(
+			__in const CGeometry* pGeometry, 
+			ID2D1Geometry** ppD2DGeometry 
+			);
 
         ID2D1RenderTarget* m_RenderTarget;
 };

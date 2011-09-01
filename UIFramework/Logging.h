@@ -31,23 +31,69 @@ namespace logging
 //#include "Common.h"
 //#include "LoggingMacros.h"
 
-typedef void (*DebugOutCallbackFuncA)(const char* strOutput);
-typedef void (*DebugOutCallbackFuncW)(const wchar_t* strOutput);
+typedef void (*DebugOutCallbackFuncA)(
+    __in_z const char* strOutput
+    );
 
-void UIFRAMEWORK_API SetDebugOutCallback(DebugOutCallbackFuncA Func);
-void UIFRAMEWORK_API SetDebugOutCallback(DebugOutCallbackFuncW Func);
+typedef void (*DebugOutCallbackFuncW)(
+    __in_z const wchar_t* strOutput
+    );
 
-void InternalDebugOut(const char* strText);
-void InternalDebugOut(const wchar_t* strText);
+void UIFRAMEWORK_API SetDebugOutCallback(
+    __in_opt DebugOutCallbackFuncA Func
+    );
 
-DebugOutCallbackFuncA UIFRAMEWORK_API GetDebugOutCallbackA();
-DebugOutCallbackFuncW UIFRAMEWORK_API GetDebugOutCallbackW();
+void UIFRAMEWORK_API SetDebugOutCallback(
+    __in_opt DebugOutCallbackFuncW Func
+    );
 
-void UIFRAMEWORK_API DebugOut(const char* pFormat, ...);
-void UIFRAMEWORK_API DebugOut(const wchar_t* pFormat, ...);
-void UIFRAMEWORK_API ZoneOut(const char* pZone, const char* pFormat, ...);
-void UIFRAMEWORK_API ZoneOut(const wchar_t* pZone, const wchar_t* pFormat, ...);
-void UIFRAMEWORK_API ZoneLevelOut(UINT32 Level, const char* pZone, const char* pFormat, ...);
-void UIFRAMEWORK_API ZoneLevelOut(UINT32 Level, const wchar_t* pZone, const wchar_t* pFormat, ...);
+void InternalDebugOut(
+    __in_z const char* strText
+    );
 
+void InternalDebugOut(
+    __in_z const wchar_t* strText
+    );
+
+__out_opt DebugOutCallbackFuncA UIFRAMEWORK_API GetDebugOutCallbackA(
+    );
+
+__out_opt DebugOutCallbackFuncW UIFRAMEWORK_API GetDebugOutCallbackW(
+    );
+
+void UIFRAMEWORK_API DebugOut(
+    __in_z const char* pFormat, 
+    ...
+    );
+
+void UIFRAMEWORK_API DebugOut( 
+    __in_z __format_string const wchar_t* pFormat, 
+    ...
+    );
+
+void UIFRAMEWORK_API ZoneOut(
+    __in_z const char* pZone,
+    __in_z __format_string const char* pFormat, 
+    ...
+    );
+
+void UIFRAMEWORK_API ZoneOut(
+    __in_z const wchar_t* pZone, 
+    __in_z __format_string const wchar_t* pFormat, 
+    ...
+    );
+
+void UIFRAMEWORK_API ZoneLevelOut(
+    UINT32 Level, 
+    __in_z const char* pZone, 
+    __in_z __format_string const char* pFormat, 
+    ...
+    );
+
+void UIFRAMEWORK_API ZoneLevelOut(
+    UINT32 Level, 
+    __in_z const wchar_t* pZone, 
+    __in_z __format_string const wchar_t* pFormat, 
+    ...
+    );
 }

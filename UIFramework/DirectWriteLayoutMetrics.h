@@ -10,13 +10,20 @@ class CDirectWriteLayoutMetrics : public CTextLayoutMetrics
     public:
         DECLARE_FACTORY1( CDirectWriteLayoutMetrics, const DWRITE_TEXT_METRICS& );
 
-        virtual HRESULT GetBounds( RectF* pBounds );
+        __override virtual __checkReturn HRESULT GetBounds( 
+			__out RectF* pBounds
+			);
 
     protected:
-        CDirectWriteLayoutMetrics();
-        virtual ~CDirectWriteLayoutMetrics();
+        CDirectWriteLayoutMetrics(
+			);
 
-        HRESULT Initialize( const DWRITE_TEXT_METRICS& Metrics );
+        virtual ~CDirectWriteLayoutMetrics(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			const DWRITE_TEXT_METRICS& Metrics 
+			);
 
         DWRITE_TEXT_METRICS m_Metrics;
 };

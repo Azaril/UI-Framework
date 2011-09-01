@@ -8,6 +8,9 @@
 #include "PropertyObject.h"
 #include "TimeSource.h"
 
+#pragma push_macro("GetCurrentTime")
+#undef GetCurrentTime
+
 class CAnimationClock;
 class CAnimationTimeline;
 
@@ -32,24 +35,51 @@ class UIFRAMEWORK_API CAnimationClock : public CRefCountedObjectBase< CTimeSink 
     public:
         DECLARE_FACTORY2( CAnimationClock, CTimeSource*, CAnimationTimeline* );
 
-        virtual HRESULT GetCurrentValue( CObjectWithType* pDefaultInitialValue, CObjectWithType* pDefaultFinalValue, CObjectWithType** ppObject );
+        virtual __checkReturn HRESULT GetCurrentValue( 
+            __in CObjectWithType* pDefaultInitialValue, 
+            __in CObjectWithType* pDefaultFinalValue,
+            __deref_out CObjectWithType** ppObject 
+            );
 
-        HRESULT AddChangeListener( const ClockChangedHandler& Handler, events::signals::connection* pConnection );
-        HRESULT AddCompletedListener( const ClockCompletedHandler& Handler, events::signals::connection* pConnection );
+        __checkReturn HRESULT AddChangeListener( 
+            const ClockChangedHandler& Handler, 
+            __out events::signals::connection* pConnection 
+            );
 
-        virtual HRESULT OnTimeUpdate( const CTimeSpan& TimeDelta );
+        __checkReturn HRESULT AddCompletedListener( 
+            const ClockCompletedHandler& Handler, 
+            __out events::signals::connection* pConnection
+            );
 
-        HRESULT GetCurrentTime( CTimeSpan* pTime );
-        HRESULT GetCurrentProgress( FLOAT* pProgress );
+        __override virtual __checkReturn HRESULT OnTimeUpdate( 
+            const CTimeSpan& TimeDelta 
+            );
+
+        __checkReturn HRESULT GetCurrentTime(
+            __out CTimeSpan* pTime 
+            );
+
+        __checkReturn HRESULT GetCurrentProgress( 
+            __out FLOAT* pProgress 
+            );
 
     protected:
-        CAnimationClock();
-        virtual ~CAnimationClock();
+        CAnimationClock(
+            );
 
-        HRESULT Initialize( CTimeSource* pTimeSource, CAnimationTimeline* pTimeline );
+        virtual ~CAnimationClock(
+            );
 
-        void RaiseValueChanged();
-        void RaiseCompleted();
+        __checkReturn HRESULT Initialize(
+            __in CTimeSource* pTimeSource,
+            __in CAnimationTimeline* pTimeline 
+            );
+
+        void RaiseValueChanged(
+            );
+
+        void RaiseCompleted(
+            );
 
         CTimeSource* m_TimeSource;
         CAnimationTimeline* m_Timeline;
@@ -60,3 +90,5 @@ class UIFRAMEWORK_API CAnimationClock : public CRefCountedObjectBase< CTimeSink 
         ClockState::Value m_ClockState;
         FLOAT m_Progress;
 };
+
+#pragma pop_macro("GetCurrentTime")

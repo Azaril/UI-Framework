@@ -221,7 +221,6 @@ Cleanup:
 HRESULT CTextBox::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
-    CStringValue* pStringValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);

@@ -1,22 +1,29 @@
 #include "DirectWriteEditableTextLayout.h"
 #include "DirectWriteTextLayout.h"
 
-CDirectWriteEditableTextLayout::CDirectWriteEditableTextLayout() : m_TextProvider(NULL),
-                                                                   m_TextLayout(NULL),
-                                                                   m_TextFormat(NULL)
+CDirectWriteEditableTextLayout::CDirectWriteEditableTextLayout(
+	)
+	: m_TextProvider(NULL)
+	, m_TextLayout(NULL)
+	, m_TextFormat(NULL)
 {
     m_MaxSize.width = 0;
     m_MaxSize.height = 0;
 }
 
-CDirectWriteEditableTextLayout::~CDirectWriteEditableTextLayout()
+CDirectWriteEditableTextLayout::~CDirectWriteEditableTextLayout(
+	)
 {
     ReleaseObject(m_TextProvider);
     ReleaseObject(m_TextLayout);
     ReleaseObject(m_TextFormat);
 }
 
-HRESULT CDirectWriteEditableTextLayout::Initialize(CTextProvider* pTextProvider, const SizeF &Size)
+__checkReturn HRESULT 
+CDirectWriteEditableTextLayout::Initialize(
+	__in CTextProvider* pTextProvider, 
+	const SizeF &Size
+	)
 {
     HRESULT hr = S_OK;
 
@@ -31,17 +38,25 @@ Cleanup:
     return hr;
 }
 
-UINT32 CDirectWriteEditableTextLayout::GetStartPosition()
+__override UINT32 
+CDirectWriteEditableTextLayout::GetStartPosition(
+	)
 {
     return 0;
 }
 
-UINT32 CDirectWriteEditableTextLayout::GetEndPosition()
+__override UINT32 
+CDirectWriteEditableTextLayout::GetEndPosition(
+	)
 {
     return m_Text.length();
 }
 
-HRESULT CDirectWriteEditableTextLayout::SetText(const WCHAR* pText, UINT32 TextLength)
+__override __checkReturn HRESULT 
+CDirectWriteEditableTextLayout::SetText(
+	__in_ecount_opt(TextLength) const WCHAR* pText,
+	UINT32 TextLength
+	)
 {
     HRESULT hr = S_OK;
 
@@ -55,7 +70,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteEditableTextLayout::ClearText()
+__override __checkReturn HRESULT 
+CDirectWriteEditableTextLayout::ClearText(
+	)
 {
     HRESULT hr = S_OK;
 
@@ -67,7 +84,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteEditableTextLayout::InsertText(UINT32 Position, const WCHAR* pText, UINT32 TextLength)
+__override __checkReturn HRESULT 
+CDirectWriteEditableTextLayout::InsertText(
+	UINT32 Position, 
+	__in_ecount(pText) const WCHAR* pText, 
+	UINT32 TextLength
+	)
 {
     HRESULT hr = S_OK;
 
@@ -85,7 +107,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteEditableTextLayout::RemoveText(UINT32 Position, UINT32 Length)
+__override __checkReturn HRESULT 
+CDirectWriteEditableTextLayout::RemoveText(
+	UINT32 Position, 
+	UINT32 Length
+	)
 {
     HRESULT hr = S_OK;
 
@@ -102,17 +128,20 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteEditableTextLayout::InvalidateLayout()
+__checkReturn HRESULT
+CDirectWriteEditableTextLayout::InvalidateLayout(
+	)
 {
     HRESULT hr = S_OK;
 
     ReleaseObject(m_TextLayout);
 
-Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteEditableTextLayout::EnsureLayout()
+__checkReturn HRESULT 
+CDirectWriteEditableTextLayout::EnsureLayout(
+	)
 {
     HRESULT hr = S_OK;
     CTextFormat* pTextFormat = NULL;
@@ -138,7 +167,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteEditableTextLayout::GetDirectWriteTextLayout(IDWriteTextLayout** ppLayout)
+__checkReturn HRESULT 
+CDirectWriteEditableTextLayout::GetDirectWriteTextLayout(
+	__deref_out IDWriteTextLayout** ppLayout
+	)
 {
     HRESULT hr = S_OK;
     CDirectWriteTextLayout* pLayout = NULL;
@@ -156,7 +188,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteEditableTextLayout::SetMaxSize(const SizeF &Size)
+__override __checkReturn HRESULT 
+CDirectWriteEditableTextLayout::SetMaxSize(
+	const SizeF &Size
+	)
 {
     HRESULT hr = S_OK;
 
@@ -171,7 +206,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteEditableTextLayout::GetMetrics(CTextLayoutMetrics** ppMetrics)
+__override __checkReturn HRESULT 
+CDirectWriteEditableTextLayout::GetMetrics(
+	__deref_out CTextLayoutMetrics** ppMetrics
+	)
 {
     HRESULT hr = S_OK;
 
@@ -185,7 +223,9 @@ Cleanup:
     return hr;
 }
 
-const WCHAR* CDirectWriteEditableTextLayout::GetText()
+__override __out const WCHAR* 
+CDirectWriteEditableTextLayout::GetText(
+	)
 {
     return m_Text.c_str();
 }

@@ -7,15 +7,55 @@
 #include "TypeConverter.h"
 #include "PropertyObject.h"
 
-HRESULT ElementStartToParserCallback( CParseContext* pContext, CXMLElementStart* pStart, CElementNodeCallback** ppCallback );
-HRESULT ElementStartToParserCallback( CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLElementStart* pStart, CPropertyNodeCallback** ppCallback );
-HRESULT TextToParserCallback( CParseContext* pContext, CPropertyInformation* pPropertyInformation, CXMLText* pText, CPropertyNodeCallback** ppCallback );
+__checkReturn HRESULT ElementStartToParserCallback( 
+	__in CParseContext* pContext,
+	__in CXMLElementStart* pStart, 
+	__deref_out CElementNodeCallback** ppCallback 
+	);
 
-HRESULT AttributeStringToValue( CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength, CObjectWithType** ppValue );
+__checkReturn HRESULT ElementStartToParserCallback( 
+	__in CParseContext* pContext, 
+	__in CPropertyInformation* pPropertyInformation, 
+	__in CXMLElementStart* pStart,
+	__deref_out CPropertyNodeCallback** ppCallback 
+	);
 
-HRESULT AddCreateObjectCommand( CParseContext* pContext, CResolvedClass* pClass );
-HRESULT AddPushValueCommand( CParseContext* pContext, CObjectWithType* pValue );
-HRESULT AddSetPropertyCommand( CParseContext* pContext, CProperty* pProperty, CStringValue* pKeyString = NULL );
-HRESULT AddEvaluateMarkupExtensionCommand( CParseContext* pContext );
+__checkReturn HRESULT TextToParserCallback( 
+	__in CParseContext* pContext,
+	__in CPropertyInformation* pPropertyInformation,
+	__in CXMLText* pText, 
+	__deref_out CPropertyNodeCallback** ppCallback 
+	);
 
-HRESULT EvaluateAndAddAttribute( CParseContext* pContext, const WCHAR* pValue, UINT32 ValueLength );
+__checkReturn HRESULT AttributeStringToValue(
+	__in CParseContext* pContext, 
+	__in_ecount(ValueLength) const WCHAR* pValue, 
+	UINT32 ValueLength, 
+	__deref_out CObjectWithType** ppValue 
+	);
+
+__checkReturn HRESULT AddCreateObjectCommand(
+	__in CParseContext* pContext,
+	__in CResolvedClass* pClass 
+	);
+
+__checkReturn HRESULT AddPushValueCommand( 
+	__in CParseContext* pContext,
+	__in CObjectWithType* pValue 
+	);
+
+__checkReturn HRESULT AddSetPropertyCommand( 
+	__in CParseContext* pContext, 
+	__in CProperty* pProperty,
+	__in_opt CStringValue* pKeyString = NULL 
+	);
+
+__checkReturn HRESULT AddEvaluateMarkupExtensionCommand( 
+	__in CParseContext* pContext 
+	);
+
+__checkReturn HRESULT EvaluateAndAddAttribute( 
+	__in CParseContext* pContext,
+	__in_ecount(ValueLength) const WCHAR* pValue, 
+	UINT32 ValueLength 
+	);

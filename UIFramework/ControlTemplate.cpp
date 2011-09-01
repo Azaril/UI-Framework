@@ -19,7 +19,6 @@ HRESULT CControlTemplate::Initialize(CProviders* pProviders)
 {
     HRESULT hr = S_OK;
 
-Cleanup:
     return hr;
 }
 

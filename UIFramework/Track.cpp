@@ -330,7 +330,6 @@ HRESULT CTrack::OnViewportSizeChanged(CObjectWithType* pOldValue, CObjectWithTyp
     InvalidateMeasure();
     InvalidateArrange();
 
-Cleanup:
     return hr;
 }
 
@@ -341,7 +340,6 @@ HRESULT CTrack::OnOrientationChanged(CObjectWithType* pOldValue, CObjectWithType
     InvalidateMeasure();
     InvalidateArrange();
 
-Cleanup:
     return hr;
 }
 
@@ -352,7 +350,6 @@ HRESULT CTrack::OnDirectionReversedChanged(CObjectWithType* pOldValue, CObjectWi
     InvalidateMeasure();
     InvalidateArrange();
 
-Cleanup:
     return hr;
 }
 
@@ -363,7 +360,6 @@ HRESULT CTrack::OnMinimumChanged(CObjectWithType* pOldValue, CObjectWithType* pN
     InvalidateMeasure();
     InvalidateArrange();
 
-Cleanup:
     return hr;
 }
 
@@ -374,7 +370,6 @@ HRESULT CTrack::OnMaximumChanged(CObjectWithType* pOldValue, CObjectWithType* pN
     InvalidateMeasure();
     InvalidateArrange();
 
-Cleanup:
     return hr;
 }
 
@@ -385,7 +380,6 @@ HRESULT CTrack::OnTrackValueChanged(CObjectWithType* pOldValue, CObjectWithType*
     InvalidateMeasure();
     InvalidateArrange();
 
-Cleanup:
     return hr;
 }
 
@@ -541,7 +535,7 @@ HRESULT CTrack::ComputeScrollBarLengths(SizeF AvailableSize, FLOAT ViewportSize,
         TrackLength = AvailableSize.height;
 
         //TODO: Map this to a non-specific platform value.
-        FLOAT ButtonHeight = GetSystemMetrics(SM_CYVSCROLL);
+        FLOAT ButtonHeight = (FLOAT)GetSystemMetrics(SM_CYVSCROLL);
 
         ThumbMinimumLength = std::floorf(ButtonHeight * 0.5f);
     }
@@ -550,7 +544,7 @@ HRESULT CTrack::ComputeScrollBarLengths(SizeF AvailableSize, FLOAT ViewportSize,
         TrackLength = AvailableSize.width;
 
         //TODO: Map this to a non-specific platform value.
-        FLOAT ButtonWidth = GetSystemMetrics(SM_CXHSCROLL);
+        FLOAT ButtonWidth = (FLOAT)GetSystemMetrics(SM_CXHSCROLL);
 
         ThumbMinimumLength = std::floorf(ButtonWidth * 0.5f);
     }
@@ -649,76 +643,78 @@ HRESULT CTrack::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
         }
     }
 
-    Point2F Offset;
-    SizeF PieceSize = AvailableSize;
-    BOOL IsDirectionReversed = FALSE;
+	{
+		Point2F Offset;
+		SizeF PieceSize = AvailableSize;
+		BOOL IsDirectionReversed = FALSE;
 
-    IFC(GetEffectiveDirectionReversed(&IsDirectionReversed));
+		IFC(GetEffectiveDirectionReversed(&IsDirectionReversed));
 
-    if(TrackOrientation == Orientation::Vertical)
-    {
-        CoerceLength(DecreaseButtonLength, AvailableSize.height);
-        CoerceLength(IncreaseButtonLength, AvailableSize.height);
-        CoerceLength(ThumbLength, AvailableSize.height);
+		if(TrackOrientation == Orientation::Vertical)
+		{
+			CoerceLength(DecreaseButtonLength, AvailableSize.height);
+			CoerceLength(IncreaseButtonLength, AvailableSize.height);
+			CoerceLength(ThumbLength, AvailableSize.height);
 
-        Offset.y = IsDirectionReversed ? DecreaseButtonLength + ThumbLength : 0.0;
-        PieceSize.height = IncreaseButtonLength;
+			Offset.y = IsDirectionReversed ? DecreaseButtonLength + ThumbLength : 0.0f;
+			PieceSize.height = IncreaseButtonLength;
                 
-        if (pIncreaseButton != NULL)
-        {
-            IFC(pIncreaseButton->Arrange(MakeRect(Offset, PieceSize)));
-        }
+			if (pIncreaseButton != NULL)
+			{
+				IFC(pIncreaseButton->Arrange(MakeRect(Offset, PieceSize)));
+			}
 
-        Offset.y = IsDirectionReversed ? 0.0 : IncreaseButtonLength + ThumbLength;
-        PieceSize.height = DecreaseButtonLength;
+			Offset.y = IsDirectionReversed ? 0.0f : IncreaseButtonLength + ThumbLength;
+			PieceSize.height = DecreaseButtonLength;
 
-        if (pDecreaseButton != NULL)
-        {
-            IFC(pDecreaseButton->Arrange(MakeRect(Offset, PieceSize)));
-        }
+			if (pDecreaseButton != NULL)
+			{
+				IFC(pDecreaseButton->Arrange(MakeRect(Offset, PieceSize)));
+			}
 
-        Offset.y = IsDirectionReversed ? DecreaseButtonLength : IncreaseButtonLength;
-        PieceSize.height = ThumbLength;
+			Offset.y = IsDirectionReversed ? DecreaseButtonLength : IncreaseButtonLength;
+			PieceSize.height = ThumbLength;
 
-        if (pThumb != NULL)
-        {
-            IFC(pThumb->Arrange(MakeRect(Offset, PieceSize)));
-        }
+			if (pThumb != NULL)
+			{
+				IFC(pThumb->Arrange(MakeRect(Offset, PieceSize)));
+			}
 
-        m_ThumbCenterOffset = Offset.y + (ThumbLength * 0.5);
-    }
-    else
-    {
-        CoerceLength(DecreaseButtonLength, AvailableSize.width);
-        CoerceLength(IncreaseButtonLength, AvailableSize.width);
-        CoerceLength(ThumbLength, AvailableSize.width);
+			m_ThumbCenterOffset = Offset.y + (ThumbLength * 0.5f);
+		}
+		else
+		{
+			CoerceLength(DecreaseButtonLength, AvailableSize.width);
+			CoerceLength(IncreaseButtonLength, AvailableSize.width);
+			CoerceLength(ThumbLength, AvailableSize.width);
 
-        Offset.x = IsDirectionReversed ? IncreaseButtonLength + ThumbLength : 0.0;
-        PieceSize.width = DecreaseButtonLength;
+			Offset.x = IsDirectionReversed ? IncreaseButtonLength + ThumbLength : 0.0f;
+			PieceSize.width = DecreaseButtonLength;
                 
-        if (pDecreaseButton != NULL)
-        {
-            IFC(pDecreaseButton->Arrange(MakeRect(Offset, PieceSize)));
-        }
+			if (pDecreaseButton != NULL)
+			{
+				IFC(pDecreaseButton->Arrange(MakeRect(Offset, PieceSize)));
+			}
 
-        Offset.x = IsDirectionReversed ? 0.0 : DecreaseButtonLength + ThumbLength;
-        PieceSize.width = IncreaseButtonLength;
+			Offset.x = IsDirectionReversed ? 0.0f : DecreaseButtonLength + ThumbLength;
+			PieceSize.width = IncreaseButtonLength;
 
-        if (pIncreaseButton != NULL)
-        {
-            IFC(pIncreaseButton->Arrange(MakeRect(Offset, PieceSize)));
-        }
+			if (pIncreaseButton != NULL)
+			{
+				IFC(pIncreaseButton->Arrange(MakeRect(Offset, PieceSize)));
+			}
 
-        Offset.x = IsDirectionReversed ? IncreaseButtonLength : DecreaseButtonLength;
-        PieceSize.width = ThumbLength;
+			Offset.x = IsDirectionReversed ? IncreaseButtonLength : DecreaseButtonLength;
+			PieceSize.width = ThumbLength;
 
-        if (pThumb != NULL)
-        {
-            IFC(pThumb->Arrange(MakeRect(Offset, PieceSize)));
-        }
+			if (pThumb != NULL)
+			{
+				IFC(pThumb->Arrange(MakeRect(Offset, PieceSize)));
+			}
 
-        m_ThumbCenterOffset = Offset.x + (ThumbLength * 0.5);
-    }
+			m_ThumbCenterOffset = Offset.x + (ThumbLength * 0.5f);
+		}
+	}
 
     UsedSize = AvailableSize;
 

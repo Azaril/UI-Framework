@@ -1,17 +1,25 @@
 #include "FloatAnimation.h"
 
-CFloatAnimation::CFloatAnimation() : m_From(NULL),
-                                     m_To(NULL)
+CFloatAnimation::CFloatAnimation(
+    ) 
+    : m_From(NULL)
+    , m_To(NULL)
 {
 }
 
-CFloatAnimation::~CFloatAnimation()
+CFloatAnimation::~CFloatAnimation(
+    )
 {
     ReleaseObject(m_From);
     ReleaseObject(m_To);
 }
 
-HRESULT CFloatAnimation::Initialize(FLOAT From, FLOAT To, const CTimeSpan& Duration)
+__checkReturn HRESULT
+CFloatAnimation::Initialize(
+    FLOAT From,
+    FLOAT To, 
+    const CTimeSpan& Duration
+    )
 {
     HRESULT hr = S_OK;
 
@@ -23,7 +31,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT CFloatAnimation::GetCurrentValue(CAnimationClock* pClock, CObjectWithType* pDefaultInitialValue, CObjectWithType* pDefaultFinalValue, CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CFloatAnimation::GetCurrentValue(
+    __in CAnimationClock* pClock,
+    __in CObjectWithType* pDefaultInitialValue, 
+    __in CObjectWithType* pDefaultFinalValue,
+    __deref_out CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     CFloatValue* pDefaultFrom = NULL;

@@ -8,24 +8,43 @@
 
 struct IParserCallback
 {
-    virtual HRESULT OnPushObject( CObjectWithType* pObject ) = 0;
-    virtual HRESULT OnPopObject( CObjectWithType* pObject ) = 0;
+    virtual __checkReturn HRESULT OnPushObject( 
+		__in CObjectWithType* pObject 
+		) = 0;
+
+    virtual __checkReturn HRESULT OnPopObject(
+		__in CObjectWithType* pObject 
+		) = 0;
 };
 
 class CParserCommandContext
 {
     public:
-        CParserCommandContext( CProviders* pProviders, IParserCallback* pCallback = NULL );
-        virtual ~CParserCommandContext();
+        CParserCommandContext( 
+			__in CProviders* pProviders,
+			__in_opt IParserCallback* pCallback = NULL 
+			);
 
-        HRESULT GetObject( CObjectWithType** ppObject );
-        HRESULT PushObject( CObjectWithType* pObject );
-        HRESULT PopObject();
+        virtual ~CParserCommandContext(
+			);
 
-        CProviders* GetProviders();
+        __checkReturn HRESULT GetObject( 
+			__deref_out CObjectWithType** ppObject 
+			);
+
+        __checkReturn HRESULT PushObject( 
+			__in CObjectWithType* pObject 
+			);
+
+        __checkReturn HRESULT PopObject(
+			);
+
+        __out CProviders* GetProviders();
 
         template< typename T >
-        HRESULT GetObject( T** ppValue )
+        __checkReturn HRESULT GetObject(
+			__deref_out T** ppValue
+			)
         {
             HRESULT hr = S_OK;
             CObjectWithType* pVal = NULL;

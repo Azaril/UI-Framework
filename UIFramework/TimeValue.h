@@ -5,21 +5,40 @@
 class UIFRAMEWORK_API CTimeSpan
 {
     public:
-        CTimeSpan();
-        CTimeSpan( const CTimeSpan& Other );
+        CTimeSpan(
+            );
 
-        static CTimeSpan Zero();
-        static CTimeSpan FromMilliseconds( LONGLONG Milliseconds );
+        CTimeSpan(
+            const CTimeSpan& Other 
+            );
 
-        CTimeSpan operator+( const CTimeSpan& Right ) const;
-        CTimeSpan& operator+=( const CTimeSpan& Right );
+        static CTimeSpan Zero(
+            );
+
+        static CTimeSpan FromMilliseconds(
+            LONGLONG Milliseconds 
+            );
+
+        CTimeSpan operator+(
+            const CTimeSpan& Right
+            ) const;
+
+        CTimeSpan& operator+=(
+            const CTimeSpan& Right
+            );
         
-        FLOAT operator/( const CTimeSpan& Right ) const;
+        FLOAT operator/( 
+            const CTimeSpan& Right 
+            ) const;
 
-        bool operator==( const CTimeSpan& Other ) const;
+        bool operator==(
+            const CTimeSpan& Other
+            ) const;
 
     protected:
-        CTimeSpan( LONGLONG Duration );
+        CTimeSpan(
+            LONGLONG Duration 
+            );
 
         LONGLONG m_Duration;
 };
@@ -27,14 +46,21 @@ class UIFRAMEWORK_API CTimeSpan
 class UIFRAMEWORK_API CTime
 {
     public:
-        CTime( const CTime& Other );
+        CTime( 
+            const CTime& Other
+            );
 
-        static CTime Now();
+        static CTime Now(
+            );
 
-        CTimeSpan operator-( const CTime& Right ) const;
+        CTimeSpan operator-( 
+            const CTime& Right 
+            ) const;
 
     protected:
-        CTime( ULONGLONG Time );
+        CTime(
+            ULONGLONG Time 
+            );
 
         ULONGLONG m_Time;
 };

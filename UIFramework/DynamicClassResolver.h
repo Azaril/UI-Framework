@@ -12,36 +12,99 @@ class UIFRAMEWORK_API CDynamicClassResolver : public CClassResolver
     public:
         DECLARE_FACTORY( CDynamicClassResolver );
 
-        HRESULT RegisterClass( const ClassInformation& Info );
+        __checkReturn HRESULT RegisterClass( 
+			const ClassInformation& Info 
+			);
 
-        virtual HRESULT ResolveType( TypeIndex::Value ClassType, CResolvedClass** ppResolvedClass );
-        virtual HRESULT ResolveType( const WCHAR* pTypeName, CResolvedClass** ppResolvedClass );
+        __override virtual __checkReturn HRESULT ResolveType(
+			TypeIndex::Value ClassType, 
+			__deref_out CResolvedClass** ppResolvedClass 
+			);
 
-        virtual HRESULT ResolveProperties( TypeIndex::Value ClassType, CPropertyInformation** ppProperties );
-        virtual HRESULT ResolveProperties( const WCHAR* pTypeName, CPropertyInformation** ppProperties );
+        __override virtual __checkReturn HRESULT ResolveType( 
+			__in_z const WCHAR* pTypeName, 
+			__deref_out CResolvedClass** ppResolvedClass
+			);
 
-        virtual HRESULT ResolveProperty( const WCHAR* pPropertyName, TypeIndex::Value ImplicitClass, CProperty** ppProperty );
-        virtual HRESULT ResolveProperty( const WCHAR* pPropertyName, CPropertyInformation* pImplicitClassProperties, CProperty** ppProperty );
+        __override virtual __checkReturn HRESULT ResolveProperties( 
+			TypeIndex::Value ClassType, 
+			__deref_out CPropertyInformation** ppProperties
+			);
 
-        virtual HRESULT ResolveEvents( TypeIndex::Value ClassType, CEventInformation** ppEvents );
-        virtual HRESULT ResolveEvents( const WCHAR* pTypeName, CEventInformation** ppEvents );
+        __override virtual __checkReturn HRESULT ResolveProperties( 
+			__in_z const WCHAR* pTypeName, 
+			__deref_out CPropertyInformation** ppProperties 
+			);
 
-        virtual HRESULT ResolveEvent( const WCHAR* pEventName, TypeIndex::Value ImplicitClass, CRoutedEvent** ppRoutedEvent );
-        virtual HRESULT ResolveEvent( const WCHAR* pEventName, CEventInformation* pImplicitClassEvents, CRoutedEvent** ppRoutedEvent );
+        __override virtual __checkReturn HRESULT ResolveProperty( 
+			__in_z const WCHAR* pPropertyName, 
+			TypeIndex::Value ImplicitClass, 
+			__deref_out CProperty** ppProperty 
+			);
 
-        virtual HRESULT ResolveCommands( TypeIndex::Value ClassType, CCommandInformation** ppCommands );
-        virtual HRESULT ResolveCommands( const WCHAR* pTypeName, CCommandInformation** ppCommands );
+        __override virtual __checkReturn HRESULT ResolveProperty( 
+			__in_z const WCHAR* pPropertyName, 
+			__in_opt CPropertyInformation* pImplicitClassProperties, 
+			__deref_out CProperty** ppProperty
+			);
 
-        virtual HRESULT ResolveCommand( const WCHAR* pCommandName, TypeIndex::Value ImplicitClass, CCommand** ppCommand );
-        virtual HRESULT ResolveCommand( const WCHAR* pCommandName, CCommandInformation* pImplicitClassCommands, CCommand** ppCommand );
+        __override virtual __checkReturn HRESULT ResolveEvents(
+			TypeIndex::Value ClassType, 
+			__deref_out CEventInformation** ppEvents 
+			);
+
+        __override virtual __checkReturn HRESULT ResolveEvents( 
+			__in_z const WCHAR* pTypeName, 
+			__deref_out CEventInformation** ppEvents
+			);
+
+        __override virtual __checkReturn HRESULT ResolveEvent( 
+			__in_z const WCHAR* pEventName, 
+			TypeIndex::Value ImplicitClass, 
+			__deref_out CRoutedEvent** ppRoutedEvent 
+			);
+
+        __override virtual __checkReturn HRESULT ResolveEvent( 
+			__in_z const WCHAR* pEventName,
+			__in_opt CEventInformation* pImplicitClassEvents, 
+			__deref_out CRoutedEvent** ppRoutedEvent 
+			);
+
+        __override virtual __checkReturn HRESULT ResolveCommands( 
+			TypeIndex::Value ClassType,
+			__deref_out CCommandInformation** ppCommands 
+			);
+
+        __override virtual __checkReturn HRESULT ResolveCommands(
+			__in_z const WCHAR* pTypeName, 
+			__deref_out CCommandInformation** ppCommands
+			);
+
+        __override virtual __checkReturn HRESULT ResolveCommand(
+			__in_z const WCHAR* pCommandName, 
+			TypeIndex::Value ImplicitClass, 
+			__deref_out CCommand** ppCommand 
+			);
+
+        __override virtual __checkReturn HRESULT ResolveCommand(
+			__in_z const WCHAR* pCommandName,
+			__in_opt CCommandInformation* pImplicitClassCommands,
+			__deref_out CCommand** ppCommand
+			);
 
     protected:
-        CDynamicClassResolver();
-        virtual ~CDynamicClassResolver();
+        CDynamicClassResolver(
+			);
 
-        HRESULT Initialize();
+        virtual ~CDynamicClassResolver(
+			);
+
+        __checkReturn HRESULT Initialize(
+			);
 
         std::vector< CDynamicResolvedClass* > m_Classes;
 };
 
-HRESULT LoadDefaultTypes( CDynamicClassResolver* pClassResolver );
+__checkReturn HRESULT LoadDefaultTypes( 
+	__in CDynamicClassResolver* pClassResolver 
+	);

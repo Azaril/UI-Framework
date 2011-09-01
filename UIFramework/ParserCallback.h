@@ -13,16 +13,32 @@ class CParserCallback : public CRefCountedObject,
     public:
         DECLARE_FACTORY1( CParserCallback, CParseContext* );
 
-        virtual HRESULT OnElementStart( CXMLElementStart* pElementStart );
-        virtual HRESULT OnElementEnd( CXMLElementEnd* pElementEnd );
-        virtual HRESULT OnText( CXMLText* pText );
-        virtual HRESULT OnAttribute( CXMLAttribute* pAttribute );
+        __override virtual __checkReturn HRESULT OnElementStart( 
+			__in CXMLElementStart* pElementStart 
+			);
+
+        __override virtual __checkReturn HRESULT OnElementEnd(
+			__in CXMLElementEnd* pElementEnd 
+			);
+
+        __override virtual __checkReturn HRESULT OnText(
+			__in CXMLText* pText 
+			);
+
+        __override virtual __checkReturn HRESULT OnAttribute(
+			__in CXMLAttribute* pAttribute 
+			);
 
     protected:
-        CParserCallback();
-        virtual ~CParserCallback();
+        CParserCallback(
+			);
 
-        HRESULT Initialize( CParseContext* pContext );
+        virtual ~CParserCallback(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in CParseContext* pContext 
+			);
 
         CElementNodeCallback* m_ChildNode;
         CParseContext* m_ParseContext;

@@ -1,15 +1,21 @@
 #include "AddToDictionaryCommand.h"
 
-CAddToDictionaryCommand::CAddToDictionaryCommand() : m_Property(NULL)
+CAddToDictionaryCommand::CAddToDictionaryCommand(
+	) 
+	: m_Property(NULL)
 {
 }
 
-CAddToDictionaryCommand::~CAddToDictionaryCommand()
+CAddToDictionaryCommand::~CAddToDictionaryCommand(
+	)
 {
     ReleaseObject(m_Property);
 }
 
-HRESULT CAddToDictionaryCommand::Initialize(CProperty* pProperty)
+__checkReturn HRESULT 
+CAddToDictionaryCommand::Initialize(
+	CProperty* pProperty
+	)
 {
     HRESULT hr = S_OK;
 
@@ -22,7 +28,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CAddToDictionaryCommand::Execute(CParserCommandContext& Context)
+__override __checkReturn HRESULT 
+CAddToDictionaryCommand::Execute(
+	CParserCommandContext& Context
+	)
 {
     HRESULT hr = S_OK;
     CObjectWithType* pKey = NULL;

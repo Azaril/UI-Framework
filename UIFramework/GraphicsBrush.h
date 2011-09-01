@@ -5,5 +5,7 @@
 class CGraphicsBrush : public CRefCountedObject
 {
     public:
-        virtual HRESULT SetTransform( const Matrix3X2F& Transform ) = 0;
+        virtual __checkReturn HRESULT SetTransform( 
+			const Matrix3X2F& Transform 
+			) = 0;
 };

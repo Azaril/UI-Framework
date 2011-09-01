@@ -9,10 +9,15 @@ class CD2DSolidColorBrush : public CD2DBrush
         DECLARE_FACTORY1( CD2DSolidColorBrush, ID2D1SolidColorBrush* );
 
     protected:
-        CD2DSolidColorBrush();
-        virtual ~CD2DSolidColorBrush();
+        CD2DSolidColorBrush(
+			);
 
-        HRESULT Initialize( ID2D1SolidColorBrush* pBrush );
+        virtual ~CD2DSolidColorBrush(
+			);
+
+        __checkReturn HRESULT Initialize(
+			ID2D1SolidColorBrush* pBrush 
+			);
 
         ID2D1SolidColorBrush* m_SolidBrush;
 };

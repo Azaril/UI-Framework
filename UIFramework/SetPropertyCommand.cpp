@@ -1,16 +1,22 @@
 #include "SetPropertyCommand.h"
 #include "BindingBase.h"
 
-CSetPropertyCommand::CSetPropertyCommand() : m_Property(NULL)
+CSetPropertyCommand::CSetPropertyCommand(
+	) 
+	: m_Property(NULL)
 {
 }
 
-CSetPropertyCommand::~CSetPropertyCommand()
+CSetPropertyCommand::~CSetPropertyCommand(
+	)
 {
     ReleaseObject(m_Property);
 }
 
-HRESULT CSetPropertyCommand::Initialize(CProperty* pProperty)
+__checkReturn HRESULT 
+CSetPropertyCommand::Initialize(
+	__in CProperty* pProperty
+	)
 {
     HRESULT hr = S_OK;
 
@@ -23,7 +29,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSetPropertyCommand::Execute(CParserCommandContext& Context)
+__override __checkReturn HRESULT 
+CSetPropertyCommand::Execute(
+	CParserCommandContext& Context
+	)
 {
     HRESULT hr = S_OK;
     CPropertyObject* pParent = NULL;
@@ -53,12 +62,12 @@ HRESULT CSetPropertyCommand::Execute(CParserCommandContext& Context)
         }
         else
         {
-            CConversionContext Context(pParent, m_Property, Context.GetProviders());
+            CConversionContext ConversionContext(pParent, m_Property, Context.GetProviders());
 
             pTypeConverter = Context.GetProviders()->GetTypeConverter();
             IFCPTR(pTypeConverter);
 
-            IFC(pTypeConverter->Convert(&Context, pValue, &pConvertedType));
+            IFC(pTypeConverter->Convert(&ConversionContext, pValue, &pConvertedType));
         }
 
         IFC(pParent->SetValue(m_Property, pConvertedType));

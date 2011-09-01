@@ -10,17 +10,27 @@ class CWICBitmapSource : public CBitmapSource
     public:
         DECLARE_FACTORY1( CWICBitmapSource, IWICBitmapSource* );
 
-        IWICBitmapSource* GetWICBitmapSource();
+        __out IWICBitmapSource* GetWICBitmapSource(
+			);
 
-        virtual HRESULT GetSize( SizeU* pSize );
+        __override virtual HRESULT GetSize( 
+			__out SizeU* pSize 
+			);
 
-        HRESULT AssociateStream( IStream* pStream );
+        __checkReturn HRESULT AssociateStream( 
+			__in IStream* pStream 
+			);
 
     protected:
-        CWICBitmapSource();
-        virtual ~CWICBitmapSource();
+        CWICBitmapSource(
+			);
 
-        HRESULT Initialize( IWICBitmapSource* pSource );
+        virtual ~CWICBitmapSource(
+			);
+
+        __checkReturn HRESULT Initialize( 
+			__in IWICBitmapSource* pSource 
+			);
 
         IWICBitmapSource* m_Source;
         IStream* m_Stream;

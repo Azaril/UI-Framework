@@ -145,7 +145,6 @@ HRESULT CRangeBase::OnMaximumChanged(CObjectWithType* pOldValue, CObjectWithType
 {
     HRESULT hr = S_OK;
 
-Cleanup:
     return hr;
 }
 
@@ -153,7 +152,6 @@ HRESULT CRangeBase::OnMinimumChanged(CObjectWithType* pOldValue, CObjectWithType
 {
     HRESULT hr = S_OK;
 
-Cleanup:
     return hr;
 }
 

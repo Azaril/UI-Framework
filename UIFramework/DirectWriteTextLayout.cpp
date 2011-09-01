@@ -1,16 +1,22 @@
 #include "DirectWriteTextLayout.h"
 #include "DirectWriteLayoutMetrics.h"
 
-CDirectWriteTextLayout::CDirectWriteTextLayout() : m_Layout(NULL)
+CDirectWriteTextLayout::CDirectWriteTextLayout(
+	) 
+	: m_Layout(NULL)
 {
 }
 
-CDirectWriteTextLayout::~CDirectWriteTextLayout()
+CDirectWriteTextLayout::~CDirectWriteTextLayout(
+	)
 {
     ReleaseObject(m_Layout);
 }
 
-HRESULT CDirectWriteTextLayout::Initialize(IDWriteTextLayout* pLayout)
+__checkReturn HRESULT 
+CDirectWriteTextLayout::Initialize(
+	__in IDWriteTextLayout* pLayout
+	)
 {
     HRESULT hr = S_OK;
 
@@ -23,7 +29,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteTextLayout::GetDirectWriteTextLayout(IDWriteTextLayout** ppLayout)
+__checkReturn HRESULT 
+CDirectWriteTextLayout::GetDirectWriteTextLayout(
+	__deref_out IDWriteTextLayout** ppLayout
+	)
 {
     HRESULT hr = S_OK;
 
@@ -36,7 +45,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteTextLayout::SetMaxSize(const SizeF &Size)
+__override __checkReturn HRESULT 
+CDirectWriteTextLayout::SetMaxSize(
+	const SizeF& Size
+	)
 {
     HRESULT hr = S_OK;
 
@@ -47,7 +59,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDirectWriteTextLayout::GetMetrics(CTextLayoutMetrics** ppMetrics)
+__override __checkReturn HRESULT 
+CDirectWriteTextLayout::GetMetrics(
+	__deref_out CTextLayoutMetrics** ppMetrics
+	)
 {
     HRESULT hr = S_OK;
     CDirectWriteLayoutMetrics* pDirectWriteMetrics = NULL;

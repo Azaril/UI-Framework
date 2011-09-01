@@ -4,15 +4,18 @@
 #include "ParserCommand.h"
 #include "CreateObjectCommand.h"
 
-CElementNodeCallback::CElementNodeCallback() : m_ChildNode(NULL),
-                                               m_ResolvedClass(NULL),
-                                               m_Properties(NULL),
-                                               m_Complete(FALSE),
-                                               m_KeyString(NULL)
+CElementNodeCallback::CElementNodeCallback(
+	) 
+	: m_ChildNode(NULL)
+	, m_ResolvedClass(NULL)
+	, m_Properties(NULL)
+	, m_Complete(FALSE)
+	, m_KeyString(NULL)
 {
 }
 
-CElementNodeCallback::~CElementNodeCallback()
+CElementNodeCallback::~CElementNodeCallback(
+	)
 {
     ReleaseObject(m_ChildNode);
     ReleaseObject(m_ResolvedClass);
@@ -20,7 +23,11 @@ CElementNodeCallback::~CElementNodeCallback()
     ReleaseObject(m_KeyString);
 }
 
-HRESULT CElementNodeCallback::Initialize(CParseContext* pContext, CXMLElementStart* pXMLStart)
+__checkReturn HRESULT 
+CElementNodeCallback::Initialize(
+	__in CParseContext* pContext, 
+	__in CXMLElementStart* pXMLStart
+	)
 {
     HRESULT hr = S_OK;
     const WCHAR* pElementName = NULL;
@@ -43,12 +50,18 @@ Cleanup:
     return hr;
 }
 
-CStringValue* CElementNodeCallback::GetKey()
+__out_opt CStringValue* 
+CElementNodeCallback::GetKey(
+	)
 {
     return m_KeyString;
 }
 
-HRESULT CElementNodeCallback::OnElementStart(CXMLElementStart* pElementStart, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CElementNodeCallback::OnElementStart(
+	__in CXMLElementStart* pElementStart, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -71,7 +84,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CElementNodeCallback::OnElementEnd(CXMLElementEnd* pElementEnd, BOOL& Consumed)
+__override __checkReturn HRESULT
+CElementNodeCallback::OnElementEnd(
+	__in CXMLElementEnd* pElementEnd, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -100,7 +117,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CElementNodeCallback::OnText(CXMLText* pText, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CElementNodeCallback::OnText(
+	__in CXMLText* pText, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
 
@@ -123,12 +144,15 @@ Cleanup:
     return hr;
 }
 
-HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consumed)
+__override __checkReturn HRESULT 
+CElementNodeCallback::OnAttribute(
+	__in CXMLAttribute* pAttribute, 
+	BOOL& Consumed
+	)
 {
     HRESULT hr = S_OK;
     CProperty* pProperty = NULL;
     WCHAR* pClassType = NULL;
-    UINT32 ClassTypeLength = 0;
     CStringValue* pAttributeValue = NULL;
     CParserCommandList* pParserCommandList = NULL;
 
@@ -148,8 +172,6 @@ HRESULT CElementNodeCallback::OnAttribute(CXMLAttribute* pAttribute, BOOL& Consu
         UINT32 NameStringLength = 0;
         const WCHAR* pValueString = NULL;
         UINT32 ValueStringLength = 0;
-        const WCHAR* pPropertyStart = NULL;
-        CPropertyInformation* pPropertyLookup = NULL;
 
         IFCEXPECT(!m_Complete);
 
@@ -214,7 +236,9 @@ Cleanup:
     return hr;
 }
 
-BOOL CElementNodeCallback::IsComplete()
+__override BOOL 
+CElementNodeCallback::IsComplete(
+	)
 {
     return m_Complete;
 }

@@ -1,19 +1,25 @@
 #include "DynamicResolvedClass.h"
 
-CDynamicResolvedClass::CDynamicResolvedClass() : m_CachedProperties(NULL),
-                                                 m_CachedEvents(NULL),
-                                                 m_CachedCommands(NULL)
+CDynamicResolvedClass::CDynamicResolvedClass(
+	) 
+	: m_CachedProperties(NULL)
+	, m_CachedEvents(NULL)
+	, m_CachedCommands(NULL)
 {
 }
 
-CDynamicResolvedClass::~CDynamicResolvedClass()
+CDynamicResolvedClass::~CDynamicResolvedClass(
+	)
 {
     ReleaseObject(m_CachedProperties);
     ReleaseObject(m_CachedEvents);
     ReleaseObject(m_CachedCommands);
 }
 
-HRESULT CDynamicResolvedClass::Initialize(const ClassInformation& Info)
+__checkReturn HRESULT 
+CDynamicResolvedClass::Initialize(
+	const ClassInformation& Info
+	)
 {
     HRESULT hr = S_OK;
 
@@ -25,17 +31,25 @@ Cleanup:
     return hr;
 }
 
-const WCHAR* CDynamicResolvedClass::GetName()
+__out const WCHAR* 
+CDynamicResolvedClass::GetName(
+	)
 {
     return m_Information.Name;
 }
 
-TypeIndex::Value CDynamicResolvedClass::GetType()
+TypeIndex::Value 
+CDynamicResolvedClass::GetType(
+	)
 {
     return m_Information.ClassType;
 }
 
-HRESULT CDynamicResolvedClass::CreateInstance(CProviders* pProviders, CPropertyObject** ppObject)
+__checkReturn HRESULT 
+CDynamicResolvedClass::CreateInstance(
+	__in CProviders* pProviders, 
+	__deref_out CPropertyObject** ppObject
+	)
 {
     HRESULT hr = S_OK;
 
@@ -47,7 +61,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResolvedClass::GetPropertyInformation(CPropertyInformation** ppInformation)
+__checkReturn HRESULT 
+CDynamicResolvedClass::GetPropertyInformation(
+	__deref_out CPropertyInformation** ppInformation
+	)
 {
     HRESULT hr = S_OK;
 
@@ -65,7 +82,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResolvedClass::GetEventInformation(CEventInformation** ppInformation)
+__checkReturn HRESULT 
+CDynamicResolvedClass::GetEventInformation(
+	__deref_out CEventInformation** ppInformation
+	)
 {
     HRESULT hr = S_OK;
 
@@ -83,7 +103,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResolvedClass::GetCommandInformation(CCommandInformation** ppInformation)
+__checkReturn HRESULT 
+CDynamicResolvedClass::GetCommandInformation(
+	__deref_out CCommandInformation** ppInformation
+	)
 {
     HRESULT hr = S_OK;
 

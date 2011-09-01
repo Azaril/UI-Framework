@@ -13,16 +13,22 @@ class UIFRAMEWORK_API CD2DGraphicsDevice : public CGraphicsDevice
     public:
         DECLARE_FACTORY( CD2DGraphicsDevice );
 
-		HRESULT CreateHWNDRenderTarget( HWND Window, CD2DHWNDRenderTarget** ppRenderTarget );
-        HRESULT CreateDXGISurfaceRenderTarget( IDXGISurface* pSurface, CRenderTarget** ppRenderTarget );
-        //virtual HRESULT CreateRenderTarget( const SizeF& Size, CRenderTarget** ppRenderTarget );
+		__checkReturn HRESULT CreateHWNDRenderTarget( 
+			HWND Window, 
+			__deref_out CD2DHWNDRenderTarget** ppRenderTarget 
+			);
 
-        virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider );
+        HRESULT CreateDXGISurfaceRenderTarget( 
+			__in IDXGISurface* pSurface, 
+			__deref_out CRenderTarget** ppRenderTarget 
+			);
 
-        virtual HRESULT GetImagingProvider( CImagingProvider** ppImagingProvider );
+        __override virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider );
 
-        virtual HRESULT CreateRectangleGeometry( const RectF& Rectangle, CRectangleGeometry** ppRectangleGeometry );
-        virtual HRESULT CreateRoundedRectangleGeometry( const RectF& Rectangle, FLOAT CornerRadius, CRoundedRectangleGeometry** ppRectangleGeometry );
+        __override virtual HRESULT GetImagingProvider( CImagingProvider** ppImagingProvider );
+
+        __override virtual HRESULT CreateRectangleGeometry( const RectF& Rectangle, CRectangleGeometry** ppRectangleGeometry );
+        __override virtual HRESULT CreateRoundedRectangleGeometry( const RectF& Rectangle, FLOAT CornerRadius, CRoundedRectangleGeometry** ppRectangleGeometry );
 
     protected:
         CD2DGraphicsDevice();

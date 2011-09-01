@@ -1,16 +1,22 @@
 #include "DirectWriteTextFormat.h"
 #include "ErrorChecking.h"
 
-CDirectWriteTextFormat::CDirectWriteTextFormat() : m_Format(NULL)
+CDirectWriteTextFormat::CDirectWriteTextFormat(
+	) 
+	: m_Format(NULL)
 {
 }
 
-CDirectWriteTextFormat::~CDirectWriteTextFormat()
+CDirectWriteTextFormat::~CDirectWriteTextFormat(
+	)
 {
     ReleaseObject(m_Format);
 }
 
-HRESULT CDirectWriteTextFormat::Initialize(IDWriteTextFormat* pFormat)
+__checkReturn HRESULT
+CDirectWriteTextFormat::Initialize(
+	__in IDWriteTextFormat* pFormat
+	)
 {
     HRESULT hr = S_OK;
 
@@ -23,7 +29,9 @@ Cleanup:
     return hr;
 }
 
-IDWriteTextFormat* CDirectWriteTextFormat::GetDirectWriteTextFormat()
+__out IDWriteTextFormat* 
+CDirectWriteTextFormat::GetDirectWriteTextFormat(
+	)
 {
     return m_Format;
 }

@@ -4,14 +4,24 @@
 #include "VisualResource.h"
 #include "PropertyObject.h"
 
-class CGeometry : public CObjectWithType
+class UIFRAMEWORK_API CGeometry : public CObjectWithType
 {
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Geometry, CObjectWithType );
 
-        virtual HRESULT GetBounds( RectF* pBounds ) = 0;
-        virtual HRESULT GetBounds( const Matrix3X2F& Transform, RectF* pBounds ) = 0;
-        virtual HRESULT FillContainsPoint( const Point2F& LocalPoint, BOOL* pContainsPoint ) = 0;
+        virtual __checkReturn HRESULT GetBounds(
+			__out RectF* pBounds 
+			) = 0;
+
+        virtual __checkReturn HRESULT GetBounds( 
+			const Matrix3X2F& Transform,
+			__out RectF* pBounds 
+			) = 0;
+
+        virtual __checkReturn HRESULT FillContainsPoint( 
+			const Point2F& LocalPoint, 
+			__out BOOL* pContainsPoint 
+			) = 0;
 };
 
 template< >
@@ -20,7 +30,7 @@ struct ObjectTypeTraits< CGeometry >
     static const TypeIndex::Value Type = TypeIndex::Geometry;
 };
 
-class CRectangleGeometry : public CGeometry
+class UIFRAMEWORK_API CRectangleGeometry : public CGeometry
 {
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::RectangleGeometry, CGeometry );
@@ -32,7 +42,7 @@ struct ObjectTypeTraits< CRectangleGeometry >
     static const TypeIndex::Value Type = TypeIndex::RectangleGeometry;
 };
 
-class CRoundedRectangleGeometry : public CGeometry
+class UIFRAMEWORK_API CRoundedRectangleGeometry : public CGeometry
 {
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::RoundedRectangleGeometry, CGeometry );

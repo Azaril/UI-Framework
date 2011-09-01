@@ -43,8 +43,6 @@ HRESULT CMouseButtonHitTestCallback::ItemHit(CVisual* pVisual, HitTestResultBeha
 
     if(pVisual->IsTypeOf(TypeIndex::UIElement))
     {
-        CUIElement* pElement = (CUIElement*)pVisual;
-
         IFC(m_Controller->RaiseMouseButton(m_Location, m_Button, m_ButtonState, m_Handled));
 
         *pResultBehavior = HitTestResultBehavior::Stop;

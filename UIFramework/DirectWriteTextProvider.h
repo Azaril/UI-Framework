@@ -11,17 +11,39 @@ class CDirectWriteTextProvider : public CTextProvider
     public:
         DECLARE_FACTORY( CDirectWriteTextProvider );
 
-        virtual HRESULT CreateFormat( const WCHAR* pFontName, FLOAT FontSize, const WCHAR* pLocaleName, CTextFormat** ppTextFormat );
-        virtual HRESULT GetDefaultFormat( CTextFormat** ppTextFormat );
+        __override virtual __checkReturn HRESULT CreateFormat(
+			__in_z const WCHAR* pFontName,
+			FLOAT FontSize, 
+			__in_z const WCHAR* pLocaleName,
+			__deref_out CTextFormat** ppTextFormat 
+			);
 
-        virtual HRESULT CreateTextLayout( const WCHAR* pText, UINT32 CharacterCount, CTextFormat* pTextFormat, const SizeF& Size, CTextLayout** ppTextLayout );
-        virtual HRESULT CreateEditableTextLayout( const SizeF& Size, CEditableTextLayout** ppEditableTextLayout );
+        __override virtual __checkReturn HRESULT GetDefaultFormat( 
+			__deref_out CTextFormat** ppTextFormat 
+			);
+
+        __override virtual __checkReturn HRESULT CreateTextLayout(
+			__in_ecount(CharacterCount) const WCHAR* pText, 
+			UINT32 CharacterCount, 
+			__in CTextFormat* pTextFormat, 
+			const SizeF& Size,
+			__deref_out CTextLayout** ppTextLayout 
+			);
+
+        __override virtual __checkReturn HRESULT CreateEditableTextLayout(
+			const SizeF& Size, 
+			__deref_out CEditableTextLayout** ppEditableTextLayout 
+			);
 
     protected:
-        CDirectWriteTextProvider();
-        virtual ~CDirectWriteTextProvider();
+        CDirectWriteTextProvider(
+			);
 
-        HRESULT Initialize();
+        virtual ~CDirectWriteTextProvider(
+			);
+
+        HRESULT Initialize(
+			);
 
         HMODULE m_DWriteModule;
         IDWriteFactory* m_Factory;
