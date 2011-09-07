@@ -10,21 +10,52 @@ class UIFRAMEWORK_API CMouseController : public CRefCountedObject
     public:
         DECLARE_FACTORY1( CMouseController, CUIElement* );
 
-        HRESULT InjectMouseButton( MouseButton::Value Button, MouseButtonState::Value State, BOOL* pConsumed = NULL );
-        HRESULT InjectMouseMove( Point2F Location, BOOL* pConsumed = NULL );
+        __checkReturn HRESULT InjectMouseButton( 
+            MouseButton::Value Button, 
+            MouseButtonState::Value State, 
+            __out_opt BOOL* pConsumed = NULL 
+            );
 
-        HRESULT SetMouseOverElement( CUIElement* pElement, Point2F Location );
-        HRESULT RaiseMouseMove( Point2F Location, BOOL* pConsumed = NULL );
-        HRESULT RaiseMouseButton( Point2F Location, MouseButton::Value Button, MouseButtonState::Value State, BOOL* pConsumed = NULL );
+        __checkReturn HRESULT InjectMouseMove( 
+            Point2F Location,
+            __out_opt BOOL* pConsumed = NULL 
+            );
 
-        HRESULT SetCapture( CUIElement* pElement );
-        HRESULT ReleaseCapture( CUIElement* pElement );
+        __checkReturn HRESULT SetMouseOverElement( 
+            __in_opt CUIElement* pElement, 
+            Point2F Location
+            );
+
+        __checkReturn HRESULT RaiseMouseMove( 
+            Point2F Location, 
+            __out_opt BOOL* pConsumed = NULL 
+            );
+
+        __checkReturn HRESULT RaiseMouseButton( 
+            Point2F Location,
+            MouseButton::Value Button, 
+            MouseButtonState::Value State, 
+            __out_opt BOOL* pConsumed = NULL 
+            );
+
+        __checkReturn HRESULT SetCapture( 
+            __in CUIElement* pElement 
+            );
+
+        __checkReturn HRESULT ReleaseCapture( 
+            __in CUIElement* pElement 
+            );
 
     protected:
-        CMouseController();
-        virtual ~CMouseController();
+        CMouseController(
+            );
 
-        HRESULT Initialize( CUIElement* pRootElement );
+        virtual ~CMouseController(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in CUIElement* pRootElement 
+            );
 
         CUIElement* m_RootElement;
         CUIElement* m_MouseOverElement;

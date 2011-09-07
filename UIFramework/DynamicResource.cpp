@@ -6,13 +6,16 @@
 //
 // Properties
 //
-CStaticProperty CDynamicResource::ResourceKeyProperty( L"ResourceKey", TypeIndex::Object, StaticPropertyFlags::None );
+CStaticProperty CDynamicResource::ResourceKeyProperty(L"ResourceKey", TypeIndex::Object, StaticPropertyFlags::None);
 
-CDynamicResource::CDynamicResource() : m_ResourceKey(NULL)
+CDynamicResource::CDynamicResource(
+    ) 
+    : m_ResourceKey(NULL)
 {
 }
 
-CDynamicResource::~CDynamicResource()
+CDynamicResource::~CDynamicResource(
+    )
 {
     m_TargetAttachedConnection.disconnect();
     m_TargetDetachedConnection.disconnect();
@@ -20,7 +23,10 @@ CDynamicResource::~CDynamicResource()
     ReleaseObject(m_ResourceKey);
 }
 
-HRESULT CDynamicResource::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CDynamicResource::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -30,7 +36,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::GetBoundValue(CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CDynamicResource::GetBoundValue(
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     CPropertyObject* pTarget = NULL;
@@ -60,7 +69,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CDynamicResource::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -89,7 +101,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CDynamicResource::SetValueInternal(
+    __in CProperty* pProperty,
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -111,7 +127,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CDynamicResource::GetValueInternal(
+    __in CProperty* pProperty, 
+    __deref_out CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -132,7 +152,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::SetTarget(CPropertyObject* pTarget, CProperty* pTargetProperty)
+__override __checkReturn HRESULT 
+CDynamicResource::SetTarget(
+    __in CPropertyObject* pTarget, 
+    __in CProperty* pTargetProperty
+    )
 {
     HRESULT hr = S_OK;
     CUIElement* pTargetElement = NULL;
@@ -153,7 +177,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDynamicResource::ClearTarget()
+__override __checkReturn HRESULT 
+CDynamicResource::ClearTarget(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -166,7 +192,11 @@ Cleanup:
     return hr;
 }
 
-void CDynamicResource::OnTargetAttached(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+void 
+CDynamicResource::OnTargetAttached(
+    __in CObjectWithType* pSender,
+    __in CRoutedEventArgs* pRoutedEventArgs
+    )
 {
     HRESULT hr = S_OK;
 
@@ -179,7 +209,11 @@ Cleanup:
     ;
 }
 
-void CDynamicResource::OnTargetDetached(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+void 
+CDynamicResource::OnTargetDetached(
+    __in CObjectWithType* pSender,
+    __in CRoutedEventArgs* pRoutedEventArgs
+    )
 {
     HRESULT hr = S_OK;
 

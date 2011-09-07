@@ -10,14 +10,23 @@ class CNamedObjectHolder : public CRefCountedObject
     public:
         DECLARE_FACTORY2( CNamedObjectHolder, const WCHAR*, CObjectWithType* );
 
-        const WCHAR* GetName();
-        CObjectWithType* GetObject();
+        __out const WCHAR* GetName(
+            );
+
+        __out CObjectWithType* GetObject(
+            );
 
     protected:
-        CNamedObjectHolder();
-        virtual ~CNamedObjectHolder();
+        CNamedObjectHolder(
+            );
 
-        HRESULT Initialize( const WCHAR* pName, CObjectWithType* pObject );
+        virtual ~CNamedObjectHolder(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in_z const WCHAR* pName, 
+            __in CObjectWithType* pObject 
+            );
 
         std::wstring m_Name;
         CObjectWithType* m_Object;
@@ -30,18 +39,35 @@ class CNamescope : public CRefCountedObjectBase< CObjectWithType >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Namescope, CObjectWithType );
 
-        virtual HRESULT RegisterName( const WCHAR* pName, CObjectWithType* pObject );
-        virtual HRESULT UnregisterName( const WCHAR* pName, CObjectWithType* pObject );
+        virtual __checkReturn HRESULT RegisterName(
+            __in_z const WCHAR* pName, 
+            __in CObjectWithType* pObject 
+            );
 
-        virtual HRESULT FindName( const WCHAR* pName, CObjectWithType** ppObject );
+        virtual __checkReturn HRESULT UnregisterName(
+            __in_z const WCHAR* pName, 
+            _in CObjectWithType* pObject 
+            );
+
+        virtual __checkReturn HRESULT FindName(
+            __in_z const WCHAR* pName, 
+            __deref_out_opt CObjectWithType** ppObject 
+            );
 
     protected:
-        CNamescope();
-        virtual ~CNamescope();
+        CNamescope(
+            );
 
-        HRESULT InternalFindObject(const WCHAR* pName, CNamedObjectHolder** ppHolder);
+        virtual ~CNamescope(
+            );
 
-        HRESULT Initialize();
+        __checkReturn HRESULT InternalFindObject(
+            __in_z const WCHAR* pName, 
+            __deref_out_opt CNamedObjectHolder** ppHolder
+            );
+
+        __checkReturn HRESULT Initialize(
+            );
 
         std::vector< CNamedObjectHolder* > m_NamedObjects;
 };

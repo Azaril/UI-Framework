@@ -2,7 +2,11 @@
 #include "UIElement.h"
 #include "MouseController.h"
 
-HRESULT CMouseInputHitTestFilter::Filter(CVisual* pVisual, HitTestFilterBehavior::Value* pFilterBehavior)
+__checkReturn HRESULT 
+CMouseInputHitTestFilter::Filter(
+    __in CVisual* pVisual, 
+    __out HitTestFilterBehavior::Value* pFilterBehavior
+    )
 {
     HRESULT hr = S_OK;
 
@@ -26,15 +30,26 @@ Cleanup:
     return hr;
 }
 
-CMouseButtonHitTestCallback::CMouseButtonHitTestCallback(CMouseController* pController, Point2F MouseLocation, MouseButton::Value Button, MouseButtonState::Value State, BOOL* pHandled) : m_Controller(pController),
-                                                                                                                                                                                           m_Button(Button),
-                                                                                                                                                                                           m_ButtonState(State),
-                                                                                                                                                                                           m_Location(MouseLocation),
-                                                                                                                                                                                           m_Handled(pHandled)
+CMouseButtonHitTestCallback::CMouseButtonHitTestCallback(
+    __in CMouseController* pController, 
+    Point2F MouseLocation,
+    MouseButton::Value Button, 
+    MouseButtonState::Value State, 
+    __out_opt BOOL* pHandled
+    ) 
+    : m_Controller(pController)
+    , m_Button(Button)
+    , m_ButtonState(State)
+    , m_Location(MouseLocation)
+    , m_Handled(pHandled)
 {
 }
 
-HRESULT CMouseButtonHitTestCallback::ItemHit(CVisual* pVisual, HitTestResultBehavior::Value* pResultBehavior)
+__checkReturn HRESULT
+CMouseButtonHitTestCallback::ItemHit(
+    __in CVisual* pVisual,
+    __out HitTestResultBehavior::Value* pResultBehavior
+    )
 {
     HRESULT hr = S_OK;
 
@@ -56,16 +71,22 @@ Cleanup:
     return hr;
 }
 
-
-
-
-CMouseMoveHitTestCallback::CMouseMoveHitTestCallback(CMouseController* pController, Point2F MouseLocation, BOOL* pHandled) : m_Controller(pController),
-                                                                                                                             m_Location(MouseLocation),
-                                                                                                                             m_Handled(pHandled)
+CMouseMoveHitTestCallback::CMouseMoveHitTestCallback(
+    __in CMouseController* pController,
+    Point2F MouseLocation,
+    __out BOOL* pHandled
+    ) 
+    : m_Controller(pController)
+    , m_Location(MouseLocation)
+    , m_Handled(pHandled)
 {
 }
 
-HRESULT CMouseMoveHitTestCallback::ItemHit(CVisual* pVisual, HitTestResultBehavior::Value* pResultBehavior)
+__checkReturn HRESULT 
+CMouseMoveHitTestCallback::ItemHit(
+    __in CVisual* pVisual, 
+    __out HitTestResultBehavior::Value* pResultBehavior
+    )
 {
     HRESULT hr = S_OK;
 

@@ -1,6 +1,12 @@
 #include "HitTesting.h"
 
-HRESULT WalkVisualTreeForHitTesting(const Point2F& LocalPoint, CVisual* pParent, CHitTestFilter* pFilter, CHitTestCallback* pCallback)
+__checkReturn HRESULT 
+WalkVisualTreeForHitTesting(
+    const Point2F& LocalPoint, 
+    __in CVisual* pParent, 
+    __in_opt CHitTestFilter* pFilter,
+    __in CHitTestCallback* pCallback
+    )
 {
     HRESULT hr = S_OK;
     CTransform* pTransform = NULL;
@@ -8,9 +14,9 @@ HRESULT WalkVisualTreeForHitTesting(const Point2F& LocalPoint, CVisual* pParent,
     HitTestFilterBehavior::Value FilterBehavior = HitTestFilterBehavior::Continue;
     HitTestResultBehavior::Value ResultBehavior = HitTestResultBehavior::Continue;
 
-    if(pParent)
+    if(pParent != NULL)
     {
-        if(pFilter)
+        if(pFilter != NULL)
         {
             IFC(pFilter->Filter(pParent, &FilterBehavior));
         }
@@ -64,7 +70,8 @@ Cleanup:
     return hr;
 }
 
-HRESULT HitTestTree(CVisual* pRootVisual, const Point2F& LocalPoint, CHitTestFilter* pFilter, CHitTestCallback* pCallback)
+__checkReturn HRESULT 
+HitTestTree(CVisual* pRootVisual, const Point2F& LocalPoint, CHitTestFilter* pFilter, CHitTestCallback* pCallback)
 {
     HRESULT hr = S_OK;
 

@@ -5,49 +5,74 @@
 #include "BindingBase.h"
 #include "BindingContext.h"
 
-typedef HRESULT (*SetValueFunc)( CPropertyObject* pTarget, CProperty* pTargetProperty, CObjectWithType* pValue );
+typedef __checkReturn HRESULT (*SetValueFunc)( 
+    __in CPropertyObject* pTarget,
+    __in CProperty* pTargetProperty, 
+    __in CObjectWithType* pValue 
+    );
 
 class CDefaultBindingContext : public CRefCountedObjectBase< CBindingContext >
 {
     public:
         DECLARE_FACTORY( CDefaultBindingContext );
 
-        HRESULT SetPropertyBinding( CProperty* pProperty, CBindingBase* pBinding, SetValueFunc SetFunc, events::signals::connection ChangeConnection );
+        __checkReturn HRESULT SetPropertyBinding(
+            __in CProperty* pProperty, 
+            __in CBindingBase* pBinding, 
+            __in SetValueFunc SetFunc, 
+            events::signals::connection ChangeConnection 
+            );
 
     protected:
-        CDefaultBindingContext();
-        virtual ~CDefaultBindingContext();
+        CDefaultBindingContext(
+            );
 
-        HRESULT Initialize();
+        virtual ~CDefaultBindingContext(
+            );
+
+        __checkReturn HRESULT Initialize(
+            );
 
         class CPropertyBinding
         {
             public:
-                CPropertyBinding(CProperty* pProperty, CBindingBase* pBinding, SetValueFunc SetFunc, events::signals::connection ChangeConnection) : m_Property(pProperty),
-                                                                                                                                                     m_Binding(pBinding),
-                                                                                                                                                     m_ChangeConnection(ChangeConnection),
-                                                                                                                                                     m_SetFunc(SetFunc)
+                CPropertyBinding(
+                    __in CProperty* pProperty, 
+                    __in CBindingBase* pBinding, 
+                    __in SetValueFunc SetFunc, 
+                    events::signals::connection ChangeConnection
+                    ) 
+                    : m_Property(pProperty)
+                    , m_Binding(pBinding)
+                    , m_ChangeConnection(ChangeConnection)
+                    , m_SetFunc(SetFunc)
                 {
                     AddRefObject(m_Property);
                     AddRefObject(m_Binding);
                 }
 
-                CPropertyBinding(const CPropertyBinding& Other) : m_Property(Other.m_Property),
-                                                                  m_Binding(Other.m_Binding),
-                                                                  m_ChangeConnection(Other.m_ChangeConnection),
-                                                                  m_SetFunc(Other.m_SetFunc)
+                CPropertyBinding(
+                    const CPropertyBinding& Other
+                    ) 
+                    : m_Property(Other.m_Property)
+                    , m_Binding(Other.m_Binding)
+                    , m_ChangeConnection(Other.m_ChangeConnection)
+                    , m_SetFunc(Other.m_SetFunc)
                 {
                     AddRefObject(m_Property);
                     AddRefObject(m_Binding);
                 }
 
-                ~CPropertyBinding()
+                ~CPropertyBinding(
+                    )
                 {
                     ReleaseObject(m_Property);
                     ReleaseObject(m_Binding);
                 }
 
-                CPropertyBinding& operator=(const CPropertyBinding& Other)
+                CPropertyBinding& operator=(
+                    const CPropertyBinding& Other
+                    )
                 {
                     ReleaseObject(m_Property);
                     ReleaseObject(m_Binding);
@@ -63,27 +88,31 @@ class CDefaultBindingContext : public CRefCountedObjectBase< CBindingContext >
                     return *this;
                 }
 
-                CProperty* GetProperty()
+                __out CProperty* GetProperty(
+                    )
                 {
                     return m_Property;
                 }
 
-                CBindingBase* GetBinding()
+                __out CBindingBase* GetBinding(
+                    )
                 {
                     return m_Binding;
                 }
 
-                void Clear()
+                __out SetValueFunc GetSetFunction(
+                    )
+                {
+                    return m_SetFunc;
+                }
+
+                void Clear(
+                    )
                 {
                     ReleaseObject(m_Property);
                     ReleaseObject(m_Binding);
 
                     m_ChangeConnection.disconnect();
-                }
-
-                SetValueFunc GetSetFunction()
-                {
-                    return m_SetFunc;
                 }
 
             protected:
@@ -101,17 +130,36 @@ class CBindingManager : public CRefCountedObject
     public:
         DECLARE_FACTORY( CBindingManager );
 
-        HRESULT SetBinding( CPropertyObject* pTarget, CProperty* pTargetProperty, CBindingBase* pBinding, SetValueFunc SetFunc );
+        __checkReturn HRESULT SetBinding(
+            __in CPropertyObject* pTarget, 
+            __in CProperty* pTargetProperty, 
+            __in CBindingBase* pBinding, 
+            __in SetValueFunc SetFunc 
+            );
 
     protected:
-        CBindingManager();
-        virtual ~CBindingManager();
+        CBindingManager(
+            );
 
-        HRESULT Initialize();
+        virtual ~CBindingManager(
+            );
 
-        HRESULT GetBindingContext( CPropertyObject* pTarget, CDefaultBindingContext** ppContext );
+        __checkReturn HRESULT Initialize(
+            );
 
-        static void OnBindingInvalidated( CBindingBase* pBinding, SetValueFunc SetFunc );
-        static HRESULT SetValueFromBinding( CBindingBase* pBinding, SetValueFunc SetFunc );
+        __checkReturn HRESULT GetBindingContext( 
+            __in CPropertyObject* pTarget,
+            __deref_out CDefaultBindingContext** ppContext 
+            );
+
+        static void OnBindingInvalidated( 
+            __in CBindingBase* pBinding, 
+            __in SetValueFunc SetFunc 
+            );
+
+        static __checkReturn HRESULT SetValueFromBinding(
+            __in CBindingBase* pBinding,
+            __in SetValueFunc SetFunc 
+            );
 };
 

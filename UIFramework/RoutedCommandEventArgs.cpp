@@ -1,15 +1,22 @@
 #include "RoutedCommandEventArgs.h"
 
-CRoutedCommandEventArgs::CRoutedCommandEventArgs() : m_Command(NULL)
+CRoutedCommandEventArgs::CRoutedCommandEventArgs(
+    ) 
+    : m_Command(NULL)
 {
 }
 
-CRoutedCommandEventArgs::~CRoutedCommandEventArgs()
+CRoutedCommandEventArgs::~CRoutedCommandEventArgs(
+    )
 {
     ReleaseObject(m_Command);
 }
 
-HRESULT CRoutedCommandEventArgs::Initialize(CRoutedEvent* pRoutedEvent, CRoutedCommand* pCommand)
+__checkReturn HRESULT 
+CRoutedCommandEventArgs::Initialize(
+    __in CRoutedEvent* pRoutedEvent,
+    __in CRoutedCommand* pCommand
+    )
 {
     HRESULT hr = S_OK;
 
@@ -25,7 +32,9 @@ Cleanup:
     return hr;
 }
 
-CRoutedCommand* CRoutedCommandEventArgs::GetCommand()
+__out CRoutedCommand* 
+CRoutedCommandEventArgs::GetCommand(
+    )
 {
     return m_Command;
 }

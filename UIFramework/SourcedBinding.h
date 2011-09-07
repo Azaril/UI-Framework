@@ -25,12 +25,21 @@ class CSourcedBinding : public CBindingBase
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::SourcedBinding, CBindingBase );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual HRESULT GetBoundValue( CObjectWithType** ppValue );
+        __override virtual __checkReturn HRESULT GetBoundValue(
+            __deref_out_opt CObjectWithType** ppValue
+            );
 
-        virtual HRESULT SetTarget( CPropertyObject* pTarget, CProperty* pTargetProperty );
-        virtual HRESULT ClearTarget();
+        __override virtual __checkReturn HRESULT SetTarget(
+            __in CPropertyObject* pTarget,
+            __in CProperty* pTargetProperty 
+            );
+
+        __override virtual __checkReturn HRESULT ClearTarget(
+            );
 
         //
         // Properties
@@ -38,26 +47,53 @@ class CSourcedBinding : public CBindingBase
         static CStaticProperty BindingDirectionProperty;
 
     protected:
-        CSourcedBinding();
-        virtual ~CSourcedBinding();
+        CSourcedBinding(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CSourcedBinding(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+        __checkReturn HRESULT Initialize( 
+            __in CProviders* pProviders 
+            );
 
-        HRESULT SetSource( CPropertyObject* pSource, CProperty* pSourceProperty );
-        HRESULT ClearSource();
+        __override virtual __checkReturn HRESULT SetValueInternal(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
 
-        void OnSourcePropertyChanged( CPropertyObject* pObject, CProperty* pProperty );
-        void OnTargetPropertyChanged( CPropertyObject* pObject, CProperty* pProperty );
+        __override virtual __checkReturn HRESULT GetValueInternal( 
+            __in CProperty* pProperty, 
+            __deref_out CObjectWithType** ppValue 
+            );
+
+        __checkReturn HRESULT SetSource(
+            __in CPropertyObject* pSource, 
+            __in CProperty* pSourceProperty 
+            );
+
+        __checkReturn HRESULT ClearSource(
+            );
+
+        void OnSourcePropertyChanged(
+            __in CPropertyObject* pObject,
+            __in CProperty* pProperty 
+            );
+
+        void OnTargetPropertyChanged( 
+            __in CPropertyObject* pObject, 
+            __in CProperty* pProperty 
+            );
 
         //
         // Property Change Handlers
         //
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnBindingDirectionChanged );
 
-        HRESULT OnBindingDirectionChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        __checkReturn HRESULT OnBindingDirectionChanged( 
+            __in CObjectWithType* pOldValue, 
+            __in CObjectWithType* pNewValue 
+            );
 
     private:
         CPropertyObject* m_Source;

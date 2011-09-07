@@ -1,15 +1,23 @@
 #include "TextEventArgs.h"
 
-CTextEventArgs::CTextEventArgs() : m_Text(NULL)
+CTextEventArgs::CTextEventArgs(
+    ) 
+    : m_Text(NULL)
 {
 }
 
-CTextEventArgs::~CTextEventArgs()
+CTextEventArgs::~CTextEventArgs(
+    )
 {
     ReleaseObject(m_Text);
 }
 
-HRESULT CTextEventArgs::Initialize(CRoutedEvent* pRoutedEvent, const WCHAR* pText, UINT32 TextLength)
+__checkReturn HRESULT 
+CTextEventArgs::Initialize(
+    __in CRoutedEvent* pRoutedEvent, 
+    __in_ecount(TextLength) const WCHAR* pText,
+    UINT32 TextLength
+    )
 {
     HRESULT hr = S_OK;
 
@@ -21,12 +29,16 @@ Cleanup:
     return hr;
 }
 
-const WCHAR* CTextEventArgs::GetText()
+__out const WCHAR*
+CTextEventArgs::GetText(
+    )
 {
     return m_Text->GetValue();
 }
 
-UINT32 CTextEventArgs::GetTextLength()
+UINT32 
+CTextEventArgs::GetTextLength(
+    )
 {
     return m_Text->GetLength();
 }
@@ -35,19 +47,27 @@ UINT32 CTextEventArgs::GetTextLength()
 // CTextEventArgs
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CTextEventArgs_TypeIndex()
+TypeIndex::Value
+CTextEventArgs_TypeIndex(
+    )
 {
     return TypeIndex::TextEventArgs;
 }
 
 extern "C" __declspec(dllexport)
-CInputEventArgs* CTextEventArgs_CastTo_CInputEventArgs(CTextEventArgs* pArgs)
+__out CInputEventArgs* 
+CTextEventArgs_CastTo_CInputEventArgs(
+    __in CTextEventArgs* pArgs
+    )
 {
     return pArgs;
 }
 
 extern "C" __declspec(dllexport)
-CTextEventArgs* CObjectWithType_CastTo_CTextEventArgs(CObjectWithType* pObject)
+__out_opt CTextEventArgs* 
+CObjectWithType_CastTo_CTextEventArgs(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::TextEventArgs)) ? (CTextEventArgs*)pObject : NULL;
 }

@@ -2,18 +2,25 @@
 #include "KeyboardEventArgs.h"
 #include "TextEventArgs.h"
 
-CKeyboardController::CKeyboardController() : m_FocusManager(NULL),
-                                             m_RootElement(NULL)
+CKeyboardController::CKeyboardController(
+    ) 
+    : m_FocusManager(NULL)
+    , m_RootElement(NULL)
 {
 }
 
-CKeyboardController::~CKeyboardController()
+CKeyboardController::~CKeyboardController(
+    )
 {
     ReleaseObject(m_FocusManager);
     ReleaseObject(m_RootElement);
 }
 
-HRESULT CKeyboardController::Initialize(CFocusManager* pFocusManager, CUIElement* pRootElement)
+__checkReturn HRESULT 
+CKeyboardController::Initialize(
+    __in CFocusManager* pFocusManager,
+    __in CUIElement* pRootElement
+    )
 {
     HRESULT hr = S_OK;
 
@@ -29,7 +36,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CKeyboardController::InjectKey(Key::Value Key, KeyState::Value State, BOOL* pConsumed)
+__checkReturn HRESULT 
+CKeyboardController::InjectKey(
+    Key::Value Key,
+    KeyState::Value State, 
+    __out_opt BOOL* pConsumed
+    )
 {
     HRESULT hr = S_OK;
     CUIElement* pFocusedElement = NULL;
@@ -56,7 +68,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CKeyboardController::InjectCharacter(WCHAR Character, BOOL* pConsumed)
+__checkReturn HRESULT 
+CKeyboardController::InjectCharacter(
+    WCHAR Character, 
+    __out_opt BOOL* pConsumed
+    )
 {
     HRESULT hr = S_OK;
     CUIElement* pFocusedElement = NULL;

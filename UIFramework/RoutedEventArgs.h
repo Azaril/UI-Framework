@@ -12,15 +12,26 @@ class CRoutedEventArgs : public CRefCountedObjectBase< CObjectWithType >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::RoutedEventArgs, CObjectWithType );
 
-        virtual CRoutedEvent* GetRoutedEvent();
-        virtual BOOL IsHandled();
-        virtual void SetHandled( BOOL Handled = TRUE );
+        virtual CRoutedEvent* GetRoutedEvent(
+            );
+
+        virtual BOOL IsHandled(
+            );
+
+        virtual void SetHandled(
+            BOOL Handled = TRUE 
+            );
 
     protected:
-        CRoutedEventArgs();
-        virtual ~CRoutedEventArgs();
+        CRoutedEventArgs(
+            );
 
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent );
+        virtual ~CRoutedEventArgs(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in CRoutedEvent* pRoutedEvent 
+            );
 
         CRoutedEvent* m_RoutedEvent;
         BOOL m_Handled;

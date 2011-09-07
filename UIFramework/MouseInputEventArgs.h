@@ -13,15 +13,31 @@ class CMouseEventArgs : public CInputEventArgs
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::MouseEventArgs, CInputEventArgs );
 
-        HRESULT GetLocation( Point2F* pLocation );
-        HRESULT GetLocation( CVisual* pVisual, Point2F* pLocation );
+        __checkReturn HRESULT GetLocation( 
+            __out Point2F* pLocation 
+            );
+
+        __checkReturn HRESULT GetLocation( 
+            __in CVisual* pVisual, 
+            __out Point2F* pLocation 
+            );
 
     protected:
-        CMouseEventArgs();
-        virtual ~CMouseEventArgs();
+        CMouseEventArgs(
+            );
 
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent, Point2F MouseLocation );
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent, CMouseEventArgs* pSourceArgs );
+        virtual ~CMouseEventArgs(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in CRoutedEvent* pRoutedEvent,
+            Point2F MouseLocation 
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in CRoutedEvent* pRoutedEvent,
+            __in CMouseEventArgs* pSourceArgs 
+            );
 
         Point2F m_Location;
 };
@@ -40,15 +56,30 @@ class CMouseButtonEventArgs : public CMouseEventArgs
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::MouseButtonEventArgs, CMouseEventArgs );
 
-        MouseButton::Value GetChangedButton();
-        MouseButtonState::Value GetButtonState();
+        MouseButton::Value GetChangedButton(
+            );
+
+        MouseButtonState::Value GetButtonState(
+            );
 
     protected:
-        CMouseButtonEventArgs();
-        virtual ~CMouseButtonEventArgs();
+        CMouseButtonEventArgs(
+            );
 
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent, Point2F MouseLocation, MouseButton::Value Button, MouseButtonState::Value State );
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent, CMouseButtonEventArgs* pSourceArgs );
+        virtual ~CMouseButtonEventArgs(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in CRoutedEvent* pRoutedEvent, 
+            Point2F MouseLocation, 
+            MouseButton::Value Button,
+            MouseButtonState::Value State 
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CRoutedEvent* pRoutedEvent,
+            __in CMouseButtonEventArgs* pSourceArgs 
+            );
 
         MouseButton::Value m_Button;
         MouseButtonState::Value m_ButtonState;

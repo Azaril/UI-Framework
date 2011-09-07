@@ -1,22 +1,30 @@
 #include "FocusManager.h"
 
-CFocusManager::CFocusManager() : m_FocusedElement(NULL)
+CFocusManager::CFocusManager(
+    ) 
+    : m_FocusedElement(NULL)
 {
 }
 
-CFocusManager::~CFocusManager()
+CFocusManager::~CFocusManager(
+    )
 {
     ReleaseObject(m_FocusedElement);
 }
 
-HRESULT CFocusManager::Initialize()
+__checkReturn HRESULT 
+CFocusManager::Initialize(
+    )
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-HRESULT CFocusManager::GetFocusedElement(CUIElement** ppElement)
+__checkReturn HRESULT
+CFocusManager::GetFocusedElement(
+    __deref_out_opt CUIElement** ppElement
+    )
 {
     HRESULT hr = S_OK;
 
@@ -29,7 +37,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CFocusManager::SetFocus(CUIElement* pElement, BOOL* pSetFocus)
+__checkReturn HRESULT 
+CFocusManager::SetFocus(
+    __in CUIElement* pElement, 
+    __out BOOL* pSetFocus
+    )
 {
     HRESULT hr = S_OK;
     CRoutedEventArgs* pPreviewLostFocusEventArgs = NULL;
@@ -102,28 +114,43 @@ Cleanup:
 }
 
 //
-// CUIHost
+// CFocusManager
 //
 extern "C" __declspec(dllexport)
-void CFocusManager_AddRef(CFocusManager* pManager)
+void
+CFocusManager_AddRef(
+    __in CFocusManager* pManager
+    )
 {
     pManager->AddRef();
 }
 
 extern "C" __declspec(dllexport)
-void CFocusManager_Release(CFocusManager* pManager)
+void 
+CFocusManager_Release(
+    __in CFocusManager* pManager
+    )
 {
     pManager->Release();
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CFocusManager_SetFocus(CFocusManager* pManager, CUIElement* pElement, BOOL* pSetFocus)
+__checkReturn HRESULT 
+CFocusManager_SetFocus(
+    __in CFocusManager* pManager, 
+    __in CUIElement* pElement, 
+    __out BOOL* pSetFocus
+    )
 {
     return pManager->SetFocus(pElement, pSetFocus);
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CFocusManager_GetFocusedElement(CFocusManager* pManager, CUIElement** ppElement)
+__checkReturn HRESULT
+CFocusManager_GetFocusedElement(
+    __in CFocusManager* pManager, 
+    __deref_out_opt CUIElement** ppElement
+    )
 {
     return pManager->GetFocusedElement(ppElement);
 }

@@ -11,8 +11,12 @@ class CCommand : public CObjectWithType
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Command, CObjectWithType );
 
-        virtual const WCHAR* GetName() = 0;
-        virtual HRESULT Execute( CUIElement* pSender ) = 0;
+        virtual __out const WCHAR* GetName(
+            ) = 0;
+
+        virtual __checkReturn HRESULT Execute(
+            __in CUIElement* pSender 
+            ) = 0;
 };
 
 template< >

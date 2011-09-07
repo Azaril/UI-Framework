@@ -11,37 +11,49 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
     class CDictionaryEntry
     {
         public:
-            CDictionaryEntry( const CDictionaryEntry& Other ) : m_Key(Other.m_Key),
-                                                                m_Value(Other.m_Value)
+            CDictionaryEntry( 
+                const CDictionaryEntry& Other
+                ) 
+                : m_Key(Other.m_Key)
+                , m_Value(Other.m_Value)
             {
                 AddRefObject(m_Key);
                 AddRefObject(m_Value);
             }
 
-            CDictionaryEntry( CObjectWithType* pKey, T* pObject ) : m_Key(pKey),
-                                                                    m_Value(pObject)
+            CDictionaryEntry( 
+                __in CObjectWithType* pKey,
+                __in T* pObject 
+                ) 
+                : m_Key(pKey)
+                , m_Value(pObject)
             {
                 AddRefObject(m_Key);
                 AddRefObject(m_Value);
             }
 
-            ~CDictionaryEntry()
+            ~CDictionaryEntry(
+                )
             {
                 ReleaseObject(m_Key);
                 ReleaseObject(m_Value);
             }
 
-            CObjectWithType* GetKey()
+            __out CObjectWithType* GetKey(
+                )
             {
                 return m_Key;
             }
 
-            T* GetValue()
+            __out T* GetValue(
+                )
             {
                 return m_Value;
             }
 
-            HRESULT SetValue( T* pObject )
+            __checkReturn HRESULT SetValue( 
+                __in T* pObject 
+                )
             {
                 HRESULT hr = S_OK;
 
@@ -65,7 +77,10 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
     public:
         DECLARE_FACTORY( CDictionary< T > );
 
-        virtual HRESULT AddObject( CObjectWithType* pKey, CObjectWithType* pObject )
+        __override virtual __checkReturn HRESULT AddObject(
+            __in CObjectWithType* pKey, 
+            __in CObjectWithType* pObject 
+            )
         {
             HRESULT hr = S_OK;
             T* pTypedObject = NULL;
@@ -95,7 +110,10 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
             return hr;
         }
 
-        virtual HRESULT RemoveObject( CObjectWithType* pKey, CObjectWithType* pObject )
+        __override virtual __checkReturn HRESULT RemoveObject(
+            __in CObjectWithType* pKey, 
+            __in CObjectWithType* pObject 
+            )
         {
             HRESULT hr = S_OK;
 
@@ -120,7 +138,10 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
             return hr;
         }
 
-        virtual HRESULT GetObject( CObjectWithType* pKey, CObjectWithType** ppObject )
+        __override virtual __checkReturn HRESULT GetObject( 
+            __in CObjectWithType* pKey, 
+            __deref_out CObjectWithType** ppObject 
+            )
         {
             HRESULT hr = S_OK;
 
@@ -149,15 +170,18 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
         }
 
     protected:
-        CDictionary()
+        CDictionary(
+            )
         {
         }
 
-        virtual ~CDictionary()
+        virtual ~CDictionary(
+            )
         {
         }
 
-        HRESULT Initialize()
+        __checkReturn HRESULT Initialize(
+            )
         {
             HRESULT hr = S_OK;
 

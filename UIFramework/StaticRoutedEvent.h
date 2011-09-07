@@ -5,13 +5,22 @@
 class CStaticRoutedEvent : public CRoutedEvent
 {
     public:
-        CStaticRoutedEvent( const WCHAR* pName, RoutingStrategy::Value Strategy );
+        CStaticRoutedEvent( 
+            __in const WCHAR* pName, 
+            RoutingStrategy::Value Strategy 
+            );
 
-        virtual INT32 AddRef();
-        virtual INT32 Release();
+        __override virtual INT32 AddRef(
+            );
 
-        virtual RoutingStrategy::Value GetRoutingStrategy();
-        virtual const WCHAR* GetName();
+        __override virtual INT32 Release(
+            );
+
+        __override virtual RoutingStrategy::Value GetRoutingStrategy(
+            );
+
+        __override virtual __out const WCHAR* GetName(
+            );
 
     protected:
         const WCHAR* m_Name;

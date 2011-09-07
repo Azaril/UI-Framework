@@ -10,13 +10,16 @@ DEFINE_GET_DEFAULT_NULL( Property );
 //
 // Properties
 //
-CStaticProperty CTemplateBinding::PropertyProperty( L"Property", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Property ) );
+CStaticProperty CTemplateBinding::PropertyProperty(L"Property", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Property ));
 
-CTemplateBinding::CTemplateBinding() : m_Property(NULL)
+CTemplateBinding::CTemplateBinding(
+    ) 
+    : m_Property(NULL)
 {
 }
 
-CTemplateBinding::~CTemplateBinding()
+CTemplateBinding::~CTemplateBinding(
+    )
 {
     m_TargetAttachedConnection.disconnect();
     m_TargetDetachedConnection.disconnect();
@@ -24,7 +27,10 @@ CTemplateBinding::~CTemplateBinding()
     ReleaseObject(m_Property);
 }
 
-HRESULT CTemplateBinding::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CTemplateBinding::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -34,7 +40,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTemplateBinding::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CTemplateBinding::CreatePropertyInformation(
+    __deref_out CPropertyInformation **ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -63,7 +72,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTemplateBinding::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CTemplateBinding::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -89,7 +102,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTemplateBinding::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CTemplateBinding::GetValue(
+    __in CProperty* pProperty, 
+    __deref_out CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -110,7 +127,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTemplateBinding::SetTarget(CPropertyObject* pTarget, CProperty* pTargetProperty)
+__override __checkReturn HRESULT 
+CTemplateBinding::SetTarget(
+    __in CPropertyObject* pTarget, 
+    __in CProperty* pTargetProperty
+    )
 {
     HRESULT hr = S_OK;
     CUIElement* pTargetElement = NULL;
@@ -131,7 +152,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTemplateBinding::ClearTarget()
+__override __checkReturn HRESULT
+CTemplateBinding::ClearTarget(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -144,7 +167,11 @@ Cleanup:
     return hr;
 }
 
-void CTemplateBinding::OnTargetAttached(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+void 
+CTemplateBinding::OnTargetAttached(
+    __in CObjectWithType* pSender,
+    __in CRoutedEventArgs* pRoutedEventArgs
+    )
 {
     HRESULT hr = S_OK;
     CUIElement* pTargetElement = NULL;
@@ -175,7 +202,11 @@ Cleanup:
     ReleaseObject(pResolvedProperty);
 }
 
-void CTemplateBinding::OnTargetDetached(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+void 
+CTemplateBinding::OnTargetDetached(
+    __in CObjectWithType* pSender, 
+    __in CRoutedEventArgs* pRoutedEventArgs
+    )
 {
     HRESULT hr = S_OK;
 

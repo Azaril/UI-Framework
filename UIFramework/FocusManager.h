@@ -9,14 +9,24 @@ class UIFRAMEWORK_API CFocusManager : public CRefCountedObject
     public:
         DECLARE_FACTORY( CFocusManager );
 
-        HRESULT SetFocus( CUIElement* pElement, BOOL* pSetFocus );
-        HRESULT GetFocusedElement( CUIElement** ppElement );
+        __checkReturn HRESULT SetFocus( 
+            __in CUIElement* pElement, 
+            __out BOOL* pSetFocus 
+            );
+
+        __checkReturn HRESULT GetFocusedElement(
+            __deref_out_opt CUIElement** ppElement 
+            );
 
     protected:
-        CFocusManager();
-        virtual ~CFocusManager();
+        CFocusManager(
+            );
 
-        HRESULT Initialize();
+        virtual ~CFocusManager(
+            );
+
+        __checkReturn HRESULT Initialize(
+            );
 
         CUIElement* m_FocusedElement;
 };

@@ -8,15 +8,20 @@
 //
 CStaticRoutedEvent CRoutedCommand::ExecutedEvent(L"Executed", RoutingStrategy::Bubbling);
 
-CRoutedCommand::CRoutedCommand()
+CRoutedCommand::CRoutedCommand(
+    )
 {
 }
 
-CRoutedCommand::~CRoutedCommand()
+CRoutedCommand::~CRoutedCommand(
+    )
 {
 }
 
-HRESULT CRoutedCommand::Execute(CUIElement* pSender)
+__override __checkReturn HRESULT 
+CRoutedCommand::Execute(
+    __in CUIElement* pSender
+    )
 {
     HRESULT hr = S_OK;
     CRoutedCommandEventArgs* pRoutedEventArgs = NULL;
@@ -33,7 +38,8 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRoutedCommand::CreateEventInformation(CEventInformation** ppInformation)
+__checkReturn HRESULT
+CRoutedCommand::CreateEventInformation(CEventInformation** ppInformation)
 {
     HRESULT hr = S_OK;
     CRoutedEventInformation* pEventInformation = NULL;

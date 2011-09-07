@@ -12,12 +12,21 @@ class CDynamicResource : public CBindingBase
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::DynamicResource, CBindingBase );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual HRESULT GetBoundValue( CObjectWithType** ppValue );
+        __override virtual __checkReturn HRESULT GetBoundValue(
+            __deref_out_opt CObjectWithType** ppValue 
+            );
 
-        virtual HRESULT SetTarget( CPropertyObject* pTarget, CProperty* pTargetProperty );
-        virtual HRESULT ClearTarget();
+        __override virtual __checkReturn HRESULT SetTarget(
+            __in CPropertyObject* pTarget, 
+            __in CProperty* pTargetProperty 
+            );
+
+        __override virtual __checkReturn HRESULT ClearTarget(
+            );
 
         //
         // Properties
@@ -25,16 +34,35 @@ class CDynamicResource : public CBindingBase
         static CStaticProperty ResourceKeyProperty;
 
     protected:
-        CDynamicResource();
-        virtual ~CDynamicResource();
+        CDynamicResource(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CDynamicResource(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+        __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders 
+            );
 
-        void OnTargetAttached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
-        void OnTargetDetached( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+        __override virtual __checkReturn HRESULT SetValueInternal(
+            __in CProperty* pProperty,
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal( 
+            __in CProperty* pProperty,
+            __deref_out CObjectWithType** ppValue 
+            );
+
+        void OnTargetAttached( 
+            __in CObjectWithType* pSender, 
+            __in CRoutedEventArgs* pRoutedEventArgs 
+            );
+
+        void OnTargetDetached(
+            __in CObjectWithType* pSender, 
+            __in CRoutedEventArgs* pRoutedEventArgs 
+            );
 
         events::signals::connection m_TargetAttachedConnection;
         events::signals::connection m_TargetDetachedConnection;

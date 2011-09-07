@@ -1,17 +1,22 @@
 #include "LayoutManager.h"
 
-
-CLayoutManager::CLayoutManager() : m_RootElement(NULL),
-                                   m_LayoutSize(0, 0)
+CLayoutManager::CLayoutManager(
+    ) 
+    : m_RootElement(NULL)
+    , m_LayoutSize(0, 0)
 {
 }
 
-CLayoutManager::~CLayoutManager()
+CLayoutManager::~CLayoutManager(
+    )
 {
     ReleaseObject(m_RootElement);
 }
 
-HRESULT CLayoutManager::Initialize(CUIElement* pRootElement)
+__checkReturn HRESULT
+CLayoutManager::Initialize(
+    __in CUIElement* pRootElement
+    )
 {
     HRESULT hr = S_OK;
 
@@ -24,7 +29,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CLayoutManager::SetLayoutSize(const SizeF& LayoutSize)
+__checkReturn HRESULT 
+CLayoutManager::SetLayoutSize(
+    const SizeF& LayoutSize
+    )
 {
     HRESULT hr = S_OK;
 
@@ -39,7 +47,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CLayoutManager::EnsureLayout()
+__checkReturn HRESULT 
+CLayoutManager::EnsureLayout(
+    )
 {
     HRESULT hr = S_OK;
 

@@ -2,21 +2,102 @@
 
 #include "TypeConverter.h"
 
-HRESULT UIFRAMEWORK_API CreateBasicTypeConverter( CTypeConverter** ppTypeConverter );
+__checkReturn HRESULT UIFRAMEWORK_API CreateBasicTypeConverter(
+    __deref_out CTypeConverter** ppTypeConverter 
+    );
 
-HRESULT ConvertStringToFloat( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToVisibility( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToColorF( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToRectF( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToRectangleEdge( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToBool( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToPoint2F( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToRoutedEvent( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToBrush( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToHorizontalAlignment( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToVerticalAlignment( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToCommand( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToBindingDirection( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToStretch( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToStretchDirection( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
-HRESULT ConvertStringToOrientation( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+__checkReturn HRESULT ConvertStringToFloat(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToVisibility(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToColorF(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToRectF(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToRectangleEdge(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToBool(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToPoint2F(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToRoutedEvent(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToBrush(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToHorizontalAlignment(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToVerticalAlignment(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToCommand(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToBindingDirection(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToStretch(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToStretchDirection(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
+
+__checkReturn HRESULT ConvertStringToOrientation(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );

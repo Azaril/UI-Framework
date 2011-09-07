@@ -1,22 +1,29 @@
 #include "BindingManager.h"
 
-CBindingManager::CBindingManager()
+CBindingManager::CBindingManager(
+    )
 {
 }
 
-
-CBindingManager::~CBindingManager()
+CBindingManager::~CBindingManager(
+    )
 {
 }
 
-HRESULT CBindingManager::Initialize()
+__checkReturn HRESULT 
+CBindingManager::Initialize(
+    )
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-void CBindingManager::OnBindingInvalidated(CBindingBase* pBinding, SetValueFunc SetFunc)
+void 
+CBindingManager::OnBindingInvalidated(
+    __in CBindingBase* pBinding, 
+    __in SetValueFunc SetFunc
+    )
 {
     HRESULT hr = S_OK;
 
@@ -26,7 +33,11 @@ Cleanup:
     ;
 }
 
-HRESULT CBindingManager::SetValueFromBinding(CBindingBase* pBinding, SetValueFunc SetFunc)
+__checkReturn HRESULT 
+CBindingManager::SetValueFromBinding(
+    __in CBindingBase* pBinding, 
+    __in SetValueFunc SetFunc
+    )
 {
     HRESULT hr = S_OK;
     CObjectWithType* pValue = NULL;
@@ -46,7 +57,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBindingManager::SetBinding(CPropertyObject* pTarget, CProperty* pTargetProperty, CBindingBase* pBinding, SetValueFunc SetFunc)
+__checkReturn HRESULT 
+CBindingManager::SetBinding(
+    __in CPropertyObject* pTarget, 
+    __in CProperty* pTargetProperty, 
+    __in CBindingBase* pBinding, 
+    __in SetValueFunc SetFunc
+    )
 {
     HRESULT hr = S_OK;
     CDefaultBindingContext* pBindingContext = NULL;
@@ -72,7 +89,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBindingManager::GetBindingContext(CPropertyObject* pTarget, CDefaultBindingContext** ppContext)
+__checkReturn HRESULT
+CBindingManager::GetBindingContext(
+    __in CPropertyObject* pTarget, 
+    __deref_out CDefaultBindingContext** ppContext
+    )
 {
     HRESULT hr = S_OK;
     CBindingContext* pContext = NULL;
@@ -102,31 +123,39 @@ Cleanup:
     return hr;
 }
 
-
-
-CDefaultBindingContext::CDefaultBindingContext()
+CDefaultBindingContext::CDefaultBindingContext(
+    )
 {
 }
 
-CDefaultBindingContext::~CDefaultBindingContext()
+CDefaultBindingContext::~CDefaultBindingContext(
+    )
 {
     // Disconnect connections.
     for(std::vector< CPropertyBinding >::iterator It = m_Bindings.begin(); It != m_Bindings.end(); ++It)
     {
-        It->GetBinding()->ClearTarget();
+        IGNOREHR(It->GetBinding()->ClearTarget());
 
         It->Clear();
     }
 }
 
-HRESULT CDefaultBindingContext::Initialize()
+__checkReturn HRESULT 
+CDefaultBindingContext::Initialize(
+    )
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-HRESULT CDefaultBindingContext::SetPropertyBinding(CProperty* pProperty, CBindingBase* pBinding, SetValueFunc SetFunc, events::signals::connection ChangeConnection)
+__checkReturn HRESULT 
+CDefaultBindingContext::SetPropertyBinding(
+    __in CProperty* pProperty, 
+    __in CBindingBase* pBinding, 
+    __in SetValueFunc SetFunc, 
+    events::signals::connection ChangeConnection
+    )
 {
     HRESULT hr = S_OK;
 

@@ -16,7 +16,7 @@ CUIHost::~CUIHost()
 {
     if(m_TimeController)
     {
-        m_TimeController->Disconnect();
+        IGNOREHR(m_TimeController->Disconnect());
 
         ReleaseObject(m_TimeController);
     }

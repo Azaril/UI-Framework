@@ -15,25 +15,46 @@ class CBindingBase : public CRefCountedObjectBase< CPropertyObject >
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::BindingBase, CPropertyObject );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation(
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual HRESULT GetBoundValue( CObjectWithType** ppValue ) = 0;
+        virtual __checkReturn HRESULT GetBoundValue( 
+            __deref_out_opt CObjectWithType** ppValue 
+            ) = 0;
 
-        virtual HRESULT SetTarget( CPropertyObject* pTarget, CProperty* pTargetProperty );
-        virtual HRESULT ClearTarget();
+        virtual __checkReturn HRESULT SetTarget( 
+            __in CPropertyObject* pTarget, 
+            __in CProperty* pTargetProperty 
+            );
 
-        CPropertyObject* GetTarget();
-        CProperty* GetTargetProperty();
+        virtual __checkReturn HRESULT ClearTarget(
+            );
 
-        HRESULT AddChangeListener( const BindingInvalidatedHandler& Handler, events::signals::connection* pConnection );
+        __out_opt CPropertyObject* GetTarget(
+            );
+
+        __out_opt CProperty* GetTargetProperty(
+            );
+
+        __checkReturn HRESULT AddChangeListener( 
+            const BindingInvalidatedHandler& Handler,
+            __out events::signals::connection* pConnection 
+            );
 
     protected:
-        CBindingBase();
-        virtual ~CBindingBase();
+        CBindingBase(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CBindingBase(
+            );
 
-        HRESULT InvalidateBinding();
+        __checkReturn HRESULT Initialize( 
+            __in CProviders* pProviders 
+            );
+
+        __checkReturn HRESULT InvalidateBinding(
+            );
 
         CProviders* m_Providers;
 

@@ -14,7 +14,9 @@ class CBinding : public CSourcedBinding
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Binding, CSourcedBinding );
 
-        //static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        //static __checkReturn HRESULT CreatePropertyInformation( 
+        // __deref_out CPropertyInformation** ppInformation 
+        // );
 
         //
         // Properties
@@ -22,13 +24,25 @@ class CBinding : public CSourcedBinding
         //static CStaticProperty BindingDirectionProperty;
 
     protected:
-        CBinding();
-        virtual ~CBinding();
+        CBinding(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CBinding(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
+        __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders 
+            );
+
+        __override virtual __checkReturn HRESULT SetValueInternal( 
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal( 
+            __in CProperty* pProperty, 
+            __deref_out CObjectWithType** ppValue 
+            );
 };
 
 template< >

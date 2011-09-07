@@ -10,14 +10,28 @@ class UIFRAMEWORK_API CKeyboardController :  public CRefCountedObject
     public:
         DECLARE_FACTORY2( CKeyboardController, CFocusManager*, CUIElement* );
 
-        HRESULT InjectKey( Key::Value Key, KeyState::Value State, BOOL* pConsumed = NULL );
-        HRESULT InjectCharacter( WCHAR Character, BOOL* pConsumed = NULL );
+        __checkReturn HRESULT InjectKey( 
+            Key::Value Key, 
+            KeyState::Value State, 
+            __out_opt BOOL* pConsumed = NULL 
+            );
+
+        __checkReturn HRESULT InjectCharacter(
+            WCHAR Character, 
+            __out_opt BOOL* pConsumed = NULL 
+            );
 
     protected:
-        CKeyboardController();
-        virtual ~CKeyboardController();
+        CKeyboardController(
+            );
 
-        HRESULT Initialize( CFocusManager* pFocusManager, CUIElement* pRootElement );
+        virtual ~CKeyboardController(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in CFocusManager* pFocusManager,
+            __in CUIElement* pRootElement 
+            );
 
         CFocusManager* m_FocusManager;
         CUIElement* m_RootElement;

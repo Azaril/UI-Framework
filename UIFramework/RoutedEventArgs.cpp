@@ -1,16 +1,22 @@
 #include "RoutedEventArgs.h"
 
-CRoutedEventArgs::CRoutedEventArgs() : m_RoutedEvent(NULL),
-                                       m_Handled(FALSE)
+CRoutedEventArgs::CRoutedEventArgs(
+    ) 
+    : m_RoutedEvent(NULL)
+    , m_Handled(FALSE)
 {
 }
 
-CRoutedEventArgs::~CRoutedEventArgs()
+CRoutedEventArgs::~CRoutedEventArgs(
+    )
 {
     ReleaseObject(m_RoutedEvent);
 }
 
-HRESULT CRoutedEventArgs::Initialize(CRoutedEvent* pRoutedEvent)
+__checkReturn HRESULT 
+CRoutedEventArgs::Initialize(
+    __in CRoutedEvent* pRoutedEvent
+    )
 {
     HRESULT hr = S_OK;
 
@@ -23,17 +29,24 @@ Cleanup:
     return hr;
 }
 
-CRoutedEvent* CRoutedEventArgs::GetRoutedEvent()
+__out CRoutedEvent* 
+CRoutedEventArgs::GetRoutedEvent(
+    )
 {
     return m_RoutedEvent;
 }
 
-BOOL CRoutedEventArgs::IsHandled()
+BOOL 
+CRoutedEventArgs::IsHandled(
+    )
 {
     return m_Handled;
 }
 
-void CRoutedEventArgs::SetHandled(BOOL Handled)
+void
+CRoutedEventArgs::SetHandled(
+    BOOL Handled
+    )
 {
     m_Handled = Handled;
 }
@@ -42,31 +55,46 @@ void CRoutedEventArgs::SetHandled(BOOL Handled)
 // CRoutedEventArgs
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CRoutedEventArgs_TypeIndex()
+TypeIndex::Value
+CRoutedEventArgs_TypeIndex(
+    )
 {
     return TypeIndex::RoutedEventArgs;
 }
 
 extern "C" __declspec(dllexport)
-CObjectWithType* CRoutedEventArgs_CastTo_CObjectWithType(CRoutedEventArgs* pArgs)
+__out CObjectWithType* 
+CRoutedEventArgs_CastTo_CObjectWithType(
+    __in CRoutedEventArgs* pArgs
+    )
 {
     return pArgs;
 }
 
 extern "C" __declspec(dllexport)
-CRoutedEventArgs* CObjectWithType_CastTo_CRoutedEventArgs(CObjectWithType* pObject)
+__out_opt CRoutedEventArgs*
+CObjectWithType_CastTo_CRoutedEventArgs(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::RoutedEventArgs)) ? (CRoutedEventArgs*)pObject : NULL;
 }
 
 extern "C" __declspec(dllexport)
-BOOL CRoutedEventArgs_IsHandled(CRoutedEventArgs* pArgs)
+BOOL 
+CRoutedEventArgs_IsHandled(
+    __in CRoutedEventArgs* pArgs
+    )
 {
     return pArgs->IsHandled();
 }
 
 extern "C" __declspec(dllexport)
-void CRoutedEventArgs_SetHandled(CRoutedEventArgs* pArgs, BOOL Handled)
+void 
+CRoutedEventArgs_SetHandled(
+    __in CRoutedEventArgs* pArgs, 
+    BOOL Handled
+    )
 {
     pArgs->SetHandled(Handled);
 }

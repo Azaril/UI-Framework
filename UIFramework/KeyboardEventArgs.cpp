@@ -1,15 +1,23 @@
 #include "KeyboardEventArgs.h"
 
-CKeyEventArgs::CKeyEventArgs() : m_Key((Key::Value)0),
-                                 m_State(KeyState::Up)
+CKeyEventArgs::CKeyEventArgs(
+    ) 
+    : m_Key((Key::Value)0)
+    , m_State(KeyState::Up)
 {
 }
 
-CKeyEventArgs::~CKeyEventArgs()
+CKeyEventArgs::~CKeyEventArgs(
+    )
 {
 }
 
-HRESULT CKeyEventArgs::Initialize(CRoutedEvent* pRoutedEvent, Key::Value Key, KeyState::Value State)
+__checkReturn HRESULT
+CKeyEventArgs::Initialize(
+    __in CRoutedEvent* pRoutedEvent, 
+    Key::Value Key,
+    KeyState::Value State
+    )
 {
     HRESULT hr = S_OK;
 
@@ -24,7 +32,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CKeyEventArgs::Initialize(CRoutedEvent* pRoutedEvent, CKeyEventArgs* pSourceArgs)
+__checkReturn HRESULT 
+CKeyEventArgs::Initialize(
+    __in CRoutedEvent* pRoutedEvent, 
+    __in CKeyEventArgs* pSourceArgs
+    )
 {
     HRESULT hr = S_OK;
 
@@ -40,12 +52,16 @@ Cleanup:
     return hr;
 }
 
-Key::Value CKeyEventArgs::GetKey()
+Key::Value 
+CKeyEventArgs::GetKey(
+    )
 {
     return m_Key;
 }
 
-KeyState::Value CKeyEventArgs::GetState()
+KeyState::Value 
+CKeyEventArgs::GetState(
+    )
 {
     return m_State;
 }
@@ -54,19 +70,26 @@ KeyState::Value CKeyEventArgs::GetState()
 // CKeyboardEventArgs
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CKeyboardEventArgs_TypeIndex()
+TypeIndex::Value 
+CKeyboardEventArgs_TypeIndex()
 {
     return TypeIndex::KeyboardEventArgs;
 }
 
 extern "C" __declspec(dllexport)
-CInputEventArgs* CKeyboardEventArgs_CastTo_CInputEventArgs(CKeyboardEventArgs* pArgs)
+__out CInputEventArgs* 
+CKeyboardEventArgs_CastTo_CInputEventArgs(
+    __in CKeyboardEventArgs* pArgs
+    )
 {
     return pArgs;
 }
 
 extern "C" __declspec(dllexport)
-CKeyboardEventArgs* CObjectWithType_CastTo_CKeyboardEventArgs(CObjectWithType* pObject)
+__out_opt CKeyboardEventArgs* 
+CObjectWithType_CastTo_CKeyboardEventArgs(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::KeyboardEventArgs)) ? (CKeyboardEventArgs*)pObject : NULL;
 }
@@ -75,31 +98,44 @@ CKeyboardEventArgs* CObjectWithType_CastTo_CKeyboardEventArgs(CObjectWithType* p
 // CKeyEventArgs
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CKeyEventArgs_TypeIndex()
+TypeIndex::Value
+CKeyEventArgs_TypeIndex()
 {
     return TypeIndex::KeyEventArgs;
 }
 
 extern "C" __declspec(dllexport)
-CKeyboardEventArgs* CKeyEventArgs_CastTo_CKeyboardEventArgs(CKeyEventArgs* pArgs)
+__out CKeyboardEventArgs*
+CKeyEventArgs_CastTo_CKeyboardEventArgs(
+    __in CKeyEventArgs* pArgs
+    )
 {
     return pArgs;
 }
 
 extern "C" __declspec(dllexport)
-CKeyEventArgs* CObjectWithType_CastTo_CKeyEventArgs(CObjectWithType* pObject)
+__out_opt CKeyEventArgs* 
+CObjectWithType_CastTo_CKeyEventArgs(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::KeyEventArgs)) ? (CKeyEventArgs*)pObject : NULL;
 }
 
 extern "C" __declspec(dllexport)
-Key::Value CKeyEventArgs_GetKey(CKeyEventArgs* pArgs)
+Key::Value 
+CKeyEventArgs_GetKey(
+    __in CKeyEventArgs* pArgs
+    )
 {
     return pArgs->GetKey();
 }
 
 extern "C" __declspec(dllexport)
-KeyState::Value CKeyEventArgs_GetState(CKeyEventArgs* pArgs)
+KeyState::Value 
+CKeyEventArgs_GetState(
+    __in CKeyEventArgs* pArgs
+    )
 {
     return pArgs->GetState();
 }

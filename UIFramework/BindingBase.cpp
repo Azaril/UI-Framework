@@ -1,19 +1,25 @@
 #include "BindingBase.h"
 #include "StaticPropertyInformation.h"
 
-CBindingBase::CBindingBase() : m_Target(NULL),
-                               m_TargetProperty(NULL),
-                               m_Providers(NULL)
+CBindingBase::CBindingBase(
+    ) 
+    : m_Target(NULL)
+    , m_TargetProperty(NULL)
+    , m_Providers(NULL)
 {
 }
 
-CBindingBase::~CBindingBase()
+CBindingBase::~CBindingBase(
+    )
 {
     ReleaseObject(m_TargetProperty);
     ReleaseObject(m_Providers);
 }
 
-HRESULT CBindingBase::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CBindingBase::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -26,7 +32,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBindingBase::CreatePropertyInformation(CPropertyInformation** ppInformation)
+__checkReturn HRESULT 
+CBindingBase::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -44,7 +53,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBindingBase::SetTarget(CPropertyObject* pTarget, CProperty* pTargetProperty)
+__checkReturn HRESULT 
+CBindingBase::SetTarget(
+    __in CPropertyObject* pTarget,
+    __in CProperty* pTargetProperty
+    )
 {
     HRESULT hr = S_OK;
 
@@ -63,7 +76,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBindingBase::ClearTarget()
+__checkReturn HRESULT 
+CBindingBase::ClearTarget(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -74,17 +89,25 @@ HRESULT CBindingBase::ClearTarget()
     return hr;
 }
 
-CPropertyObject* CBindingBase::GetTarget()
+__out_opt CPropertyObject* 
+CBindingBase::GetTarget(
+    )
 {
     return m_Target;
 }
 
-CProperty* CBindingBase::GetTargetProperty()
+__out_opt CProperty* 
+CBindingBase::GetTargetProperty(
+    )
 {
     return m_TargetProperty;
 }
 
-HRESULT CBindingBase::AddChangeListener(const BindingInvalidatedHandler& Handler, events::signals::connection* pConnection)
+__checkReturn HRESULT 
+CBindingBase::AddChangeListener(
+    const BindingInvalidatedHandler& Handler, 
+    __out events::signals::connection* pConnection
+    )
 {
     HRESULT hr = S_OK;
 
@@ -96,7 +119,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBindingBase::InvalidateBinding()
+__checkReturn HRESULT 
+CBindingBase::InvalidateBinding(
+    )
 {
     HRESULT hr = S_OK;
 

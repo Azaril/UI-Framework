@@ -10,17 +10,23 @@
 //
 // Properties
 //
-//CStaticProperty CBinding::BindingDirectionProperty( L"BindingDirection", TypeIndex::BindingDirection, StaticPropertyFlags::None, &GET_DEFAULT( BindingDirection ) );
+//CStaticProperty CBinding::BindingDirectionProperty(L"BindingDirection", TypeIndex::BindingDirection, StaticPropertyFlags::None, &GET_DEFAULT( BindingDirection ));
 
-CBinding::CBinding()// : m_BindingDirection(BindingDirection::OneWay)
+CBinding::CBinding(
+    )
+    // : m_BindingDirection(BindingDirection::OneWay)
 {
 }
 
-CBinding::~CBinding()
+CBinding::~CBinding(
+    )
 {
 }
 
-HRESULT CBinding::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CBinding::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -32,12 +38,17 @@ Cleanup:
     return hr;
 }
 
-//BindingDirection::Value CBinding::GetBindingDirection()
+//BindingDirection::Value 
+//CBinding::GetBindingDirection(
+//    )
 //{
 //    return m_BindingDirection;
 //}
 
-//HRESULT CBinding::CreatePropertyInformation(CPropertyInformation** ppInformation)
+//__checkReturn HRESULT
+//CBinding::CreatePropertyInformation(
+//    __deref_out CPropertyInformation** ppInformation
+//  )
 //{
 //    HRESULT hr = S_OK;
 //    CStaticPropertyInformation* pStaticInformation = NULL;
@@ -66,7 +77,11 @@ Cleanup:
 //    return hr;
 //}
 
-HRESULT CBinding::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CBinding::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
     //CBindingDirectionValue* pBindingDirection = NULL;
@@ -91,7 +106,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBinding::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CBinding::GetValueInternal(
+    __in CProperty* pProperty, 
+    __deref_out CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     //CBindingDirectionValue* pBindingDirection = NULL;

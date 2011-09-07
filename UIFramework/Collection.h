@@ -23,7 +23,9 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
 
         DECLARE_FACTORY( CCollection< T > );
 
-        virtual HRESULT AddObject( CObjectWithType* pObject )
+        __override virtual __checkReturn HRESULT AddObject(
+            __in CObjectWithType* pObject 
+            )
         {
             HRESULT hr = S_OK;
             T* pTypedObject = NULL;
@@ -46,7 +48,9 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
             return hr;
         }
 
-        virtual HRESULT RemoveObject( CObjectWithType* pObject )
+        __override virtual HRESULT RemoveObject(
+            __in CObjectWithType* pObject 
+            )
         {
             HRESULT hr = S_OK;
 
@@ -77,7 +81,9 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
             return hr;
         }
 
-        HRESULT RemoveAtIndex(UINT32 Index)
+        __checkReturn HRESULT RemoveAtIndex(
+            UINT32 Index
+            )
         {
             HRESULT hr = S_OK;
 
@@ -89,17 +95,22 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
             return hr;
         }
 
-        UINT32 GetCount()
+        UINT32 GetCount(
+            )
         {
             return m_Collection.size();
         }
 
-        T* GetAtIndex( UINT32 Index )
+        __out T* GetAtIndex(
+            UINT32 Index 
+            )
         {
             return m_Collection[Index];
         }
 
-        HRESULT AddSubscriber(SubscriberType* pSubscriber)
+        __checkReturn HRESULT AddSubscriber(
+            __in SubscriberType* pSubscriber
+            )
         {
             HRESULT hr = S_OK;
 
@@ -111,7 +122,9 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
             return hr;
         }
 
-        HRESULT RemoveSubscriber(SubscriberType* pSubscriber)
+        __checkReturn HRESULT RemoveSubscriber(
+            __in SubscriberType* pSubscriber
+            )
         {
             HRESULT hr = S_OK;
 
@@ -133,11 +146,13 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
         }
 
     protected:
-        CCollection()
+        CCollection(
+            )
         {
         }
 
-        virtual ~CCollection()
+        virtual ~CCollection(
+            )
         {
             for(typename std::vector< T* >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
             {
@@ -145,7 +160,8 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
             }
         }
 
-        HRESULT Initialize()
+        __checkReturn HRESULT Initialize(
+            )
         {
             HRESULT hr = S_OK;
 

@@ -628,9 +628,6 @@
     <ClCompile Include="SourcedBinding.cpp">
       <Filter>Framework\UI\Binding</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationController.cpp">
-      <Filter>Framework\UI\Animation</Filter>
-    </ClCompile>
     <ClCompile Include="Animatable.cpp">
       <Filter>Framework\UI\Animation</Filter>
     </ClCompile>
@@ -1193,9 +1190,6 @@
     </ClInclude>
     <ClInclude Include="SourcedBinding.h">
       <Filter>Framework\UI\Binding</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationController.h">
-      <Filter>Framework\UI\Animation</Filter>
     </ClInclude>
     <ClInclude Include="Animatable.h">
       <Filter>Framework\UI\Animation</Filter>

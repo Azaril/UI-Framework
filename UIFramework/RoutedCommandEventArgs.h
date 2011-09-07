@@ -14,13 +14,20 @@ class CRoutedCommandEventArgs : public CRoutedEventArgs
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::RoutedCommandEventArgs, CRoutedEventArgs );
 
-        CRoutedCommand* GetCommand();
+        __out CRoutedCommand* GetCommand(
+            );
 
     protected:
-        CRoutedCommandEventArgs();
-        virtual ~CRoutedCommandEventArgs();
+        CRoutedCommandEventArgs(
+            );
 
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent, CRoutedCommand* pCommand );
+        virtual ~CRoutedCommandEventArgs(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CRoutedEvent* pRoutedEvent,
+            __in CRoutedCommand* pCommand 
+            );
 
         CRoutedCommand* m_Command;
 };

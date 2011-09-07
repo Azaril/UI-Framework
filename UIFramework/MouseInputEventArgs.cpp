@@ -1,15 +1,21 @@
 #include "MouseInputEventArgs.h"
 #include "Visual.h"
 
-CMouseEventArgs::CMouseEventArgs()
+CMouseEventArgs::CMouseEventArgs(
+    )
 {
 }
 
-CMouseEventArgs::~CMouseEventArgs()
+CMouseEventArgs::~CMouseEventArgs(
+    )
 {
 }
 
-HRESULT CMouseEventArgs::Initialize(CRoutedEvent* pRoutedEvent, Point2F MouseLocation)
+__checkReturn HRESULT
+CMouseEventArgs::Initialize(
+    __in CRoutedEvent* pRoutedEvent, 
+    Point2F MouseLocation
+    )
 {
     HRESULT hr = S_OK;
 
@@ -23,7 +29,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMouseEventArgs::Initialize(CRoutedEvent* pRoutedEvent, CMouseEventArgs* pSourceArgs)
+__checkReturn HRESULT 
+CMouseEventArgs::Initialize(
+    __in CRoutedEvent* pRoutedEvent,
+    __in CMouseEventArgs* pSourceArgs
+    )
 {
     HRESULT hr = S_OK;
 
@@ -38,7 +48,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMouseEventArgs::GetLocation(Point2F* pLocation)
+__checkReturn HRESULT 
+CMouseEventArgs::GetLocation(
+    __out Point2F* pLocation
+    )
 {
     HRESULT hr = S_OK;
 
@@ -50,7 +63,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMouseEventArgs::GetLocation(CVisual* pVisual, Point2F* pLocation)
+__checkReturn HRESULT
+CMouseEventArgs::GetLocation(
+    __in CVisual* pVisual, 
+    __out Point2F* pLocation
+    )
 {
     HRESULT hr = S_OK;
     CTransform* pTransform = NULL;
@@ -68,15 +85,23 @@ Cleanup:
     return hr;
 }
 
-CMouseButtonEventArgs::CMouseButtonEventArgs()
+CMouseButtonEventArgs::CMouseButtonEventArgs(
+    )
 {
 }
 
-CMouseButtonEventArgs::~CMouseButtonEventArgs()
+CMouseButtonEventArgs::~CMouseButtonEventArgs(
+    )
 {
 }
 
-HRESULT CMouseButtonEventArgs::Initialize(CRoutedEvent* pRoutedEvent, Point2F MouseLocation, MouseButton::Value Button, MouseButtonState::Value ButtonState)
+__checkReturn HRESULT 
+CMouseButtonEventArgs::Initialize(
+    __in CRoutedEvent* pRoutedEvent, 
+    Point2F MouseLocation, 
+    MouseButton::Value Button, 
+    MouseButtonState::Value ButtonState
+    )
 {
     HRESULT hr = S_OK;
 
@@ -91,7 +116,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMouseButtonEventArgs::Initialize(CRoutedEvent* pRoutedEvent, CMouseButtonEventArgs* pSourceArgs)
+__checkReturn HRESULT 
+CMouseButtonEventArgs::Initialize(
+    __in CRoutedEvent* pRoutedEvent, 
+    __in CMouseButtonEventArgs* pSourceArgs
+    )
 {
     HRESULT hr = S_OK;
 
@@ -107,12 +136,16 @@ Cleanup:
     return hr;
 }
 
-MouseButton::Value CMouseButtonEventArgs::GetChangedButton()
+MouseButton::Value 
+CMouseButtonEventArgs::GetChangedButton(
+    )
 {
     return m_Button;
 }
 
-MouseButtonState::Value CMouseButtonEventArgs::GetButtonState()
+MouseButtonState::Value 
+CMouseButtonEventArgs::GetButtonState(
+    )
 {
     return m_ButtonState;
 }
@@ -121,19 +154,26 @@ MouseButtonState::Value CMouseButtonEventArgs::GetButtonState()
 // CMouseEventArgs
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CMouseEventArgs_TypeIndex()
+TypeIndex::Value 
+CMouseEventArgs_TypeIndex()
 {
     return TypeIndex::MouseEventArgs;
 }
 
 extern "C" __declspec(dllexport)
-CInputEventArgs* CMouseEventArgs_CastTo_CInputEventArgs(CMouseEventArgs* pArgs)
+__out CInputEventArgs* 
+CMouseEventArgs_CastTo_CInputEventArgs(
+    __in CMouseEventArgs* pArgs
+    )
 {
     return pArgs;
 }
 
 extern "C" __declspec(dllexport)
-CMouseEventArgs* CObjectWithType_CastTo_CMouseEventArgs(CObjectWithType* pObject)
+__out_opt CMouseEventArgs* 
+CObjectWithType_CastTo_CMouseEventArgs(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::MouseEventArgs)) ? (CMouseEventArgs*)pObject : NULL;
 }
@@ -142,19 +182,27 @@ CMouseEventArgs* CObjectWithType_CastTo_CMouseEventArgs(CObjectWithType* pObject
 // CMouseButtonEventArgs
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CMouseButtonEventArgs_TypeIndex()
+TypeIndex::Value 
+CMouseButtonEventArgs_TypeIndex(
+    )
 {
     return TypeIndex::MouseButtonEventArgs;
 }
 
 extern "C" __declspec(dllexport)
-CMouseEventArgs* CMouseButtonEventArgs_CastTo_CMouseEventArgs(CMouseButtonEventArgs* pArgs)
+__out CMouseEventArgs* 
+CMouseButtonEventArgs_CastTo_CMouseEventArgs(
+    __in CMouseButtonEventArgs* pArgs
+    )
 {
     return pArgs;
 }
 
 extern "C" __declspec(dllexport)
-CMouseButtonEventArgs* CObjectWithType_CastTo_CMouseButtonEventArgs(CObjectWithType* pObject)
+__out_opt CMouseButtonEventArgs* 
+CObjectWithType_CastTo_CMouseButtonEventArgs(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::MouseButtonEventArgs)) ? (CMouseButtonEventArgs*)pObject : NULL;
 }

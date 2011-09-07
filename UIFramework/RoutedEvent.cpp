@@ -3,20 +3,28 @@
 //
 // CRoutedEvent
 //
-extern "C" __declspec(dllexport)
-TypeIndex::Value CRoutedEvent_TypeIndex()
+extern "C" __declspec(dllexport) 
+TypeIndex::Value 
+RoutedEvent_TypeIndex(
+    )
 {
     return TypeIndex::RoutedEvent;
 }
 
 extern "C" __declspec(dllexport)
-CObjectWithType* CRoutedEvent_CastTo_CObjectWithType(CRoutedEvent* pEvent)
+__out CObjectWithType* 
+CRoutedEvent_CastTo_CObjectWithType(
+    __in CRoutedEvent* pEvent
+    )
 {
     return pEvent;
 }
 
 extern "C" __declspec(dllexport)
-CRoutedEvent* CObjectWithType_CastTo_CRoutedEvent(CObjectWithType* pObject)
+__out_opt CRoutedEvent* 
+CObjectWithType_CastTo_CRoutedEvent(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::RoutedEvent)) ? (CRoutedEvent*)pObject : NULL;
 }

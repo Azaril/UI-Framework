@@ -1,10 +1,12 @@
 #include "Namescope.h"
 
-CNamescope::CNamescope()
+CNamescope::CNamescope(
+    )
 {
 }
 
-CNamescope::~CNamescope()
+CNamescope::~CNamescope(
+    )
 {
     for(std::vector< CNamedObjectHolder* >::iterator It = m_NamedObjects.begin(); It != m_NamedObjects.end(); ++It)
     {
@@ -14,14 +16,20 @@ CNamescope::~CNamescope()
     m_NamedObjects.clear();
 }
 
-HRESULT CNamescope::Initialize()
+__checkReturn HRESULT 
+CNamescope::Initialize(
+    )
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-HRESULT CNamescope::InternalFindObject(const WCHAR* pName, CNamedObjectHolder** ppHolder)
+__checkReturn HRESULT 
+CNamescope::InternalFindObject(
+    __in_z const WCHAR* pName, 
+    __deref_out_opt CNamedObjectHolder** ppHolder
+    )
 {
     HRESULT hr = S_OK;
 
@@ -47,7 +55,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CNamescope::RegisterName(const WCHAR* pName, CObjectWithType* pObject)
+__checkReturn HRESULT 
+CNamescope::RegisterName(
+    __in_z const WCHAR* pName,
+    __in CObjectWithType* pObject
+    )
 {
     HRESULT hr = S_OK;
     CNamedObjectHolder* pHolder = NULL;
@@ -76,7 +88,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CNamescope::UnregisterName(const WCHAR* pName, CObjectWithType* pObject)
+__checkReturn HRESULT 
+CNamescope::UnregisterName(
+    __in_z const WCHAR* pName,
+    __in CObjectWithType* pObject
+    )
 {
     HRESULT hr = S_OK;
 
@@ -103,7 +119,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CNamescope::FindName(const WCHAR* pName, CObjectWithType** ppObject)
+__checkReturn HRESULT 
+CNamescope::FindName(
+    __in_z const WCHAR* pName,
+    __deref_out CObjectWithType** ppObject
+    )
 {
     HRESULT hr = S_OK;
     CNamedObjectHolder* pHolder = NULL;
@@ -131,8 +151,9 @@ Cleanup:
     return hr;
 }
 
-
-CNamedObjectHolder::CNamedObjectHolder() : m_Object(NULL)
+CNamedObjectHolder::CNamedObjectHolder(
+    ) 
+    : m_Object(NULL)
 {
 }
 
@@ -141,7 +162,11 @@ CNamedObjectHolder::~CNamedObjectHolder()
     ReleaseObject(m_Object);
 }
 
-HRESULT CNamedObjectHolder::Initialize(const WCHAR* pName, CObjectWithType* pObject)
+__checkReturn HRESULT 
+CNamedObjectHolder::Initialize(
+    __in_z const WCHAR* pName,
+    __in CObjectWithType* pObject
+    )
 {
     HRESULT hr = S_OK;
 
@@ -157,12 +182,16 @@ Cleanup:
     return hr;
 }
 
-const WCHAR* CNamedObjectHolder::GetName()
+__out_z const WCHAR* 
+CNamedObjectHolder::GetName(
+    )
 {
     return m_Name.c_str();
 }
 
-CObjectWithType* CNamedObjectHolder::GetObject()
+__out CObjectWithType* 
+CNamedObjectHolder::GetObject(
+    )
 {
     return m_Object;
 }
@@ -171,25 +200,38 @@ CObjectWithType* CNamedObjectHolder::GetObject()
 // CNamescope
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CNamescope_TypeIndex()
+TypeIndex::Value
+CNamescope_TypeIndex(
+    )
 {
     return TypeIndex::Namescope;
 }
 
 extern "C" __declspec(dllexport)
-CObjectWithType* CNamescope_CastTo_CObjectWithType(CNamescope* pNamescope)
+__out CObjectWithType* 
+CNamescope_CastTo_CObjectWithType(
+    __in CNamescope* pNamescope
+    )
 {
     return pNamescope;
 }
 
 extern "C" __declspec(dllexport)
-CNamescope* CObjectWithType_CastTo_CNamescope(CObjectWithType* pObject)
+__out_opt CNamescope* 
+CObjectWithType_CastTo_CNamescope(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::Namescope)) ? (CNamescope*)pObject : NULL;
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CNamescope_FindName(CNamescope* pScope, const WCHAR* pName, CObjectWithType** ppObject)
+__checkReturn HRESULT
+CNamescope_FindName(
+    __in CNamescope* pScope, 
+    __in_z const WCHAR* pName, 
+    __deref_out_opt CObjectWithType** ppObject
+    )
 {
     return pScope->FindName(pName, ppObject);
 }

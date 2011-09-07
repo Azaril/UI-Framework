@@ -10,20 +10,23 @@ DEFINE_GET_DEFAULT( BindingDirection, CBindingDirectionValue, BindingDirection::
 //
 // Properties
 //
-CStaticProperty CSourcedBinding::BindingDirectionProperty( L"BindingDirection", TypeIndex::BindingDirection, StaticPropertyFlags::None, &GET_DEFAULT( BindingDirection ), &INSTANCE_CHANGE_CALLBACK( CSourcedBinding, OnBindingDirectionChanged ) );
+CStaticProperty CSourcedBinding::BindingDirectionProperty(L"BindingDirection", TypeIndex::BindingDirection, StaticPropertyFlags::None, &GET_DEFAULT( BindingDirection ), &INSTANCE_CHANGE_CALLBACK( CSourcedBinding, OnBindingDirectionChanged ));
 
 //
 // Property Change Handlers
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CSourcedBinding, OnBindingDirectionChanged );
 
-CSourcedBinding::CSourcedBinding() : m_Source(NULL),
-                                     m_SourceProperty(NULL),
-                                     m_BindingDirection(BindingDirection::OneWay)
+CSourcedBinding::CSourcedBinding(
+    ) 
+    : m_Source(NULL)
+    , m_SourceProperty(NULL)
+    , m_BindingDirection(BindingDirection::OneWay)
 {
 }
 
-CSourcedBinding::~CSourcedBinding()
+CSourcedBinding::~CSourcedBinding(
+    )
 {
     m_SourcePropertyChangedConnection.disconnect();
     m_TargetPropertyChangedConnection.disconnect();
@@ -32,7 +35,10 @@ CSourcedBinding::~CSourcedBinding()
     ReleaseObject(m_SourceProperty);
 }
 
-HRESULT CSourcedBinding::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CSourcedBinding::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -42,7 +48,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSourcedBinding::SetSource(CPropertyObject* pSource, CProperty* pSourceProperty)
+__checkReturn HRESULT 
+CSourcedBinding::SetSource(
+    __in CPropertyObject* pSource,
+    __in CProperty* pSourceProperty
+    )
 {
     HRESULT hr = S_OK;
 
@@ -63,7 +73,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSourcedBinding::ClearSource()
+__checkReturn HRESULT 
+CSourcedBinding::ClearSource(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -81,7 +93,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSourcedBinding::SetTarget(CPropertyObject* pTarget, CProperty* pTargetProperty)
+__override __checkReturn HRESULT 
+CSourcedBinding::SetTarget(
+    __in CPropertyObject* pTarget,
+    __in CProperty* pTargetProperty
+    )
 {
     HRESULT hr = S_OK;
 
@@ -96,7 +112,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSourcedBinding::ClearTarget()
+__override __checkReturn HRESULT 
+CSourcedBinding::ClearTarget(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -108,7 +126,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSourcedBinding::GetBoundValue(CObjectWithType** ppValue)
+__override __checkReturn HRESULT
+CSourcedBinding::GetBoundValue(
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     CObjectWithType* pEffectiveValue = NULL;
@@ -137,7 +158,11 @@ Cleanup:
     return hr;
 }
 
-void CSourcedBinding::OnSourcePropertyChanged(CPropertyObject* pObject, CProperty* pProperty)
+void 
+CSourcedBinding::OnSourcePropertyChanged(
+    __in CPropertyObject* pObject, 
+    __in CProperty* pProperty
+    )
 {
     HRESULT hr = S_OK;
 
@@ -153,7 +178,11 @@ Cleanup:
     ;
 }
 
-void CSourcedBinding::OnTargetPropertyChanged(CPropertyObject* pObject, CProperty* pProperty)
+void 
+CSourcedBinding::OnTargetPropertyChanged(
+    __in CPropertyObject* pObject, 
+    __in CProperty* pProperty
+    )
 {
     HRESULT hr = S_OK;
     CObjectWithType* pValue = NULL;
@@ -178,7 +207,11 @@ void CSourcedBinding::OnTargetPropertyChanged(CPropertyObject* pObject, CPropert
 Cleanup:
     ;
 }
-HRESULT CSourcedBinding::CreatePropertyInformation(CPropertyInformation** ppInformation)
+
+__checkReturn HRESULT
+CSourcedBinding::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -207,7 +240,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSourcedBinding::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT
+CSourcedBinding::SetValueInternal(
+    __in CProperty* pProperty,
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
     CBindingDirectionValue* pBindingDirection = NULL;
@@ -232,7 +269,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSourcedBinding::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT
+CSourcedBinding::GetValueInternal(
+    __in CProperty* pProperty, 
+    __deref_out CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     CBindingDirectionValue* pBindingDirection = NULL;
@@ -258,7 +299,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSourcedBinding::OnBindingDirectionChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+__checkReturn HRESULT 
+CSourcedBinding::OnBindingDirectionChanged(
+    __in CObjectWithType* pOldValue, 
+    __in CObjectWithType* pNewValue
+    )
 {
     HRESULT hr = S_OK;
     CBindingDirectionValue* pBindingDirection = NULL;

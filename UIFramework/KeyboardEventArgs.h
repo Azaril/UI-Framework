@@ -23,15 +23,29 @@ class CKeyEventArgs : public CKeyboardEventArgs
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::KeyEventArgs, CKeyboardEventArgs );
 
-        Key::Value GetKey();
-        KeyState::Value GetState();
+        Key::Value GetKey(
+            );
+
+        KeyState::Value GetState(
+            );
 
     protected:
-        CKeyEventArgs();
-        virtual ~CKeyEventArgs();
+        CKeyEventArgs(
+            );
 
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent, Key::Value Key, KeyState::Value State );
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent, CKeyEventArgs* pSourceArgs );
+        virtual ~CKeyEventArgs(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CRoutedEvent* pRoutedEvent, 
+            Key::Value Key,
+            KeyState::Value State 
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CRoutedEvent* pRoutedEvent,
+            __in CKeyEventArgs* pSourceArgs 
+            );
 
         Key::Value m_Key;
         KeyState::Value m_State;

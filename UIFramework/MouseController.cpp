@@ -1,20 +1,26 @@
 #include "MouseController.h"
 
-CMouseController::CMouseController() : m_RootElement(NULL),
-                                       m_MouseOverElement(NULL),
-                                       m_CaptureElement(NULL),
-                                       m_Position(0, 0)
+CMouseController::CMouseController(
+    ) 
+    : m_RootElement(NULL)
+    , m_MouseOverElement(NULL)
+    , m_CaptureElement(NULL)
+    , m_Position(0, 0)
 {
 }
 
-CMouseController::~CMouseController()
+CMouseController::~CMouseController(
+    )
 {
     ReleaseObject(m_RootElement);
     ReleaseObject(m_MouseOverElement);
     ReleaseObject(m_CaptureElement);
 }
 
-HRESULT CMouseController::Initialize(CUIElement* pRootElement)
+__checkReturn HRESULT 
+CMouseController::Initialize(
+    __in CUIElement* pRootElement
+    )
 {
     HRESULT hr = S_OK;
 
@@ -24,7 +30,12 @@ HRESULT CMouseController::Initialize(CUIElement* pRootElement)
     return hr;
 }
 
-HRESULT CMouseController::InjectMouseButton(MouseButton::Value Button, MouseButtonState::Value State, BOOL* pConsumed)
+__checkReturn HRESULT
+CMouseController::InjectMouseButton(
+    MouseButton::Value Button, 
+    MouseButtonState::Value State, 
+    __out_opt BOOL* pConsumed
+    )
 {
     HRESULT hr = S_OK;
 
@@ -44,7 +55,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMouseController::InjectMouseMove(Point2F Location, BOOL* pConsumed)
+__checkReturn HRESULT 
+CMouseController::InjectMouseMove(
+    Point2F Location,
+    __out_opt BOOL* pConsumed
+    )
 {
     HRESULT hr = S_OK;
 
@@ -66,7 +81,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMouseController::SetMouseOverElement(CUIElement* pElement, Point2F Location)
+__checkReturn HRESULT
+CMouseController::SetMouseOverElement(
+    __in_opt CUIElement* pElement, 
+    Point2F Location
+    )
 {
     HRESULT hr = S_OK;
     CMouseEventArgs* pMouseOutEventArgs = NULL;
@@ -104,7 +123,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMouseController::RaiseMouseMove(Point2F Location, BOOL* pHandled)
+__checkReturn HRESULT 
+CMouseController::RaiseMouseMove(
+    Point2F Location, 
+    __out_opt BOOL* pHandled
+    )
 {
     HRESULT hr = S_OK;
     CMouseEventArgs* pEventArgs = NULL;
@@ -133,7 +156,13 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMouseController::RaiseMouseButton(Point2F Location, MouseButton::Value Button, MouseButtonState::Value State, BOOL* pHandled)
+__checkReturn HRESULT
+CMouseController::RaiseMouseButton(
+    Point2F Location,
+    MouseButton::Value Button,
+    MouseButtonState::Value State,
+    __out_opt BOOL* pHandled
+    )
 {
     HRESULT hr = S_OK;
     CMouseButtonEventArgs* pEventArgs = NULL;
@@ -162,7 +191,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CMouseController::SetCapture(CUIElement* pElement)
+__checkReturn HRESULT 
+CMouseController::SetCapture(
+    __in CUIElement* pElement
+    )
 {
     HRESULT hr = S_OK;
 
@@ -175,7 +207,10 @@ HRESULT CMouseController::SetCapture(CUIElement* pElement)
     return hr;
 }
 
-HRESULT CMouseController::ReleaseCapture(CUIElement* pElement)
+__checkReturn HRESULT 
+CMouseController::ReleaseCapture(
+    __in CUIElement* pElement
+    )
 {
     HRESULT hr = S_OK;
 

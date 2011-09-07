@@ -1,16 +1,22 @@
 #include "HitTestResult.h"
 #include "Visual.h"
 
-CHitTestResult::CHitTestResult() : m_HitVisual(NULL)
+CHitTestResult::CHitTestResult(
+    ) 
+    : m_HitVisual(NULL)
 {
 }
 
-CHitTestResult::~CHitTestResult()
+CHitTestResult::~CHitTestResult(
+    )
 {
     ReleaseObject(m_HitVisual);
 }
 
-HRESULT CHitTestResult::Initialize(CVisual* pVisual)
+__checkReturn HRESULT 
+CHitTestResult::Initialize(
+    __in CVisual* pVisual
+    )
 {
     HRESULT hr = S_OK;
 
@@ -20,7 +26,10 @@ HRESULT CHitTestResult::Initialize(CVisual* pVisual)
     return hr;
 }
 
-HRESULT CHitTestResult::GetHitVisual(CVisual** ppVisual)
+__checkReturn HRESULT 
+CHitTestResult::GetHitVisual(
+    __deref_out CVisual** ppVisual
+    )
 {
     HRESULT hr = S_OK;
 

@@ -35,7 +35,8 @@ StaticTypeConverterInformation BasicConverterInfo =
     ARRAYSIZE(BasicConverters)
 };
 
-HRESULT CreateBasicTypeConverter(CTypeConverter** ppTypeConverter)
+__checkReturn HRESULT 
+CreateBasicTypeConverter(CTypeConverter** ppTypeConverter)
 {
     HRESULT hr = S_OK;
     CStaticTypeConverter* pStaticTypeConverter = NULL;
@@ -53,7 +54,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToFloat(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToFloat(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     FLOAT Value = 0;
@@ -88,7 +94,15 @@ struct EnumHolder
 };
 
 template< typename T, typename HolderType >
-HRESULT ConvertStringToEnum(CConversionContext* pContext, CObjectWithType* pValue, const EnumHolder< T >* pEnums, UINT32 EnumCount, BOOL CaseSensitive, HolderType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToEnum(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __in_ecount(EnumCount) const EnumHolder< T >* pEnums,
+    UINT32 EnumCount, 
+    BOOL CaseSensitive, 
+    __deref_out HolderType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -124,7 +138,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToVisibility(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT
+ConvertStringToVisibility(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -172,7 +191,6 @@ struct PredefinedColor
     ColorF ColorValue;
 };
 
-//TODO: Remove relying on the ColorF constructor.
 #define PREDEFINED_COLOR(color) { L ## #color, Color::color }
 
 PredefinedColor PredefinedColors[] =
@@ -320,7 +338,12 @@ PredefinedColor PredefinedColors[] =
     PREDEFINED_COLOR( YellowGreen )
 };
 
-HRESULT ConvertStringToColorF(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToColorF(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -463,7 +486,12 @@ namespace RectFParseState
     };
 }
 
-HRESULT ConvertStringToRectF(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT
+ConvertStringToRectF(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -654,7 +682,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToRectangleEdge(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToRectangleEdge(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
 	RectangleEdge::Value Value = RectangleEdge::Left;
@@ -700,7 +733,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToBool(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToBool(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     BOOL Value = TRUE;
@@ -748,7 +786,12 @@ namespace Point2FParseState
     };
 }
 
-HRESULT ConvertStringToPoint2F(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToPoint2F(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -917,7 +960,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToRoutedEvent(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToRoutedEvent(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue,
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -953,7 +1001,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToBrush(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToBrush(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CStringValue* pStringValue = NULL;
@@ -994,7 +1047,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToHorizontalAlignment(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT
+ConvertStringToHorizontalAlignment(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
 	HorizontalAlignment::Value Value = HorizontalAlignment::Stretch;
@@ -1040,7 +1098,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToVerticalAlignment(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT
+ConvertStringToVerticalAlignment(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
 	VerticalAlignment::Value Value = VerticalAlignment::Stretch;
@@ -1086,7 +1149,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT ConvertStringToCommand(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT
+ConvertStringToCommand(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue,
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CClassResolver* pClassResolver = NULL;
@@ -1125,7 +1193,12 @@ const EnumHolder< BindingDirection::Value > g_BindingDirections[] =
     { L"TwoWay", BindingDirection::TwoWay }
 };
 
-HRESULT ConvertStringToBindingDirection(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToBindingDirection(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CBindingDirectionValue* pOutValue = NULL;
@@ -1149,7 +1222,12 @@ const EnumHolder< Stretch::Value > g_Stretch[] =
     { L"UniformToFill", Stretch::UniformToFill }
 };
 
-HRESULT ConvertStringToStretch(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToStretch(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue,
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CStretchValue* pOutValue = NULL;
@@ -1172,7 +1250,12 @@ const EnumHolder< StretchDirection::Value > g_StretchDirection[] =
     { L"DownOnly", StretchDirection::DownOnly }
 };
 
-HRESULT ConvertStringToStretchDirection(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToStretchDirection(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     CStretchDirectionValue* pOutValue = NULL;
@@ -1194,7 +1277,12 @@ const EnumHolder< Orientation::Value > g_Orientation[] =
     { L"Vertical", Orientation::Vertical }
 };
 
-HRESULT ConvertStringToOrientation(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__checkReturn HRESULT 
+ConvertStringToOrientation(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue,
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     COrientationValue* pOutValue = NULL;

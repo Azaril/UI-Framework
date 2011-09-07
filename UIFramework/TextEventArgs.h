@@ -10,14 +10,24 @@ class CTextEventArgs : public CInputEventArgs
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::TextEventArgs, CInputEventArgs );
 
-        const WCHAR* GetText();
-        UINT32 GetTextLength();
+        __out const WCHAR* GetText(
+            );
+
+        UINT32 GetTextLength(
+            );
 
     protected:
-        CTextEventArgs();
-        virtual ~CTextEventArgs();
+        CTextEventArgs(
+            );
 
-        HRESULT Initialize( CRoutedEvent* pRoutedEvent, const WCHAR* pText, UINT32 TextLength );
+        virtual ~CTextEventArgs(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in CRoutedEvent* pRoutedEvent, 
+            __in_ecount(TextLength) const WCHAR* pText, 
+            UINT32 TextLength 
+            );
 
         CStringValue* m_Text;
 };

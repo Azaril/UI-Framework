@@ -45,6 +45,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">SecurityRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,7 +97,6 @@
   <ItemGroup>
     <ClCompile Include="Animatable.cpp" />
     <ClCompile Include="AnimationClock.cpp" />
-    <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AnimationTimeline.cpp" />
     <ClCompile Include="BindingBase.cpp" />
     <ClCompile Include="BindingContext.cpp" />
@@ -280,7 +280,6 @@
   <ItemGroup>
     <ClInclude Include="Animatable.h" />
     <ClInclude Include="AnimationClock.h" />
-    <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AnimationTimeline.h" />
     <ClInclude Include="BindingBase.h" />
     <ClInclude Include="BindingContext.h" />

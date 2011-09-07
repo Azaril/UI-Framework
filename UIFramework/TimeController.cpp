@@ -10,7 +10,7 @@ CTimeController::CTimeController(
 CTimeController::~CTimeController(
     )
 {
-    Disconnect();
+    IGNOREHR(Disconnect());
 }
 
 __checkReturn HRESULT 

@@ -9,15 +9,27 @@ class CMouseController;
 class CMouseInputHitTestFilter : public CHitTestFilter
 {
     public:
-        virtual HRESULT Filter( CVisual* pVisual, HitTestFilterBehavior::Value* pFilterBehavior );
+        __override virtual __checkReturn HRESULT Filter(
+            __in CVisual* pVisual,
+            __out HitTestFilterBehavior::Value* pFilterBehavior 
+            );
 };
 
 class CMouseButtonHitTestCallback : public CHitTestCallback
 {
     public:
-        CMouseButtonHitTestCallback( CMouseController* pController, Point2F MouseLocation, MouseButton::Value Button, MouseButtonState::Value State, BOOL* pHandled );
+        CMouseButtonHitTestCallback( 
+            __in CMouseController* pController,
+            Point2F MouseLocation,
+            MouseButton::Value Button, 
+            MouseButtonState::Value State, 
+            __out_opt BOOL* pHandled 
+            );
 
-        virtual HRESULT ItemHit( CVisual* pVisual, HitTestResultBehavior::Value* pResultBehavior );
+        __override virtual __checkReturn HRESULT ItemHit( 
+            __in CVisual* pVisual, 
+            __out HitTestResultBehavior::Value* pResultBehavior 
+            );
 
     protected:
         CMouseController* m_Controller;
@@ -30,9 +42,16 @@ class CMouseButtonHitTestCallback : public CHitTestCallback
 class CMouseMoveHitTestCallback : public CHitTestCallback
 {
     public:
-        CMouseMoveHitTestCallback( CMouseController* pController, Point2F MouseLocation, BOOL* pHandled );
+        CMouseMoveHitTestCallback( 
+            __in CMouseController* pController,
+            Point2F MouseLocation,
+            __out_opt BOOL* pHandled 
+            );
 
-        virtual HRESULT ItemHit( CVisual* pVisual, HitTestResultBehavior::Value* pResultBehavior );
+        __override virtual __checkReturn HRESULT ItemHit( 
+            __in CVisual* pVisual,
+            __out HitTestResultBehavior::Value* pResultBehavior 
+            );
 
     protected:
         CMouseController* m_Controller;
