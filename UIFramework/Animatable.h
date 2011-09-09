@@ -8,8 +8,6 @@ class CAnimationTimeline;
 class CAnimationClock;
 class CAnimationInfo;
 
-EXPIMP_TEMPLATE template class UIFRAMEWORK_API std::vector< CAnimationInfo* >;
-
 class UIFRAMEWORK_API CAnimatable
 {
     public:
