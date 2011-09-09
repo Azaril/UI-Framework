@@ -411,7 +411,7 @@ HRESULT CTrack::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         NeededSize = pThumb->GetDesiredSize();
     }
 
-    if(!std::isnan(ViewportSize))
+    if(!_isnan(ViewportSize))
     {
         if (TrackOrientation == Orientation::Vertical)
         {
@@ -439,7 +439,7 @@ inline void CoerceLength(FLOAT& componentLength, FLOAT trackLength)
     {
         componentLength = 0.0;
     }
-    else if (componentLength > trackLength || std::isnan(componentLength))
+    else if (componentLength > trackLength || _isnan(componentLength))
     {
         componentLength = trackLength;
     }
@@ -628,7 +628,7 @@ HRESULT CTrack::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 
     IFC(GetEffectiveOrientation(&TrackOrientation));
 
-    if(std::isnan(ViewportSize))
+    if(_isnan(ViewportSize))
     {
         IFC(ComputeSliderLengths(AvailableSize, TrackOrientation, &DecreaseButtonLength, &ThumbLength, &IncreaseButtonLength));
     }

@@ -29,6 +29,8 @@ _wtof(
 
 #define _wcsicmp wcscasecmp
 
+#define _isnan(val) std::isnan(val)
+
 #endif
 
 #include "Defines.h"

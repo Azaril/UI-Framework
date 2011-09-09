@@ -21,6 +21,6 @@
 #define EXPIMP_TEMPLATE extern
 #endif
 
-#endif
+#include "DummySal.h"
 
-#include "dummysal.h"
+#endif

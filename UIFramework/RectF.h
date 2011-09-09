@@ -8,6 +8,12 @@
 #include <D2D1helper.h>
 #endif
 
+#pragma push_macro("min")
+#pragma push_macro("max")
+
+#undef min
+#undef max
+
 struct UIFRAMEWORK_API RectF
 #ifdef _WINDOWS
     : D2D1_RECT_F
@@ -107,3 +113,6 @@ MakeRect(
     
     return Val;
 }
+
+#pragma pop_macro("min")
+#pragma pop_macro("max")
