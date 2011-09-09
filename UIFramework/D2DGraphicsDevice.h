@@ -18,26 +18,47 @@ class UIFRAMEWORK_API CD2DGraphicsDevice : public CGraphicsDevice
 			__deref_out CD2DHWNDRenderTarget** ppRenderTarget 
 			);
 
-        HRESULT CreateDXGISurfaceRenderTarget( 
+        __checkReturn HRESULT CreateDXGISurfaceRenderTarget( 
 			__in IDXGISurface* pSurface, 
 			__deref_out CRenderTarget** ppRenderTarget 
 			);
 
-        __override virtual HRESULT GetTextProvider( CTextProvider** ppTextProvider );
+        __override virtual __checkReturn HRESULT GetTextProvider(
+            __deref_out CTextProvider** ppTextProvider 
+            );
 
-        __override virtual HRESULT GetImagingProvider( CImagingProvider** ppImagingProvider );
+        __override virtual __checkReturn HRESULT GetImagingProvider( 
+            __deref_out CImagingProvider** ppImagingProvider 
+            );
 
-        __override virtual HRESULT CreateRectangleGeometry( const RectF& Rectangle, CRectangleGeometry** ppRectangleGeometry );
-        __override virtual HRESULT CreateRoundedRectangleGeometry( const RectF& Rectangle, FLOAT CornerRadius, CRoundedRectangleGeometry** ppRectangleGeometry );
+        __override virtual __checkReturn HRESULT CreateRectangleGeometry( 
+            const RectF& Rectangle, 
+            __deref_out CRectangleGeometry** ppRectangleGeometry
+            );
+
+        __override virtual __checkReturn HRESULT CreateRoundedRectangleGeometry( 
+            const RectF& Rectangle, 
+            FLOAT CornerRadius, 
+            __deref_out CRoundedRectangleGeometry** ppRectangleGeometry 
+            );
 
     protected:
-        CD2DGraphicsDevice();
-        virtual ~CD2DGraphicsDevice();
+        CD2DGraphicsDevice(
+            );
 
-        HRESULT Initialize( );
+        virtual ~CD2DGraphicsDevice(
+            );
 
-        virtual HRESULT CreateTextProvider( CTextProvider** ppTextProvider );
-        virtual HRESULT CreateImagingProvider( CImagingProvider** ppImagingProvider );
+        __checkReturn HRESULT Initialize(
+            );
+
+        virtual __checkReturn HRESULT CreateTextProvider( 
+            __deref_out CTextProvider** ppTextProvider
+            );
+
+        virtual __checkReturn HRESULT CreateImagingProvider( 
+            __deref_out CImagingProvider** ppImagingProvider 
+            );
 
         HMODULE m_D2DModule;
         ID2D1Factory* m_Factory;
