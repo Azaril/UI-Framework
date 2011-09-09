@@ -46,7 +46,7 @@ class CNamescope : public CRefCountedObjectBase< CObjectWithType >
 
         virtual __checkReturn HRESULT UnregisterName(
             __in_z const WCHAR* pName, 
-            _in CObjectWithType* pObject 
+            __in CObjectWithType* pObject 
             );
 
         virtual __checkReturn HRESULT FindName(

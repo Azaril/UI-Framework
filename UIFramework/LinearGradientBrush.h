@@ -10,11 +10,15 @@ class CLinearGradientBrush : public CGradientBrush
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::LinearGradientBrush, CGradientBrush );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-
-        virtual HRESULT GetGraphicsBrush( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush );
+        __override virtual __checkReturn HRESULT GetGraphicsBrush( 
+            __in CGraphicsDevice* pGraphicsDevice,
+            __in CRenderTarget* pRenderTarget, 
+            __deref_out CGraphicsBrush** ppGraphicsBrush 
+            );
 
         //
         // Properties
@@ -23,12 +27,25 @@ class CLinearGradientBrush : public CGradientBrush
         static CStaticProperty EndPointProperty;
 
     protected:
-        CLinearGradientBrush();
-        virtual ~CLinearGradientBrush();
+        CLinearGradientBrush(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CLinearGradientBrush(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Initialize( 
+            __in CProviders* pProviders 
+            );
+
+        __override virtual __checkReturn HRESULT SetValueInternal(
+            __in CProperty* pProperty,
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal(
+            __in CProperty* pProperty, 
+            __deref_out CObjectWithType** ppValue 
+            );
 
         //
         // Property Change Handlers
@@ -36,8 +53,15 @@ class CLinearGradientBrush : public CGradientBrush
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnStartPointChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnEndPointChanged );
 
-        HRESULT OnStartPointChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
-        HRESULT OnEndPointChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        __checkReturn HRESULT OnStartPointChanged(
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue 
+            );
+
+        __checkReturn HRESULT OnEndPointChanged( 
+            __in_opt CObjectWithType* pOldValue, 
+            __in_opt CObjectWithType* pNewValue 
+            );
 
         Point2F m_StartPoint;
         Point2F m_EndPoint;

@@ -109,7 +109,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CBinding::GetValueInternal(
     __in CProperty* pProperty, 
-    __deref_out CObjectWithType** ppValue
+    __deref_out_opt CObjectWithType** ppValue
     )
 {
     HRESULT hr = S_OK;

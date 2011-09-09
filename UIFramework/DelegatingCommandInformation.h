@@ -9,13 +9,22 @@ class CDelegatingCommandInformation : public CCommandInformation
     public:
         DECLARE_FACTORY2( CDelegatingCommandInformation, CCommandInformation*, CCommandInformation* );
 
-        virtual HRESULT GetCommand( const WCHAR* pPropertyName, CCommand** ppCommand );
+        __override virtual __checkReturn HRESULT GetCommand(
+            __in_z const WCHAR* pPropertyName, 
+            __deref_out_opt CCommand** ppCommand 
+            );
 
     protected:
-        CDelegatingCommandInformation();
-        virtual ~CDelegatingCommandInformation();
+        CDelegatingCommandInformation(
+            );
 
-        HRESULT Initialize( CCommandInformation* pRoot, CCommandInformation* pBase );
+        virtual ~CDelegatingCommandInformation(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in CCommandInformation* pRoot,
+            __in CCommandInformation* pBase 
+            );
 
         CCommandInformation* m_Root;
         CCommandInformation* m_Base;

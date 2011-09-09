@@ -4,16 +4,42 @@
 #include "LayeredValue.h"
 #include "BindingContext.h"
 
-CPropertyObject::CPropertyObject() : m_BindingContext(NULL)
+__checkReturn HRESULT
+CProperty::OnValueChanged( 
+    __in CPropertyObject* pObjectInstance, 
+    __in_opt CObjectWithType* pOldValue, 
+    __in_opt CObjectWithType* pNewValue 
+    )
+{
+    HRESULT hr = S_OK;
+    OnValueChangeFunc Func = GetOnValueChangedCallback();
+
+    if (Func != NULL)
+    {
+        IFC(Func(pObjectInstance, pOldValue, pNewValue));
+    }
+
+Cleanup:
+    return hr;
+}
+
+CPropertyObject::CPropertyObject(
+    ) 
+    : m_BindingContext(NULL)
 {
 }
 
-CPropertyObject::~CPropertyObject()
+CPropertyObject::~CPropertyObject(
+    )
 {
     ReleaseObject(m_BindingContext);
 }
 
-HRESULT CPropertyObject::SetValue(CProperty* pProperty, CObjectWithType* pValue)
+__checkReturn HRESULT
+CPropertyObject::SetValue(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
     CObjectWithType* pOldValue = NULL;
@@ -31,7 +57,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::SetValueReadOnly(CProperty* pProperty, CObjectWithType* pValue)
+__checkReturn HRESULT 
+CPropertyObject::SetValueReadOnly(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
     CObjectWithType* pOldValue = NULL;
@@ -47,7 +77,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::SetValuePrivate(CProperty* pProperty, CObjectWithType* pValue)
+__checkReturn HRESULT
+CPropertyObject::SetValuePrivate(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
     CLayeredValue* pLayeredValue = NULL;
@@ -85,7 +119,7 @@ HRESULT CPropertyObject::SetValuePrivate(CProperty* pProperty, CObjectWithType* 
 
             IFC(RaisePropertyChanged(pProperty));
         }
-        else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+        else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)) && pLayeredValue != NULL)
         {
             IFC(pLayeredValue->SetLocalValue(pValue));
         }
@@ -105,7 +139,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__checkReturn HRESULT
+CPropertyObject::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -115,7 +153,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__checkReturn HRESULT 
+CPropertyObject::GetValue(
+    __in CProperty* pProperty,
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     CLayeredValue* pLayeredValue;
@@ -137,7 +179,7 @@ HRESULT CPropertyObject::GetValue(CProperty* pProperty, CObjectWithType** ppValu
 
         *ppValue = NULL;
     }
-    else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)) && pLayeredValue != NULL)
     {
         IFC(pLayeredValue->GetLocalValue(ppValue));
     }
@@ -150,7 +192,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
+__checkReturn HRESULT 
+CPropertyObject::GetLayeredValue(
+    __in CProperty* pProperty, 
+    __deref_out CLayeredValue** ppLayeredValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -160,7 +206,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+__checkReturn HRESULT 
+CPropertyObject::GetValueInternal(
+    __in CProperty* pProperty,
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -170,7 +220,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::GetEffectiveValue(CProperty* pProperty, CObjectWithType** ppValue)
+__checkReturn HRESULT 
+CPropertyObject::GetEffectiveValue(
+    __in CProperty* pProperty, 
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     CLayeredValue* pLayeredValue = NULL;
@@ -178,7 +232,7 @@ HRESULT CPropertyObject::GetEffectiveValue(CProperty* pProperty, CObjectWithType
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)) && pLayeredValue != NULL)
     {
         IFC(pLayeredValue->GetEffectiveValue(ppValue));
     }
@@ -192,7 +246,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::SetEffectiveValue(CProperty* pProperty, CObjectWithType* pValue)
+__checkReturn HRESULT 
+CPropertyObject::SetEffectiveValue(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
     CLayeredValue* pLayeredValue = NULL;
@@ -200,7 +258,7 @@ HRESULT CPropertyObject::SetEffectiveValue(CProperty* pProperty, CObjectWithType
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)) && pLayeredValue != NULL)
     {
         IFC(pLayeredValue->SetEffectiveValue(pValue));
     }
@@ -214,7 +272,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::AddPropertyChangeListener(const PropertyChangedHandler& Handler, events::signals::connection* pConnection)
+__checkReturn HRESULT
+CPropertyObject::AddPropertyChangeListener(
+    const PropertyChangedHandler& Handler, 
+    __out events::signals::connection* pConnection
+    )
 {
     HRESULT hr = S_OK;
 
@@ -226,7 +288,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::RaisePropertyChanged(CProperty* pProperty)
+__checkReturn HRESULT
+CPropertyObject::RaisePropertyChanged(
+    __in CProperty* pProperty
+    )
 {
     HRESULT hr = S_OK;
 
@@ -238,7 +303,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::SetBinding(CProperty* pProperty, CBindingBase* pBinding)
+__checkReturn HRESULT 
+CPropertyObject::SetBinding(
+    __in CProperty* pProperty, 
+    __in CBindingBase* pBinding
+    )
 {
     HRESULT hr = S_OK;
 
@@ -249,7 +318,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CPropertyObject::SetBindingContext(CBindingContext* pContext)
+__checkReturn HRESULT 
+CPropertyObject::SetBindingContext(
+    __in CBindingContext* pContext
+    )
 {
     HRESULT hr = S_OK;
 
@@ -262,7 +334,10 @@ HRESULT CPropertyObject::SetBindingContext(CBindingContext* pContext)
     return hr;
 }
 
-HRESULT CPropertyObject::GetBindingContext(CBindingContext** ppContext)
+__checkReturn HRESULT 
+CPropertyObject::GetBindingContext(
+    __deref_out_opt CBindingContext** ppContext
+    )
 {
     HRESULT hr = S_OK;
 
@@ -275,27 +350,38 @@ Cleanup:
     return hr;
 }
 
-CAttachedPropertyHolder::CAttachedPropertyHolder(const CAttachedPropertyHolder& Other) : m_Property(Other.m_Property),
-                                                                                         m_Value(Other.m_Value)
+CAttachedPropertyHolder::CAttachedPropertyHolder(
+    const CAttachedPropertyHolder& Other
+    ) 
+    : m_Property(Other.m_Property)
+    , m_Value(Other.m_Value)
 {
     AddRefObject(m_Property);
     AddRefObject(m_Value);
 }
 
-CAttachedPropertyHolder::CAttachedPropertyHolder(CProperty* pProperty, CObjectWithType* pValue) : m_Property(pProperty),
-                                                                                                  m_Value(pValue)
+CAttachedPropertyHolder::CAttachedPropertyHolder(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
+    : m_Property(pProperty)
+    , m_Value(pValue)
 {
     AddRefObject(m_Property);
     AddRefObject(m_Value);
 }
 
-CAttachedPropertyHolder::~CAttachedPropertyHolder()
+CAttachedPropertyHolder::~CAttachedPropertyHolder(
+    )
 {
     ReleaseObject(m_Property);
     ReleaseObject(m_Value);
 }
 
-HRESULT CAttachedPropertyHolder::SetValue(CObjectWithType* pObject)
+__checkReturn HRESULT 
+CAttachedPropertyHolder::SetValue(
+    __in CObjectWithType* pObject
+    )
 {
     HRESULT hr = S_OK;
 
@@ -311,7 +397,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CAttachedPropertyHolder::GetValue(CObjectWithType** ppObject)
+__checkReturn HRESULT 
+CAttachedPropertyHolder::GetValue(
+    __deref_out CObjectWithType** ppObject
+    )
 {
     HRESULT hr = S_OK;
 
@@ -324,7 +413,9 @@ Cleanup:
     return hr;
 }
 
-CProperty* CAttachedPropertyHolder::GetProperty()
+__out CProperty* 
+CAttachedPropertyHolder::GetProperty(
+    )
 {
     return m_Property;
 }
@@ -333,25 +424,36 @@ CProperty* CAttachedPropertyHolder::GetProperty()
 // CObjectWithType
 //
 extern "C" __declspec(dllexport)
-void CObjectWithType_AddRef(CObjectWithType* pObject)
+void 
+CObjectWithType_AddRef(
+    __in CObjectWithType* pObject
+    )
 {
     pObject->AddRef();
 }
 
 extern "C" __declspec(dllexport)
-void CObjectWithType_Release(CObjectWithType* pObject)
+void
+CObjectWithType_Release(
+    __in CObjectWithType* pObject
+    )
 {
     pObject->Release();
 }
 
 extern "C" __declspec(dllexport)
-TypeIndex::Value CObjectWithType_TypeIndex()
+TypeIndex::Value 
+CObjectWithType_TypeIndex(
+    )
 {
     return TypeIndex::Object;
 }
 
 extern "C" __declspec(dllexport)
-TypeIndex::Value CObjectWithType_GetType(CObjectWithType* pObject)
+TypeIndex::Value
+CObjectWithType_GetType(
+    __in CObjectWithType* pObject
+    )
 {
     return pObject->GetType();
 }
@@ -360,13 +462,19 @@ TypeIndex::Value CObjectWithType_GetType(CObjectWithType* pObject)
 // CProperty
 //
 extern "C" __declspec(dllexport)
-void CProperty_AddRef(CProperty* pProperty)
+void 
+CProperty_AddRef(
+    __in CProperty* pProperty
+    )
 {
     pProperty->AddRef();
 }
 
 extern "C" __declspec(dllexport)
-void CProperty_Release(CProperty* pProperty)
+void
+CProperty_Release(
+    __in CProperty* pProperty
+    )
 {
     pProperty->Release();
 }
@@ -375,31 +483,49 @@ void CProperty_Release(CProperty* pProperty)
 // CPropertyObject
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CPropertyObject_TypeIndex()
+TypeIndex::Value 
+CPropertyObject_TypeIndex(
+    )
 {
     return TypeIndex::PropertyObject;
 }
 
 extern "C" __declspec(dllexport)
-CObjectWithType* CPropertyObject_CastTo_CObjectWithType(CPropertyObject* pPropertyObject)
+__out CObjectWithType* 
+CPropertyObject_CastTo_CObjectWithType(
+    __in CPropertyObject* pPropertyObject
+    )
 {
     return pPropertyObject;
 }
 
 extern "C" __declspec(dllexport)
-CPropertyObject* CObjectWithType_CastTo_CPropertyObject(CObjectWithType* pObject)
+__out_opt CPropertyObject* 
+CObjectWithType_CastTo_CPropertyObject(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::PropertyObject)) ? (CPropertyObject*)pObject : NULL;
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CPropertyObject_SetValue(CPropertyObject* pPropertyObject, CProperty* pProperty, CObjectWithType* pValue)
+__checkReturn HRESULT 
+CPropertyObject_SetValue(
+    __in CPropertyObject* pPropertyObject, 
+    __in CProperty* pProperty,
+    __in CObjectWithType* pValue
+    )
 {
     return pPropertyObject->SetValue(pProperty, pValue);
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CPropertyObject_SetValueFloat(CPropertyObject* pPropertyObject, CProperty* pProperty, FLOAT Value)
+__checkReturn HRESULT 
+CPropertyObject_SetValueFloat(
+    __in CPropertyObject* pPropertyObject, 
+    __in CProperty* pProperty, 
+    FLOAT Value
+    )
 {
     HRESULT hr = S_OK;
     CFloatValue* pValue = NULL;
@@ -415,7 +541,12 @@ Cleanup:
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CPropertyObject_SetValueString(CPropertyObject* pPropertyObject, CProperty* pProperty, const WCHAR* strValue)
+__checkReturn HRESULT 
+CPropertyObject_SetValueString(
+    __in CPropertyObject* pPropertyObject, 
+    __in CProperty* pProperty,
+    __in_z const WCHAR* strValue
+    )
 {
     HRESULT hr = S_OK;
     CStringValue* pValue = NULL;
@@ -431,7 +562,12 @@ Cleanup:
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CPropertyObject_SetValueVisibility(CPropertyObject* pPropertyObject, CProperty* pProperty, const Visibility::Value Val)
+__checkReturn HRESULT 
+CPropertyObject_SetValueVisibility(
+    __in CPropertyObject* pPropertyObject, 
+    __in CProperty* pProperty, 
+    const Visibility::Value Val
+    )
 {
     HRESULT hr = S_OK;
     CVisibilityValue* pValue = NULL;
@@ -447,7 +583,12 @@ Cleanup:
 }
 
 extern "C" __declspec(dllexport)
-HRESULT CPropertyObject_GetValue(CPropertyObject* pPropertyObject, CProperty* pProperty, CObjectWithType** ppValue)
+__checkReturn HRESULT
+CPropertyObject_GetValue(
+    __in CPropertyObject* pPropertyObject,
+    __in CProperty* pProperty, 
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     return pPropertyObject->GetValue(pProperty, ppValue);
 }

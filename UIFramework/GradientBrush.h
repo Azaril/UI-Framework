@@ -24,9 +24,9 @@ class CGradientBrush : public CBrush
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::GradientBrush, CBrush );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
-
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        static __checkReturn HRESULT CreatePropertyInformation(
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
         //
         // Properties
@@ -34,19 +34,35 @@ class CGradientBrush : public CBrush
         static CStaticProperty GradientStopsProperty;
 
     protected:
-        CGradientBrush();
-        virtual ~CGradientBrush();
+        CGradientBrush(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CGradientBrush(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders 
+            );
+
+        __override virtual __checkReturn HRESULT SetValueInternal( 
+            __in CProperty* pProperty,
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal( 
+            __in CProperty* pProperty,
+            __deref_out_opt CObjectWithType** ppValue 
+            );
 
         //
         // Property Change Handlers
         //
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnGradientStopsChanged );
 
-        HRESULT OnGradientStopsChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        __checkReturn HRESULT OnGradientStopsChanged(
+            __in_opt CObjectWithType* pOldValue, 
+            __in_opt CObjectWithType* pNewValue 
+            );
 
         CGradientStopCollection* m_GradientStops;
 };

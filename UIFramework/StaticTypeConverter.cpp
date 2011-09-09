@@ -1,14 +1,20 @@
 #include "StaticTypeConverter.h"
 
-CStaticTypeConverter::CStaticTypeConverter() : m_ConverterInformation(NULL)
+CStaticTypeConverter::CStaticTypeConverter(
+    )
+    : m_ConverterInformation(NULL)
 {
 }
 
-CStaticTypeConverter::~CStaticTypeConverter()
+CStaticTypeConverter::~CStaticTypeConverter(
+    )
 {
 }
 
-HRESULT CStaticTypeConverter::Initialize(StaticTypeConverterInformation* pConverterInformation)
+__checkReturn HRESULT 
+CStaticTypeConverter::Initialize(
+    __in StaticTypeConverterInformation* pConverterInformation
+    )
 {
     HRESULT hr = S_OK;
 
@@ -20,7 +26,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStaticTypeConverter::Convert(CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue)
+__override __checkReturn HRESULT 
+CStaticTypeConverter::Convert(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue,
+    __deref_out CObjectWithType** ppConvertedValue
+    )
 {
     HRESULT hr = S_OK;
     TypeIndex::Value SourceType;

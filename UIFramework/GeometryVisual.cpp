@@ -1,18 +1,27 @@
 #include "GeometryVisual.h"
 
-CGeometryVisual::CGeometryVisual() : m_Geometry(NULL),
-                                     m_FillBrush(NULL),
-                                     m_StrokeBrush(NULL),
-                                     m_FillGraphicsBrush(NULL),
-                                     m_StrokeGraphicsBrush(NULL),
-                                     m_StrokeThickness(1.0f),
-                                     m_UpdateFillTransform(TRUE)
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CGeometryVisual, OnFillBrushChanged );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CGeometryVisual, OnStrokeBrushChanged );
+
+CGeometryVisual::CGeometryVisual(
+    ) 
+    : m_Geometry(NULL)
+    , m_FillBrush(NULL)
+    , m_StrokeBrush(NULL)
+    , m_FillGraphicsBrush(NULL)
+    , m_StrokeGraphicsBrush(NULL)
+    , m_StrokeThickness(1.0f)
+    , m_UpdateFillTransform(TRUE)
 {
     m_FillBrushTransform = Matrix3X2F::Identity();
     m_ModifyFillBrushTransform = Matrix3X2F::Identity();
 }
 
-CGeometryVisual::~CGeometryVisual()
+CGeometryVisual::~CGeometryVisual(
+    )
 {
     ReleaseObject(m_Geometry);
     ReleaseObject(m_FillBrush);
@@ -22,7 +31,9 @@ CGeometryVisual::~CGeometryVisual()
 }
 
 
-HRESULT CGeometryVisual::Initialize()
+__checkReturn HRESULT 
+CGeometryVisual::Initialize(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -32,7 +43,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::SetGeometry(CGeometry* pGeometry)
+__checkReturn HRESULT 
+CGeometryVisual::SetGeometry(
+    __in_opt CGeometry* pGeometry
+    )
 {
     HRESULT hr = S_OK;
 
@@ -42,7 +56,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::SetFillBrush(CBrush* pBrush)
+__checkReturn HRESULT 
+CGeometryVisual::SetFillBrush(
+    __in_opt CBrush* pBrush
+    )
 {
     HRESULT hr = S_OK;
 
@@ -52,7 +69,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::SetStrokeBrush(CBrush* pBrush)
+__checkReturn HRESULT 
+CGeometryVisual::SetStrokeBrush(
+    __in_opt CBrush* pBrush
+    )
 {
     HRESULT hr = S_OK;
 
@@ -62,7 +82,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::SetStrokeThickness(FLOAT Thickness)
+__checkReturn HRESULT 
+CGeometryVisual::SetStrokeThickness(
+    FLOAT Thickness
+    )
 {
     HRESULT hr = S_OK;
 
@@ -72,7 +95,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::SetFillBrushTransform(const Matrix3X2F& Transform)
+__checkReturn HRESULT
+CGeometryVisual::SetFillBrushTransform(
+    const Matrix3X2F& Transform
+    )
 {
     HRESULT hr = S_OK;
 
@@ -83,7 +109,10 @@ HRESULT CGeometryVisual::SetFillBrushTransform(const Matrix3X2F& Transform)
     return hr;
 }
 
-HRESULT CGeometryVisual::InternalSetGeometry(CGeometry* pGeometry)
+__checkReturn HRESULT 
+CGeometryVisual::InternalSetGeometry(
+    __in CGeometry* pGeometry
+    )
 {
     HRESULT hr = S_OK;
 
@@ -98,13 +127,16 @@ HRESULT CGeometryVisual::InternalSetGeometry(CGeometry* pGeometry)
     return hr;
 }
 
-HRESULT CGeometryVisual::InternalSetFillBrush(CBrush* pBrush)
+__checkReturn HRESULT 
+CGeometryVisual::InternalSetFillBrush(
+    __in CBrush* pBrush
+    )
 {
     HRESULT hr = S_OK;
 
     if(m_FillBrush)
     {
-        IFC(RemoveVisualResource(m_FillBrush));
+        IFC(RemoveVisualResource(m_FillBrush, &INSTANCE_CHANGE_CALLBACK( CGeometryVisual, OnFillBrushChanged )));
 
         ReleaseObject(m_FillBrush);
     }
@@ -117,20 +149,23 @@ HRESULT CGeometryVisual::InternalSetFillBrush(CBrush* pBrush)
     {
         AddRefObject(m_FillBrush);
 
-        IFC(AddVisualResource(m_FillBrush));        
+        IFC(AddVisualResource(m_FillBrush, &INSTANCE_CHANGE_CALLBACK( CGeometryVisual, OnFillBrushChanged )));        
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::InternalSetStrokeBrush(CBrush* pBrush)
+__checkReturn HRESULT 
+CGeometryVisual::InternalSetStrokeBrush(
+    __in CBrush* pBrush
+    )
 {
     HRESULT hr = S_OK;
 
     if(m_StrokeBrush)
     {
-        IFC(RemoveVisualResource(m_StrokeBrush));
+        IFC(RemoveVisualResource(m_StrokeBrush, &INSTANCE_CHANGE_CALLBACK( CGeometryVisual, OnStrokeBrushChanged )));
 
         ReleaseObject(m_StrokeBrush);
     }
@@ -141,7 +176,7 @@ HRESULT CGeometryVisual::InternalSetStrokeBrush(CBrush* pBrush)
 
     if(m_StrokeBrush)
     {
-        IFC(AddVisualResource(m_StrokeBrush));
+        IFC(AddVisualResource(m_StrokeBrush, &INSTANCE_CHANGE_CALLBACK( CGeometryVisual, OnStrokeBrushChanged )));
 
         AddRefObject(m_StrokeBrush);
     }
@@ -150,7 +185,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::InternalSetStrokeThickness(FLOAT Thickness)
+__checkReturn HRESULT 
+CGeometryVisual::InternalSetStrokeThickness(
+    FLOAT Thickness
+    )
 {
     HRESULT hr = S_OK;
 
@@ -162,50 +200,42 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::OnVisualNotification(CVisualNotification* pNotification)
+__checkReturn HRESULT 
+CGeometryVisual::OnFillBrushChanged(
+    __in_opt CObjectWithType* pOldValue,
+    __in_opt CObjectWithType* pNewValue
+    )
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pNotification);
+    ReleaseObject(m_FillGraphicsBrush);
 
-    switch(pNotification->GetType())
-    {
-        case VisualNotification::ChildBrushInvalidated:
-            {
-                CBrushInvalidatedNotification* pBrushInvalidatedNotification = (CBrushInvalidatedNotification*)pNotification;
-
-                IFC(OnBrushInvalidated(pBrushInvalidatedNotification->GetBrush()));
-
-                break;
-            }
-    }
-
-    IFC(CVisual::OnVisualNotification(pNotification));
+    IFC(InvalidateVisual());
 
 Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::OnBrushInvalidated(CBrush* pBrush)
+__checkReturn HRESULT 
+CGeometryVisual::OnStrokeBrushChanged(
+    __in_opt CObjectWithType* pOldValue,
+    __in_opt CObjectWithType* pNewValue
+    )
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pBrush);
+    ReleaseObject(m_StrokeGraphicsBrush);
 
-    if(pBrush == m_FillBrush)
-    {
-        ReleaseObject(m_FillGraphicsBrush);
-    }
-    else if(pBrush == m_StrokeBrush)
-    {
-        ReleaseObject(m_StrokeGraphicsBrush);
-    }
+    IFC(InvalidateVisual());
 
 Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::PreRender(CPreRenderContext& Context)
+__override __checkReturn HRESULT 
+CGeometryVisual::PreRender(
+    CPreRenderContext& Context
+    )
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
@@ -269,7 +299,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::RenderTransformed(CRenderContext& Context)
+__override __checkReturn HRESULT 
+CGeometryVisual::RenderTransformed(
+    CRenderContext& Context
+    )
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
@@ -298,7 +331,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGeometryVisual::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
+__override __checkReturn HRESULT 
+CGeometryVisual::HitTest(
+    Point2F LocalPoint, 
+    __deref_out_opt CHitTestResult** ppHitTestResult
+    )
 {
     HRESULT hr = S_OK;
     BOOL FillContainsPoint = FALSE;
@@ -307,7 +344,11 @@ HRESULT CGeometryVisual::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestR
 
     if(m_Geometry != NULL)
     {
-        IFC(m_Geometry->FillContainsPoint(LocalPoint * m_FinalLocalTransform, &FillContainsPoint));
+        Matrix3X2F LocalTransform;
+
+        IFC(GetLocalTransform(&LocalTransform));
+
+        IFC(m_Geometry->FillContainsPoint(LocalPoint * LocalTransform, &FillContainsPoint));
     }
 
     if(FillContainsPoint)

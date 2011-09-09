@@ -8,13 +8,22 @@ class CRoutedEventInformation : public CEventInformation
     public:
         DECLARE_FACTORY2( CRoutedEventInformation, CRoutedEvent**, UINT32 );
 
-        virtual HRESULT GetEvent( const WCHAR* pEventName, CRoutedEvent** ppEvent );
+        __override virtual __checkReturn HRESULT GetEvent( 
+            __in_z const WCHAR* pEventName,
+            __deref_out_opt CRoutedEvent** ppEvent 
+            );
 
     public:
-        CRoutedEventInformation();
-        virtual ~CRoutedEventInformation();
+        CRoutedEventInformation(
+            );
 
-        HRESULT Initialize( CRoutedEvent** ppEvents, UINT32 EventCount );
+        virtual ~CRoutedEventInformation(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in_ecount(EventCount) CRoutedEvent** ppEvents,
+            UINT32 EventCount 
+            );
 
         std::vector< CRoutedEvent* > m_Events;
 };

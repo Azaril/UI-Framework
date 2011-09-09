@@ -20,14 +20,21 @@ class CSetter : public CRefCountedObjectBase< CPropertyObject >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Setter, CPropertyObject );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation
+            );
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        __out_opt const WCHAR* GetPropertyName(
+            );
 
-        const WCHAR* GetPropertyName();
-        CObjectWithType* GetPropertyValue();
+        __out_opt CObjectWithType* GetPropertyValue(
+            );
 
-        virtual HRESULT ResolveSetter( CUIElement* pObject, IStyleCallback* pCallback, CResolvedSetter** ppResolvedSetter );
+        virtual __checkReturn HRESULT ResolveSetter(
+            __in CUIElement* pObject,
+            __in IStyleCallback* pCallback,
+            __deref_out CResolvedSetter** ppResolvedSetter 
+            );
 
         //
         // Properties
@@ -36,15 +43,33 @@ class CSetter : public CRefCountedObjectBase< CPropertyObject >
         static CStaticProperty ValueProperty;
 
     protected:
-        CSetter();
-        virtual ~CSetter();
+        CSetter(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CSetter(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders 
+            );
 
-        HRESULT SetPropertyInternal( const WCHAR* pProperty );
-        HRESULT SetPropertyValueInternal( CParserCommandList* pValue );
+        __override virtual __checkReturn HRESULT SetValueInternal(
+            __in CProperty* pProperty,
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal(
+            __in CProperty* pProperty, 
+            __deref_out_opt CObjectWithType** ppValue 
+            );
+
+        __checkReturn HRESULT SetPropertyInternal( 
+            __in_z const WCHAR* pProperty 
+            );
+
+        __checkReturn HRESULT SetPropertyValueInternal( 
+            __in CParserCommandList* pValue 
+            );
 
         CProviders* m_Providers;
         CStringValue* m_Property;
@@ -77,13 +102,21 @@ class CResolvedSetter : public CRefCountedObject
     public:
         DECLARE_FACTORY3( CResolvedSetter, CProperty*, CObjectWithType*, IStyleCallback* );
 
-        virtual HRESULT Apply();
+        virtual __checkReturn HRESULT Apply(
+            );
 
     protected:
-        CResolvedSetter();
-        virtual ~CResolvedSetter();
+        CResolvedSetter(
+            );
 
-        HRESULT Initialize( CProperty* pProperty, CObjectWithType* pValue, IStyleCallback* pCallback );
+        virtual ~CResolvedSetter(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue, 
+            __in IStyleCallback* pCallback 
+            );
 
         CProperty* m_Property;
         CObjectWithType* m_Value;

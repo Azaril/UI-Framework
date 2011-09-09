@@ -6,23 +6,29 @@
 //
 // Properties
 //
-CStaticProperty CStyle::SettersProperty( L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly );
-CStaticProperty CStyle::TriggersProperty( L"Triggers", TypeIndex::Trigger, StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly );
+CStaticProperty CStyle::SettersProperty(L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
+CStaticProperty CStyle::TriggersProperty(L"Triggers", TypeIndex::Trigger, StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly);
 
-CStyle::CStyle() : m_Setters(NULL),
-                   m_Triggers(NULL),
-                   m_Providers(NULL)
+CStyle::CStyle(
+    ) 
+    : m_Setters(NULL)
+    , m_Triggers(NULL)
+    , m_Providers(NULL)
 {
 }
 
-CStyle::~CStyle()
+CStyle::~CStyle(
+    )
 {
     ReleaseObject(m_Setters);
     ReleaseObject(m_Triggers);
     ReleaseObject(m_Providers);
 }
 
-HRESULT CStyle::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CStyle::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -38,7 +44,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::ResolveStyle(CUIElement* pObject, IStyleCallback* pCallback, CResolvedStyle** ppResolvedStyle)
+__checkReturn HRESULT 
+CStyle::ResolveStyle(
+    __in CUIElement* pObject,
+    __in IStyleCallback* pCallback, 
+    __deref_out CResolvedStyle** ppResolvedStyle
+    )
 {
     HRESULT hr = S_OK;
     CResolvedSetters* pResolvedSetters = NULL;
@@ -62,7 +73,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::ResolveSetters(CUIElement* pObject, IStyleCallback* pCallback, CResolvedSetters** ppResolvedSetters)
+__checkReturn HRESULT
+CStyle::ResolveSetters(
+    __in CUIElement* pObject,
+    __in IStyleCallback* pCallback, 
+    __deref_out CResolvedSetters** ppResolvedSetters
+    )
 {
     HRESULT hr = S_OK;
     CResolvedSetters* pResolvedSetters = NULL;
@@ -88,7 +104,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::ResolveTriggers(CUIElement* pObject, IStyleCallback* pCallback, CResolvedTriggers** ppResolvedTriggers)
+__checkReturn HRESULT 
+CStyle::ResolveTriggers(
+    __in CUIElement* pObject,
+    __in IStyleCallback* pCallback, 
+    __deref_out CResolvedTriggers** ppResolvedTriggers
+    )
 {
     HRESULT hr = S_OK;
     CResolvedTriggers* pResolvedTriggers = NULL;
@@ -114,7 +135,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CStyle::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -138,7 +162,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CStyle::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -158,7 +186,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStyle::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CStyle::GetValueInternal(
+    __in CProperty* pProperty,
+    __deref_out CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -177,7 +209,7 @@ HRESULT CStyle::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     }
     else
     {
-        IFC(CPropertyObject::GetValue(pProperty, ppValue));
+        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:

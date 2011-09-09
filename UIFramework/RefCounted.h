@@ -108,12 +108,13 @@ inline void ReleaseObject(
 }
 
 #define DELEGATE_REFCOUNTING( base )    \
-virtual INT32 AddRef( \
+__override virtual INT32 AddRef( \
     )  \
 {   \
     return base::AddRef();  \
 }   \
-virtual INT32 Release( \
+\
+__override virtual INT32 Release( \
     ) \
 {   \
     return base::Release(); \

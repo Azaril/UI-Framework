@@ -229,9 +229,6 @@
     <ClCompile Include="GeometryVisual.cpp">
       <Filter>Framework\UI\Visuals</Filter>
     </ClCompile>
-    <ClCompile Include="RectangleVisual.cpp">
-      <Filter>Framework\UI\Visuals</Filter>
-    </ClCompile>
     <ClCompile Include="TextVisual.cpp">
       <Filter>Framework\UI\Visuals</Filter>
     </ClCompile>
@@ -239,9 +236,6 @@
       <Filter>Framework\UI\Visuals</Filter>
     </ClCompile>
     <ClCompile Include="VisualContext.cpp">
-      <Filter>Framework\UI\Visuals</Filter>
-    </ClCompile>
-    <ClCompile Include="VisualNotification.cpp">
       <Filter>Framework\UI\Visuals</Filter>
     </ClCompile>
     <ClCompile Include="VisualResource.cpp">
@@ -774,9 +768,6 @@
     <ClInclude Include="GeometryVisual.h">
       <Filter>Framework\UI\Visuals</Filter>
     </ClInclude>
-    <ClInclude Include="RectangleVisual.h">
-      <Filter>Framework\UI\Visuals</Filter>
-    </ClInclude>
     <ClInclude Include="TextVisual.h">
       <Filter>Framework\UI\Visuals</Filter>
     </ClInclude>
@@ -784,9 +775,6 @@
       <Filter>Framework\UI\Visuals</Filter>
     </ClInclude>
     <ClInclude Include="VisualContext.h">
-      <Filter>Framework\UI\Visuals</Filter>
-    </ClInclude>
-    <ClInclude Include="VisualNotification.h">
       <Filter>Framework\UI\Visuals</Filter>
     </ClInclude>
     <ClInclude Include="VisualResource.h">

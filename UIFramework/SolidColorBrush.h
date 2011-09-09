@@ -10,11 +10,15 @@ class CSolidColorBrush : public CBrush
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::SolidColorBrush, CBrush );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-
-        virtual HRESULT GetGraphicsBrush( CGraphicsDevice* pDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush );
+        __override virtual __checkReturn HRESULT GetGraphicsBrush( 
+            __in CGraphicsDevice* pDevice, 
+            __in CRenderTarget* pRenderTarget,
+            __deref_out CGraphicsBrush** ppGraphicsBrush 
+            );
 
         //
         // Properties
@@ -22,21 +26,39 @@ class CSolidColorBrush : public CBrush
         static CStaticProperty ColorProperty;
 
     protected:
-        CSolidColorBrush();
-        virtual ~CSolidColorBrush();
+        CSolidColorBrush(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CSolidColorBrush(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders 
+            );
 
-        HRESULT InternalSetColor( ColorF Color );
+        __override virtual __checkReturn HRESULT SetValueInternal(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal(
+            __in CProperty* pProperty, 
+            __deref_out CObjectWithType** ppValue 
+            );
+
+        __checkReturn HRESULT InternalSetColor( 
+            ColorF Color 
+            );
 
         //
         // Property Change Handlers
         //
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnColorChanged );
 
-        HRESULT OnColorChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        __checkReturn HRESULT OnColorChanged( 
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue 
+            );
 
         ColorF m_Color;
 };

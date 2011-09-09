@@ -174,6 +174,7 @@ CTemplateBinding::OnTargetAttached(
     )
 {
     HRESULT hr = S_OK;
+    CPropertyObject* pTarget = NULL;
     CUIElement* pTargetElement = NULL;
     CUIElement* pTemplateParent = NULL;
     CClassResolver* pClassResolver = NULL;
@@ -182,7 +183,10 @@ CTemplateBinding::OnTargetAttached(
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
 
-    IFC(CastType(GetTarget(), &pTargetElement));
+    pTarget = GetTarget();
+    IFCPTR(pTarget);
+
+    IFC(CastType(pTarget, &pTargetElement));
 
     IFCPTR(pTargetElement);
 

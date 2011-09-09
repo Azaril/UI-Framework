@@ -186,11 +186,12 @@ CSourcedBinding::OnTargetPropertyChanged(
 {
     HRESULT hr = S_OK;
     CObjectWithType* pValue = NULL;
+    CProperty* pTargetProperty = GetTargetProperty();
 
     IFCPTR(pObject);
     IFCPTR(pProperty);
 
-    if(pProperty == GetTargetProperty())
+    if(pTargetProperty != NULL && pProperty == GetTargetProperty())
     {
         CPropertyObject* pTarget = GetTarget();
 
@@ -199,7 +200,7 @@ CSourcedBinding::OnTargetPropertyChanged(
 
         IFCPTR(pTarget);
 
-        IFC(pTarget->GetEffectiveValue(GetTargetProperty(), &pValue));
+        IFC(pTarget->GetEffectiveValue(pTargetProperty, &pValue));
 
         IFC(m_Source->SetEffectiveValue(m_SourceProperty, pValue));
     }
@@ -272,7 +273,7 @@ Cleanup:
 __override __checkReturn HRESULT
 CSourcedBinding::GetValueInternal(
     __in CProperty* pProperty, 
-    __deref_out CObjectWithType** ppValue
+    __deref_out_opt CObjectWithType** ppValue
     )
 {
     HRESULT hr = S_OK;
@@ -301,8 +302,8 @@ Cleanup:
 
 __checkReturn HRESULT 
 CSourcedBinding::OnBindingDirectionChanged(
-    __in CObjectWithType* pOldValue, 
-    __in CObjectWithType* pNewValue
+    __in_opt CObjectWithType* pOldValue, 
+    __in_opt CObjectWithType* pNewValue
     )
 {
     HRESULT hr = S_OK;

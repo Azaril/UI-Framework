@@ -3,7 +3,11 @@
 #include "TypeConverter.h"
 #include "Factory.h"
 
-typedef HRESULT (*ConvertTypeFunc)( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+typedef __checkReturn HRESULT (*ConvertTypeFunc)(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );
 
 struct StaticTypeConverter
 {
@@ -23,13 +27,22 @@ class CStaticTypeConverter : public CTypeConverter
     public:
         DECLARE_FACTORY1( CStaticTypeConverter, StaticTypeConverterInformation* );
 
-        virtual HRESULT Convert( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue );
+        __override virtual __checkReturn HRESULT Convert( 
+            __in CConversionContext* pContext, 
+            __in CObjectWithType* pValue,
+            __deref_out CObjectWithType** ppConvertedValue 
+            );
 
     protected:
-        CStaticTypeConverter();
-        virtual ~CStaticTypeConverter();
+        CStaticTypeConverter(
+            );
 
-        HRESULT Initialize( StaticTypeConverterInformation* pConverterInformation );
+        virtual ~CStaticTypeConverter(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in StaticTypeConverterInformation* pConverterInformation 
+            );
 
         StaticTypeConverterInformation* m_ConverterInformation;
 };

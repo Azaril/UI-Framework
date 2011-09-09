@@ -15,14 +15,17 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
 
         DECLARE_TYPE_WITH_BASE( TypeID, CObjectWithType );
 
-        virtual T GetValue()
+        virtual T GetValue(
+            )
         {
             return m_Value;
         }
 
-        virtual BOOL Equals( CObjectWithType* pOther )
+        __override virtual BOOL Equals(
+            __in_opt CObjectWithType* pOther 
+            )
         {
-            if(pOther && pOther->GetType() == GetType())
+            if(pOther != NULL && pOther->GetType() == GetType())
             {
                 CBasicValue< T, TypeID >* pTypedOther = (CBasicValue< T, TypeID >*)pOther;
 
@@ -32,10 +35,16 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
             return FALSE;
         }
 
-        virtual BOOL IsShareable() { return true; }
+        __override virtual BOOL IsShareable(
+            ) 
+        { 
+            return true; 
+        }
 
     protected:
-        HRESULT Initialize( T Value )
+        __checkReturn HRESULT Initialize( 
+            T Value 
+            )
         {
             m_Value = Value;
 
@@ -157,19 +166,35 @@ class CStringValue : public CRefCountedObjectBase< CObjectWithType >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::String, CObjectWithType );
 
-        const WCHAR* GetValue();
-        UINT32 GetLength();
+        __out const WCHAR* GetValue(
+            );
 
-        virtual BOOL Equals( CObjectWithType* pOther );
+        UINT32 GetLength(
+            );
 
-        HRESULT Clone( CStringValue** ppClone );
+        __override virtual BOOL Equals(
+            __in_opt CObjectWithType* pOther 
+            );
+
+        __checkReturn HRESULT Clone( 
+            __deref_out CStringValue** ppClone 
+            );
 
     protected:
-        CStringValue();
-        virtual ~CStringValue();
+        CStringValue(
+            );
 
-        HRESULT Initialize( const WCHAR* pValue );
-        HRESULT Initialize( const WCHAR* pValue, UINT32 Length );
+        virtual ~CStringValue(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in_z const WCHAR* pValue 
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in_ecount(Length) const WCHAR* pValue, 
+            UINT32 Length 
+            );
 
         WCHAR* m_Value;
         UINT32 m_Length;
@@ -188,19 +213,32 @@ class CDurationValue : public CRefCountedObjectBase< CObjectWithType >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Duration, CObjectWithType );
 
-        virtual BOOL Equals( CObjectWithType* pOther );
+        __override virtual BOOL Equals(
+            __in_opt CObjectWithType* pOther 
+            );
 
-        BOOL IsForever();
-        BOOL IsAutomatic();
+        BOOL IsForever(
+            );
 
-        BOOL HasTimeSpan();
-        const CTimeSpan* GetTimeSpan();
+        BOOL IsAutomatic(
+            );
+
+        BOOL HasTimeSpan(
+            );
+
+        const CTimeSpan* GetTimeSpan(
+            );
 
     protected:
-        CDurationValue();
-        virtual ~CDurationValue();
+        CDurationValue(
+            );
 
-        HRESULT Initialize( const CTimeSpan& Time );
+        virtual ~CDurationValue(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            const CTimeSpan& Time 
+            );
 
         CTimeSpan m_TimeSpan;
         BOOL m_Forever : 1;

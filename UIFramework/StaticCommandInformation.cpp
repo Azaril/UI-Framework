@@ -1,10 +1,12 @@
 #include "StaticCommandInformation.h"
 
-CStaticCommandInformation::CStaticCommandInformation()
+CStaticCommandInformation::CStaticCommandInformation(
+    )
 {
 }
 
-CStaticCommandInformation::~CStaticCommandInformation()
+CStaticCommandInformation::~CStaticCommandInformation(
+    )
 {
     for(std::vector< CCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
     {
@@ -14,7 +16,11 @@ CStaticCommandInformation::~CStaticCommandInformation()
     m_Commands.clear();
 }
 
-HRESULT CStaticCommandInformation::Initialize(CCommand** ppCommands, UINT32 CommandCount)
+__checkReturn HRESULT 
+CStaticCommandInformation::Initialize(
+    __in_ecount(CommandCount) CCommand** ppCommands, 
+    UINT32 CommandCount
+    )
 {
     HRESULT hr = S_OK;
 
@@ -38,7 +44,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStaticCommandInformation::GetCommand(const WCHAR* pCommandName, CCommand** ppCommand)
+__override __checkReturn HRESULT 
+CStaticCommandInformation::GetCommand(
+    __in_z const WCHAR* pCommandName,
+    __deref_out_opt CCommand** ppCommand
+    )
 {
     HRESULT hr = S_OK;
 

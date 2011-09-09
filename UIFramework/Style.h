@@ -20,13 +20,21 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Style, CPropertyObject );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual BOOL IsShareable() { return true; }
+        __override virtual BOOL IsShareable(
+            ) 
+        { 
+            return TRUE; 
+        }
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-
-        HRESULT ResolveStyle( CUIElement* pObject, IStyleCallback* pCallback, CResolvedStyle** ppResolvedStyle );
+        __checkReturn HRESULT ResolveStyle( 
+            __in CUIElement* pObject,
+            __in IStyleCallback* pCallback, 
+            __deref_out CResolvedStyle** ppResolvedStyle 
+            );
 
         //
         // Properties
@@ -35,15 +43,37 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
         static CStaticProperty TriggersProperty;
 
     protected:
-        CStyle();
-        virtual ~CStyle();
+        CStyle(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CStyle(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Initialize( 
+            __in CProviders* pProviders 
+            );
 
-        HRESULT ResolveSetters( CUIElement* pObject, IStyleCallback* pCallback, CResolvedSetters** ppResolvedSetters );
-        HRESULT ResolveTriggers( CUIElement* pObject, IStyleCallback* pCallback, CResolvedTriggers** ppResolvedTriggers );
+        __override virtual __checkReturn HRESULT SetValueInternal(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal(
+            __in CProperty* pProperty, 
+            __deref_out_opt CObjectWithType** ppValue 
+            );
+
+        __checkReturn HRESULT ResolveSetters( 
+            __in CUIElement* pObject, 
+            __in IStyleCallback* pCallback,
+            __deref_out CResolvedSetters** ppResolvedSetters 
+            );
+
+        __checkReturn HRESULT ResolveTriggers(
+            __in CUIElement* pObject, 
+            __in IStyleCallback* pCallback, 
+            __deref_out CResolvedTriggers** ppResolvedTriggers 
+            );
 
         CProviders* m_Providers;
         CSetterCollection* m_Setters;
@@ -62,10 +92,16 @@ class CResolvedStyle : public CRefCountedObject
         DECLARE_FACTORY2( CResolvedStyle, CResolvedSetters*, CResolvedTriggers* );
         
     protected:
-        CResolvedStyle();
-        virtual ~CResolvedStyle();
+        CResolvedStyle(
+            );
 
-        HRESULT Initialize( CResolvedSetters* pSetters, CResolvedTriggers* pTriggers );
+        virtual ~CResolvedStyle(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CResolvedSetters* pSetters, 
+            __in CResolvedTriggers* pTriggers 
+            );
 
         CResolvedSetters* m_Setters;
         CResolvedTriggers* m_Triggers;

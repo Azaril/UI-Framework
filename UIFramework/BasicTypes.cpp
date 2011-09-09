@@ -1,16 +1,22 @@
 #include "BasicTypes.h"
 
-CStringValue::CStringValue() : m_Value(NULL),
-                               m_Length(0)
+CStringValue::CStringValue(
+    ) 
+    : m_Value(NULL)
+    , m_Length(0)
 {
 }
 
-CStringValue::~CStringValue()
+CStringValue::~CStringValue(
+    )
 {
     delete [] m_Value;
 }
 
-HRESULT CStringValue::Initialize(const WCHAR* pValue)
+__checkReturn HRESULT 
+CStringValue::Initialize(
+    __in_z const WCHAR* pValue
+    )
 {
     HRESULT hr = S_OK;
     UINT32 Length = 0;
@@ -25,7 +31,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStringValue::Initialize(const WCHAR* pValue, UINT32 Length)
+__checkReturn HRESULT 
+CStringValue::Initialize(
+    __in_ecount(Length) const WCHAR* pValue,
+    UINT32 Length
+    )
 {
     HRESULT hr = S_OK;
     UINT32 BufferSize = 0;
@@ -46,19 +56,26 @@ Cleanup:
     return hr;
 }
 
-const WCHAR* CStringValue::GetValue()
+__out const WCHAR* 
+CStringValue::GetValue(
+    )
 {
     return m_Value;
 }
 
-UINT32 CStringValue::GetLength()
+UINT32 
+CStringValue::GetLength(
+    )
 {
     return m_Length;
 }
 
-BOOL CStringValue::Equals(CObjectWithType* pOther)
+__override BOOL 
+CStringValue::Equals(
+    __in_opt CObjectWithType* pOther
+    )
 {
-    if(pOther && pOther->GetType() == GetType())
+    if(pOther != NULL && pOther->GetType() == GetType())
     {
         CStringValue* pTypedOther = (CStringValue*)pOther;
 
@@ -68,7 +85,10 @@ BOOL CStringValue::Equals(CObjectWithType* pOther)
     return FALSE;
 }
 
-HRESULT CStringValue::Clone(CStringValue** ppClone)
+__checkReturn HRESULT 
+CStringValue::Clone(
+    __deref_out CStringValue** ppClone
+    )
 {
     HRESULT hr = S_OK;
 
@@ -80,16 +100,22 @@ Cleanup:
     return hr;
 }
 
-CDurationValue::CDurationValue() : m_Forever(FALSE),
-                                   m_Automatic(FALSE)
+CDurationValue::CDurationValue(
+    ) 
+    : m_Forever(FALSE)
+    , m_Automatic(FALSE)
 {
 }
 
-CDurationValue::~CDurationValue()
+CDurationValue::~CDurationValue(
+    )
 {
 }
 
-HRESULT CDurationValue::Initialize(const CTimeSpan& Time)
+__checkReturn HRESULT 
+CDurationValue::Initialize(
+    const CTimeSpan& Time
+    )
 {
     HRESULT hr = S_OK;
 
@@ -98,9 +124,12 @@ HRESULT CDurationValue::Initialize(const CTimeSpan& Time)
     return hr;
 }
 
-BOOL CDurationValue::Equals(CObjectWithType* pOther)
+__override BOOL 
+CDurationValue::Equals(
+    __in_opt CObjectWithType* pOther
+    )
 {
-    if(pOther && pOther->GetType() == GetType())
+    if(pOther != NULL && pOther->GetType() == GetType())
     {
         CDurationValue* pTypedOther = (CDurationValue*)pOther;
 
@@ -112,22 +141,30 @@ BOOL CDurationValue::Equals(CObjectWithType* pOther)
     return FALSE;
 }
 
-BOOL CDurationValue::IsAutomatic()
+BOOL 
+CDurationValue::IsAutomatic(
+    )
 {
     return m_Automatic;
 }
 
-BOOL CDurationValue::IsForever()
+BOOL 
+CDurationValue::IsForever(
+    )
 {
     return m_Forever;
 }
 
-BOOL CDurationValue::HasTimeSpan()
+BOOL 
+CDurationValue::HasTimeSpan(
+    )
 {
     return (!m_Automatic && !m_Forever);
 }
 
-const CTimeSpan* CDurationValue::GetTimeSpan()
+__out_opt const CTimeSpan* 
+CDurationValue::GetTimeSpan(
+    )
 {
     return (!m_Automatic && !m_Forever) ? &m_TimeSpan : NULL;
 }
@@ -136,25 +173,36 @@ const CTimeSpan* CDurationValue::GetTimeSpan()
 // CStringValue
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CStringValue_TypeIndex()
+TypeIndex::Value 
+CStringValue_TypeIndex(
+    )
 {
     return TypeIndex::String;
 }
 
 extern "C" __declspec(dllexport)
-CObjectWithType* CStringValue_CastTo_CObjectWithType(CStringValue* pValue)
+__out CObjectWithType* 
+CStringValue_CastTo_CObjectWithType(
+    __in CStringValue* pValue
+    )
 {
     return pValue;
 }
 
 extern "C" __declspec(dllexport)
-CStringValue* CObjectWithType_CastTo_CStringValue(CObjectWithType* pObject)
+__out_opt CStringValue* 
+CObjectWithType_CastTo_CStringValue(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::String)) ? (CStringValue*)pObject : NULL;
 }
 
 extern "C" __declspec(dllexport)
-const WCHAR* CStringValue_GetValue(CStringValue* pValue)
+__out const WCHAR*
+CStringValue_GetValue(
+    __in CStringValue* pValue
+    )
 {
     return pValue->GetValue();
 }
@@ -163,25 +211,36 @@ const WCHAR* CStringValue_GetValue(CStringValue* pValue)
 // CVisibilityValue
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CVisibilityValue_TypeIndex()
+TypeIndex::Value
+CVisibilityValue_TypeIndex(
+    )
 {
     return TypeIndex::Visibility;
 }
 
 extern "C" __declspec(dllexport)
-CObjectWithType* CVisibilityValue_CastTo_CObjectWithType(CVisibilityValue* pValue)
+__out CObjectWithType*
+CVisibilityValue_CastTo_CObjectWithType(
+    __in CVisibilityValue* pValue
+    )
 {
     return pValue;
 }
 
 extern "C" __declspec(dllexport)
-CVisibilityValue* CObjectWithType_CastTo_CVisibilityValue(CObjectWithType* pObject)
+__out_opt CVisibilityValue* 
+CObjectWithType_CastTo_CVisibilityValue(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::Visibility)) ? (CVisibilityValue*)pObject : NULL;
 }
 
 extern "C" __declspec(dllexport)
-Visibility::Value CVisibilityValue_GetValue(CVisibilityValue* pValue)
+Visibility::Value 
+CVisibilityValue_GetValue(
+    __in CVisibilityValue* pValue
+    )
 {
     return pValue->GetValue();
 }
@@ -190,25 +249,36 @@ Visibility::Value CVisibilityValue_GetValue(CVisibilityValue* pValue)
 // CFloatValue
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CFloatValue_TypeIndex()
+TypeIndex::Value 
+CFloatValue_TypeIndex(
+    )
 {
     return TypeIndex::Float;
 }
 
 extern "C" __declspec(dllexport)
-CObjectWithType* CFloatValue_CastTo_CObjectWithType(CFloatValue* pValue)
+__out CObjectWithType* 
+CFloatValue_CastTo_CObjectWithType(
+    __in CFloatValue* pValue
+    )
 {
     return pValue;
 }
 
 extern "C" __declspec(dllexport)
-CFloatValue* CObjectWithType_CastTo_CFloatValue(CObjectWithType* pObject)
+__out_opt CFloatValue* 
+CObjectWithType_CastTo_CFloatValue(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::Float)) ? (CFloatValue*)pObject : NULL;
 }
 
 extern "C" __declspec(dllexport)
-float CFloatValue_GetValue(CFloatValue* pValue)
+float 
+CFloatValue_GetValue(
+    __in CFloatValue* pValue
+    )
 {
     return pValue->GetValue();
 }

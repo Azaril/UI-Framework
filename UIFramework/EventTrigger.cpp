@@ -7,23 +7,29 @@
 //
 // Properties
 //
-CStaticProperty CEventTrigger::RoutedEventProperty( L"RoutedEvent", TypeIndex::RoutedEvent, StaticPropertyFlags::None );
-CStaticProperty CEventTrigger::SettersProperty( L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly );
+CStaticProperty CEventTrigger::RoutedEventProperty(L"RoutedEvent", TypeIndex::RoutedEvent, StaticPropertyFlags::None);
+CStaticProperty CEventTrigger::SettersProperty(L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
 
-CEventTrigger::CEventTrigger() : m_RoutedEvent(NULL),
-                                 m_Setters(NULL),
-                                 m_Providers(NULL)
+CEventTrigger::CEventTrigger(
+    ) 
+    : m_RoutedEvent(NULL)
+    , m_Setters(NULL)
+    , m_Providers(NULL)
 {
 }
 
-CEventTrigger::~CEventTrigger()
+CEventTrigger::~CEventTrigger(
+    )
 {
     ReleaseObject(m_RoutedEvent);
     ReleaseObject(m_Setters);
     ReleaseObject(m_Providers);
 }
 
-HRESULT CEventTrigger::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CEventTrigger::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -38,7 +44,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CEventTrigger::ResolveTrigger(CUIElement* pObject, IStyleCallback* pCallback, CResolvedTrigger** ppResolvedTrigger)
+__override __checkReturn HRESULT
+CEventTrigger::ResolveTrigger(
+    __in CUIElement* pObject,
+    __in IStyleCallback* pCallback,
+    __deref_out CResolvedTrigger** ppResolvedTrigger
+    )
 {
     HRESULT hr = S_OK;
     CResolvedEventTrigger* pResolvedEventTrigger = NULL;
@@ -64,7 +75,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CEventTrigger::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CEventTrigger::CreatePropertyInformation(
+    __deref_out CPropertyInformation **ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -88,7 +102,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CEventTrigger::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__checkReturn HRESULT
+CEventTrigger::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -116,7 +134,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CEventTrigger::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT
+CEventTrigger::GetValue(
+    __in CProperty* pProperty, 
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -142,20 +164,26 @@ Cleanup:
     return hr;
 }
 
-
-
-
-CResolvedEventTrigger::CResolvedEventTrigger() : m_Setters(NULL)
+CResolvedEventTrigger::CResolvedEventTrigger(
+    ) 
+    : m_Setters(NULL)
 {
 }
 
-CResolvedEventTrigger::~CResolvedEventTrigger()
+CResolvedEventTrigger::~CResolvedEventTrigger(
+    )
 {
     m_Connection.disconnect();
     ReleaseObject(m_Setters);
 }
 
-HRESULT CResolvedEventTrigger::Initialize(CUIElement* pObject, CRoutedEvent* pRoutedEvent, CProviders* pProviders, IStyleCallback* pCallback)
+__checkReturn HRESULT
+CResolvedEventTrigger::Initialize(
+    __in CUIElement* pObject,
+    __in CRoutedEvent* pRoutedEvent,
+    __in CProviders* pProviders,
+    __in IStyleCallback* pCallback
+    )
 {
     HRESULT hr = S_OK;
 
@@ -171,7 +199,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CResolvedEventTrigger::AddSetter(CSetter* pSetter)
+__checkReturn HRESULT
+CResolvedEventTrigger::AddSetter(
+    __in CSetter* pSetter
+    )
 {
     HRESULT hr = S_OK;
 
@@ -183,7 +214,11 @@ Cleanup:
     return hr;
 }
 
-void CResolvedEventTrigger::OnEvent(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs)
+void
+CResolvedEventTrigger::OnEvent(
+    __in_opt CObjectWithType* pSender, 
+    __in_opt CRoutedEventArgs* pRoutedEventArgs
+    )
 {
     HRESULT hr = S_OK;
 

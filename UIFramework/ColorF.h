@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Defines.h"
 #include "DataTypes.h"
 #include "Colors.h"
 
@@ -8,7 +9,7 @@
 #include <D2D1helper.h>
 #endif
 
-struct ColorF
+struct UIFRAMEWORK_API ColorF
 #ifdef _WINDOWS
     : D2D1_COLOR_F
 #endif

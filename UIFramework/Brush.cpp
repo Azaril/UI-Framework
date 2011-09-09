@@ -2,16 +2,22 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-CBrush::CBrush() : m_PropertyInformation(NULL)
+CBrush::CBrush(
+    ) 
+    : m_PropertyInformation(NULL)
 {
 }
 
-CBrush::~CBrush()
+CBrush::~CBrush(
+    )
 {
     ReleaseObject(m_PropertyInformation);
 }
 
-HRESULT CBrush::OnVisualAttach(CVisualAttachContext& Context)
+__override __checkReturn HRESULT 
+CBrush::OnVisualAttach(
+    CVisualAttachContext& Context
+    )
 {
     HRESULT hr = S_OK;
 
@@ -21,7 +27,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBrush::OnVisualDetach(CVisualDetachContext& Context)
+__override __checkReturn HRESULT 
+CBrush::OnVisualDetach(
+    CVisualDetachContext& Context
+    )
 {
     HRESULT hr = S_OK;
 
@@ -31,22 +40,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBrush::InvalidateBrush()
-{
-    HRESULT hr = S_OK;
-    CBrushInvalidatedNotification* pNotification = NULL;
-
-    IFC(CBrushInvalidatedNotification::Create(this, &pNotification));
-
-    IFC(NotifyParents(pNotification));
-
-Cleanup:
-    ReleaseObject(pNotification);
-
-    return hr;
-}
-
-HRESULT CBrush::CreatePropertyInformation(CPropertyInformation** ppInformation)
+__checkReturn HRESULT
+CBrush::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -64,7 +61,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBrush::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CBrush::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -77,50 +78,19 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT
+CBrush::GetValueInternal(
+    __in CProperty* pProperty,
+    __deref_out CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    IFC(CPropertyObject::GetValue(pProperty, ppValue));
+    IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
 
 Cleanup:
     return hr;
-}
-
-
-
-
-CBrushInvalidatedNotification::CBrushInvalidatedNotification() : m_Brush(NULL)
-{
-}
-
-CBrushInvalidatedNotification::~CBrushInvalidatedNotification()
-{
-    ReleaseObject(m_Brush);
-}
-
-HRESULT CBrushInvalidatedNotification::Initialize(CBrush* pBrush)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pBrush);
-
-    m_Brush = pBrush;
-    AddRefObject(m_Brush);
-
-Cleanup:
-    return hr;
-}
-
-VisualNotification::Value CBrushInvalidatedNotification::GetType()
-{
-    return VisualNotification::ChildBrushInvalidated;
-}
-
-CBrush* CBrushInvalidatedNotification::GetBrush()
-{
-    return m_Brush;
 }

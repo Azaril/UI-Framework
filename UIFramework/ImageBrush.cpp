@@ -6,25 +6,34 @@
 //
 // Properties
 //
-CStaticProperty CImageBrush::SourceProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None );
+CStaticProperty CImageBrush::SourceProperty(L"Source", TypeIndex::Object, StaticPropertyFlags::None);
 
-CImageBrush::CImageBrush() : m_Source(NULL)
+CImageBrush::CImageBrush(
+    ) 
+    : m_Source(NULL)
 {
 }
 
-CImageBrush::~CImageBrush()
+CImageBrush::~CImageBrush(
+    )
 {
     ReleaseObject(m_Source);
 }
 
-HRESULT CImageBrush::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CImageBrush::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-HRESULT CImageBrush::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CImageBrush::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -53,7 +62,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::SetSource(CObjectWithType* pSource)
+__checkReturn HRESULT 
+CImageBrush::SetSource(
+    __in_opt CObjectWithType* pSource
+    )
 {
     HRESULT hr = S_OK;
 
@@ -63,7 +75,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::InternalSetSource(CObjectWithType* pSource)
+__checkReturn HRESULT 
+CImageBrush::InternalSetSource(
+    __in_opt CObjectWithType* pSource
+    )
 {
     HRESULT hr = S_OK;
 
@@ -80,14 +95,17 @@ HRESULT CImageBrush::InternalSetSource(CObjectWithType* pSource)
         IFC(ReleaseBitmaps());
         IFC(EnsureBitmaps());
 
-        IFC(InvalidateBrush());
+        IFC(InvalidateVisualResource());
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::OnVisualAttach(CVisualAttachContext& Context)
+__override __checkReturn HRESULT
+CImageBrush::OnVisualAttach(
+    CVisualAttachContext& Context
+    )
 {
     HRESULT hr = S_OK;
     CImageBrushContext* pContext = NULL;
@@ -128,7 +146,39 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::ReleaseBitmaps()
+__override __checkReturn HRESULT
+CImageBrush::OnVisualDetach(
+    CVisualDetachContext& Context
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(CBrush::OnVisualDetach(Context));
+
+    for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
+    {
+        if((*It)->GetGraphicsDevice() == Context.GetGraphicsDevice())
+        {
+            if((*It)->RemoveUsage() == 0)
+            {
+                (*It)->Release();
+
+                m_Contexts.erase(It);
+            }
+            
+            goto Cleanup;
+        }
+    }
+
+    IFC(E_FAIL);
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT
+CImageBrush::ReleaseBitmaps(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -141,7 +191,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::EnsureBitmaps()
+__checkReturn HRESULT 
+CImageBrush::EnsureBitmaps(
+    )
 {
     HRESULT hr = S_OK;
     CBitmapSource* pBitmapSource = NULL;
@@ -164,7 +216,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::CreateBitmapFromSource(CGraphicsDevice* pGraphicsDevice, CBitmapSource** ppBitmapSource)
+__checkReturn HRESULT 
+CImageBrush::CreateBitmapFromSource(
+    __in CGraphicsDevice* pGraphicsDevice, 
+    __deref_out CBitmapSource** ppBitmapSource
+    )
 {
     HRESULT hr = S_OK;
     CBitmapSource* pBitmapSource = NULL;
@@ -204,34 +260,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::OnVisualDetach(CVisualDetachContext& Context)
-{
-    HRESULT hr = S_OK;
-
-    IFC(CBrush::OnVisualDetach(Context));
-
-    for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
-    {
-        if((*It)->GetGraphicsDevice() == Context.GetGraphicsDevice())
-        {
-            if((*It)->RemoveUsage() == 0)
-            {
-                (*It)->Release();
-
-                m_Contexts.erase(It);
-            }
-            
-            goto Cleanup;
-        }
-    }
-
-    IFC(E_FAIL);
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CImageBrush::GetGraphicsBrush(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush)
+__checkReturn HRESULT 
+CImageBrush::GetGraphicsBrush(
+    __in CGraphicsDevice* pGraphicsDevice, 
+    __in CRenderTarget* pRenderTarget, 
+    __deref_out CGraphicsBrush** ppGraphicsBrush
+    )
 {
     HRESULT hr = S_OK;
     CImageBrushContext* pContext = NULL;
@@ -291,7 +325,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CImageBrush::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -311,7 +349,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT
+CImageBrush::GetValueInternal(
+    __in CProperty* pProperty, 
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -332,7 +374,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrush::GetSize(SizeU* pSize)
+__override __checkReturn HRESULT 
+CImageBrush::GetSize(
+    __out SizeU* pSize
+    )
 {
     HRESULT hr = S_OK;
     CBitmapSource* pBitmapSource = NULL;
@@ -431,13 +476,16 @@ Cleanup:
 
 
 
-CImageBrushContext::CImageBrushContext() : m_Device(NULL),
-                                           m_Source(NULL),
-                                           m_UsageCount(1)
+CImageBrushContext::CImageBrushContext(
+    ) 
+    : m_Device(NULL)
+    , m_Source(NULL)
+    , m_UsageCount(1)
 {
 }
 
-CImageBrushContext::~CImageBrushContext()
+CImageBrushContext::~CImageBrushContext(
+    )
 {
     ReleaseObject(m_Device);
     ReleaseObject(m_Source);
@@ -450,7 +498,11 @@ CImageBrushContext::~CImageBrushContext()
     //m_RenderTargetContexts.clear();
 }
 
-HRESULT CImageBrushContext::Initialize(CGraphicsDevice* pGraphicsDevice, CBitmapSource* pBitmapSource)
+__checkReturn HRESULT
+CImageBrushContext::Initialize(
+    __in CGraphicsDevice* pGraphicsDevice,
+    __in CBitmapSource* pBitmapSource
+    )
 {
     HRESULT hr = S_OK;
 
@@ -466,22 +518,31 @@ Cleanup:
     return hr;
 }
 
-CGraphicsDevice* CImageBrushContext::GetGraphicsDevice()
+__out CGraphicsDevice* 
+CImageBrushContext::GetGraphicsDevice(
+    )
 {
     return m_Device;
 }
 
-INT32 CImageBrushContext::AddUsage()
+INT32 
+CImageBrushContext::AddUsage(
+    )
 {
     return ++m_UsageCount;
 }
 
-INT32 CImageBrushContext::RemoveUsage()
+INT32 
+CImageBrushContext::RemoveUsage(
+    )
 {
     return --m_UsageCount;
 }
 
-HRESULT CImageBrushContext::GetBitmapSource( CBitmapSource** ppSource )
+__checkReturn HRESULT
+CImageBrushContext::GetBitmapSource( 
+    __deref_out CBitmapSource** ppSource 
+    )
 {
     HRESULT hr = S_OK;
 
@@ -494,7 +555,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImageBrushContext::SetBitmapSource(CBitmapSource* pSource)
+__checkReturn HRESULT 
+CImageBrushContext::SetBitmapSource(
+    __in CBitmapSource* pSource
+    )
 {
     HRESULT hr = S_OK;
 

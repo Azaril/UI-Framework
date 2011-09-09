@@ -1,12 +1,15 @@
 #include "ResolvedTriggers.h"
 
-CResolvedTriggers::CResolvedTriggers() : m_Owner(NULL),
-                                         m_Providers(NULL),
-                                         m_Callback(NULL)
+CResolvedTriggers::CResolvedTriggers(
+    ) 
+    : m_Owner(NULL)
+    , m_Providers(NULL)
+    , m_Callback(NULL)
 {
 }
 
-CResolvedTriggers::~CResolvedTriggers()
+CResolvedTriggers::~CResolvedTriggers(
+    )
 {
     for(std::vector< CResolvedTrigger* >::iterator It = m_Triggers.begin(); It != m_Triggers.end(); ++It)
     {
@@ -18,7 +21,12 @@ CResolvedTriggers::~CResolvedTriggers()
     ReleaseObject(m_Providers);
 }
 
-HRESULT CResolvedTriggers::Initialize(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback)
+__checkReturn HRESULT 
+CResolvedTriggers::Initialize(
+    __in CUIElement* pObject, 
+    __in CProviders* pProviders,
+    __in IStyleCallback* pCallback
+    )
 {
     HRESULT hr = S_OK;
 
@@ -38,7 +46,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CResolvedTriggers::AddTrigger(CTrigger* pTrigger)
+__checkReturn HRESULT 
+CResolvedTriggers::AddTrigger(
+    __in CTrigger* pTrigger
+    )
 {
     HRESULT hr = S_OK;
     CResolvedTrigger* pResolvedTrigger = NULL;

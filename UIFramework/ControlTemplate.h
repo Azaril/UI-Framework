@@ -14,13 +14,20 @@ class CControlTemplate : public CRefCountedObjectBase< CPropertyObject >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::ControlTemplate, CPropertyObject );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual BOOL IsShareable() { return true; }
+        __override virtual BOOL IsShareable(
+            ) 
+        { 
+            return TRUE;
+        }
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-
-        HRESULT LoadContent( CNamescope* pNamescope, CObjectWithType** ppObject );
+        __checkReturn HRESULT LoadContent(
+            __in CNamescope* pNamescope, 
+            __deref_out CObjectWithType** ppObject 
+            );
 
        //
         // Properties
@@ -28,12 +35,25 @@ class CControlTemplate : public CRefCountedObjectBase< CPropertyObject >
         static CStaticProperty TemplateProperty;
 
     protected:
-        CControlTemplate();
-        virtual ~CControlTemplate();
+        CControlTemplate(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CControlTemplate(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders 
+            );
+
+        __override virtual __checkReturn HRESULT SetValueInternal( 
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal( 
+            __in CProperty* pProperty, 
+            __deref_out CObjectWithType** ppValue 
+            );
 
         CParserCommandList* m_TemplateCommandList;
 };
@@ -47,10 +67,17 @@ struct ObjectTypeTraits< CControlTemplate >
 class CControlTemplateParseCallback : public IParserCallback
 {
     public:
-        CControlTemplateParseCallback( CNamescope* pNamescope );
+        CControlTemplateParseCallback(
+            __in CNamescope* pNamescope
+            );
 
-        virtual HRESULT OnPushObject( CObjectWithType* pObject );
-        virtual HRESULT OnPopObject( CObjectWithType* pObject );
+        __override virtual __checkReturn HRESULT OnPushObject( 
+            __in CObjectWithType* pObject 
+            );
+
+        __override virtual __checkReturn HRESULT OnPopObject(
+            __in CObjectWithType* pObject 
+            );
 
     protected:
         CNamescope* m_Namescope;

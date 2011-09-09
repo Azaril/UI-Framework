@@ -9,13 +9,22 @@ class CStaticCommandInformation : public CCommandInformation
     public:
         DECLARE_FACTORY2( CStaticCommandInformation, CCommand**, UINT32 );
 
-        virtual HRESULT GetCommand( const WCHAR* pCommandName, CCommand** ppCommand );
+        __override virtual __checkReturn HRESULT GetCommand( 
+            __in_z const WCHAR* pCommandName,
+            __deref_out_opt CCommand** ppCommand 
+            );
 
     protected:
-        CStaticCommandInformation();
-        virtual ~CStaticCommandInformation();
+        CStaticCommandInformation(
+            );
 
-        HRESULT Initialize( CCommand** ppCommands, UINT32 CommandCount );
+        virtual ~CStaticCommandInformation(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in_ecount(CommandCount) CCommand** ppCommands, 
+            UINT32 CommandCount 
+            );
 
         std::vector< CCommand* > m_Commands;
 };

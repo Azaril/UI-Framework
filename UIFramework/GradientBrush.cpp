@@ -11,23 +11,29 @@ DEFINE_GET_DEFAULT_NULL( GradientStops );
 //
 // Properties
 //
-CStaticProperty CGradientBrush::GradientStopsProperty( L"GradientStops", TypeIndex::GradientStop, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( GradientStops ), &INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged ) );
+CStaticProperty CGradientBrush::GradientStopsProperty(L"GradientStops", TypeIndex::GradientStop, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( GradientStops ), &INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged ));
 
 //
 // Property Change Handlers
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged );
 
-CGradientBrush::CGradientBrush() : m_GradientStops(NULL)
+CGradientBrush::CGradientBrush(
+    ) 
+    : m_GradientStops(NULL)
 {
 }
 
-CGradientBrush::~CGradientBrush()
+CGradientBrush::~CGradientBrush(
+    )
 {
     ReleaseObject(m_GradientStops);
 }
 
-HRESULT CGradientBrush::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CGradientBrush::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -37,11 +43,15 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGradientBrush::OnGradientStopsChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+__checkReturn HRESULT 
+CGradientBrush::OnGradientStopsChanged(
+    __in CObjectWithType* pOldValue,
+    __in CObjectWithType* pNewValue
+    )
 {
     HRESULT hr = S_OK;
 
-    IFC(InvalidateBrush());
+    IFC(InvalidateVisualResource());
 
     //TODO: Disconnect and reconnect to the new collection?
 
@@ -49,7 +59,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGradientBrush::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CGradientBrush::CreatePropertyInformation(
+    __in CPropertyInformation **ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -78,7 +91,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGradientBrush::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CGradientBrush::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -97,7 +114,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGradientBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT
+CGradientBrush::GetValueInternal(
+    __in CProperty* pProperty,
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -111,7 +132,7 @@ HRESULT CGradientBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue
     }
     else
     {
-        IFC(CBrush::GetValue(pProperty, ppValue));
+        IFC(CBrush::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:

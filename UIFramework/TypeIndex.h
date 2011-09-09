@@ -39,6 +39,7 @@ namespace TypeIndex
                                 ScrollContentPresenter,
                     TextHost,
                     GeometryVisual,
+                    TextVisual,
                 Brush,
                     ImageBrush,
                     SolidColorBrush,

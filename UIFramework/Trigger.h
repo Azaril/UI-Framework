@@ -17,9 +17,11 @@ class CTrigger : public CRefCountedObjectBase< CPropertyObject >
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Trigger, CPropertyObject );
 
-        virtual HRESULT ResolveTrigger( CUIElement* pObject, IStyleCallback* pCallback, CResolvedTrigger** ppResolvedTrigger ) = 0;
-
-    protected:
+        virtual __checkReturn HRESULT ResolveTrigger(
+            __in CUIElement* pObject, 
+            __in IStyleCallback* pCallback, 
+            __deref_out CResolvedTrigger** ppResolvedTrigger 
+            ) = 0;
 };
 
 template< >

@@ -153,11 +153,9 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UIHost.cpp" />
     <ClCompile Include="GeometryVisual.cpp" />
-    <ClCompile Include="RectangleVisual.cpp" />
     <ClCompile Include="TextVisual.cpp" />
     <ClCompile Include="Visual.cpp" />
     <ClCompile Include="VisualContext.cpp" />
-    <ClCompile Include="VisualNotification.cpp" />
     <ClCompile Include="VisualResource.cpp" />
     <ClCompile Include="ContentPresenter.cpp" />
     <ClCompile Include="FrameworkElement.cpp" />
@@ -336,11 +334,9 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UIHost.h" />
     <ClInclude Include="GeometryVisual.h" />
-    <ClInclude Include="RectangleVisual.h" />
     <ClInclude Include="TextVisual.h" />
     <ClInclude Include="Visual.h" />
     <ClInclude Include="VisualContext.h" />
-    <ClInclude Include="VisualNotification.h" />
     <ClInclude Include="VisualResource.h" />
     <ClInclude Include="ContentPresenter.h" />
     <ClInclude Include="FrameworkElement.h" />

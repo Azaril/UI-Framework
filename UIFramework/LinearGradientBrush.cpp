@@ -15,8 +15,8 @@ DEFINE_GET_DEFAULT( EndPoint, CPoint2FValue, DefaultEndPoint );
 //
 // Properties
 //
-CStaticProperty CLinearGradientBrush::StartPointProperty( L"StartPoint", TypeIndex::Point2F, StaticPropertyFlags::None, &GET_DEFAULT( StartPoint ), &INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnStartPointChanged ) );
-CStaticProperty CLinearGradientBrush::EndPointProperty( L"EndPoint", TypeIndex::Point2F, StaticPropertyFlags::None, &GET_DEFAULT( EndPoint ), &INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnStartPointChanged ) );
+CStaticProperty CLinearGradientBrush::StartPointProperty(L"StartPoint", TypeIndex::Point2F, StaticPropertyFlags::None, &GET_DEFAULT( StartPoint ), &INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnStartPointChanged ));
+CStaticProperty CLinearGradientBrush::EndPointProperty(L"EndPoint", TypeIndex::Point2F, StaticPropertyFlags::None, &GET_DEFAULT( EndPoint ), &INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnStartPointChanged ));
 
 //
 // Property Change Handlers
@@ -24,7 +24,8 @@ CStaticProperty CLinearGradientBrush::EndPointProperty( L"EndPoint", TypeIndex::
 DEFINE_INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnStartPointChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnEndPointChanged );
 
-CLinearGradientBrush::CLinearGradientBrush()
+CLinearGradientBrush::CLinearGradientBrush(
+    )
 {
     m_StartPoint.x = 0;
     m_StartPoint.y = 0;
@@ -33,11 +34,15 @@ CLinearGradientBrush::CLinearGradientBrush()
     m_EndPoint.y = 1;
 }
 
-CLinearGradientBrush::~CLinearGradientBrush()
+CLinearGradientBrush::~CLinearGradientBrush(
+    )
 {
 }
 
-HRESULT CLinearGradientBrush::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CLinearGradientBrush::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -47,7 +52,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CLinearGradientBrush::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT
+CLinearGradientBrush::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -77,7 +85,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CLinearGradientBrush::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CLinearGradientBrush::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -92,7 +104,8 @@ HRESULT CLinearGradientBrush::SetValueInternal(CProperty* pProperty, CObjectWith
 
         m_StartPoint = pPoint->GetValue();
 
-        IFC(InvalidateBrush());
+        //TODO: Move this to property change handler...
+        IFC(InvalidateVisualResource());
     }
     else if(pProperty == &CLinearGradientBrush::EndPointProperty)
     {
@@ -102,7 +115,8 @@ HRESULT CLinearGradientBrush::SetValueInternal(CProperty* pProperty, CObjectWith
 
         m_EndPoint = pPoint->GetValue();
 
-        IFC(InvalidateBrush());
+        //TODO: Move this to property change handler...
+        IFC(InvalidateVisualResource());
     }
     else
     {
@@ -113,7 +127,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CLinearGradientBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CLinearGradientBrush::GetValueInternal(
+    __in CProperty* pProperty, 
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     CPoint2FValue* pPoint = NULL;
@@ -137,14 +155,19 @@ HRESULT CLinearGradientBrush::GetValue(CProperty* pProperty, CObjectWithType** p
     }
     else
     {
-        IFC(CGradientBrush::GetValue(pProperty, ppValue));
+        IFC(CGradientBrush::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CLinearGradientBrush::GetGraphicsBrush(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush)
+__override __checkReturn HRESULT 
+CLinearGradientBrush::GetGraphicsBrush(
+    __in CGraphicsDevice* pGraphicsDevice, 
+    __in CRenderTarget* pRenderTarget, 
+    __deref_out CGraphicsBrush** ppGraphicsBrush
+    )
 {
     HRESULT hr = S_OK;
     GradientStop* pGradientStops = NULL;
@@ -175,21 +198,29 @@ Cleanup:
     return hr;
 }
 
-HRESULT CLinearGradientBrush::OnStartPointChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+__checkReturn HRESULT
+CLinearGradientBrush::OnStartPointChanged(
+    __in_opt CObjectWithType* pOldValue, 
+    __in_opt CObjectWithType* pNewValue
+    )
 {
     HRESULT hr = S_OK;
 
-    IFC(InvalidateBrush());
+    IFC(InvalidateVisualResource());
 
 Cleanup:
     return hr;
 }
 
-HRESULT CLinearGradientBrush::OnEndPointChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+__checkReturn HRESULT 
+CLinearGradientBrush::OnEndPointChanged(
+    __in_opt CObjectWithType* pOldValue, 
+    __in_opt CObjectWithType* pNewValue
+    )
 {
     HRESULT hr = S_OK;
 
-    IFC(InvalidateBrush());
+    IFC(InvalidateVisualResource());
 
 Cleanup:
     return hr;

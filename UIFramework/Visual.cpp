@@ -2,25 +2,35 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-CVisual::CVisual() : m_VisualAttached(FALSE)
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CVisual, OnChildInvalidated );
+
+CVisual::CVisual(
+    ) 
+    : m_VisualAttached(FALSE)
 {
-    m_VisualTransform = Matrix3X2F::Identity();
-    m_FinalLocalTransform = Matrix3X2F::Identity();
 }
 
-CVisual::~CVisual()
+CVisual::~CVisual(
+    )
 {
     Finalize();
 }
 
-HRESULT CVisual::Initialize()
+__checkReturn HRESULT 
+CVisual::Initialize(
+    )
 {
     HRESULT hr = S_OK;
     
     return hr;
 }
 
-HRESULT CVisual::Finalize()
+__checkReturn HRESULT 
+CVisual::Finalize(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -31,7 +41,7 @@ HRESULT CVisual::Finalize()
 
     for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
     {
-        (*It)->Release();
+        It->first->Release();
     }
 
     m_VisualChildren.clear();
@@ -39,10 +49,12 @@ HRESULT CVisual::Finalize()
     return hr;
 }
 
-HRESULT CVisual::OnVisualAttach(CVisualAttachContext& Context)
+__checkReturn HRESULT 
+CVisual::OnVisualAttach(
+    CVisualAttachContext& Context
+    )
 {
     HRESULT hr = S_OK;
-    CVisual* pVisual = NULL;
 
     IFCEXPECT(!m_VisualAttached);
 
@@ -50,26 +62,34 @@ HRESULT CVisual::OnVisualAttach(CVisualAttachContext& Context)
     m_VisualContext = Context;
 
     {
-        CVisualAttachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
-
-        for(UINT32 i = 0; i < GetVisualChildCount(); i++)
+        for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
         {
-            pVisual = GetVisualChild(i);
+            CVisualAttachContext VisualContext(this, &INSTANCE_CHANGE_CALLBACK( CVisual, OnChildInvalidated ), Context.GetGraphicsDevice());
 
-            IFC(pVisual->OnVisualAttach(VisualContext));
+            IFC((*It)->OnVisualAttach(VisualContext));
         }
 
         for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
         {
-            IFC((*It)->OnVisualAttach(VisualContext));
+            CVisualAttachContext VisualContext(this, It->second, Context.GetGraphicsDevice());
+
+            IFC(It->first->OnVisualAttach(VisualContext));
         }
+    }
+
+    if (Context.GetParent() != NULL && Context.GetChangeCallback() != NULL)
+    {
+        IFC(Context.GetChangeCallback()(Context.GetParent(), this, NULL));
     }
     
 Cleanup:
     return hr;
 }
 
-HRESULT CVisual::OnVisualDetach(CVisualDetachContext& Context)
+__checkReturn HRESULT
+CVisual::OnVisualDetach(
+    CVisualDetachContext& Context
+    )
 {
     HRESULT hr = S_OK;
 
@@ -78,19 +98,24 @@ HRESULT CVisual::OnVisualDetach(CVisualDetachContext& Context)
     m_VisualAttached = FALSE;
 
     {
-        CVisualDetachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
-
-        for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
+        for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
         {
+            CVisualDetachContext VisualContext(this, &INSTANCE_CHANGE_CALLBACK( CVisual, OnChildInvalidated ), Context.GetGraphicsDevice());
+
             IFC((*It)->OnVisualDetach(VisualContext));
         }
 
-        for(UINT32 i = 0; i < GetVisualChildCount(); i++)
+        for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
         {
-            CVisual* pVisual = GetVisualChild(i);
+            CVisualDetachContext VisualContext(this, It->second, Context.GetGraphicsDevice());
 
-            IFC(pVisual->OnVisualDetach(VisualContext));
+            IFC(It->first->OnVisualDetach(VisualContext));
         }
+    }
+
+    if (Context.GetParent() != NULL && Context.GetChangeCallback() != NULL)
+    {
+        IFC(Context.GetChangeCallback()(Context.GetParent(), this, NULL));
     }
 
     m_VisualContext.Reset();
@@ -99,7 +124,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::AddChildVisual(CVisual* pVisualChild)
+__checkReturn HRESULT 
+CVisual::AddChildVisual(
+    __in CVisual* pVisualChild
+    )
 {
     HRESULT hr = S_OK;
 
@@ -107,7 +135,7 @@ HRESULT CVisual::AddChildVisual(CVisual* pVisualChild)
 
     for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
     {
-        if(*It == pVisualChild)
+        if((*It) == pVisualChild)
         {
             IFC(E_FAIL);
         }
@@ -119,7 +147,7 @@ HRESULT CVisual::AddChildVisual(CVisual* pVisualChild)
 
     if(m_VisualAttached)
     {
-        CVisualAttachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
+        CVisualAttachContext VisualContext(this, &INSTANCE_CHANGE_CALLBACK( CVisual, OnChildInvalidated ), m_VisualContext.GetGraphicsDevice());
 
         IFC(pVisualChild->OnVisualAttach(VisualContext));
     }
@@ -128,7 +156,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::RemoveChildVisual(CVisual* pVisualChild)
+__checkReturn HRESULT 
+CVisual::RemoveChildVisual(
+    __in CVisual* pVisualChild
+    )
 {
     HRESULT hr = S_OK;
 
@@ -136,11 +167,11 @@ HRESULT CVisual::RemoveChildVisual(CVisual* pVisualChild)
 
     for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
     {
-        if(*It == pVisualChild)
+        if((*It) == pVisualChild)
         {
             if(m_VisualAttached)
             {
-                CVisualDetachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
+                CVisualDetachContext VisualContext(this, &INSTANCE_CHANGE_CALLBACK( CVisual, OnChildInvalidated ), m_VisualContext.GetGraphicsDevice());
 
                 IFC(pVisualChild->OnVisualDetach(VisualContext));
             }
@@ -159,7 +190,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::MoveToBack(CVisual* pVisualChild)
+__checkReturn HRESULT 
+CVisual::MoveToBack(
+    __in CVisual* pVisualChild
+    )
 {
     HRESULT hr = S_OK;
 
@@ -167,7 +201,7 @@ HRESULT CVisual::MoveToBack(CVisual* pVisualChild)
 
     for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
     {
-        if(*It == pVisualChild)
+        if((*It) == pVisualChild)
         {
             m_VisualChildren.erase(It);
 
@@ -183,7 +217,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::MoveToFront(CVisual* pVisualChild)
+__checkReturn HRESULT 
+CVisual::MoveToFront(
+    __in CVisual* pVisualChild
+    )
 {
     HRESULT hr = S_OK;
 
@@ -191,7 +228,7 @@ HRESULT CVisual::MoveToFront(CVisual* pVisualChild)
 
     for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
     {
-        if(*It == pVisualChild)
+        if((*It) == pVisualChild)
         {
             m_VisualChildren.erase(It);
 
@@ -207,7 +244,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::PreRender(CPreRenderContext& Context)
+__checkReturn HRESULT 
+CVisual::PreRender(
+    CPreRenderContext& Context
+    )
 {
     HRESULT hr = S_OK;
 
@@ -220,16 +260,20 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::Render(CRenderContext& Context)
+__checkReturn HRESULT 
+CVisual::Render(
+    CRenderContext& Context
+    )
 {
     HRESULT hr = S_OK;
+    Matrix3X2F LocalTransform;
     CMatrixStack& MatrixStack = Context.GetMatrixStack();
 
     IFC(MatrixStack.Push());
 
-    m_FinalLocalTransform = m_VisualTransform;
+    IFC(GetLocalTransform(&LocalTransform));
 
-    IFC(MatrixStack.MultMatrixLocal(m_FinalLocalTransform));
+    IFC(MatrixStack.MultMatrixLocal(LocalTransform));
 
     IFC(Context.GetRenderTarget()->SetTransform(MatrixStack.GetTop()));
 
@@ -243,7 +287,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::RenderTransformed(CRenderContext& Context)
+__checkReturn HRESULT
+CVisual::RenderTransformed(
+    CRenderContext& Context
+    )
 {
     HRESULT hr = S_OK;
 
@@ -253,14 +300,17 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::RenderChildren(CRenderContext& Context)
+__checkReturn HRESULT 
+CVisual::RenderChildren(
+    CRenderContext& Context
+    )
 {
     HRESULT hr = S_OK;
     CMatrixStack& MatrixStack = Context.GetMatrixStack();
 
     const Matrix3X2F* pChildrenTransform = GetChildRenderTransform();
 
-    if(pChildrenTransform)
+    if(pChildrenTransform != NULL)
     {
         IFC(MatrixStack.Push());
 
@@ -274,7 +324,7 @@ HRESULT CVisual::RenderChildren(CRenderContext& Context)
         IFC((*It)->Render(Context));
     }
 
-    if(pChildrenTransform)
+    if(pChildrenTransform != NULL)
     {
         IFC(MatrixStack.Pop());
     }
@@ -283,41 +333,49 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::SetVisualTransform(const Matrix3X2F& Matrix)
+__checkReturn HRESULT 
+CVisual::GetLocalTransform(
+    __out Matrix3X2F* pTransform
+    )
 {
     HRESULT hr = S_OK;
 
-    m_VisualTransform = Matrix;
+    *pTransform = Matrix3X2F::Identity();
 
     return hr;
 }
 
-const Matrix3X2F& CVisual::GetVisualTransform()
+__checkReturn HRESULT 
+CVisual::AddVisualResource(
+    __in CVisualResource* pVisualResource, 
+    __in_opt CProperty* pProperty
+    )
 {
-    return m_VisualTransform;
+    HRESULT hr = S_OK;
+
+    IFC(AddVisualResource(pVisualResource, pProperty != NULL ? pProperty->GetOnValueChangedCallback() : NULL));
+
+Cleanup:
+    return hr;
 }
 
-HRESULT CVisual::AddVisualResource(CVisualResource* pVisualResource)
+__checkReturn HRESULT 
+CVisual::AddVisualResource(
+    __in CVisualResource* pVisualResource, 
+    __in_opt OnValueChangeFunc ChangeFunc
+    )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pVisualResource);
 
-    for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
-    {
-        if(*It == pVisualResource)
-        {
-            IFC(E_FAIL);
-        }
-    }
-
-    m_VisualResources.push_back(pVisualResource);
+    m_VisualResources.push_back(std::pair< CVisualResource*, OnValueChangeFunc >(pVisualResource, ChangeFunc));
 
     AddRefObject(pVisualResource);
 
     if(m_VisualAttached)
     {
-        CVisualAttachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
+        CVisualAttachContext VisualContext(this, ChangeFunc, m_VisualContext.GetGraphicsDevice());
 
         IFC(pVisualResource->OnVisualAttach(VisualContext));
     }
@@ -326,7 +384,25 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::RemoveVisualResource(CVisualResource* pVisualResource)
+__checkReturn HRESULT 
+CVisual::RemoveVisualResource(
+    __in CVisualResource* pVisualResource, 
+    __in_opt CProperty* pProperty
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(RemoveVisualResource(pVisualResource, pProperty != NULL ? pProperty->GetOnValueChangedCallback() : NULL));
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CVisual::RemoveVisualResource(
+    __in CVisualResource* pVisualResource, 
+    __in_opt OnValueChangeFunc ChangeFunc
+    )
 {
     HRESULT hr = S_OK;
 
@@ -334,16 +410,16 @@ HRESULT CVisual::RemoveVisualResource(CVisualResource* pVisualResource)
 
     for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
     {
-        if(*It == pVisualResource)
+        if(It->first == pVisualResource && It->second == ChangeFunc)
         {
             if(m_VisualAttached)
-            {
-                CVisualDetachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
+            { 
+                CVisualDetachContext VisualContext(this, ChangeFunc, m_VisualContext.GetGraphicsDevice());
 
                 IFC(pVisualResource->OnVisualDetach(VisualContext));
             }
 
-            (*It)->Release();
+            It->first->Release();
 
             m_VisualResources.erase(It);
             
@@ -357,37 +433,39 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::OnVisualNotification(CVisualNotification* pNotification)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pNotification);
-
-Cleanup:
-    return hr;
-}
-
-UINT32 CVisual::GetVisualChildCount()
+UINT32 
+CVisual::GetVisualChildCount(
+    )
 {
     return m_VisualChildren.size();
 }
 
-CVisual* CVisual::GetVisualChild(UINT32 Index)
+__out CVisual* 
+CVisual::GetVisualChild(
+    UINT32 Index
+    )
 {
     return m_VisualChildren.at(Index);
 }
 
-CVisual* CVisual::GetVisualParent()
+__out_opt CVisual* 
+CVisual::GetVisualParent(
+    )
 {
     return m_VisualContext.GetParent();
 }
 
-const Matrix3X2F* CVisual::GetChildRenderTransform()
+__out_opt const Matrix3X2F* 
+CVisual::GetChildRenderTransform(
+    )
 {
     return NULL;
 }
 
-HRESULT CVisual::TransformToParent(CTransform** ppTransform)
+__checkReturn HRESULT
+CVisual::TransformToParent(
+    __deref_out CTransform** ppTransform
+    )
 {
     HRESULT hr = S_OK;
     CMatrixTransform* pMatrixTransform = NULL;
@@ -401,7 +479,7 @@ HRESULT CVisual::TransformToParent(CTransform** ppTransform)
     }
     else
     {
-        IFC(CMatrixTransform::Create(m_FinalLocalTransform, &pMatrixTransform));
+        IFC(CMatrixTransform::Create(Matrix3X2F::Identity(), &pMatrixTransform));
 
         *ppTransform = pMatrixTransform;
         pMatrixTransform = NULL;
@@ -413,12 +491,11 @@ Cleanup:
     return hr;
 }
 
-const Matrix3X2F& CVisual::GetFinalLocalTransform()
-{
-    return m_FinalLocalTransform;
-}
-
-HRESULT CVisual::TransformFromAncestor(CVisual* pAncestor, CTransform** ppTransform)
+__checkReturn HRESULT 
+CVisual::TransformFromAncestor(
+    __in CVisual* pAncestor, 
+    __deref_out CTransform** ppTransform
+    )
 {
     HRESULT hr = S_OK;
     CVisual* pCurrentVisual = NULL;
@@ -429,11 +506,15 @@ HRESULT CVisual::TransformFromAncestor(CVisual* pAncestor, CTransform** ppTransf
 
     while(pCurrentVisual != NULL && pCurrentVisual != pAncestor)
     {
-        TransformMatrix = pCurrentVisual->GetVisualTransform() * TransformMatrix;
+        Matrix3X2F LocalTransform;
+
+        IFC(pCurrentVisual->GetLocalTransform(&LocalTransform));
+
+        TransformMatrix = LocalTransform * TransformMatrix;
 
         pCurrentVisual = pCurrentVisual->GetVisualParent();
 
-        if(pCurrentVisual)
+        if(pCurrentVisual != NULL && pCurrentVisual != pAncestor)
         {
             const Matrix3X2F* pParentChildTransform = pCurrentVisual->GetChildRenderTransform();
 
@@ -455,7 +536,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::TransformToAncestor(CVisual* pAncestor, CTransform** ppTransform)
+__checkReturn HRESULT 
+CVisual::TransformToAncestor(
+    __in CVisual* pAncestor,
+    __deref_out CTransform** ppTransform
+    )
 {
     HRESULT hr = S_OK;
     CTransform* pFromTransform = NULL;
@@ -468,7 +553,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::CreatePropertyInformation(CPropertyInformation** ppInformation)
+__checkReturn HRESULT 
+CVisual::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -486,7 +574,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CVisual::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -499,7 +591,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CVisual::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__checkReturn HRESULT 
+CVisual::GetValueInternal(
+    __in CProperty* pProperty, 
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -512,23 +608,66 @@ Cleanup:
     return hr;
 }
 
+__checkReturn HRESULT
+CVisual::InvalidateVisual(
+    )
+{
+    HRESULT hr = S_OK;
+    CVisual* pParent = NULL;
+
+    pParent = GetVisualParent();
+
+    if (pParent != NULL)
+    {
+        if (m_VisualContext.GetChangeCallback() != NULL)
+        {
+            IFC(m_VisualContext.GetChangeCallback()(pParent, this, this));
+        }
+    }
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CVisual::OnChildInvalidated(
+    __in CObjectWithType* pOldValue,
+    __in CObjectWithType* pNewValue
+    )
+{
+    HRESULT hr = S_OK;
+
+    //TODO: Add dirtines propagation
+    //IFC(InvalidateVisual());
+
+    return hr;
+}
+
 //
 // CVisual
 //
 extern "C" __declspec(dllexport)
-TypeIndex::Value CVisual_TypeIndex()
+TypeIndex::Value 
+CVisual_TypeIndex(
+    )
 {
     return TypeIndex::Visual;
 }
 
 extern "C" __declspec(dllexport)
-CPropertyObject* CVisual_CastTo_CPropertyObject(CVisual* pVisual)
+__out CPropertyObject*
+CVisual_CastTo_CPropertyObject(
+    __in CVisual* pVisual
+    )
 {
     return pVisual;
 }
 
 extern "C" __declspec(dllexport)
-CVisual* CObjectWithType_CastTo_CVisual(CObjectWithType* pObject)
+__out_opt CVisual*
+CObjectWithType_CastTo_CVisual(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::Visual)) ? (CVisual*)pObject : NULL;
 }

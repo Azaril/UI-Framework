@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Defines.h"
 #include "DataTypes.h"
 
 #ifdef _WINDOWS
@@ -7,7 +8,7 @@
 #include <D2D1helper.h>
 #endif
 
-struct Point2U
+struct UIFRAMEWORK_API Point2U
 #ifdef _WINDOWS
     : D2D1_POINT_2U
 #endif

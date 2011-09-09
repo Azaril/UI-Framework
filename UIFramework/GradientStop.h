@@ -12,12 +12,15 @@ class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::GradientStop, CPropertyObject );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        ColorF GetColor(
+            );
 
-        ColorF GetColor();
-        FLOAT GetOffset();
+        FLOAT GetOffset(
+            );
 
         //
         // Properties
@@ -29,9 +32,17 @@ class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
         CGradientStop();
         virtual ~CGradientStop();
 
-        HRESULT Initialize( CProviders* pProviders );
+        __checkReturn HRESULT Initialize( CProviders* pProviders );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual __checkReturn HRESULT SetValueInternal(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        virtual __checkReturn HRESULT GetValueInternal(
+            __in CProperty* pProperty,
+            __deref_out CObjectWithType** ppValue 
+            );
 
         //
         // Property Change Handlers
@@ -39,8 +50,15 @@ class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnColorChanged );
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnOffsetChanged );
 
-        HRESULT OnColorChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
-        HRESULT OnOffsetChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        __checkReturn HRESULT OnColorChanged(
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue 
+            );
+
+        __checkReturn HRESULT OnOffsetChanged( 
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue 
+            );
 
         ColorF m_Color;
         FLOAT m_Offset;

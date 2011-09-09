@@ -2,7 +2,7 @@
 
 #include "RoutedEvent.h"
 
-class CStaticRoutedEvent : public CRoutedEvent
+class UIFRAMEWORK_API CStaticRoutedEvent : public CRoutedEvent
 {
     public:
         CStaticRoutedEvent( 

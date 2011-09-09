@@ -1,10 +1,12 @@
 #include "StaticPropertyInformation.h"
 
-CStaticPropertyInformation::CStaticPropertyInformation()
+CStaticPropertyInformation::CStaticPropertyInformation(
+    )
 {
 }
 
-CStaticPropertyInformation::~CStaticPropertyInformation()
+CStaticPropertyInformation::~CStaticPropertyInformation(
+    )
 {
     for(std::vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
     {
@@ -14,7 +16,11 @@ CStaticPropertyInformation::~CStaticPropertyInformation()
     m_Properties.clear();
 }
 
-HRESULT CStaticPropertyInformation::Initialize(CStaticProperty** ppProperties, UINT32 PropertyCount)
+__checkReturn HRESULT 
+CStaticPropertyInformation::Initialize(
+    __in_ecount(PropertyCount) CStaticProperty** ppProperties, 
+    UINT32 PropertyCount
+    )
 {
     HRESULT hr = S_OK;
 
@@ -38,7 +44,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStaticPropertyInformation::GetProperty(const WCHAR* pPropertyName, CProperty** ppProperty)
+__override __checkReturn HRESULT 
+CStaticPropertyInformation::GetProperty(
+    __in_z const WCHAR* pPropertyName, 
+    __deref_out_opt CProperty** ppProperty
+    )
 {
     HRESULT hr = S_OK;
 
@@ -64,7 +74,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStaticPropertyInformation::GetContentProperty(CProperty** ppProperty)
+__override __checkReturn HRESULT
+CStaticPropertyInformation::GetContentProperty(
+    __deref_out_opt CProperty** ppProperty
+    )
 {
     HRESULT hr = S_OK;
 
@@ -89,60 +102,86 @@ Cleanup:
     return hr;
 }
 
-CStaticProperty::CStaticProperty(const WCHAR* pName, const TypeIndex::Value Type, UINT32 Flags, GetDefaultPropertyValueFunc DefaultValueFunc, OnValueChangeFunc ValueChangeFunc) : m_Name(pName),
-                                                                                                                                                                                   m_Type(Type),
-                                                                                                                                                                                   m_Flags(Flags),
-                                                                                                                                                                                   m_DefaultValueFunc(DefaultValueFunc),
-                                                                                                                                                                                   m_ValueChangeFunc(ValueChangeFunc)
+CStaticProperty::CStaticProperty(
+    __in_z const WCHAR* pName, 
+    const TypeIndex::Value Type, 
+    UINT32 Flags, 
+    __in_opt GetDefaultPropertyValueFunc DefaultValueFunc,
+    __in_opt OnValueChangeFunc ValueChangeFunc
+    ) 
+    : m_Name(pName)
+    , m_Type(Type)
+    , m_Flags(Flags)
+    , m_DefaultValueFunc(DefaultValueFunc)
+    , m_ValueChangeFunc(ValueChangeFunc)
 {
 }
 
-INT32 CStaticProperty::AddRef()
+__override INT32 
+CStaticProperty::AddRef(
+    )
 {
     return 1;
 }
 
-INT32 CStaticProperty::Release()
+__override INT32 
+CStaticProperty::Release(
+    )
 {
     return 1;
 }
 
-TypeIndex::Value CStaticProperty::GetType()
+__override TypeIndex::Value 
+CStaticProperty::GetType(
+    )
 {
     return m_Type;
 }
 
-const WCHAR* CStaticProperty::GetName()
+__override __out const WCHAR*
+CStaticProperty::GetName(
+    )
 {
     return m_Name;
 }
 
-BOOL CStaticProperty::IsCollection()
+__override BOOL 
+CStaticProperty::IsCollection(
+    )
 {
     return (m_Flags & StaticPropertyFlags::Collection) ? TRUE : FALSE;
 }
 
-BOOL CStaticProperty::IsDictionary()
+__override BOOL 
+CStaticProperty::IsDictionary(
+    )
 {
     return (m_Flags & StaticPropertyFlags::Dictionary) ? TRUE : FALSE;
 }
 
-BOOL CStaticProperty::IsContent()
+__override BOOL 
+CStaticProperty::IsContent(
+    )
 {
     return (m_Flags & StaticPropertyFlags::Content) ? TRUE : FALSE;
 }
 
-BOOL CStaticProperty::IsAttached()
+__override BOOL 
+CStaticProperty::IsAttached()
 {
     return (m_Flags & StaticPropertyFlags::Attached) ? TRUE : FALSE;
 }
 
-BOOL CStaticProperty::IsReadOnly()
+__override BOOL 
+CStaticProperty::IsReadOnly()
 {
     return (m_Flags & StaticPropertyFlags::ReadOnly) ? TRUE : FALSE;
 }
 
-HRESULT CStaticProperty::GetDefaultValue(CObjectWithType** ppObject)
+__override __checkReturn HRESULT 
+CStaticProperty::GetDefaultValue(
+    __deref_out_opt CObjectWithType** ppObject
+    )
 {
     HRESULT hr = S_OK;
 
@@ -156,17 +195,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStaticProperty::OnValueChanged(CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+__override __out_opt OnValueChangeFunc
+CStaticProperty::GetOnValueChangedCallback(
+    )
 {
-    HRESULT hr = S_OK;
-
-    IFCPTR(pObjectInstance);
-
-    if(m_ValueChangeFunc)
-    {
-        IFC(m_ValueChangeFunc(pObjectInstance, pOldValue, pNewValue));
-    }
-
-Cleanup:
-    return hr;
+    return m_ValueChangeFunc;
 }

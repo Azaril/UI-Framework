@@ -8,15 +8,25 @@ class CResolvedSetters : public CRefCountedObject
     public:
         DECLARE_FACTORY3( CResolvedSetters, CUIElement*, CProviders*, IStyleCallback* );
 
-        HRESULT AddSetter( CSetter* pSetter );
+        __checkReturn HRESULT AddSetter( 
+            __in CSetter* pSetter 
+            );
 
-        HRESULT Apply();
+        __checkReturn HRESULT Apply(
+            );
 
     protected:
-        CResolvedSetters();
-        virtual ~CResolvedSetters();
+        CResolvedSetters(
+            );
 
-        HRESULT Initialize( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback );
+        virtual ~CResolvedSetters(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CUIElement* pObject, 
+            __in CProviders* pProviders, 
+            __in IStyleCallback* pCallback 
+            );
 
         CUIElement* m_Owner;
         CProviders* m_Providers;

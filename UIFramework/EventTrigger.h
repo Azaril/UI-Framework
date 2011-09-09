@@ -15,11 +15,20 @@ class CEventTrigger : public CTrigger
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::EventTrigger, CTrigger );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        __override virtual __checkReturn HRESULT GetValue(
+            __in CProperty* pProperty,
+            __deref_out_opt CObjectWithType** ppValue 
+            );
 
-        virtual HRESULT ResolveTrigger( CUIElement* pObject, IStyleCallback* pCallback, CResolvedTrigger** pResolvedTrigger );
+        __override virtual __checkReturn HRESULT ResolveTrigger( 
+            __in CUIElement* pObject, 
+            __in IStyleCallback* pCallback, 
+            __deref_out CResolvedTrigger** pResolvedTrigger 
+            );
 
         //
         // Properties
@@ -28,12 +37,20 @@ class CEventTrigger : public CTrigger
         static CStaticProperty SettersProperty;
 
     protected:
-        CEventTrigger();
-        virtual ~CEventTrigger();
+        CEventTrigger(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CEventTrigger(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders 
+            );
+
+        __override virtual __checkReturn HRESULT SetValueInternal(
+            __in_opt CProperty* pProperty,
+            __in_opt CObjectWithType* pValue 
+            );
 
         CProviders* m_Providers;
         CRoutedEvent* m_RoutedEvent;
@@ -51,15 +68,28 @@ class CResolvedEventTrigger : public CResolvedTrigger
     public:
         DECLARE_FACTORY4( CResolvedEventTrigger, CUIElement*, CRoutedEvent*, CProviders*, IStyleCallback* );
 
-        HRESULT AddSetter( CSetter* pSetter );
+        __checkReturn HRESULT AddSetter(
+            __in CSetter* pSetter 
+            );
 
     protected:
-        CResolvedEventTrigger();
-        virtual ~CResolvedEventTrigger();
+        CResolvedEventTrigger(
+            );
 
-        HRESULT Initialize( CUIElement* pObject, CRoutedEvent* pRoutedEvent, CProviders* pProviders, IStyleCallback* pCallback );
+        virtual ~CResolvedEventTrigger(
+            );
 
-        void OnEvent( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
+        __checkReturn HRESULT Initialize( 
+            __in CUIElement* pObject,
+            __in CRoutedEvent* pRoutedEvent,
+            __in CProviders* pProviders,
+            __in IStyleCallback* pCallback 
+            );
+
+        void OnEvent( 
+            __in_opt CObjectWithType* pSender, 
+            __in_opt CRoutedEventArgs* pRoutedEventArgs 
+            );
 
         events::signals::connection m_Connection;
         CResolvedSetters* m_Setters;

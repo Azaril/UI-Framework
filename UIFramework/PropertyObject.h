@@ -16,67 +16,138 @@ class CLayeredValue;
 class CBindingContext;
 class CBindingBase;
 
-class CProperty
+typedef __checkReturn HRESULT (*OnValueChangeFunc)( 
+    __in CPropertyObject* pObjectInstance, 
+    __in_opt CObjectWithType* pOldValue, 
+    __in_opt CObjectWithType* pNewValue 
+    );
+
+class UIFRAMEWORK_API CProperty
 {
     public:
-        virtual INT32 AddRef() = 0;
-        virtual INT32 Release() = 0;
+        virtual INT32 AddRef(
+            ) = 0;
 
-        virtual const WCHAR* GetName() = 0;
-        virtual TypeIndex::Value GetType() = 0;
-        virtual BOOL IsCollection() = 0;
-        virtual BOOL IsDictionary() = 0;
-        virtual BOOL IsAttached() = 0;
-        virtual BOOL IsReadOnly() = 0;
+        virtual INT32 Release(
+            ) = 0;
 
-        virtual HRESULT GetDefaultValue( CObjectWithType** ppObject ) = 0;
+        __out virtual const WCHAR* GetName(
+            ) = 0;
 
-        virtual HRESULT OnValueChanged( CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue ) = 0;
+        virtual TypeIndex::Value GetType(
+            ) = 0;
+
+        virtual BOOL IsCollection(
+            ) = 0;
+
+        virtual BOOL IsDictionary(
+            ) = 0;
+
+        virtual BOOL IsAttached(
+            ) = 0;
+
+        virtual BOOL IsReadOnly(
+            ) = 0;
+
+        virtual __checkReturn HRESULT GetDefaultValue( 
+            __deref_out_opt CObjectWithType** ppObject 
+            ) = 0;
+
+        virtual __out_opt OnValueChangeFunc GetOnValueChangedCallback(
+            ) = 0;
+
+        __checkReturn HRESULT OnValueChanged( 
+            __in CPropertyObject* pObjectInstance, 
+            __in_opt CObjectWithType* pOldValue, 
+            __in_opt CObjectWithType* pNewValue 
+            );
 };
 
-class CPropertyInformation : public CRefCountedObject
+class UIFRAMEWORK_API CPropertyInformation : public CRefCountedObject
 {
     public:
-        virtual HRESULT GetProperty( const WCHAR* pPropertyName, CProperty** ppProperty ) = 0;
-        virtual HRESULT GetContentProperty( CProperty** ppProperty ) = 0;
+        virtual __checkReturn HRESULT GetProperty(
+            __in_z const WCHAR* pPropertyName,
+            __deref_out_opt CProperty** ppProperty
+            ) = 0;
+
+        virtual __checkReturn HRESULT GetContentProperty( 
+            __deref_out_opt CProperty** ppProperty
+            ) = 0;
 };
 
 //TODO: Add a base class to abstract routed events as they only make sense in the UI layer.
 class CRoutedEvent;
 
-class CEventInformation : public CRefCountedObject
+class UIFRAMEWORK_API CEventInformation : public CRefCountedObject
 {
     public:
-        virtual HRESULT GetEvent( const WCHAR* pEventName, CRoutedEvent** ppRoutedEvent ) = 0;
+        virtual __checkReturn HRESULT GetEvent( 
+            __in_z const WCHAR* pEventName, 
+            __deref_out_opt CRoutedEvent** ppRoutedEvent 
+            ) = 0;
 };
 
 class CCommand;
 
-class CCommandInformation : public CRefCountedObject
+class UIFRAMEWORK_API CCommandInformation : public CRefCountedObject
 {
     public:
-        virtual HRESULT GetCommand( const WCHAR* pCommandName, CCommand** ppCommand ) = 0;
+        virtual __checkReturn HRESULT GetCommand( 
+            __in_z const WCHAR* pCommandName,
+            __deref_out_opt CCommand** ppCommand 
+            ) = 0;
 };
 
 #define DECLARE_TYPE( type ) \
-virtual TypeIndex::Value GetType() const { return type; } \
-virtual BOOL IsTypeOf( TypeIndex::Value Type ) const { return Type == type; }
+__override virtual TypeIndex::Value GetType( \
+    ) const \
+{ \
+    return type; \
+} \
+__override virtual BOOL IsTypeOf( \
+    TypeIndex::Value Type \
+    ) const \
+{ \
+    return Type == type; \
+}
 
 #define DECLARE_TYPE_WITH_BASE( type, base ) \
-virtual TypeIndex::Value GetType() const { return type; } \
-virtual BOOL IsTypeOf( TypeIndex::Value Type ) const { return Type == type || base::IsTypeOf(Type); }
+__override virtual TypeIndex::Value GetType( \
+    ) const \
+{ \
+    return type; \
+} \
+__override virtual BOOL IsTypeOf( \
+    TypeIndex::Value Type \
+    ) const \
+{ \
+    return Type == type || base::IsTypeOf(Type); \
+}
 
 class UIFRAMEWORK_API CObjectWithType
 {
     public:
-        virtual INT32 AddRef() = 0;
-        virtual INT32 Release() = 0;
-
         DECLARE_TYPE( TypeIndex::Object );
 
-        virtual BOOL Equals( CObjectWithType* pOther ) { return this == pOther; }
+        virtual INT32 AddRef(
+            ) = 0;
 
-        virtual BOOL IsShareable() { return false; }
+        virtual INT32 Release(
+            ) = 0;       
+
+        virtual BOOL Equals( 
+            __in_opt CObjectWithType* pOther 
+            )
+        { 
+            return this == pOther; 
+        }
+
+        virtual BOOL IsShareable(
+            ) 
+        { 
+            return FALSE;
+        }
 };
 
 template< >
@@ -88,14 +159,28 @@ struct ObjectTypeTraits< CObjectWithType >
 class CAttachedPropertyHolder
 {
     public:
-        CAttachedPropertyHolder( const CAttachedPropertyHolder& Other );
-        CAttachedPropertyHolder( CProperty* pProperty, CObjectWithType* pObject );
-        ~CAttachedPropertyHolder();
+        CAttachedPropertyHolder( 
+            const CAttachedPropertyHolder& Other 
+            );
 
-        HRESULT SetValue( CObjectWithType* pObject );
-        HRESULT GetValue( CObjectWithType** ppObject );
+        CAttachedPropertyHolder(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pObject 
+            );
 
-        CProperty* GetProperty();
+        ~CAttachedPropertyHolder(
+            );
+
+        __checkReturn HRESULT SetValue( 
+            __in CObjectWithType* pObject 
+            );
+
+        __checkReturn HRESULT GetValue(
+            __deref_out CObjectWithType** ppObject 
+            );
+
+        __out CProperty* GetProperty(
+            );
 
     protected:
         CProperty* m_Property;
@@ -110,22 +195,43 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::PropertyObject, CObjectWithType );
 
-        virtual HRESULT SetValue( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
-        virtual HRESULT GetEffectiveValue( CProperty* pProperty, CObjectWithType** ppValue );
-        virtual HRESULT SetEffectiveValue( CProperty* pProperty, CObjectWithType* pValue );
+        virtual __checkReturn HRESULT SetValue(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
 
-        HRESULT AddPropertyChangeListener( const PropertyChangedHandler& Handler, events::signals::connection* pConnection );
+        virtual __checkReturn HRESULT GetValue( 
+            __in CProperty* pProperty, 
+            __deref_out_opt CObjectWithType** ppValue 
+            );
+
+        virtual __checkReturn HRESULT GetEffectiveValue( 
+            __in CProperty* pProperty, 
+            __deref_out_opt CObjectWithType** ppValue 
+            );
+
+        virtual __checkReturn HRESULT SetEffectiveValue( 
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        __checkReturn HRESULT AddPropertyChangeListener(
+            const PropertyChangedHandler& Handler, 
+            __out events::signals::connection* pConnection 
+            );
 
         template< typename T >
-        HRESULT GetTypedValue( CProperty* pProperty, T** ppValue )
+        __checkReturn HRESULT GetTypedValue( 
+            __in CProperty* pProperty,
+            __deref_out_opt T** ppValue 
+            )
         {
             HRESULT hr = S_OK;
             CObjectWithType* pVal = NULL;
 
             IFC(GetValue(pProperty, &pVal));
 
-            if(pVal)
+            if(pVal != NULL)
             {
                 IFCEXPECT(pVal->IsTypeOf(ObjectTypeTraits< T >::Type));
 
@@ -143,28 +249,59 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
             return hr;
         }
 
-        HRESULT RaisePropertyChanged( CProperty* pProperty );
+        __checkReturn HRESULT RaisePropertyChanged( 
+            __in CProperty* pProperty 
+            );
 
-        virtual HRESULT SetBinding( CProperty* pProperty, CBindingBase* pBinding );
+        virtual __checkReturn HRESULT SetBinding( 
+            __in CProperty* pProperty, 
+            __in CBindingBase* pBinding 
+            );
 
-        HRESULT SetBindingContext( CBindingContext* pContext );
-        HRESULT GetBindingContext( CBindingContext** ppContext );
+        __checkReturn HRESULT SetBindingContext( 
+            __in_opt CBindingContext* pContext 
+            );
+
+        __checkReturn HRESULT GetBindingContext( 
+            __deref_out_opt CBindingContext** ppContext 
+            );
 
     protected:
-        CPropertyObject();
-        virtual ~CPropertyObject();
+        CPropertyObject(
+            );
 
-        virtual HRESULT SetValueReadOnly( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );     
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
-        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
+        virtual ~CPropertyObject(
+            );
+
+        virtual __checkReturn HRESULT SetValueReadOnly(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        virtual __checkReturn HRESULT SetValueInternal( 
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        virtual __checkReturn HRESULT GetValueInternal( 
+            __in CProperty* pProperty, 
+            __deref_out_opt CObjectWithType** ppValue 
+            );
+
+        virtual __checkReturn HRESULT GetLayeredValue(
+            __in CProperty* pProperty, 
+            __deref_out_opt CLayeredValue** ppLayeredValue
+            );
 
         std::vector< CAttachedPropertyHolder > m_AttachedProperties;
         PropertyChangedSignal m_PropertyChangedSignal;
         CBindingContext* m_BindingContext;
 
     private:
-        HRESULT SetValuePrivate( CProperty* pProperty, CObjectWithType* pValue );     
+        __checkReturn HRESULT SetValuePrivate( 
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
 };
 
 template< >
@@ -178,8 +315,13 @@ class UIFRAMEWORK_API CObjectCollection : public CObjectWithType
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Collection, CObjectWithType );
 
-        virtual HRESULT AddObject( CObjectWithType* pObject ) = 0;
-        virtual HRESULT RemoveObject( CObjectWithType* pObject ) = 0;
+        virtual __checkReturn HRESULT AddObject( 
+            __in CObjectWithType* pObject 
+            ) = 0;
+
+        virtual __checkReturn HRESULT RemoveObject(
+            __in CObjectWithType* pObject 
+            ) = 0;
 };
 
 template< >
@@ -193,8 +335,15 @@ class UIFRAMEWORK_API CObjectDictionary : public CObjectWithType
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Dictionary, CObjectWithType );
 
-        virtual HRESULT AddObject( CObjectWithType* pKey, CObjectWithType* pObject ) = 0;
-        virtual HRESULT RemoveObject( CObjectWithType* pKey, CObjectWithType* pObject ) = 0;
+        virtual __checkReturn HRESULT AddObject( 
+            __in CObjectWithType* pKey, 
+            __in CObjectWithType* pObject 
+            ) = 0;
+
+        virtual __checkReturn HRESULT RemoveObject( 
+            __in CObjectWithType* pKey, 
+            __in CObjectWithType* pObject 
+            ) = 0;
 };
 
 template< >
@@ -204,22 +353,20 @@ struct ObjectTypeTraits< CObjectDictionary >
 };
 
 template< typename T >
-inline HRESULT CastType( CObjectWithType* pBaseObject, T** ppObject )
+inline 
+__checkReturn HRESULT CastType(
+    __in CObjectWithType* pBaseObject,
+    __deref_out T** ppObject 
+    )
 {
     HRESULT hr = S_OK;
 
+    IFCPTR(pBaseObject);
     IFCPTR(ppObject);
 
-    if(pBaseObject)
-    {
-        IFCEXPECT(pBaseObject->IsTypeOf(ObjectTypeTraits< T >::Type));
+    IFCEXPECT(pBaseObject->IsTypeOf(ObjectTypeTraits< T >::Type));
 
-        *ppObject = (T*)pBaseObject;
-    }
-    else
-    {
-        *ppObject = NULL;
-    }
+    *ppObject = (T*)pBaseObject;
 
 Cleanup:
     return hr;

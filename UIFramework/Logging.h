@@ -4,7 +4,6 @@
 
 namespace logging
 {
-//#include "PublicUtilities.h"
 
 #define LOGGING_TRACE       4
 #define LOGGING_VERBOSE     3
@@ -27,9 +26,6 @@ namespace logging
 #define ZONE_OUT(a)
 #define ZONE_LEVEL_OUT(a)
 #endif
-
-//#include "Common.h"
-//#include "LoggingMacros.h"
 
 typedef void (*DebugOutCallbackFuncA)(
     __in_z const char* strOutput

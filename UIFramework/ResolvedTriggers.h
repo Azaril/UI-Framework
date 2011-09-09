@@ -8,13 +8,22 @@ class CResolvedTriggers : public CRefCountedObject
     public:
         DECLARE_FACTORY3( CResolvedTriggers, CUIElement*, CProviders*, IStyleCallback* );
 
-        HRESULT AddTrigger( CTrigger* pTrigger );
+        __checkReturn HRESULT AddTrigger(
+            __in CTrigger* pTrigger 
+            );
 
     protected:
-        CResolvedTriggers();
-        virtual ~CResolvedTriggers();
+        CResolvedTriggers(
+            );
 
-        HRESULT Initialize( CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback );
+        virtual ~CResolvedTriggers(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CUIElement* pObject, 
+            __in CProviders* pProviders, 
+            __in IStyleCallback* pCallback 
+            );
 
         CUIElement* m_Owner;
         CProviders* m_Providers;

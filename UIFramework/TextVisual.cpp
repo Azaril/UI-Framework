@@ -1,19 +1,30 @@
 #include "TextVisual.h"
 
-CTextVisual::CTextVisual() : m_ForegroundBrush(NULL),
-                             m_ForegroundGraphicsBrush(NULL),
-                             m_TextLayout(NULL)
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CTextVisual, OnForegroundBrushChanged );
+
+CTextVisual::CTextVisual(
+    ) 
+    : m_ForegroundBrush(NULL)
+    , m_ForegroundGraphicsBrush(NULL)
+    , m_TextLayout(NULL)
 {
 }
 
-CTextVisual::~CTextVisual()
+CTextVisual::~CTextVisual(
+    )
 {
     ReleaseObject(m_ForegroundBrush);
     ReleaseObject(m_ForegroundGraphicsBrush);
     ReleaseObject(m_TextLayout);
 }
 
-HRESULT CTextVisual::Initialize(CTextLayout* pTextLayout)
+__checkReturn HRESULT 
+CTextVisual::Initialize(
+    __in_opt CTextLayout* pTextLayout
+    )
 {
     HRESULT hr = S_OK;
 
@@ -25,21 +36,52 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextVisual::SetForegroundBrush(CBrush* pBrush)
+__checkReturn HRESULT 
+CTextVisual::SetForegroundBrush(
+    __in_opt CBrush* pBrush
+    )
 {
     HRESULT hr = S_OK;
 
-    ReleaseObject(m_ForegroundBrush);
+    IFC(SetForegroundBrushInternal(pBrush));
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CTextVisual::SetForegroundBrushInternal(
+    __in_opt CBrush* pBrush
+    )
+{
+    HRESULT hr = S_OK;
+
+    if(m_ForegroundBrush)
+    {
+        IFC(RemoveVisualResource(m_ForegroundBrush, &INSTANCE_CHANGE_CALLBACK( CTextVisual, OnForegroundBrushChanged )));
+
+        ReleaseObject(m_ForegroundBrush);
+    }
+
     ReleaseObject(m_ForegroundGraphicsBrush);
 
     m_ForegroundBrush = pBrush;
 
-    AddRefObject(m_ForegroundBrush);
+    if(m_ForegroundBrush)
+    {
+        AddRefObject(m_ForegroundBrush);
 
+        IFC(AddVisualResource(m_ForegroundBrush, &INSTANCE_CHANGE_CALLBACK( CTextVisual, OnForegroundBrushChanged )));        
+    }
+
+Cleanup:
     return hr;
 }
 
-HRESULT CTextVisual::SetTextLayout(CTextLayout* pTextLayout)
+__checkReturn HRESULT 
+CTextVisual::SetTextLayout(
+    __in_opt CTextLayout* pTextLayout
+    )
 {
     HRESULT hr = S_OK;
 
@@ -52,7 +94,10 @@ HRESULT CTextVisual::SetTextLayout(CTextLayout* pTextLayout)
     return hr;
 }
 
-HRESULT CTextVisual::PreRender(CPreRenderContext& Context)
+__checkReturn HRESULT 
+CTextVisual::PreRender(
+    CPreRenderContext& Context
+    )
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
@@ -112,6 +157,22 @@ HRESULT CTextVisual::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResul
     //TODO: Implement hit testing.
 
     *ppHitTestResult = NULL;
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CTextVisual::OnForegroundBrushChanged(
+    __in_opt CObjectWithType* pOldValue,
+    __in_opt CObjectWithType* pNewValue
+    )
+{
+    HRESULT hr = S_OK;
+
+    ReleaseObject(m_ForegroundGraphicsBrush);
+
+    IFC(InvalidateVisual());
 
 Cleanup:
     return hr;

@@ -13,67 +13,150 @@
 class UIFRAMEWORK_API CVisual : public CRefCountedObjectBase< CPropertyObject >
 {
     typedef std::vector< CVisual* > VisualChildCollection;
-    typedef std::vector< CVisualResource* > VisualResourceCollection;
+    typedef std::vector< std::pair< CVisualResource*, OnValueChangeFunc > > VisualResourceCollection;
 
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Visual, CPropertyObject );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        virtual __checkReturn HRESULT PreRender(
+            CPreRenderContext& Context 
+            );
 
-        virtual HRESULT PreRender( CPreRenderContext& Context );
-        virtual HRESULT Render( CRenderContext& Context );
+        virtual __checkReturn HRESULT Render(
+            CRenderContext& Context 
+            );
 
-        HRESULT SetVisualTransform( const Matrix3X2F& Matrix );
-        const Matrix3X2F& GetVisualTransform();
+        virtual HRESULT GetLocalTransform(
+            __out Matrix3X2F* pTransform
+            );
 
-        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult ) = 0;
+        virtual __checkReturn HRESULT HitTest(
+            Point2F LocalPoint, 
+            __deref_out_opt CHitTestResult** ppHitTestResult 
+            ) = 0;
 
-        virtual UINT32 GetVisualChildCount();
-        virtual CVisual* GetVisualChild( UINT32 Index );
+        virtual UINT32 GetVisualChildCount(
+            );
 
-        virtual HRESULT TransformToParent( CTransform** ppTransform );
-        virtual HRESULT TransformFromAncestor( CVisual* pAncestor, CTransform** ppTransform );
-        virtual HRESULT TransformToAncestor( CVisual* pAncestor, CTransform** ppTransform );
+        virtual __out CVisual* GetVisualChild( 
+            UINT32 Index 
+            );
 
-        virtual HRESULT OnVisualNotification( CVisualNotification* pNotification );
+        virtual __checkReturn HRESULT TransformToParent(
+            __deref_out CTransform** ppTransform 
+            );
+
+        virtual __checkReturn HRESULT TransformFromAncestor( 
+            __in_opt CVisual* pAncestor,
+            __deref_out CTransform** ppTransform 
+            );
+
+        virtual __checkReturn HRESULT TransformToAncestor( 
+            __in_opt CVisual* pAncestor,
+            __deref_out CTransform** ppTransform 
+            );
     
     protected:
-        CVisual();
-        virtual ~CVisual();
+        CVisual(
+            );
+
+        virtual ~CVisual(
+            );
    
-        HRESULT Initialize();
-        HRESULT Finalize();
+        __checkReturn HRESULT Initialize(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Finalize(
+            );
+
+        __override virtual __checkReturn HRESULT SetValueInternal( 
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal(
+            __in CProperty* pProperty, 
+            __deref_out_opt CObjectWithType** ppValue 
+            );
     
-        virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
-        virtual HRESULT OnVisualDetach( CVisualDetachContext& Context );
+        virtual __checkReturn HRESULT OnVisualAttach(
+            CVisualAttachContext& Context 
+            );
 
-        virtual HRESULT AddChildVisual( CVisual* pVisualChild );
-        virtual HRESULT RemoveChildVisual( CVisual* pVisualChild );
+        virtual __checkReturn HRESULT OnVisualDetach( 
+            CVisualDetachContext& Context 
+            );
 
-        virtual HRESULT MoveToBack( CVisual* pVisualChild );
-        virtual HRESULT MoveToFront( CVisual* pVisualChild );
+        virtual __checkReturn HRESULT AddChildVisual(
+            __in CVisual* pVisualChild 
+            );
 
-        virtual HRESULT AddVisualResource( CVisualResource* pVisualResource );
-        virtual HRESULT RemoveVisualResource( CVisualResource* pVisualResource );
+        virtual __checkReturn HRESULT RemoveChildVisual( 
+            __in CVisual* pVisualChild 
+            );
 
-        virtual HRESULT RenderTransformed( CRenderContext& Context );
-        virtual HRESULT RenderChildren( CRenderContext& Context );
+        virtual __checkReturn HRESULT MoveToBack(
+            __in CVisual* pVisualChild 
+            );
 
-        virtual const Matrix3X2F* GetChildRenderTransform();
+        virtual __checkReturn HRESULT MoveToFront( 
+            __in CVisual* pVisualChild 
+            );
 
-        const Matrix3X2F& GetFinalLocalTransform();
+        virtual __checkReturn HRESULT AddVisualResource( 
+            __in CVisualResource* pVisualResource,
+            __in_opt CProperty* pProperty 
+            );
 
-        CVisual* GetVisualParent();
+        virtual __checkReturn HRESULT AddVisualResource(
+            __in CVisualResource* pVisualResource,
+            __in_opt OnValueChangeFunc ChangeFunc 
+            );
+
+        virtual __checkReturn HRESULT RemoveVisualResource( 
+            __in CVisualResource* pVisualResource, 
+            __in_opt CProperty* pProperty 
+            );
+
+        virtual __checkReturn HRESULT RemoveVisualResource( 
+            __in CVisualResource* pVisualResource,
+            __in_opt OnValueChangeFunc ChangeFunc 
+            );
+
+        virtual __checkReturn HRESULT RenderTransformed( 
+            CRenderContext& Context 
+            );
+
+        virtual __checkReturn HRESULT RenderChildren( 
+            CRenderContext& Context 
+            );
+
+        virtual __out_opt const Matrix3X2F* GetChildRenderTransform(
+            );
+
+        __out_opt CVisual* GetVisualParent(
+            );
+
+        __checkReturn HRESULT InvalidateVisual(
+            );
+
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnChildInvalidated );
+
+        __checkReturn HRESULT OnChildInvalidated(
+            __in_opt CObjectWithType* pOldValue, 
+            __in_opt CObjectWithType* pNewValue 
+            );
 
         CVisualAttachContext m_VisualContext;
         VisualChildCollection m_VisualChildren;
         VisualResourceCollection m_VisualResources;
-        Matrix3X2F m_VisualTransform;
-        Matrix3X2F m_FinalLocalTransform;
         BOOL m_VisualAttached;
 };
 

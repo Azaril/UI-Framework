@@ -8,14 +8,26 @@ class CDelegatingPropertyInformation : public CPropertyInformation
     public:
         DECLARE_FACTORY2( CDelegatingPropertyInformation, CPropertyInformation*, CPropertyInformation* );
 
-        virtual HRESULT GetProperty( const WCHAR* pPropertyName, CProperty** ppProperty );
-        virtual HRESULT GetContentProperty( CProperty** ppProperty );
+        __override virtual __checkReturn HRESULT GetProperty( 
+            __in_z const WCHAR* pPropertyName, 
+            __deref_out_opt CProperty** ppProperty 
+            );
+
+        __override virtual __checkReturn HRESULT GetContentProperty( 
+            __deref_out_opt CProperty** ppProperty 
+            );
 
     protected:
-        CDelegatingPropertyInformation();
-        virtual ~CDelegatingPropertyInformation();
+        CDelegatingPropertyInformation(
+            );
 
-        HRESULT Initialize( CPropertyInformation* pRoot, CPropertyInformation* pBase );
+        virtual ~CDelegatingPropertyInformation(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CPropertyInformation* pRoot,
+            __in CPropertyInformation* pBase 
+            );
 
         CPropertyInformation* m_Root;
         CPropertyInformation* m_Base;

@@ -47,6 +47,8 @@ CAddToCollectionCommand::Execute(
 
     IFC(pCollectionParent->GetValue(m_Property, &pCollectionObject));
 
+    IFCPTR(pCollectionObject);
+
     IFC(CastType(pCollectionObject, &pCollection));
 
     IFC(pCollection->AddObject(pValueObject));

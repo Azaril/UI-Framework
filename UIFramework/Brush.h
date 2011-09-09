@@ -8,32 +8,53 @@
 #include "Visual.h"
 #include "StaticPropertyInformation.h"
 
-class CBrush : public CRefCountedObjectBase< CPropertyObject >,
-               public CVisualResource
+class CBrush : public CVisualResource
 {
     public:
         DELEGATE_REFCOUNTING( CRefCountedObjectBase< CPropertyObject > );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Brush, CPropertyObject );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
         
-        virtual BOOL IsShareable() { return true; }
+        __override virtual BOOL IsShareable(
+            )
+        { 
+            return TRUE; 
+        }
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        __override virtual __checkReturn HRESULT OnVisualAttach( 
+            CVisualAttachContext& Context 
+            );
 
-        virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
-        virtual HRESULT OnVisualDetach( CVisualDetachContext& Context );
+        __override virtual __checkReturn HRESULT OnVisualDetach(
+            CVisualDetachContext& Context 
+            );
 
-        HRESULT InvalidateBrush();
-
-        virtual HRESULT GetGraphicsBrush( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush ) = 0;
+        virtual __checkReturn HRESULT GetGraphicsBrush( 
+            __in CGraphicsDevice* pGraphicsDevice, 
+            __in CRenderTarget* pRenderTarget, 
+            __deref_out CGraphicsBrush** ppGraphicsBrush 
+            ) = 0;
 
     protected:
-        CBrush();
-        virtual ~CBrush();
+        CBrush(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        virtual ~CBrush(
+            );
+
+        __override virtual __checkReturn HRESULT SetValueInternal(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetValueInternal(
+            __in CProperty* pProperty,
+            __deref_out_opt CObjectWithType** ppValue 
+            );
 
         CPropertyInformation* m_PropertyInformation;
 };
@@ -42,21 +63,4 @@ template< >
 struct ObjectTypeTraits< CBrush >
 {
     static const TypeIndex::Value Type = TypeIndex::Brush;
-};
-
-class CBrushInvalidatedNotification : public CVisualNotification
-{
-    public:
-        DECLARE_FACTORY1( CBrushInvalidatedNotification, CBrush* );
-
-        virtual VisualNotification::Value GetType();
-        CBrush* GetBrush();
-
-    protected:
-        CBrushInvalidatedNotification();
-        virtual ~CBrushInvalidatedNotification();
-
-        HRESULT Initialize( CBrush* pBrush );
-
-        CBrush* m_Brush;
 };

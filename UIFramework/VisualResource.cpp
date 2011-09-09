@@ -2,39 +2,61 @@
 #include "ErrorChecking.h"
 #include "Visual.h"
 
-HRESULT CVisualResource::OnVisualAttach(CVisualAttachContext& Context)
+__checkReturn HRESULT 
+CVisualResource::OnVisualAttach(
+    CVisualAttachContext& Context
+    )
 {
     HRESULT hr = S_OK;
+    BOOL AddedReference = FALSE;
 
     for(std::vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
     {
-        if(It->Parent == Context.GetParent())
+        if(It->Parent == Context.GetParent() && It->ChangeCallback == Context.GetChangeCallback())
         {
             It->References++;
 
-            goto Cleanup;
+            AddedReference = TRUE;
+
+            break;
         }
     }
 
-    m_Parents.push_back(Context.GetParent());
+    if (!AddedReference)
+    {
+        m_Parents.push_back(VisualParentInfo(Context.GetParent(), Context.GetChangeCallback()));
+    }
+
+    if (Context.GetParent() != NULL && Context.GetChangeCallback() != NULL)
+    {
+        IFC(Context.GetChangeCallback()(Context.GetParent(), NULL, this));
+    }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CVisualResource::OnVisualDetach(CVisualDetachContext& Context)
+__checkReturn HRESULT 
+CVisualResource::OnVisualDetach(
+    CVisualDetachContext& Context
+    )
 {
     HRESULT hr = S_OK;
 
     for(std::vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
     {
-        if(It->Parent == Context.GetParent())
+        if(It->Parent == Context.GetParent() && It->ChangeCallback == Context.GetChangeCallback())
         {
             It->References--;
 
             if(It->References == 0)
             {
                 m_Parents.erase(It);
+            }
+
+            if (Context.GetParent() != NULL && Context.GetChangeCallback() != NULL)
+            {
+                IFC(Context.GetChangeCallback()(Context.GetParent(), this, NULL));
             }
 
             goto Cleanup;
@@ -47,23 +69,18 @@ Cleanup:
     return hr;
 }
 
-UINT32 CVisualResource::GetVisualParentCount()
-{
-    return m_Parents.size();
-}
-
-CVisual* CVisualResource::GetVisualParent(UINT32 Index)
-{
-    return m_Parents[Index].Parent;
-}
-
-HRESULT CVisualResource::NotifyParents(CVisualNotification* pVisualNotification)
+__checkReturn HRESULT
+CVisualResource::InvalidateVisualResource(
+    )
 {
     HRESULT hr = S_OK;
 
     for(std::vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
     {
-        IFC(It->Parent->OnVisualNotification(pVisualNotification));
+        if (It->Parent != NULL && It->ChangeCallback != NULL)
+        {
+            IFC(It->ChangeCallback(It->Parent, this, this));
+        }
     }
 
 Cleanup:

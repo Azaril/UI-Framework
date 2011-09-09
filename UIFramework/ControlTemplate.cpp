@@ -4,25 +4,35 @@
 //
 // Properties
 //
-CStaticProperty CControlTemplate::TemplateProperty( L"Template", TypeIndex::ParserCommandList, StaticPropertyFlags::Content );
+CStaticProperty CControlTemplate::TemplateProperty(L"Template", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
 
-CControlTemplate::CControlTemplate() : m_TemplateCommandList(NULL)
+CControlTemplate::CControlTemplate(
+    ) 
+    : m_TemplateCommandList(NULL)
 {
 }
 
-CControlTemplate::~CControlTemplate()
+CControlTemplate::~CControlTemplate(
+    )
 {
     ReleaseObject(m_TemplateCommandList);
 }
 
-HRESULT CControlTemplate::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CControlTemplate::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-HRESULT CControlTemplate::LoadContent(CNamescope* pNamescope, CObjectWithType** ppObject)
+__checkReturn HRESULT 
+CControlTemplate::LoadContent(
+    __in CNamescope* pNamescope, 
+    __deref_out CObjectWithType** ppObject
+    )
 {
     HRESULT hr = S_OK;
 
@@ -36,7 +46,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CControlTemplate::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CControlTemplate::CreatePropertyInformation(
+    __deref_out CPropertyInformation **ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -59,7 +72,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CControlTemplate::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CControlTemplate::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -85,7 +102,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CControlTemplate::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT
+CControlTemplate::GetValueInternal(
+    __in CProperty* pProperty,
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -99,28 +120,34 @@ HRESULT CControlTemplate::GetValue(CProperty* pProperty, CObjectWithType** ppVal
     }
     else
     {
-        IFC(CPropertyObject::GetValue(pProperty, ppValue));
+        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:
     return hr;
 }
 
-
-
-
-CControlTemplateParseCallback::CControlTemplateParseCallback(CNamescope* pNamescope) : m_Namescope(pNamescope)
+CControlTemplateParseCallback::CControlTemplateParseCallback(
+    __in CNamescope* pNamescope
+    ) 
+    : m_Namescope(pNamescope)
 {
 }
 
-HRESULT CControlTemplateParseCallback::OnPushObject(CObjectWithType* pObject)
+__override __checkReturn HRESULT 
+CControlTemplateParseCallback::OnPushObject(
+    __in CObjectWithType* pObject
+    )
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-HRESULT CControlTemplateParseCallback::OnPopObject(CObjectWithType* pObject)
+__override __checkReturn HRESULT 
+CControlTemplateParseCallback::OnPopObject(
+    __in CObjectWithType* pObject
+    )
 {
     HRESULT hr = S_OK;
     CFrameworkElement* pElement = NULL;

@@ -36,24 +36,39 @@ class CImageBrushContext : public CRefCountedObject
     public:
         DECLARE_FACTORY2( CImageBrushContext, CGraphicsDevice*, CBitmapSource* );
 
-        CGraphicsDevice* GetGraphicsDevice();
+        __out CGraphicsDevice* GetGraphicsDevice(
+            );
 
-        INT32 AddUsage();
-        INT32 RemoveUsage();
+        INT32 AddUsage(
+            );
+
+        INT32 RemoveUsage(
+            );
 
         //HRESULT AddRenderTarget( CRenderTarget* pRenderTarget );
         //HRESULT RemoveRenderTarget( CRenderTarget* pRenderTarget );
 
         //HRESULT GetContextForRenderTarget( CRenderTarget* pRenderTarget, CImageBrushRenderContext** ppContext );
 
-        HRESULT GetBitmapSource( CBitmapSource** ppSource );
-        HRESULT SetBitmapSource( CBitmapSource* pSource );
+        __checkReturn HRESULT GetBitmapSource( 
+            __deref_out CBitmapSource** ppSource 
+            );
+
+        __checkReturn HRESULT SetBitmapSource( 
+            __in CBitmapSource* pSource 
+            );
 
     protected:
-        CImageBrushContext();
-        virtual ~CImageBrushContext();
+        CImageBrushContext(
+            );
 
-        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CBitmapSource* );
+        virtual ~CImageBrushContext(
+            );
+
+        __checkReturn HRESULT Initialize( 
+            __in CGraphicsDevice* pGraphicsDevice, 
+            __in CBitmapSource* 
+            );
 
         CGraphicsDevice* m_Device;
         CBitmapSource* m_Source;
@@ -70,18 +85,31 @@ class CImageBrush : public CBrush
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::ImageBrush, CBrush );
 
-        static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
+        static __checkReturn HRESULT CreatePropertyInformation( 
+            __deref_out CPropertyInformation** ppInformation 
+            );
 
-        virtual HRESULT GetValue( CProperty* pProperty, CObjectWithType** ppValue );
+        __override virtual __checkReturn HRESULT OnVisualAttach(
+            CVisualAttachContext& Context 
+            );
 
-        virtual HRESULT OnVisualAttach( CVisualAttachContext& Context );
-        virtual HRESULT OnVisualDetach( CVisualDetachContext& Context );
+        __override virtual __checkReturn HRESULT OnVisualDetach( 
+            CVisualDetachContext& Context 
+            );
 
-        HRESULT SetSource( CObjectWithType* pSource );
+        __checkReturn HRESULT SetSource( 
+            __in_opt CObjectWithType* pSource 
+            );
 
-        virtual HRESULT GetGraphicsBrush( CGraphicsDevice* pDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush );
+        __override virtual __checkReturn HRESULT GetGraphicsBrush(
+            __in CGraphicsDevice* pDevice, 
+            __in CRenderTarget* pRenderTarget, 
+            __deref_out CGraphicsBrush** ppGraphicsBrush 
+            );
 
-        virtual HRESULT GetSize( SizeU* pSize );
+        __override virtual __checkReturn HRESULT GetSize(
+            __out SizeU* pSize 
+            );
 
         //
         // Properties
@@ -89,18 +117,40 @@ class CImageBrush : public CBrush
         static CStaticProperty SourceProperty;
 
     protected:
-        CImageBrush();
-        virtual ~CImageBrush();
+        CImageBrush(
+            );
 
-        HRESULT Initialize( CProviders* pProviders );
+        virtual ~CImageBrush(
+            );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
+        __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders 
+            );
 
-        HRESULT InternalSetSource( CObjectWithType* m_Source );
+        __override virtual __checkReturn HRESULT SetValueInternal(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
 
-        HRESULT EnsureBitmaps();
-        HRESULT ReleaseBitmaps();
-        HRESULT CreateBitmapFromSource( CGraphicsDevice* pGraphicsDevice, CBitmapSource** ppBitmapSource );
+        __override virtual __checkReturn HRESULT GetValueInternal(
+            __in CProperty* pProperty, 
+            __deref_out CObjectWithType** ppValue 
+            );
+
+        __checkReturn HRESULT InternalSetSource( 
+            __in_opt CObjectWithType* m_Source 
+            );
+
+        __checkReturn HRESULT EnsureBitmaps(
+            );
+
+        __checkReturn HRESULT ReleaseBitmaps(
+            );
+
+        __checkReturn HRESULT CreateBitmapFromSource( 
+            __in CGraphicsDevice* pGraphicsDevice, 
+            __deref_out CBitmapSource** ppBitmapSource 
+            );
 
         CObjectWithType* m_Source;
         ContextCollection m_Contexts;

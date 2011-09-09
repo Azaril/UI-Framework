@@ -16,28 +16,54 @@ namespace StaticPropertyFlags
     };
 }
 
-typedef HRESULT (*GetDefaultPropertyValueFunc)( CObjectWithType** ppObject );
-typedef HRESULT (*OnValueChangeFunc)( CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+typedef __checkReturn HRESULT (*GetDefaultPropertyValueFunc)( 
+    __deref_out_opt CObjectWithType** ppObject 
+    );
 
-class CStaticProperty : public CProperty
+class UIFRAMEWORK_API CStaticProperty : public CProperty
 {
     public:
-        CStaticProperty( const WCHAR* Name, const TypeIndex::Value Type, UINT32 Flags, GetDefaultPropertyValueFunc DefaultValueFunc = NULL, OnValueChangeFunc ValueChangeFunc = NULL );
+        CStaticProperty( 
+            __in_z const WCHAR* Name,
+            const TypeIndex::Value Type, 
+            UINT32 Flags, 
+            __in_opt GetDefaultPropertyValueFunc DefaultValueFunc = NULL, 
+            __in_opt OnValueChangeFunc ValueChangeFunc = NULL
+            );
 
-        virtual INT32 AddRef();
-        virtual INT32 Release();
+        __override virtual INT32 AddRef(
+            );
 
-        virtual TypeIndex::Value GetType();
-        virtual const WCHAR* GetName();
-        virtual BOOL IsCollection();
-        virtual BOOL IsDictionary();
-        virtual BOOL IsAttached();
-        virtual BOOL IsContent();
-        virtual BOOL IsReadOnly();
+        __override virtual INT32 Release(
+            );
 
-        virtual HRESULT GetDefaultValue( CObjectWithType** ppObject );
+        __override virtual TypeIndex::Value GetType(
+            );
 
-        virtual HRESULT OnValueChanged( CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue );
+        __override virtual __out const WCHAR* GetName(
+            );
+
+        __override virtual BOOL IsCollection(
+            );
+
+        __override virtual BOOL IsDictionary(
+            );
+
+        __override virtual BOOL IsAttached(
+            );
+
+        __override virtual BOOL IsContent(
+            );
+
+        __override virtual BOOL IsReadOnly(
+            );
+
+        __override virtual HRESULT GetDefaultValue( 
+            __deref_out_opt CObjectWithType** ppObject 
+            );
+
+        __override virtual __out_opt OnValueChangeFunc GetOnValueChangedCallback(
+            );
 
     protected:
         const WCHAR* m_Name;
@@ -52,14 +78,26 @@ class CStaticPropertyInformation : public CPropertyInformation
     public:
         DECLARE_FACTORY2( CStaticPropertyInformation, CStaticProperty**, UINT32 );
 
-        virtual HRESULT GetProperty( const WCHAR* pPropertyName, CProperty** ppProperty );
-        virtual HRESULT GetContentProperty( CProperty** ppProperty );
+        __override virtual __checkReturn HRESULT GetProperty(
+            __in const WCHAR* pPropertyName,
+            __deref_out_opt CProperty** ppProperty 
+            );
+
+        __override virtual __checkReturn HRESULT GetContentProperty(
+            __deref_out_opt CProperty** ppProperty 
+            );
 
     public:
-        CStaticPropertyInformation();
-        virtual ~CStaticPropertyInformation();
+        CStaticPropertyInformation(
+            );
 
-        HRESULT Initialize( CStaticProperty** ppProperties, UINT32 PropertyCount );
+        virtual ~CStaticPropertyInformation(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in_ecount(PropertyCount) CStaticProperty** ppProperties,
+            UINT32 PropertyCount 
+            );
 
         std::vector< CStaticProperty* > m_Properties;
 };
@@ -68,7 +106,9 @@ class CStaticPropertyInformation : public CPropertyInformation
 #define DEFINE_GET_DEFAULT( name, type, value ) \
 namespace   \
 {   \
-    HRESULT GetDefault##name(CObjectWithType** ppObject)    \
+    __checkReturn HRESULT GetDefault##name( \
+        __deref_out_opt CObjectWithType** ppObject  \
+            )   \
     {   \
         HRESULT hr = S_OK;  \
         type* pValue = NULL;    \
@@ -90,7 +130,9 @@ namespace   \
 #define DEFINE_GET_DEFAULT_NULL( name ) \
 namespace   \
 {   \
-    HRESULT GetDefault##name(CObjectWithType** ppObject)    \
+    __checkReturn HRESULT GetDefault##name( \
+        __deref_out_opt CObjectWithType** ppObject  \
+            )    \
     {   \
         HRESULT hr = S_OK;  \
         \
@@ -106,7 +148,12 @@ namespace   \
 #define GET_DEFAULT( name ) GetDefault##name
 
 #define DEFINE_INSTANCE_CHANGE_CALLBACK( type, name ) \
-HRESULT type::Static##name(CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue)    \
+__checkReturn HRESULT   \
+type::Static##name( \
+    __in CPropertyObject* pObjectInstance,  \
+    __in_opt CObjectWithType* pOldValue,    \
+    __in_opt CObjectWithType* pNewValue \
+    )    \
 {   \
     HRESULT hr = S_OK;  \
     type* pTypedInstance = NULL;    \
@@ -124,6 +171,10 @@ Cleanup:    \
 }
 
 #define DECLARE_INSTANCE_CHANGE_CALLBACK( name )    \
-static HRESULT Static##name(CPropertyObject* pObjectInstance, CObjectWithType* pOldValue, CObjectWithType* pNewValue);
+static __checkReturn HRESULT Static##name(  \
+    __in CPropertyObject* pObjectInstance,  \
+    __in_opt CObjectWithType* pOldValue,    \
+    __in_opt CObjectWithType* pNewValue \
+    );
 
 #define INSTANCE_CHANGE_CALLBACK( type, name ) type::Static##name

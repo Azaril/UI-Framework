@@ -11,33 +11,78 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::GeometryVisual, CVisual );
 
-        HRESULT SetGeometry( CGeometry* pGeometry );
-        HRESULT SetFillBrush( CBrush* pBrush );
-        HRESULT SetStrokeBrush( CBrush* pBrush );
-        HRESULT SetStrokeThickness( FLOAT Thickness );
+        __checkReturn HRESULT SetGeometry(
+            __in_opt CGeometry* pGeometry 
+            );
 
-        HRESULT SetFillBrushTransform( const Matrix3X2F& Transform );
+        __checkReturn HRESULT SetFillBrush(
+            __in_opt CBrush* pBrush 
+            );
 
-        virtual HRESULT PreRender( CPreRenderContext& Context );
+        __checkReturn HRESULT SetStrokeBrush( 
+            __in_opt CBrush* pBrush 
+            );
 
-        virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
+        __checkReturn HRESULT SetStrokeThickness(
+            FLOAT Thickness 
+            );
 
-        virtual HRESULT OnVisualNotification( CVisualNotification* pNotification );
+        __checkReturn HRESULT SetFillBrushTransform( 
+            const Matrix3X2F& Transform 
+            );
+
+        __checkReturn virtual HRESULT PreRender(
+            CPreRenderContext& Context 
+            );
+
+        __checkReturn virtual HRESULT HitTest(
+            Point2F LocalPoint, 
+            __deref_out CHitTestResult** ppHitTestResult 
+            );
 
     protected:
-        CGeometryVisual();
-        virtual ~CGeometryVisual();
+        CGeometryVisual(
+            );
 
-        HRESULT Initialize();
+        virtual ~CGeometryVisual(
+            );
 
-        HRESULT InternalSetGeometry( CGeometry* pGeometry );
-        HRESULT InternalSetFillBrush( CBrush* pBrush );
-        HRESULT InternalSetStrokeBrush( CBrush* pBrush );
-        HRESULT InternalSetStrokeThickness( FLOAT Thickness );
+        __checkReturn HRESULT Initialize(
+            );
 
-        HRESULT OnBrushInvalidated( CBrush* pBrush );
+        __checkReturn HRESULT InternalSetGeometry( 
+            __in_opt CGeometry* pGeometry 
+            );
+
+        __checkReturn HRESULT InternalSetFillBrush(
+            __in_opt CBrush* pBrush 
+            );
+
+        __checkReturn HRESULT InternalSetStrokeBrush( 
+            __in_opt CBrush* pBrush 
+            );
+
+        __checkReturn HRESULT InternalSetStrokeThickness(
+            FLOAT Thickness 
+            );
 
         virtual HRESULT RenderTransformed( CRenderContext& Context );
+
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnFillBrushChanged );
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnStrokeBrushChanged );
+
+        __checkReturn HRESULT OnFillBrushChanged(
+            __in_opt CObjectWithType* pOldValue, 
+            __in_opt CObjectWithType* pNewValue 
+            );
+
+        __checkReturn HRESULT OnStrokeBrushChanged(
+            __in_opt CObjectWithType* pOldValue, 
+            __in_opt CObjectWithType* pNewValue 
+            );
 
         CGeometry* m_Geometry;
         CBrush* m_FillBrush;
@@ -49,4 +94,10 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
         Matrix3X2F m_StrokeBrushTransform;
         Matrix3X2F m_ModifyFillBrushTransform;
         BOOL m_UpdateFillTransform;
+};
+
+template< >
+struct ObjectTypeTraits< CGeometryVisual >
+{
+    static const TypeIndex::Value Type = TypeIndex::GeometryVisual;
 };

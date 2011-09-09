@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Defines.h"
 #include "DataTypes.h"
 #include "ColorF.h"
 
@@ -8,7 +9,7 @@
 #include <D2D1helper.h>
 #endif
 
-struct GradientStop
+struct UIFRAMEWORK_API GradientStop
 #ifdef _WINDOWS
     : D2D1_GRADIENT_STOP
 #endif

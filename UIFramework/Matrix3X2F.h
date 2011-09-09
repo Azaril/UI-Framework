@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Defines.h"
 #include "DataTypes.h"
 #include "Point2F.h"
 #include "SizeF.h"
@@ -9,7 +10,7 @@
 #include <D2D1helper.h>
 #endif
 
-struct Matrix3X2F
+struct UIFRAMEWORK_API Matrix3X2F
 #ifdef _WINDOWS
     : D2D_MATRIX_3X2_F
 #endif

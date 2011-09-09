@@ -34,7 +34,7 @@ namespace EffectiveValue
     };
 }
 
-struct ValueLayer
+struct UIFRAMEWORK_API ValueLayer
 {
     ValueLayer() : Value(NULL)
     {
@@ -49,7 +49,7 @@ struct ValueLayer
 };
 
 template< typename OwnerType, typename T >
-class CTypedLocalLayeredValue : public CLayeredValue
+class UIFRAMEWORK_API CTypedLocalLayeredValue : public CLayeredValue
 {
     typedef CTypedLocalLayeredValue< OwnerType, T > ThisType;
 
@@ -431,7 +431,7 @@ class CTypedLocalLayeredValue : public CLayeredValue
 };
 
 template< typename OwnerType, typename T >
-class CTypedLayeredValue : public CTypedLocalLayeredValue< OwnerType, T >
+class UIFRAMEWORK_API CTypedLayeredValue : public CTypedLocalLayeredValue< OwnerType, T >
 {
     typedef CTypedLocalLayeredValue< OwnerType, T > Base;
 

@@ -6,17 +6,20 @@
 //
 // Properties
 //
-CStaticProperty CSetter::PropertyProperty( L"Property", TypeIndex::String, StaticPropertyFlags::None );
-CStaticProperty CSetter::ValueProperty( L"Value", TypeIndex::ParserCommandList, StaticPropertyFlags::Content );
+CStaticProperty CSetter::PropertyProperty(L"Property", TypeIndex::String, StaticPropertyFlags::None);
+CStaticProperty CSetter::ValueProperty(L"Value", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
 
-CSetter::CSetter() : m_Property(NULL),
-                     m_Value(NULL),
-                     m_Providers(NULL),
-                     m_CachedValue(NULL)
+CSetter::CSetter(
+    ) 
+    : m_Property(NULL)
+    , m_Value(NULL)
+    , m_Providers(NULL)
+    , m_CachedValue(NULL)
 {
 }
 
-CSetter::~CSetter()
+CSetter::~CSetter(
+    )
 {
     ReleaseObject(m_Property);
     ReleaseObject(m_Value);
@@ -24,7 +27,10 @@ CSetter::~CSetter()
     ReleaseObject(m_Providers);
 }
 
-HRESULT CSetter::Initialize(CProviders* pProviders)
+__checkReturn HRESULT
+CSetter::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -37,17 +43,24 @@ Cleanup:
     return hr;
 }
 
-const WCHAR* CSetter::GetPropertyName()
+__out_opt const WCHAR* 
+CSetter::GetPropertyName(
+    )
 {
     return (m_Property != NULL) ? m_Property->GetValue() : NULL;
 }
 
-CObjectWithType* CSetter::GetPropertyValue()
+__out_opt CObjectWithType* 
+CSetter::GetPropertyValue(
+    )
 {
     return m_Value;
 }
 
-HRESULT CSetter::SetPropertyInternal(const WCHAR* pProperty)
+__checkReturn HRESULT 
+CSetter::SetPropertyInternal(
+    __in_z const WCHAR* pProperty
+    )
 {
     HRESULT hr = S_OK;
 
@@ -59,7 +72,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSetter::SetPropertyValueInternal(CParserCommandList* pValue)
+__checkReturn HRESULT
+CSetter::SetPropertyValueInternal(
+    __in CParserCommandList* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -76,7 +92,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSetter::ResolveSetter(CUIElement* pObject, IStyleCallback* pCallback, CResolvedSetter** ppResolvedSetter)
+__checkReturn HRESULT 
+CSetter::ResolveSetter(
+    __in CUIElement* pObject, 
+    __in IStyleCallback* pCallback, 
+    __deref_out CResolvedSetter** ppResolvedSetter
+    )
 {
     HRESULT hr = S_OK;
     CClassResolver* pClassResolver = NULL;
@@ -116,7 +137,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSetter::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CSetter::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -140,7 +164,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSetter::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT
+CSetter::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -172,7 +200,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSetter::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CSetter::GetValueInternal(
+    __in CProperty* pProperty, 
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -191,29 +223,34 @@ HRESULT CSetter::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     }
     else
     {
-        IFC(CPropertyObject::GetValue(pProperty, ppValue));
+        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:
     return hr;
 }
 
-
-
-
-CResolvedSetter::CResolvedSetter() : m_Property(NULL),
-                                     m_Value(NULL),
-                                     m_Callback(NULL)
+CResolvedSetter::CResolvedSetter(
+    ) 
+    : m_Property(NULL)
+    , m_Value(NULL)
+    , m_Callback(NULL)
 {
 }
 
-CResolvedSetter::~CResolvedSetter()
+CResolvedSetter::~CResolvedSetter(
+    )
 {
     ReleaseObject(m_Property);
     ReleaseObject(m_Value);
 }
 
-HRESULT CResolvedSetter::Initialize(CProperty* pProperty, CObjectWithType* pValue, IStyleCallback* pCallback)
+__checkReturn HRESULT 
+CResolvedSetter::Initialize(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue,
+    __in IStyleCallback* pCallback
+    )
 {
     HRESULT hr = S_OK;
 
@@ -233,7 +270,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CResolvedSetter::Apply()
+__checkReturn HRESULT
+CResolvedSetter::Apply(
+    )
 {
     HRESULT hr = S_OK;
 

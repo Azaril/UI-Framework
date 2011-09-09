@@ -39,7 +39,7 @@ HRESULT CRootUIElement::SetContext(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     IFCEXPECT(!IsAttached());
 
     {
-        CVisualAttachContext VisualContext(NULL, pGraphicsDevice);
+        CVisualAttachContext VisualContext(NULL, NULL, pGraphicsDevice);
 
         IFC(OnVisualAttach(VisualContext));
     }
@@ -65,7 +65,7 @@ HRESULT CRootUIElement::Finalize()
     }
 
     {
-        CVisualDetachContext VisualContext(this, m_VisualContext.GetGraphicsDevice());
+        CVisualDetachContext VisualContext(this, NULL, m_VisualContext.GetGraphicsDevice());
 
         IFC(OnVisualDetach(VisualContext));
     }

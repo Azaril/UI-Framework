@@ -19,7 +19,7 @@ class CTypeMarkupExtension : public CMarkupExtension
 
         __override virtual __checkReturn HRESULT GetValue( 
 			__in CProperty* pProperty, 
-			__deref_out CObjectWithType** ppValue 
+			__deref_out_opt CObjectWithType** ppValue 
 			);
 
         __override virtual __checkReturn HRESULT ExecuteMarkup(

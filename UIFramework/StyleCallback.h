@@ -4,5 +4,8 @@
 
 struct IStyleCallback
 {
-    virtual HRESULT SetStyleValue( CProperty* pProperty, CObjectWithType* pValue ) = 0;
+    virtual __checkReturn HRESULT SetStyleValue( 
+        __in CProperty* pProperty, 
+        __in CObjectWithType* pValue
+        ) = 0;
 };

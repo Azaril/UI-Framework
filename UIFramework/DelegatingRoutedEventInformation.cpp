@@ -1,17 +1,24 @@
 #include "DelegatingRoutedEventInformation.h"
 
-CDelegatingRoutedEventInformation::CDelegatingRoutedEventInformation() : m_Root(NULL),
-                                                                         m_Base(NULL)
+CDelegatingRoutedEventInformation::CDelegatingRoutedEventInformation(
+    ) 
+    : m_Root(NULL)
+    , m_Base(NULL)
 {
 }
 
-CDelegatingRoutedEventInformation::~CDelegatingRoutedEventInformation()
+CDelegatingRoutedEventInformation::~CDelegatingRoutedEventInformation(
+    )
 {
     ReleaseObject(m_Root);
     ReleaseObject(m_Base);
 }
 
-HRESULT CDelegatingRoutedEventInformation::Initialize(CEventInformation* pRoot, CEventInformation* pBase)
+__checkReturn HRESULT 
+CDelegatingRoutedEventInformation::Initialize(
+    __in CEventInformation* pRoot,
+    __in CEventInformation* pBase
+    )
 {
     HRESULT hr = S_OK;
 
@@ -28,7 +35,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDelegatingRoutedEventInformation::GetEvent(const WCHAR* pEventName, CRoutedEvent** ppEvent)
+__override __checkReturn HRESULT 
+CDelegatingRoutedEventInformation::GetEvent(
+    __in_z const WCHAR* pEventName,
+    __deref_out_opt CRoutedEvent** ppEvent
+    )
 {
     HRESULT hr = S_OK;
 

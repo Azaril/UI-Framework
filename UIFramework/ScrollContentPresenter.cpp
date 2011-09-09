@@ -155,7 +155,8 @@ HRESULT CScrollContentPresenter::PreRenderInternal(CPreRenderContext& Context)
 
     if(m_ChildTransformDirty)
     {
-        //TODO: This should track dirtiness and only be changed in the render walk.
+        m_ChildTransformDirty = FALSE;
+
         m_ChildrenTransform = Matrix3X2F::Translation(-m_HorizontalOffset, -m_VerticalOffset);
     }
 

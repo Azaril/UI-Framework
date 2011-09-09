@@ -1,17 +1,24 @@
 #include "DelegatingCommandInformation.h"
 
-CDelegatingCommandInformation::CDelegatingCommandInformation() : m_Root(NULL),
-                                                                 m_Base(NULL)
+CDelegatingCommandInformation::CDelegatingCommandInformation(
+    ) 
+    : m_Root(NULL)
+    , m_Base(NULL)
 {
 }
 
-CDelegatingCommandInformation::~CDelegatingCommandInformation()
+CDelegatingCommandInformation::~CDelegatingCommandInformation(
+    )
 {
     ReleaseObject(m_Root);
     ReleaseObject(m_Base);
 }
 
-HRESULT CDelegatingCommandInformation::Initialize(CCommandInformation* pRoot, CCommandInformation* pBase)
+__checkReturn HRESULT 
+CDelegatingCommandInformation::Initialize(
+    __in CCommandInformation* pRoot,
+    __in CCommandInformation* pBase
+    )
 {
     HRESULT hr = S_OK;
 
@@ -28,7 +35,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDelegatingCommandInformation::GetCommand(const WCHAR* pCommandName, CCommand** ppCommand)
+__override __checkReturn HRESULT 
+CDelegatingCommandInformation::GetCommand(
+    __in_z const WCHAR* pCommandName, 
+    __deref_out_opt CCommand** ppCommand
+    )
 {
     HRESULT hr = S_OK;
 

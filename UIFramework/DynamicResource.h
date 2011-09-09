@@ -51,7 +51,7 @@ class CDynamicResource : public CBindingBase
 
         __override virtual __checkReturn HRESULT GetValueInternal( 
             __in CProperty* pProperty,
-            __deref_out CObjectWithType** ppValue 
+            __deref_out_opt CObjectWithType** ppValue 
             );
 
         void OnTargetAttached( 

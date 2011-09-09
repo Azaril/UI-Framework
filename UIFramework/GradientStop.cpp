@@ -12,8 +12,8 @@ DEFINE_GET_DEFAULT( Offset, CFloatValue, 0 );
 //
 // Properties
 //
-CStaticProperty CGradientStop::ColorProperty( L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnColorChanged ) );
-CStaticProperty CGradientStop::OffsetProperty( L"Offset", TypeIndex::Float, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnOffsetChanged ) );
+CStaticProperty CGradientStop::ColorProperty(L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnColorChanged ));
+CStaticProperty CGradientStop::OffsetProperty(L"Offset", TypeIndex::Float, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnOffsetChanged ));
 
 //
 // Property Change Handlers
@@ -21,33 +21,47 @@ CStaticProperty CGradientStop::OffsetProperty( L"Offset", TypeIndex::Float, Stat
 DEFINE_INSTANCE_CHANGE_CALLBACK( CGradientStop, OnColorChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CGradientStop, OnOffsetChanged );
 
-CGradientStop::CGradientStop() : m_Color(DefaultColor),
-                                 m_Offset(0)
+CGradientStop::CGradientStop(
+    ) 
+    : m_Color(DefaultColor)
+    , m_Offset(0)
 {
 }
 
-CGradientStop::~CGradientStop()
+CGradientStop::~CGradientStop(
+    )
 {
 }
 
-HRESULT CGradientStop::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CGradientStop::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-ColorF CGradientStop::GetColor()
+ColorF 
+CGradientStop::GetColor(
+    )
 {
     return m_Color;
 }
 
-FLOAT CGradientStop::GetOffset()
+FLOAT 
+CGradientStop::GetOffset(
+    )
 {
     return m_Offset;
 }
 
-HRESULT CGradientStop::OnColorChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+__checkReturn HRESULT 
+CGradientStop::OnColorChanged(
+    __in_opt CObjectWithType* pOldValue,
+    __in_opt CObjectWithType* pNewValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -56,7 +70,11 @@ HRESULT CGradientStop::OnColorChanged(CObjectWithType* pOldValue, CObjectWithTyp
     return hr;
 }
 
-HRESULT CGradientStop::OnOffsetChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+__checkReturn HRESULT 
+CGradientStop::OnOffsetChanged(
+    __in_opt CObjectWithType* pOldValue, 
+    __in_opt CObjectWithType* pNewValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -65,7 +83,10 @@ HRESULT CGradientStop::OnOffsetChanged(CObjectWithType* pOldValue, CObjectWithTy
     return hr;
 }
 
-HRESULT CGradientStop::CreatePropertyInformation(CPropertyInformation** ppInformation)
+__checkReturn HRESULT 
+CGradientStop::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -89,7 +110,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGradientStop::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CGradientStop::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -121,7 +146,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGradientStop::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT 
+CGradientStop::GetValueInternal(
+    __in CProperty* pProperty, 
+    __deref_out_opt CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     CColorFValue* pColorValue = NULL;
@@ -146,7 +175,7 @@ HRESULT CGradientStop::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
     }
     else
     {
-        IFC(CPropertyObject::GetValue(pProperty, ppValue));
+        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:

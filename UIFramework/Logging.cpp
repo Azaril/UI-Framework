@@ -7,14 +7,19 @@
 namespace logging
 {
 
-void InternalDebugOutCallbackA(const CHAR* strText)
+void InternalDebugOutCallbackA(
+    __in_z const CHAR* strText
+    )
 {
 #ifdef _WINDOWS    
     OutputDebugStringA(strText);
 #endif
 }
 
-void InternalDebugOutCallbackW(const WCHAR* strText)
+void 
+InternalDebugOutCallbackW(
+    __in_z const WCHAR* strText
+    )
 {
 #ifdef _WINDOWS
     OutputDebugStringW(strText);
@@ -24,27 +29,40 @@ void InternalDebugOutCallbackW(const WCHAR* strText)
 DebugOutCallbackFuncA g_DebugOutCallbackA = InternalDebugOutCallbackA;
 DebugOutCallbackFuncW g_DebugOutCallbackW = InternalDebugOutCallbackW;
 
-void SetDebugOutCallback(DebugOutCallbackFuncA Func)
+void 
+SetDebugOutCallback(
+    __in_opt DebugOutCallbackFuncA Func
+    )
 {
     g_DebugOutCallbackA = Func;
 }
 
-void SetDebugOutCallback(DebugOutCallbackFuncW Func)
+void 
+SetDebugOutCallback(
+    __in_opt DebugOutCallbackFuncW Func
+    )
 {
     g_DebugOutCallbackW = Func;
 }
 
-DebugOutCallbackFuncA GetDebugOutCallbackA()
+__out_opt DebugOutCallbackFuncA 
+GetDebugOutCallbackA(
+    )
 {
     return g_DebugOutCallbackA;
 }
 
-DebugOutCallbackFuncW GetDebugOutCallbackW()
+__out_opt DebugOutCallbackFuncW 
+GetDebugOutCallbackW(
+    )
 {
     return g_DebugOutCallbackW;
 }
 
-void InternalDebugOut(const CHAR* strText)
+void 
+InternalDebugOut(
+    __in_z const CHAR* strText
+    )
 {
     if(g_DebugOutCallbackA != NULL)
     {
@@ -52,7 +70,10 @@ void InternalDebugOut(const CHAR* strText)
     }
 }
 
-void InternalDebugOut(const WCHAR* strText)
+void 
+InternalDebugOut(
+    __in_z const WCHAR* strText
+    )
 {
     if(g_DebugOutCallbackW != NULL)
     {
@@ -60,7 +81,11 @@ void InternalDebugOut(const WCHAR* strText)
     }
 }
 
-void DebugOut(const CHAR* pFormat, ...)
+void 
+DebugOut(
+    __in_z __format_string const CHAR* pFormat, 
+    ...
+    )
 {
 #ifdef _WINDOWS    
     CStringA FormattedString;
@@ -75,7 +100,12 @@ void DebugOut(const CHAR* pFormat, ...)
     InternalDebugOut(FormattedString);
 #endif
 }
-void DebugOut(const WCHAR* pFormat, ...)
+
+void 
+DebugOut(
+    __in_z __format_string const WCHAR* pFormat, 
+    ...
+    )
 {
 #ifdef _WINDOWS    
     CStringW FormattedString;
@@ -91,7 +121,10 @@ void DebugOut(const WCHAR* pFormat, ...)
 #endif
 }
 
-void ZoneOut(const CHAR* pZone, const CHAR* pFormat, ...)
+void ZoneOut(
+    __in_z const CHAR* pZone, 
+    __in_z __format_string const CHAR* pFormat, 
+    ...)
 {
 #ifdef _WINDOWS    
     CStringA FormattedString;
@@ -111,7 +144,12 @@ void ZoneOut(const CHAR* pZone, const CHAR* pFormat, ...)
 #endif
 }
 
-void ZoneOut(const WCHAR* pZone, const WCHAR* pFormat, ...)
+void
+ZoneOut(
+    __in_z const WCHAR* pZone, 
+    __in_z __format_string const WCHAR* pFormat, 
+    ...
+    )
 {
 #ifdef _WINDOWS
     CStringW FormattedString;
@@ -131,7 +169,13 @@ void ZoneOut(const WCHAR* pZone, const WCHAR* pFormat, ...)
 #endif
 }
 
-void ZoneLevelOut(UINT32 Level, const CHAR* pZone, const CHAR* pFormat, ...)
+void 
+ZoneLevelOut(
+    UINT32 Level, 
+    __in_z const CHAR* pZone, 
+    __in_z __format_string const CHAR* pFormat, 
+    ...
+    )
 {
 #ifdef _WINDOWS
     CStringA FormattedString;
@@ -156,7 +200,13 @@ void ZoneLevelOut(UINT32 Level, const CHAR* pZone, const CHAR* pFormat, ...)
 #endif
 }
 
-void ZoneLevelOut(UINT32 Level, const WCHAR* pZone, const WCHAR* pFormat, ...)
+void 
+ZoneLevelOut(
+    UINT32 Level, 
+    __in_z const WCHAR* pZone, 
+    __in_z __format_string const WCHAR* pFormat, 
+    ...
+    )
 {
 #ifdef _WINDOWS
     CStringW FormattedString;

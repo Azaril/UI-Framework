@@ -1,12 +1,15 @@
 #include "ResolvedSetters.h"
 
-CResolvedSetters::CResolvedSetters() : m_Owner(NULL),
-                                       m_Providers(NULL),
-                                       m_Callback(NULL)
+CResolvedSetters::CResolvedSetters(
+    ) 
+    : m_Owner(NULL)
+    , m_Providers(NULL)
+    , m_Callback(NULL)
 {
 }
 
-CResolvedSetters::~CResolvedSetters()
+CResolvedSetters::~CResolvedSetters(
+    )
 {
     for(std::vector< CResolvedSetter* >::iterator It = m_Setters.begin(); It != m_Setters.end(); ++It)
     {
@@ -18,7 +21,12 @@ CResolvedSetters::~CResolvedSetters()
     ReleaseObject(m_Providers);
 }
 
-HRESULT CResolvedSetters::Initialize(CUIElement* pObject, CProviders* pProviders, IStyleCallback* pCallback)
+__checkReturn HRESULT 
+CResolvedSetters::Initialize(
+    __in CUIElement* pObject,
+    __in CProviders* pProviders, 
+    __in IStyleCallback* pCallback
+    )
 {
     HRESULT hr = S_OK;
 
@@ -37,7 +45,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CResolvedSetters::AddSetter(CSetter* pSetter)
+__checkReturn HRESULT 
+CResolvedSetters::AddSetter(
+    __in CSetter* pSetter
+    )
 {
     HRESULT hr = S_OK;
     CResolvedSetter* pResolvedSetter = NULL;
@@ -57,7 +68,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CResolvedSetters::Apply()
+__checkReturn HRESULT
+CResolvedSetters::Apply(
+    )
 {
     HRESULT hr = S_OK;
 

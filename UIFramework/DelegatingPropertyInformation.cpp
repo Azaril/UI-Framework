@@ -1,17 +1,24 @@
 #include "DelegatingPropertyInformation.h"
 
-CDelegatingPropertyInformation::CDelegatingPropertyInformation() : m_Root(NULL),
-                                                                   m_Base(NULL)
+CDelegatingPropertyInformation::CDelegatingPropertyInformation(
+    ) 
+    : m_Root(NULL)
+    , m_Base(NULL)
 {
 }
 
-CDelegatingPropertyInformation::~CDelegatingPropertyInformation()
+CDelegatingPropertyInformation::~CDelegatingPropertyInformation(
+    )
 {
     ReleaseObject(m_Root);
     ReleaseObject(m_Base);
 }
 
-HRESULT CDelegatingPropertyInformation::Initialize(CPropertyInformation* pRoot, CPropertyInformation* pBase)
+__checkReturn HRESULT 
+CDelegatingPropertyInformation::Initialize(
+    __in CPropertyInformation* pRoot,
+    __in CPropertyInformation* pBase
+    )
 {
     HRESULT hr = S_OK;
 
@@ -28,7 +35,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDelegatingPropertyInformation::GetProperty(const WCHAR* pPropertyName, CProperty** ppProperty)
+__override __checkReturn HRESULT 
+CDelegatingPropertyInformation::GetProperty(
+    __in_z const WCHAR* pPropertyName,
+    __in CProperty** ppProperty
+    )
 {
     HRESULT hr = S_OK;
 
@@ -44,7 +55,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDelegatingPropertyInformation::GetContentProperty(CProperty** ppProperty)
+__override __checkReturn HRESULT 
+CDelegatingPropertyInformation::GetContentProperty(
+    __deref_out_opt CProperty** ppProperty
+    )
 {
     HRESULT hr = S_OK;
 

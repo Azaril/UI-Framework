@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Visual.h"
-#include "RectangleVisual.h"
 #include "RenderTarget.h"
 #include "PropertyObject.h"
 #include "TypeIndex.h"
@@ -279,6 +278,10 @@ class UIFRAMEWORK_API CUIElement : public CVisual,
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
+        __override virtual __checkReturn HRESULT GetLocalTransform(
+            __out Matrix3X2F* pTransform
+            );
+
         BOOL IsAttached();
 
         HRESULT SetSize( SizeF Size );
@@ -512,6 +515,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual,
         SizeF m_DesiredSize;
         SizeF m_UnclippedDesiredSize;
         SizeF m_FinalSize;
+        SizeF m_LayoutTransformOffset;
 
         BOOL m_ClipToLayoutBounds;
 

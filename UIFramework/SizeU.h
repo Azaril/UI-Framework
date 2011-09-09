@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Defines.h"
 #include "DataTypes.h"
 
 #ifdef _WINDOWS
@@ -7,7 +8,7 @@
 #include <D2D1helper.h>
 #endif
 
-struct SizeU
+struct UIFRAMEWORK_API SizeU
 #ifdef _WINDOWS
     : D2D1_SIZE_U
 #endif

@@ -13,14 +13,15 @@ DEFINE_GET_DEFAULT( Color, CColorFValue, DefaultColor );
 //
 // Properties
 //
-CStaticProperty CSolidColorBrush::ColorProperty( L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged ) );
+CStaticProperty CSolidColorBrush::ColorProperty(L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged ));
 
 //
 // Property Change Handlers
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged );
 
-CSolidColorBrush::CSolidColorBrush()
+CSolidColorBrush::CSolidColorBrush(
+    )
 {
     m_Color.a = 0;
     m_Color.r = 0;
@@ -28,30 +29,42 @@ CSolidColorBrush::CSolidColorBrush()
     m_Color.b = 0;
 }
 
-CSolidColorBrush::~CSolidColorBrush()
+CSolidColorBrush::~CSolidColorBrush(
+    )
 {
 }
 
-HRESULT CSolidColorBrush::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CSolidColorBrush::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
     return hr;
 }
 
-HRESULT CSolidColorBrush::InternalSetColor(ColorF Color)
+__checkReturn HRESULT
+CSolidColorBrush::InternalSetColor(
+    ColorF Color
+    )
 {
     HRESULT hr = S_OK;
 
     m_Color = Color;
 
-    IFC(InvalidateBrush());
+    IFC(InvalidateVisualResource());
 
 Cleanup:
     return hr;
 }
 
-HRESULT CSolidColorBrush::GetGraphicsBrush(CGraphicsDevice* pDevice, CRenderTarget* pRenderTarget, CGraphicsBrush** ppGraphicsBrush)
+__override __checkReturn HRESULT
+CSolidColorBrush::GetGraphicsBrush(
+    __in CGraphicsDevice* pDevice,
+    __in CRenderTarget* pRenderTarget,
+    __deref_out CGraphicsBrush** ppGraphicsBrush
+    )
 {
     HRESULT hr = S_OK;
 
@@ -66,7 +79,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSolidColorBrush::CreatePropertyInformation(CPropertyInformation **ppInformation)
+__checkReturn HRESULT 
+CSolidColorBrush::CreatePropertyInformation(
+    __deref_out CPropertyInformation** ppInformation
+    )
 {
     HRESULT hr = S_OK;
     CStaticPropertyInformation* pStaticInformation = NULL;
@@ -95,7 +111,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSolidColorBrush::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__override __checkReturn HRESULT 
+CSolidColorBrush::SetValueInternal(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
 
@@ -117,7 +137,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSolidColorBrush::GetValue(CProperty* pProperty, CObjectWithType** ppValue)
+__override __checkReturn HRESULT
+CSolidColorBrush::GetValueInternal(
+    __in CProperty* pProperty,
+    __deref_out CObjectWithType** ppValue
+    )
 {
     HRESULT hr = S_OK;
     CColorFValue* pColorValue = NULL;
@@ -134,7 +158,7 @@ HRESULT CSolidColorBrush::GetValue(CProperty* pProperty, CObjectWithType** ppVal
     }
     else
     {
-        IFC(CBrush::GetValue(pProperty, ppValue));
+        IFC(CBrush::GetValueInternal(pProperty, ppValue));
     }
 
 Cleanup:
@@ -143,11 +167,15 @@ Cleanup:
     return hr;
 }
 
-HRESULT CSolidColorBrush::OnColorChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
+__checkReturn HRESULT
+CSolidColorBrush::OnColorChanged(
+    __in_opt CObjectWithType* pOldValue, 
+    __in_opt CObjectWithType* pNewValue
+    )
 {
     HRESULT hr = S_OK;
 
-    IFC(InvalidateBrush());
+    IFC(InvalidateVisualResource());
 
 Cleanup:
     return hr;

@@ -1,11 +1,13 @@
 #include "RoutedEventInformation.h"
 #include "RoutedEvent.h"
 
-CRoutedEventInformation::CRoutedEventInformation()
+CRoutedEventInformation::CRoutedEventInformation(
+    )
 {
 }
 
-CRoutedEventInformation::~CRoutedEventInformation()
+CRoutedEventInformation::~CRoutedEventInformation(
+    )
 {
     for(std::vector< CRoutedEvent* >::iterator It = m_Events.begin(); It != m_Events.end(); ++It)
     {
@@ -15,7 +17,11 @@ CRoutedEventInformation::~CRoutedEventInformation()
     m_Events.clear();
 }
 
-HRESULT CRoutedEventInformation::Initialize(CRoutedEvent** ppEvents, UINT32 EventCount)
+__checkReturn HRESULT 
+CRoutedEventInformation::Initialize(
+    __in_ecount(EventCount) CRoutedEvent** ppEvents, 
+    UINT32 EventCount
+    )
 {
     HRESULT hr = S_OK;
 
@@ -39,7 +45,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRoutedEventInformation::GetEvent(const WCHAR* pEventName, CRoutedEvent** ppEvent)
+__override __checkReturn HRESULT
+CRoutedEventInformation::GetEvent(
+    __in_z const WCHAR* pEventName,
+    __deref_out_opt CRoutedEvent** ppEvent
+    )
 {
     HRESULT hr = S_OK;
 

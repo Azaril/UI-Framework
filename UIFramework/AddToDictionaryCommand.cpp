@@ -52,6 +52,8 @@ CAddToDictionaryCommand::Execute(
 
     IFC(pDictionaryParent->GetValue(m_Property, &pDictionaryObject));
 
+    IFCPTR(pDictionaryObject);
+
     IFC(CastType(pDictionaryObject, &pDictionary));
 
     IFC(pDictionary->AddObject(pKey, pValue));

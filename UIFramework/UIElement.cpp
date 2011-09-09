@@ -132,6 +132,9 @@ CUIElement::CUIElement() : m_Attached(FALSE),
 
     m_FinalSize.width = 0;
     m_FinalSize.height = 0;
+
+    m_LayoutTransformOffset.width = 0;
+    m_LayoutTransformOffset.height = 0;
 }
 
 CUIElement::~CUIElement()
@@ -322,6 +325,18 @@ HRESULT CUIElement::GetClippingRectangle(RectF* pClippingRect)
     }    
 
 Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT
+CUIElement::GetLocalTransform(
+    __out Matrix3X2F* pTransform
+    )
+{
+    HRESULT hr = S_OK;
+
+    *pTransform = Matrix3X2F::Translation(m_LayoutTransformOffset);
+
     return hr;
 }
 
@@ -917,9 +932,8 @@ HRESULT CUIElement::Arrange(RectF Bounds)
             Offset.height += Bounds.top + Margin.top;
 
             Matrix3X2F VisualTransform = Matrix3X2F::Translation(Offset);
-            
-            //TODO: Use something other than visual transform?
-            IFC(SetVisualTransform(VisualTransform));
+
+            m_LayoutTransformOffset = Offset;
 
             m_ClipToLayoutBounds = NeedsClipBounds;
         }

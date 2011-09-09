@@ -9,12 +9,23 @@ class CProviders;
 class CConversionContext
 {
     public:
-        CConversionContext( CPropertyObject* pTargetObject, CProperty* pTargetProperty, CProviders* pProviders );
+        CConversionContext(
+            __in CPropertyObject* pTargetObject, 
+            __in CProperty* pTargetProperty, 
+            __in CProviders* pProviders 
+            );
 
-        CPropertyObject* GetTargetObject();
-        CProperty* GetTargetProperty();
-        CProviders* GetProviders();
-        TypeIndex::Value GetTargetType();
+        __out CPropertyObject* GetTargetObject(
+            );
+
+        __out CProperty* GetTargetProperty(
+            );
+
+        __out CProviders* GetProviders(
+            );
+
+        TypeIndex::Value GetTargetType(
+            );
 
     protected:
         CPropertyObject* m_TargetObject;
@@ -25,5 +36,9 @@ class CConversionContext
 class CTypeConverter : public CRefCountedObject
 {
     public:
-        virtual HRESULT Convert( CConversionContext* pContext, CObjectWithType* pValue, CObjectWithType** ppConvertedValue ) = 0;
+        virtual __checkReturn HRESULT Convert( 
+            __in CConversionContext* pContext, 
+            __in CObjectWithType* pValue,
+            __deref_out CObjectWithType** ppConvertedValue
+            ) = 0;
 };

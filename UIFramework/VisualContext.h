@@ -1,84 +1,78 @@
 #pragma once
 
 #include "Types.h"
+#include "PropertyObject.h"
 
 class CGraphicsDevice;
 class CVisual;
+class CProperty;
 
-class CVisualAttachContext 
+class UIFRAMEWORK_API CVisualAttachContext 
 {
     public:
-        CVisualAttachContext() : m_Parent(NULL),
-                                 m_GraphicsDevice(NULL)
-        {
-        }
+        CVisualAttachContext(
+            );
 
-        CVisualAttachContext( CVisual* pParent ) : m_Parent(pParent),
-                                                   m_GraphicsDevice(NULL)
-        {
-        }
+        CVisualAttachContext(
+            __in CVisual* pParent,
+            __in_opt OnValueChangeFunc ChangeFunc
+            );
 
-        CVisualAttachContext( CVisual* pParent, CGraphicsDevice* pGraphicsDevice ) : m_Parent(pParent),
-                                                                                     m_GraphicsDevice(pGraphicsDevice)
-        {
-        }
+        CVisualAttachContext( 
+            __in CVisual* pParent,
+            __in_opt OnValueChangeFunc ChangeFunc,
+            __in CGraphicsDevice* pGraphicsDevice
+            );
 
-        CVisual* GetParent()
-        {
-            return m_Parent;
-        }
+        __out_opt CVisual* GetParent(
+            );
 
-        CGraphicsDevice* GetGraphicsDevice()
-        {
-            return m_GraphicsDevice;
-        }
+        __out_opt OnValueChangeFunc GetChangeCallback(
+            );
 
-        void Reset()
-        {
-            m_GraphicsDevice = NULL;
-            m_Parent = NULL;
-        }
+        __out_opt CGraphicsDevice* GetGraphicsDevice(
+            );
+
+        void Reset(
+            );
 
     protected:
         CVisual* m_Parent;
+        OnValueChangeFunc m_ChangeCallback;
         CGraphicsDevice* m_GraphicsDevice;
 };
 
-class CVisualDetachContext 
+class UIFRAMEWORK_API CVisualDetachContext 
 {
     public:
-        CVisualDetachContext() : m_Parent(NULL),
-                                 m_GraphicsDevice(NULL)
-        {
-        }
+        CVisualDetachContext(
+            );
 
-        CVisualDetachContext( CVisual* pParent ) : m_Parent(pParent),
-                                                   m_GraphicsDevice(NULL)
-        {
-        }
+        CVisualDetachContext(
+            __in CVisual* pParent,
+            __in_opt OnValueChangeFunc ChangeFunc
+            );
 
-        CVisualDetachContext( CVisual* pParent, CGraphicsDevice* pGraphicsDevice ) : m_Parent(pParent),
-                                                                                     m_GraphicsDevice(pGraphicsDevice)
-        {
-        }
+        CVisualDetachContext( 
+            __in CVisual* pParent,
+            __in_opt OnValueChangeFunc ChangeFunc,
+            __in CGraphicsDevice* pGraphicsDevice
+            );
 
-        CVisual* GetParent()
-        {
-            return m_Parent;
-        }
+        __out_opt CVisual* GetParent(
+            );
 
-        CGraphicsDevice* GetGraphicsDevice()
-        {
-            return m_GraphicsDevice;
-        }
+        __out_opt OnValueChangeFunc GetChangeCallback(
+            );
 
-        void Reset()
-        {
-            m_GraphicsDevice = NULL;
-            m_Parent = NULL;
-        }
+        __out_opt CGraphicsDevice* GetGraphicsDevice(
+            );
+
+        void Reset(
+            );
 
     protected:
         CVisual* m_Parent;
+        OnValueChangeFunc m_ChangeCallback;
         CGraphicsDevice* m_GraphicsDevice;
 };
