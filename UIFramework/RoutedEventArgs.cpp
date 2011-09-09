@@ -54,7 +54,7 @@ CRoutedEventArgs::SetHandled(
 //
 // CRoutedEventArgs
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value
 CRoutedEventArgs_TypeIndex(
     )
@@ -62,7 +62,7 @@ CRoutedEventArgs_TypeIndex(
     return TypeIndex::RoutedEventArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CObjectWithType* 
 CRoutedEventArgs_CastTo_CObjectWithType(
     __in CRoutedEventArgs* pArgs
@@ -71,7 +71,7 @@ CRoutedEventArgs_CastTo_CObjectWithType(
     return pArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CRoutedEventArgs*
 CObjectWithType_CastTo_CRoutedEventArgs(
     __in CObjectWithType* pObject
@@ -80,7 +80,7 @@ CObjectWithType_CastTo_CRoutedEventArgs(
     return (pObject->IsTypeOf(TypeIndex::RoutedEventArgs)) ? (CRoutedEventArgs*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 BOOL 
 CRoutedEventArgs_IsHandled(
     __in CRoutedEventArgs* pArgs
@@ -89,7 +89,7 @@ CRoutedEventArgs_IsHandled(
     return pArgs->IsHandled();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void 
 CRoutedEventArgs_SetHandled(
     __in CRoutedEventArgs* pArgs, 

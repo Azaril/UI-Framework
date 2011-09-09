@@ -1,0 +1,13 @@
+#pragma once
+
+#ifdef _WINDOWS
+
+#define VERTICAL_SCROLL_BUTTON_HEIGHT ((FLOAT)GetSystemMetrics(SM_CYVSCROLL))
+#define HORIZONTAL_SCROLL_BUTTON_WIDTH ((FLOAT)GetSystemMetrics(SM_CXHSCROLL))
+
+#else
+
+#define VERTICAL_SCROLL_BUTTON_HEIGHT (17.0f)
+#define HORIZONTAL_SCROLL_BUTTON_WIDTH (17.0f)
+
+#endif

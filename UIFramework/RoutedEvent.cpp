@@ -3,7 +3,7 @@
 //
 // CRoutedEvent
 //
-extern "C" __declspec(dllexport) 
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 RoutedEvent_TypeIndex(
     )
@@ -11,7 +11,7 @@ RoutedEvent_TypeIndex(
     return TypeIndex::RoutedEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CObjectWithType* 
 CRoutedEvent_CastTo_CObjectWithType(
     __in CRoutedEvent* pEvent
@@ -20,7 +20,7 @@ CRoutedEvent_CastTo_CObjectWithType(
     return pEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CRoutedEvent* 
 CObjectWithType_CastTo_CRoutedEvent(
     __in CObjectWithType* pObject

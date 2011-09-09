@@ -172,7 +172,7 @@ CDurationValue::GetTimeSpan(
 //
 // CStringValue
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 CStringValue_TypeIndex(
     )
@@ -180,7 +180,7 @@ CStringValue_TypeIndex(
     return TypeIndex::String;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CObjectWithType* 
 CStringValue_CastTo_CObjectWithType(
     __in CStringValue* pValue
@@ -189,7 +189,7 @@ CStringValue_CastTo_CObjectWithType(
     return pValue;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CStringValue* 
 CObjectWithType_CastTo_CStringValue(
     __in CObjectWithType* pObject
@@ -198,7 +198,7 @@ CObjectWithType_CastTo_CStringValue(
     return (pObject->IsTypeOf(TypeIndex::String)) ? (CStringValue*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out const WCHAR*
 CStringValue_GetValue(
     __in CStringValue* pValue
@@ -210,7 +210,7 @@ CStringValue_GetValue(
 //
 // CVisibilityValue
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value
 CVisibilityValue_TypeIndex(
     )
@@ -218,7 +218,7 @@ CVisibilityValue_TypeIndex(
     return TypeIndex::Visibility;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CObjectWithType*
 CVisibilityValue_CastTo_CObjectWithType(
     __in CVisibilityValue* pValue
@@ -227,7 +227,7 @@ CVisibilityValue_CastTo_CObjectWithType(
     return pValue;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CVisibilityValue* 
 CObjectWithType_CastTo_CVisibilityValue(
     __in CObjectWithType* pObject
@@ -236,7 +236,7 @@ CObjectWithType_CastTo_CVisibilityValue(
     return (pObject->IsTypeOf(TypeIndex::Visibility)) ? (CVisibilityValue*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 Visibility::Value 
 CVisibilityValue_GetValue(
     __in CVisibilityValue* pValue
@@ -248,7 +248,7 @@ CVisibilityValue_GetValue(
 //
 // CFloatValue
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 CFloatValue_TypeIndex(
     )
@@ -256,7 +256,7 @@ CFloatValue_TypeIndex(
     return TypeIndex::Float;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CObjectWithType* 
 CFloatValue_CastTo_CObjectWithType(
     __in CFloatValue* pValue
@@ -265,7 +265,7 @@ CFloatValue_CastTo_CObjectWithType(
     return pValue;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CFloatValue* 
 CObjectWithType_CastTo_CFloatValue(
     __in CObjectWithType* pObject
@@ -274,7 +274,7 @@ CObjectWithType_CastTo_CFloatValue(
     return (pObject->IsTypeOf(TypeIndex::Float)) ? (CFloatValue*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 float 
 CFloatValue_GetValue(
     __in CFloatValue* pValue

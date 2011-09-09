@@ -3,6 +3,7 @@
 #include "DelegatingPropertyInformation.h"
 #include "BasicTypes.h"
 #include "DragDeltaEventArgs.h"
+#include "SystemValues.h"
 #include <math.h>
 
 //
@@ -410,7 +411,7 @@ HRESULT CTrack::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
         NeededSize = pThumb->GetDesiredSize();
     }
 
-    if(!_isnan(ViewportSize))
+    if(!std::isnan(ViewportSize))
     {
         if (TrackOrientation == Orientation::Vertical)
         {
@@ -438,7 +439,7 @@ inline void CoerceLength(FLOAT& componentLength, FLOAT trackLength)
     {
         componentLength = 0.0;
     }
-    else if (componentLength > trackLength || _isnan(componentLength))
+    else if (componentLength > trackLength || std::isnan(componentLength))
     {
         componentLength = trackLength;
     }
@@ -458,41 +459,43 @@ HRESULT CTrack::ComputeSliderLengths(SizeF AvailableSize, Orientation::Value Ori
 
     IFC(GetEffectiveThumb(&pThumb));
 
-    FLOAT Range = std::max(0.0f, Maximum - Minimum);
-    FLOAT Offset = std::min(Range, Value - Minimum);
-
-    FLOAT TrackLength = 0;
-    FLOAT ThumbLength = 0;
-
-    if (Orient == Orientation::Vertical)
     {
-        TrackLength = AvailableSize.height;
-        ThumbLength = (pThumb == NULL) ? 0.0f : pThumb->GetDesiredSize().height;
+        FLOAT Range = std::max(0.0f, Maximum - Minimum);
+        FLOAT Offset = std::min(Range, Value - Minimum);
+
+        FLOAT TrackLength = 0;
+        FLOAT ThumbLength = 0;
+
+        if (Orient == Orientation::Vertical)
+        {
+            TrackLength = AvailableSize.height;
+            ThumbLength = (pThumb == NULL) ? 0.0f : pThumb->GetDesiredSize().height;
+        }
+        else
+        {
+            TrackLength = AvailableSize.width;
+            ThumbLength = (pThumb == NULL) ? 0.0f : pThumb->GetDesiredSize().width;
+        }
+
+        CoerceLength(ThumbLength, TrackLength);
+
+        FLOAT RemainingTrackLength = TrackLength - ThumbLength;
+
+        FLOAT DecreaseButtonLength = RemainingTrackLength * Offset / Range;
+        CoerceLength(DecreaseButtonLength, RemainingTrackLength);
+               
+        FLOAT IncreaseButtonLength = RemainingTrackLength - DecreaseButtonLength;
+        CoerceLength(IncreaseButtonLength, RemainingTrackLength);
+
+        IFCEXPECT(DecreaseButtonLength >= 0.0f && DecreaseButtonLength <= RemainingTrackLength);
+        IFCEXPECT(IncreaseButtonLength >= 0.0f && IncreaseButtonLength <= RemainingTrackLength);
+                
+        m_Density = Range / RemainingTrackLength;
+
+        *pDecreaseButtonLength = DecreaseButtonLength;
+        *pThumbLength = ThumbLength;
+        *pIncreaseButtonLength = IncreaseButtonLength;
     }
-    else
-    {
-        TrackLength = AvailableSize.width;
-        ThumbLength = (pThumb == NULL) ? 0.0f : pThumb->GetDesiredSize().width;
-    }
-
-    CoerceLength(ThumbLength, TrackLength);
-
-    FLOAT RemainingTrackLength = TrackLength - ThumbLength;
-
-    FLOAT DecreaseButtonLength = RemainingTrackLength * Offset / Range;
-    CoerceLength(DecreaseButtonLength, RemainingTrackLength);
-           
-    FLOAT IncreaseButtonLength = RemainingTrackLength - DecreaseButtonLength;
-    CoerceLength(IncreaseButtonLength, RemainingTrackLength);
-
-    IFCEXPECT(DecreaseButtonLength >= 0.0f && DecreaseButtonLength <= RemainingTrackLength);
-    IFCEXPECT(IncreaseButtonLength >= 0.0f && IncreaseButtonLength <= RemainingTrackLength);
-            
-    m_Density = Range / RemainingTrackLength;
-
-    *pDecreaseButtonLength = DecreaseButtonLength;
-    *pThumbLength = ThumbLength;
-    *pIncreaseButtonLength = IncreaseButtonLength;
 
 Cleanup:
     ReleaseObject(pThumb);
@@ -517,86 +520,88 @@ HRESULT CTrack::ComputeScrollBarLengths(SizeF AvailableSize, FLOAT ViewportSize,
 
     IFC(GetEffectiveThumb(&pThumb));
 
-    FLOAT Range = std::max(0.0f, Maximum - Minimum);
-    FLOAT Offset = std::min(Range, Value - Minimum);
-
-    IFCEXPECT(Offset >= 0);
-
-    FLOAT Extent = std::max(0.0f, Range) + ViewportSize;
-
-    FLOAT TrackLength = 0;
-
-    FLOAT ThumbMinimumLength = 0;
-    FLOAT DecreaseButtonLength = 0;
-    FLOAT IncreaseButtonLength = 0;
-
-    if (Orient == Orientation::Vertical)
     {
-        TrackLength = AvailableSize.height;
+        FLOAT Range = std::max(0.0f, Maximum - Minimum);
+        FLOAT Offset = std::min(Range, Value - Minimum);
 
-        //TODO: Map this to a non-specific platform value.
-        FLOAT ButtonHeight = (FLOAT)GetSystemMetrics(SM_CYVSCROLL);
+        IFCEXPECT(Offset >= 0);
 
-        ThumbMinimumLength = std::floorf(ButtonHeight * 0.5f);
-    }
-    else
-    {
-        TrackLength = AvailableSize.width;
+        FLOAT Extent = std::max(0.0f, Range) + ViewportSize;
 
-        //TODO: Map this to a non-specific platform value.
-        FLOAT ButtonWidth = (FLOAT)GetSystemMetrics(SM_CXHSCROLL);
+        FLOAT TrackLength = 0;
 
-        ThumbMinimumLength = std::floorf(ButtonWidth * 0.5f);
-    }
+        FLOAT ThumbMinimumLength = 0;
+        FLOAT DecreaseButtonLength = 0;
+        FLOAT IncreaseButtonLength = 0;
 
-    FLOAT ThumbLength =  TrackLength * ViewportSize / Extent;
-
-    CoerceLength(ThumbLength, TrackLength);
-         
-    ThumbLength = std::max(ThumbMinimumLength, ThumbLength);
-
-    BOOL NotEnoughContentToScroll = (Range < 0.0);
-    BOOL ThumbLongerThanTrack = (ThumbLength > TrackLength);
-
-    if (NotEnoughContentToScroll || ThumbLongerThanTrack)
-    {
-        if(Vis != Visibility::Hidden)
+        if (Orient == Orientation::Vertical)
         {
-            IFC(SetVisibility(Visibility::Hidden));
+            TrackLength = AvailableSize.height;
+            
+            FLOAT ButtonHeight = VERTICAL_SCROLL_BUTTON_HEIGHT;
+
+            ThumbMinimumLength = floorf(ButtonHeight * 0.5f);
+        }
+        else
+        {
+            TrackLength = AvailableSize.width;
+
+            FLOAT ButtonWidth = HORIZONTAL_SCROLL_BUTTON_WIDTH;
+
+            ThumbMinimumLength = floorf(ButtonWidth * 0.5f);
         }
 
-        m_ThumbCenterOffset = std::numeric_limits< FLOAT >::quiet_NaN();
-        m_Density = std::numeric_limits< FLOAT >::quiet_NaN();
-        
-        DecreaseButtonLength = 0.0;
-        IncreaseButtonLength = 0.0;
+        FLOAT ThumbLength =  TrackLength * ViewportSize / Extent;
 
-        *pHide = TRUE;
-    }
-    else
-    {
-        *pHide = FALSE;
+        CoerceLength(ThumbLength, TrackLength);
+             
+        ThumbLength = std::max(ThumbMinimumLength, ThumbLength);
 
-        if(Vis != Visibility::Visible)
+        BOOL NotEnoughContentToScroll = (Range < 0.0);
+        BOOL ThumbLongerThanTrack = (ThumbLength > TrackLength);
+
+        if (NotEnoughContentToScroll || ThumbLongerThanTrack)
         {
-            IFC(SetVisibility(Visibility::Visible));
+            if(Vis != Visibility::Hidden)
+            {
+                IFC(SetVisibility(Visibility::Hidden));
+            }
+
+            m_ThumbCenterOffset = std::numeric_limits< FLOAT >::quiet_NaN();
+            m_Density = std::numeric_limits< FLOAT >::quiet_NaN();
+            
+            DecreaseButtonLength = 0.0;
+            IncreaseButtonLength = 0.0;
+
+            *pHide = TRUE;
+        }
+        else
+        {
+            *pHide = FALSE;
+
+            if(Vis != Visibility::Visible)
+            {
+                IFC(SetVisibility(Visibility::Visible));
+            }
+        }
+
+        {
+            // Compute lengths of increase and decrease button
+            FLOAT RemainingTrackLength = TrackLength - ThumbLength;
+            DecreaseButtonLength = RemainingTrackLength * Offset / Range;
+            CoerceLength(DecreaseButtonLength, RemainingTrackLength);
+
+            IncreaseButtonLength = RemainingTrackLength - DecreaseButtonLength;
+            CoerceLength(IncreaseButtonLength, RemainingTrackLength);
+
+            m_Density = Range / RemainingTrackLength;
+
+            *pDecreaseButtonLength = DecreaseButtonLength;
+            *pIncreaseButtonLength = IncreaseButtonLength;
+            *pThumbLength = ThumbLength;
         }
     }
-
-    // Compute lengths of increase and decrease button
-    FLOAT RemainingTrackLength = TrackLength - ThumbLength;
-    DecreaseButtonLength = RemainingTrackLength * Offset / Range;
-    CoerceLength(DecreaseButtonLength, RemainingTrackLength);
-
-    IncreaseButtonLength = RemainingTrackLength - DecreaseButtonLength;
-    CoerceLength(IncreaseButtonLength, RemainingTrackLength);
-
-    m_Density = Range / RemainingTrackLength;
-
-    *pDecreaseButtonLength = DecreaseButtonLength;
-    *pIncreaseButtonLength = IncreaseButtonLength;
-    *pThumbLength = ThumbLength;
-
+    
 Cleanup:
     return hr;
 }
@@ -623,7 +628,7 @@ HRESULT CTrack::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 
     IFC(GetEffectiveOrientation(&TrackOrientation));
 
-    if(_isnan(ViewportSize))
+    if(std::isnan(ViewportSize))
     {
         IFC(ComputeSliderLengths(AvailableSize, TrackOrientation, &DecreaseButtonLength, &ThumbLength, &IncreaseButtonLength));
     }

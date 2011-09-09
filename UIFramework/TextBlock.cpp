@@ -312,25 +312,25 @@ Cleanup:
 //
 // CTextBlock
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CTextBlock_TypeIndex()
 {
     return TypeIndex::TextBlock;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CFrameworkElement* CTextBlock_CastTo_CFrameworkElement(CTextBlock* pTextBlock)
 {
     return pTextBlock;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CTextBlock* CObjectWithType_CastTo_CTextBlock(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::TextBlock)) ? (CTextBlock*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CTextBlock_GetTextProperty()
 {
     return &CTextBlock::TextProperty;

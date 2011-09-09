@@ -116,7 +116,7 @@ Cleanup:
 //
 // CFocusManager
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void
 CFocusManager_AddRef(
     __in CFocusManager* pManager
@@ -125,7 +125,7 @@ CFocusManager_AddRef(
     pManager->AddRef();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void 
 CFocusManager_Release(
     __in CFocusManager* pManager
@@ -134,7 +134,7 @@ CFocusManager_Release(
     pManager->Release();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT 
 CFocusManager_SetFocus(
     __in CFocusManager* pManager, 
@@ -145,7 +145,7 @@ CFocusManager_SetFocus(
     return pManager->SetFocus(pElement, pSetFocus);
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT
 CFocusManager_GetFocusedElement(
     __in CFocusManager* pManager, 

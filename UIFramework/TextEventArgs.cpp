@@ -46,7 +46,7 @@ CTextEventArgs::GetTextLength(
 //
 // CTextEventArgs
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value
 CTextEventArgs_TypeIndex(
     )
@@ -54,7 +54,7 @@ CTextEventArgs_TypeIndex(
     return TypeIndex::TextEventArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CInputEventArgs* 
 CTextEventArgs_CastTo_CInputEventArgs(
     __in CTextEventArgs* pArgs
@@ -63,7 +63,7 @@ CTextEventArgs_CastTo_CInputEventArgs(
     return pArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CTextEventArgs* 
 CObjectWithType_CastTo_CTextEventArgs(
     __in CObjectWithType* pObject

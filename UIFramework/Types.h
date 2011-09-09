@@ -4,8 +4,10 @@
 #include <float.h>
 #include <math.h>
 #include <algorithm>
+#include <ostream>
+#include <istream>
 
-#include "Defines.h"
+#include "Collections.h"
 
 #if _WINDOWS
 #include <crtdbg.h>
@@ -17,15 +19,19 @@
 
 #else
 
-inline FLOAT 
+inline float 
 _wtof(
-    __in_z const WCHAR* pStr
+    const wchar_t* pStr
     )
 {
     return wcstof(pStr, NULL);
 }
 
+#define _wcsicmp wcscasecmp
+
 #endif
+
+#include "Defines.h"
 
 #include "DataTypes.h"
 

@@ -130,19 +130,19 @@ Cleanup:
 //
 // CDecorator
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CDecorator_TypeIndex()
 {
     return TypeIndex::Decorator;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CFrameworkElement* CDecorator_CastTo_CFrameworkElement(CDecorator* pDecorator)
 {
     return pDecorator;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CDecorator* CObjectWithType_CastTo_CDecorator(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::Decorator)) ? (CDecorator*)pObject : NULL;

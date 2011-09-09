@@ -57,17 +57,19 @@ CFloatAnimation::GetCurrentValue(
     IFCPTR(pFrom);
     IFCPTR(pTo);
 
-    FLOAT FromVal = pFrom->GetValue();
-    FLOAT ToVal = pTo->GetValue();
+    {
+        FLOAT FromVal = pFrom->GetValue();
+        FLOAT ToVal = pTo->GetValue();
 
-    IFC(pClock->GetCurrentProgress(&Progress));
+        IFC(pClock->GetCurrentProgress(&Progress));
 
-    FLOAT Range = ToVal - FromVal;
+        FLOAT Range = ToVal - FromVal;
 
-    FLOAT Value = FromVal + (Range * Progress);
+        FLOAT Value = FromVal + (Range * Progress);
 
-    IFC(CFloatValue::Create(Value, &pOutVal));
-
+        IFC(CFloatValue::Create(Value, &pOutVal));
+    }
+    
     *ppValue = pOutVal;
     pOutVal = NULL;
 

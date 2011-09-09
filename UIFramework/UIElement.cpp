@@ -19,8 +19,8 @@ DEFINE_GET_DEFAULT_NULL( Width );
 DEFINE_GET_DEFAULT_NULL( Height );
 DEFINE_GET_DEFAULT( MinimumWidth, CFloatValue, 0 );
 DEFINE_GET_DEFAULT( MinimumHeight, CFloatValue, 0 );
-DEFINE_GET_DEFAULT( MaximumWidth, CFloatValue, FLT_MAX );
-DEFINE_GET_DEFAULT( MaximumHeight, CFloatValue, FLT_MAX );
+DEFINE_GET_DEFAULT( MaximumWidth, CFloatValue, std::numeric_limits< FLOAT >::max() );
+DEFINE_GET_DEFAULT( MaximumHeight, CFloatValue, std::numeric_limits< FLOAT >::max() );
 DEFINE_GET_DEFAULT( Visibility, CVisibilityValue, Visibility::Visible );
 DEFINE_GET_DEFAULT( HorizontalAlignment, CHorizontalAlignmentValue, HorizontalAlignment::Stretch );
 DEFINE_GET_DEFAULT( VerticalAlignment, CVerticalAlignmentValue, VerticalAlignment::Stretch );
@@ -488,7 +488,7 @@ HRESULT CUIElement::GetMinMaxSize(SizeF& MinimumSize, SizeF& MaximumSize)
     IFC(GetEffectiveMaximumHeight(&MaxHeight));
     IFC(GetEffectiveMinimumHeight(&MinHeight));
 
-    Height = (pHeight != NULL) ? pHeight->GetValue() : FLT_MAX;
+    Height = (pHeight != NULL) ? pHeight->GetValue() : std::numeric_limits< FLOAT >::max();
     MaxHeight = std::max(std::min(Height, MaxHeight), MinHeight);
 
     Height = (pHeight != NULL) ? pHeight->GetValue() : 0;
@@ -499,7 +499,7 @@ HRESULT CUIElement::GetMinMaxSize(SizeF& MinimumSize, SizeF& MaximumSize)
 
     IFC(m_Width.GetTypedEffectiveValue(&pWidth));
 
-    Width = (pWidth != NULL) ? pWidth->GetValue() : FLT_MAX;
+    Width = (pWidth != NULL) ? pWidth->GetValue() : std::numeric_limits< FLOAT >::max();
     MaxWidth = std::max(std::min(Width, MaxWidth), MinWidth);
 
     Width = (pWidth != NULL) ? pWidth->GetValue() : 0;
@@ -2169,25 +2169,25 @@ Cleanup:
 //
 // CUIElement
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CUIElement_TypeIndex()
 {
     return TypeIndex::UIElement;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CVisual* CUIElement_CastTo_CVisual(CUIElement* pElement)
 {
     return pElement;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CUIElement* CObjectWithType_CastTo_CUIElement(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::UIElement)) ? (CUIElement*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CNamescope* CUIElement_GetNamescope(CUIElement* pElement)
 {
     return pElement->GetNamescope();
@@ -2195,7 +2195,7 @@ CNamescope* CUIElement_GetNamescope(CUIElement* pElement)
 
 typedef void (*HandlerFunc)( CObjectWithType*, CRoutedEventArgs* );
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 HRESULT CUIElement_AddHandler(CUIElement* pElement, CRoutedEvent* pRoutedEvent, HandlerFunc Handler, events::signals::connection** ppConnection)
 {
     HRESULT hr = S_OK;
@@ -2212,145 +2212,145 @@ Cleanup:
     return hr;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetAttachedEvent()
 {
     return &CUIElement::AttachedEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetDetachedEvent()
 {
     return &CUIElement::DetachedEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseButtonEvent()
 {
     return &CUIElement::MouseButtonEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseDownEvent()
 {
     return &CUIElement::MouseDownEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseUpEvent()
 {
     return &CUIElement::MouseUpEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseLeftButtonDownEvent()
 {
     return &CUIElement::MouseLeftButtonDownEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseRightButtonDownEvent()
 {
     return &CUIElement::MouseRightButtonDownEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseMiddleButtonDownEvent()
 {
     return &CUIElement::MouseMiddleButtonDownEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseLeftButtonUpEvent()
 {
     return &CUIElement::MouseLeftButtonUpEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseRightButtonUpEvent()
 {
     return &CUIElement::MouseRightButtonUpEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseMiddleButtonUpEvent()
 {
     return &CUIElement::MouseMiddleButtonUpEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseMoveEvent()
 {
     return &CUIElement::MouseMoveEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseEnterEvent()
 {
     return &CUIElement::MouseEnterEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetMouseLeaveEvent()
 {
     return &CUIElement::MouseLeaveEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetPreviewGotFocusEvent()
 {
     return &CUIElement::PreviewGotFocusEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetGotFocusEvent()
 {
     return &CUIElement::GotFocusEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetPreviewLostFocusEvent()
 {
     return &CUIElement::PreviewLostFocusEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetLostFocusEvent()
 {
     return &CUIElement::LostFocusEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetKeyEvent()
 {
     return &CUIElement::KeyEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetKeyDownEvent()
 {
     return &CUIElement::KeyDownEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CUIElement_GetKeyUpEvent()
 {
     return &CUIElement::KeyUpEvent;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CUIElement_GetVisibilityProperty()
 {
     return &CUIElement::VisibilityProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 HRESULT CUIElement_Focus(CUIElement* pElement, BOOL* pSetFocus)
 {
     return pElement->Focus(pSetFocus);
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 HRESULT CUIElement_EnsureLayout(CUIElement* pElement)
 {
     return pElement->EnsureLayout();
@@ -2359,7 +2359,7 @@ HRESULT CUIElement_EnsureLayout(CUIElement* pElement)
 //
 // Connection
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void Connection_DisconnectAndDelete(events::signals::connection* pConnection)
 {
     pConnection->disconnect();

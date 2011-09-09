@@ -364,19 +364,19 @@ Cleanup:
 //
 // CControl
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CControl_TypeIndex()
 {
     return TypeIndex::Control;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CFrameworkElement* CControl_CastTo_CFrameworkElement(CControl* pControl)
 {
     return pControl;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CControl* CObjectWithType_CastTo_CControl(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::Control)) ? (CControl*)pObject : NULL;

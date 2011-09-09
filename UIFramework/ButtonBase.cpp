@@ -195,25 +195,25 @@ Cleanup:
 //
 // CButtonBase
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CButtonBase_TypeIndex()
 {
     return TypeIndex::ButtonBase;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CContentControl* CButtonBase_CastTo_CContentControl(CButtonBase* pButtonBase)
 {
     return pButtonBase;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CButtonBase* CObjectWithType_CastTo_CButtonBase(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::ButtonBase)) ? (CButtonBase*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRoutedEvent* CButtonBase_GetClickEvent()
 {
     return &CButtonBase::ClickEvent;

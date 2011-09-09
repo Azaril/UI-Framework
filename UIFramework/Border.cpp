@@ -544,19 +544,19 @@ Cleanup:
 //
 // CBorder
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CBorder_TypeIndex()
 {
     return TypeIndex::Border;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CDecorator* CBorder_CastTo_CDecorator(CBorder* pBorder)
 {
     return pBorder;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CBorder* CObjectWithType_CastTo_CBorder(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::Border)) ? (CBorder*)pObject : NULL;

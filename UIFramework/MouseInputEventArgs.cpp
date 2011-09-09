@@ -153,14 +153,14 @@ CMouseButtonEventArgs::GetButtonState(
 //
 // CMouseEventArgs
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 CMouseEventArgs_TypeIndex()
 {
     return TypeIndex::MouseEventArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CInputEventArgs* 
 CMouseEventArgs_CastTo_CInputEventArgs(
     __in CMouseEventArgs* pArgs
@@ -169,7 +169,7 @@ CMouseEventArgs_CastTo_CInputEventArgs(
     return pArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CMouseEventArgs* 
 CObjectWithType_CastTo_CMouseEventArgs(
     __in CObjectWithType* pObject
@@ -181,7 +181,7 @@ CObjectWithType_CastTo_CMouseEventArgs(
 //
 // CMouseButtonEventArgs
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 CMouseButtonEventArgs_TypeIndex(
     )
@@ -189,7 +189,7 @@ CMouseButtonEventArgs_TypeIndex(
     return TypeIndex::MouseButtonEventArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CMouseEventArgs* 
 CMouseButtonEventArgs_CastTo_CMouseEventArgs(
     __in CMouseButtonEventArgs* pArgs
@@ -198,7 +198,7 @@ CMouseButtonEventArgs_CastTo_CMouseEventArgs(
     return pArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CMouseButtonEventArgs* 
 CObjectWithType_CastTo_CMouseButtonEventArgs(
     __in CObjectWithType* pObject

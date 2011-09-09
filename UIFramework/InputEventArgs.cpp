@@ -3,7 +3,7 @@
 //
 // CInputEventArgs
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 CInputEventArgs_TypeIndex(
     )
@@ -11,7 +11,7 @@ CInputEventArgs_TypeIndex(
     return TypeIndex::InputEventArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CRoutedEventArgs* 
 CInputEventArgs_CastTo_CRoutedEventArgs(
     __in CInputEventArgs* pArgs
@@ -20,7 +20,7 @@ CInputEventArgs_CastTo_CRoutedEventArgs(
     return pArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CInputEventArgs*
 CObjectWithType_CastTo_CInputEventArgs(
     __in CObjectWithType* pObject

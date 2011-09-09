@@ -318,25 +318,25 @@ Cleanup:
 //
 // CTextBox
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CTextBox_TypeIndex()
 {
     return TypeIndex::TextBox;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CControl* CTextBox_CastTo_CControl(CTextBox* pTextBox)
 {
     return pTextBox;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CTextBox* CObjectWithType_CastTo_CTextBox(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::TextBox)) ? (CTextBox*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CTextBox_GetTextProperty()
 {
     return &CTextBox::TextProperty;

@@ -24,7 +24,8 @@ typedef wchar_t WCHAR;
 typedef char CHAR;
 typedef UINT32 BOOL;
 typedef unsigned char BYTE;
-
+typedef long long LONGLONG;
+typedef unsigned long long ULONGLONG;
 typedef INT32 HRESULT;
 
 #ifndef NULL
@@ -32,15 +33,17 @@ typedef INT32 HRESULT;
 #endif
 
 #ifndef TRUE
-#define TRUE    1
+#define TRUE (1)
 #endif
 
 #ifndef FALSE
-#define FALSE   0
+#define FALSE (0)
 #endif  
 
 #include <wchar.h>
 
 #endif
+
+#include <limits>
 
 struct Nothing;

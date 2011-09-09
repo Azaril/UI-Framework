@@ -1,5 +1,13 @@
 #include "TimeValue.h"
 
+#ifdef _WINDOWS
+
+#else
+
+#include <mach/mach_time.h>
+
+#endif
+
 CTime::CTime(
     ULONGLONG Time
     ) 
@@ -18,14 +26,26 @@ CTime
 CTime::Now(
     )
 {
+#ifdef _WINDOWS
     LARGE_INTEGER Frequency;
     LARGE_INTEGER Time;
-
+    
     QueryPerformanceFrequency(&Frequency);
-
+    
     QueryPerformanceCounter(&Time);
-
-    return CTime((Time.QuadPart * 1000) / Frequency.QuadPart);
+    
+    return CTime((Time.QuadPart * 1000) / Frequency.QuadPart);    
+#else
+    mach_timebase_info_data_t TimeInfo;
+    
+    mach_timebase_info(&TimeInfo);
+    
+    uint64_t CurrentTime = mach_absolute_time();
+    
+    double ToMilliseconds = 1e-6 * ((double)TimeInfo.numer / ((double)TimeInfo.denom));
+    
+    return CTime(ToMilliseconds * (double)CurrentTime);
+#endif
 }
 
 CTimeSpan 

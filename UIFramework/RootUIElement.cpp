@@ -182,19 +182,19 @@ Cleanup:
 //
 // CRootUIElement
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CRootUIElement_TypeIndex()
 {
     return TypeIndex::RootUIElement;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CFrameworkElement* CRootUIElement_CastTo_CFrameworkElement(CRootUIElement* pElement)
 {
     return pElement;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CRootUIElement* CObjectWithType_CastTo_CRootUIElement(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::RootUIElement)) ? (CRootUIElement*)pObject : NULL;

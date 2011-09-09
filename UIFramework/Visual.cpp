@@ -646,7 +646,7 @@ CVisual::OnChildInvalidated(
 //
 // CVisual
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 CVisual_TypeIndex(
     )
@@ -654,7 +654,7 @@ CVisual_TypeIndex(
     return TypeIndex::Visual;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CPropertyObject*
 CVisual_CastTo_CPropertyObject(
     __in CVisual* pVisual
@@ -663,7 +663,7 @@ CVisual_CastTo_CPropertyObject(
     return pVisual;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CVisual*
 CObjectWithType_CastTo_CVisual(
     __in CObjectWithType* pObject

@@ -119,19 +119,19 @@ Cleanup:
 //
 // CGrid
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CGrid_TypeIndex()
 {
     return TypeIndex::Grid;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CPanel* CGrid_CastTo_CPanel(CGrid* pGrid)
 {
     return pGrid;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CGrid* CObjectWithType_CastTo_CGrid(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::Grid)) ? (CGrid*)pObject : NULL;

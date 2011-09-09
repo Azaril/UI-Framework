@@ -5,6 +5,8 @@
 #include "Point2F.h"
 #include "SizeF.h"
 
+#include <math.h>
+
 #ifdef _WINDOWS
 #include <D2D1.h>
 #include <D2D1helper.h>

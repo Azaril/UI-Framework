@@ -38,13 +38,13 @@ struct UIFRAMEWORK_API RectF
     inline BOOL IsInfinite(
         )
     {
-        return (left == -FLT_MAX && right == FLT_MAX && top == -FLT_MAX && bottom == FLT_MAX);
+        return (left == std::numeric_limits< FLOAT >::min() && right == std::numeric_limits< FLOAT >::max() && top == std::numeric_limits< FLOAT >::min() && bottom == std::numeric_limits< FLOAT >::max());
     }
 
     static inline RectF Infinite(
         )
     {
-        return RectF(-FLT_MAX, -FLT_MAX, FLT_MAX, FLT_MAX);
+        return RectF(std::numeric_limits< FLOAT >::min(), std::numeric_limits< FLOAT >::min(), std::numeric_limits< FLOAT >::max(), std::numeric_limits< FLOAT >::max());
     }
     
 #ifndef _WINDOWS

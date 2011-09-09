@@ -423,7 +423,7 @@ CAttachedPropertyHolder::GetProperty(
 //
 // CObjectWithType
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void 
 CObjectWithType_AddRef(
     __in CObjectWithType* pObject
@@ -432,7 +432,7 @@ CObjectWithType_AddRef(
     pObject->AddRef();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void
 CObjectWithType_Release(
     __in CObjectWithType* pObject
@@ -441,7 +441,7 @@ CObjectWithType_Release(
     pObject->Release();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 CObjectWithType_TypeIndex(
     )
@@ -449,7 +449,7 @@ CObjectWithType_TypeIndex(
     return TypeIndex::Object;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value
 CObjectWithType_GetType(
     __in CObjectWithType* pObject
@@ -461,7 +461,7 @@ CObjectWithType_GetType(
 //
 // CProperty
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void 
 CProperty_AddRef(
     __in CProperty* pProperty
@@ -470,7 +470,7 @@ CProperty_AddRef(
     pProperty->AddRef();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void
 CProperty_Release(
     __in CProperty* pProperty
@@ -482,7 +482,7 @@ CProperty_Release(
 //
 // CPropertyObject
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 CPropertyObject_TypeIndex(
     )
@@ -490,7 +490,7 @@ CPropertyObject_TypeIndex(
     return TypeIndex::PropertyObject;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CObjectWithType* 
 CPropertyObject_CastTo_CObjectWithType(
     __in CPropertyObject* pPropertyObject
@@ -499,7 +499,7 @@ CPropertyObject_CastTo_CObjectWithType(
     return pPropertyObject;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CPropertyObject* 
 CObjectWithType_CastTo_CPropertyObject(
     __in CObjectWithType* pObject
@@ -508,7 +508,7 @@ CObjectWithType_CastTo_CPropertyObject(
     return (pObject->IsTypeOf(TypeIndex::PropertyObject)) ? (CPropertyObject*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT 
 CPropertyObject_SetValue(
     __in CPropertyObject* pPropertyObject, 
@@ -519,7 +519,7 @@ CPropertyObject_SetValue(
     return pPropertyObject->SetValue(pProperty, pValue);
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT 
 CPropertyObject_SetValueFloat(
     __in CPropertyObject* pPropertyObject, 
@@ -540,7 +540,7 @@ Cleanup:
     return hr;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT 
 CPropertyObject_SetValueString(
     __in CPropertyObject* pPropertyObject, 
@@ -561,7 +561,7 @@ Cleanup:
     return hr;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT 
 CPropertyObject_SetValueVisibility(
     __in CPropertyObject* pPropertyObject, 
@@ -582,7 +582,7 @@ Cleanup:
     return hr;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT
 CPropertyObject_GetValue(
     __in CPropertyObject* pPropertyObject,

@@ -472,7 +472,7 @@ Cleanup:
     return hr;
 }
 
-VOID CFrameworkElement::SetAutomaticNamescopeParticipation(BOOL Participate)
+void CFrameworkElement::SetAutomaticNamescopeParticipation(BOOL Participate)
 {
     m_AutomaticNamescopeParticipation = Participate;
 }
@@ -636,20 +636,20 @@ Cleanup:
 //
 // CFrameworkElement
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CFrameworkElement_TypeIndex()
 {
     return TypeIndex::FrameworkElement;
 }
 
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CUIElement* CFrameworkElement_CastTo_CUIElement(CFrameworkElement* pElement)
 {
     return pElement;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CFrameworkElement* CObjectWithType_CastTo_CFrameworkElement(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::FrameworkElement)) ? (CFrameworkElement*)pObject : NULL;

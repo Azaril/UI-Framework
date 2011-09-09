@@ -89,85 +89,87 @@ HRESULT CScrollViewer::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     IFC(GetEffectiveVerticalScrollBarVisibility(&ScrollVerticalVisibility));
     IFC(GetEffectiveHorizontalScrollBarVisibility(&ScrollHorizontalVisibility));
 
-    BOOL AutoVerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Auto);
-    BOOL AutoHorizontalVisibility = (ScrollHorizontalVisibility == ScrollBarVisibility::Auto);
-    BOOL VerticalDisableScrollBar = (ScrollVerticalVisibility == ScrollBarVisibility::Disabled);
-    BOOL HorizontalDisableScrollBar = (ScrollHorizontalVisibility == ScrollBarVisibility::Disabled);
-    Visibility::Value VerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Visible) ? Visibility::Visible : Visibility::Collapsed;
-    Visibility::Value HorizontalVisibility = (ScrollHorizontalVisibility == ScrollBarVisibility::Visible) ? Visibility::Visible : Visibility::Collapsed;
-
-    m_InMeasure = TRUE;
-
-    IFC(SetComputedVerticalScrollBarVisibility(VerticalVisibility));
-    IFC(SetComputedHorizontalScrollBarVisibility(HorizontalVisibility));
-
-    if(m_ScrollPresenter != NULL)
     {
-        IFC(m_ScrollPresenter->SetCanScrollVertically(!VerticalDisableScrollBar));
-        IFC(m_ScrollPresenter->SetCanScrollHorizontally(!HorizontalDisableScrollBar));
-    }
+        BOOL AutoVerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Auto);
+        BOOL AutoHorizontalVisibility = (ScrollHorizontalVisibility == ScrollBarVisibility::Auto);
+        BOOL VerticalDisableScrollBar = (ScrollVerticalVisibility == ScrollBarVisibility::Disabled);
+        BOOL HorizontalDisableScrollBar = (ScrollHorizontalVisibility == ScrollBarVisibility::Disabled);
+        Visibility::Value VerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Visible) ? Visibility::Visible : Visibility::Collapsed;
+        Visibility::Value HorizontalVisibility = (ScrollHorizontalVisibility == ScrollBarVisibility::Visible) ? Visibility::Visible : Visibility::Collapsed;
 
-    IFC(GetTemplateChild(&pChild));
+        m_InMeasure = TRUE;
 
-    if(pChild != NULL)
-    {
-        IFC(pChild->Measure(AvailableSize));
-    }
+        IFC(SetComputedVerticalScrollBarVisibility(VerticalVisibility));
+        IFC(SetComputedHorizontalScrollBarVisibility(HorizontalVisibility));
 
-    if (pChild != NULL && m_ScrollPresenter != NULL && (AutoVerticalVisibility || AutoHorizontalVisibility))
-    {
-        SizeF CurrentExtent = m_ScrollPresenter->GetExtent();
-        SizeF CurrentViewport = m_ScrollPresenter->GetViewport();
-
-        BOOL MakeHorizontalBarVisible = AutoHorizontalVisibility && (CurrentExtent.width > CurrentViewport.width);
-        BOOL MakeVerticalBarVisible = AutoVerticalVisibility && (CurrentExtent.height > CurrentViewport.height);
-
-        if(MakeVerticalBarVisible)
+        if(m_ScrollPresenter != NULL)
         {
-            IFC(SetComputedVerticalScrollBarVisibility(Visibility::Visible));
+            IFC(m_ScrollPresenter->SetCanScrollVertically(!VerticalDisableScrollBar));
+            IFC(m_ScrollPresenter->SetCanScrollHorizontally(!HorizontalDisableScrollBar));
         }
 
-        if(MakeHorizontalBarVisible)
-        {
-            IFC(SetComputedHorizontalScrollBarVisibility(Visibility::Visible));
-        }
+        IFC(GetTemplateChild(&pChild));
 
-        if(MakeVerticalBarVisible || MakeHorizontalBarVisible)
+        if(pChild != NULL)
         {
-            IFC(pChild->InvalidateMeasure());
-
             IFC(pChild->Measure(AvailableSize));
         }
 
-        if(MakeVerticalBarVisible && MakeHorizontalBarVisible && (MakeVerticalBarVisible != MakeHorizontalBarVisible))
+        if (pChild != NULL && m_ScrollPresenter != NULL && (AutoVerticalVisibility || AutoHorizontalVisibility))
         {
-            SizeF SecondPassCurrentExtent = m_ScrollPresenter->GetExtent();
-            SizeF SecondPassCurrentViewport = m_ScrollPresenter->GetViewport();
+            SizeF CurrentExtent = m_ScrollPresenter->GetExtent();
+            SizeF CurrentViewport = m_ScrollPresenter->GetViewport();
 
-            BOOL SecondPassMakeHorizontalBarVisible = !MakeHorizontalBarVisible && (SecondPassCurrentExtent.width > SecondPassCurrentViewport.width);
-            BOOL SecondPassMakeVerticalBarVisible = !MakeVerticalBarVisible && (SecondPassCurrentExtent.height > SecondPassCurrentViewport.height);
+            BOOL MakeHorizontalBarVisible = AutoHorizontalVisibility && (CurrentExtent.width > CurrentViewport.width);
+            BOOL MakeVerticalBarVisible = AutoVerticalVisibility && (CurrentExtent.height > CurrentViewport.height);
 
-            if(SecondPassMakeHorizontalBarVisible)
-            {
-                IFC(SetComputedHorizontalScrollBarVisibility(Visibility::Visible));
-            }
-            else if(SecondPassMakeVerticalBarVisible)
+            if(MakeVerticalBarVisible)
             {
                 IFC(SetComputedVerticalScrollBarVisibility(Visibility::Visible));
             }
 
-            if(SecondPassMakeHorizontalBarVisible || SecondPassMakeVerticalBarVisible)
+            if(MakeHorizontalBarVisible)
+            {
+                IFC(SetComputedHorizontalScrollBarVisibility(Visibility::Visible));
+            }
+
+            if(MakeVerticalBarVisible || MakeHorizontalBarVisible)
             {
                 IFC(pChild->InvalidateMeasure());
 
                 IFC(pChild->Measure(AvailableSize));
             }
-        }
-    }
 
-    if(pChild != NULL)
-    {
-        ElementDesiredSize = pChild->GetDesiredSize();
+            if(MakeVerticalBarVisible && MakeHorizontalBarVisible && (MakeVerticalBarVisible != MakeHorizontalBarVisible))
+            {
+                SizeF SecondPassCurrentExtent = m_ScrollPresenter->GetExtent();
+                SizeF SecondPassCurrentViewport = m_ScrollPresenter->GetViewport();
+
+                BOOL SecondPassMakeHorizontalBarVisible = !MakeHorizontalBarVisible && (SecondPassCurrentExtent.width > SecondPassCurrentViewport.width);
+                BOOL SecondPassMakeVerticalBarVisible = !MakeVerticalBarVisible && (SecondPassCurrentExtent.height > SecondPassCurrentViewport.height);
+
+                if(SecondPassMakeHorizontalBarVisible)
+                {
+                    IFC(SetComputedHorizontalScrollBarVisibility(Visibility::Visible));
+                }
+                else if(SecondPassMakeVerticalBarVisible)
+                {
+                    IFC(SetComputedVerticalScrollBarVisibility(Visibility::Visible));
+                }
+
+                if(SecondPassMakeHorizontalBarVisible || SecondPassMakeVerticalBarVisible)
+                {
+                    IFC(pChild->InvalidateMeasure());
+
+                    IFC(pChild->Measure(AvailableSize));
+                }
+            }
+        }
+
+        if(pChild != NULL)
+        {
+            ElementDesiredSize = pChild->GetDesiredSize();
+        }
     }
 
     DesiredSize = ElementDesiredSize;
@@ -579,79 +581,79 @@ Cleanup:
 //
 // CScrollViewer
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CScrollViewer_TypeIndex()
 {
     return TypeIndex::ScrollViewer;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CContentControl* CScrollViewer_CastTo_CContentControl(CScrollViewer* pScrollViewer)
 {
     return pScrollViewer;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CScrollViewer* CObjectWithType_CastTo_CScrollViewer(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::ScrollViewer)) ? (CScrollViewer*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_ExtentHeightProperty()
 {
     return &CScrollViewer::ExtentHeightProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_ExtentWidthProperty()
 {
     return &CScrollViewer::ExtentWidthProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_ViewportWidthProperty()
 {
     return &CScrollViewer::ViewportWidthProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_ViewportHeightProperty()
 {
     return &CScrollViewer::ViewportHeightProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_HorizontalOffsetProperty()
 {
     return &CScrollViewer::HorizontalOffsetProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_VerticalOffsetProperty()
 {
     return &CScrollViewer::VerticalOffsetProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_ScrollableWidthProperty()
 {
     return &CScrollViewer::ScrollableWidthProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_ScrollableHeightProperty()
 {
     return &CScrollViewer::ScrollableHeightProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_ComputedHorizontalScrollBarVisibilityProperty()
 {
     return &CScrollViewer::ComputedHorizontalScrollBarVisibilityProperty;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CProperty* CScrollViewer_ComputedVerticalScrollBarVisibilityProperty()
 {
     return &CScrollViewer::ComputedVerticalScrollBarVisibilityProperty;

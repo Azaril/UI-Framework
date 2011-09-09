@@ -39,7 +39,7 @@ HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
     SizeF ChildrenSize;
-    SizeF MaxSize(FLT_MAX, FLT_MAX);
+    SizeF MaxSize(std::numeric_limits< FLOAT >::max(), std::numeric_limits< FLOAT >::max());
     CUIElementCollection* pChildCollection = NULL;
     Orientation::Value Orient = Orientation::Vertical;
 
@@ -202,19 +202,19 @@ Cleanup:
 //
 // CStackPanel
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CStackPanel_TypeIndex()
 {
     return TypeIndex::StackPanel;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CPanel* CStackPanel_CastTo_CPanel(CStackPanel* pStackPanel)
 {
     return pStackPanel;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CStackPanel* CObjectWithType_CastTo_CStackPanel(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::StackPanel)) ? (CStackPanel*)pObject : NULL;

@@ -21,6 +21,7 @@
 #define E_POINTER       (-2)
 #define E_OUTOFMEMORY   (-3)
 #define E_UNEXPECTED    (-4)
+#define E_NOTIMPL       (-5)
 
 #define SUCCEEDED(expr) (expr >= 0)
 #define FAILED(expr)    (expr < 0)

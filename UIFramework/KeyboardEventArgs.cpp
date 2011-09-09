@@ -69,14 +69,14 @@ CKeyEventArgs::GetState(
 //
 // CKeyboardEventArgs
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
 CKeyboardEventArgs_TypeIndex()
 {
     return TypeIndex::KeyboardEventArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CInputEventArgs* 
 CKeyboardEventArgs_CastTo_CInputEventArgs(
     __in CKeyboardEventArgs* pArgs
@@ -85,7 +85,7 @@ CKeyboardEventArgs_CastTo_CInputEventArgs(
     return pArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CKeyboardEventArgs* 
 CObjectWithType_CastTo_CKeyboardEventArgs(
     __in CObjectWithType* pObject
@@ -97,14 +97,14 @@ CObjectWithType_CastTo_CKeyboardEventArgs(
 //
 // CKeyEventArgs
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value
 CKeyEventArgs_TypeIndex()
 {
     return TypeIndex::KeyEventArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CKeyboardEventArgs*
 CKeyEventArgs_CastTo_CKeyboardEventArgs(
     __in CKeyEventArgs* pArgs
@@ -113,7 +113,7 @@ CKeyEventArgs_CastTo_CKeyboardEventArgs(
     return pArgs;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CKeyEventArgs* 
 CObjectWithType_CastTo_CKeyEventArgs(
     __in CObjectWithType* pObject
@@ -122,7 +122,7 @@ CObjectWithType_CastTo_CKeyEventArgs(
     return (pObject->IsTypeOf(TypeIndex::KeyEventArgs)) ? (CKeyEventArgs*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 Key::Value 
 CKeyEventArgs_GetKey(
     __in CKeyEventArgs* pArgs
@@ -131,7 +131,7 @@ CKeyEventArgs_GetKey(
     return pArgs->GetKey();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 KeyState::Value 
 CKeyEventArgs_GetState(
     __in CKeyEventArgs* pArgs

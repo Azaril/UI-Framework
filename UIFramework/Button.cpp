@@ -43,19 +43,19 @@ Cleanup:
 //
 // CButton
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CButton_TypeIndex()
 {
     return TypeIndex::Button;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CButtonBase* CButton_CastTo_CButtonBase(CButton* pButton)
 {
     return pButton;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CButton* CObjectWithType_CastTo_CButton(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::Button)) ? (CButton*)pObject : NULL;

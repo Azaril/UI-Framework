@@ -109,7 +109,7 @@ Cleanup:
 //
 // CParser
 //
-extern "C" __declspec(dllexport) 
+extern "C" UIFRAMEWORK_API
 void 
 CParser_AddRef(
 	__in CParser* pParser
@@ -118,7 +118,7 @@ CParser_AddRef(
     pParser->AddRef();
 }
 
-extern "C" __declspec(dllexport) 
+extern "C" UIFRAMEWORK_API
 void 
 CParser_Release(
 	__in CParser* pParser
@@ -127,7 +127,7 @@ CParser_Release(
     pParser->Release();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT 
 CParser_LoadFromFile(
 	__in CParser* pParser, 
@@ -138,7 +138,7 @@ CParser_LoadFromFile(
     return pParser->LoadFromFile(pPath, ppRootObject);
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT 
 CParser_LoadFromString(
 	__in CParser* pParser, 

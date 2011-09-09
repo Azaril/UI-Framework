@@ -97,19 +97,19 @@ Cleanup:
 //
 // CContentControl
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CContentControl_TypeIndex()
 {
     return TypeIndex::ContentControl;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CControl* CContentControl_CastTo_CControl(CContentControl* pContentControl)
 {
     return pContentControl;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CContentControl* CObjectWithType_CastTo_CContentControl(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::ContentControl)) ? (CContentControl*)pObject : NULL;

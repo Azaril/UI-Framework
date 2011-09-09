@@ -372,8 +372,8 @@ SizeF ComputeScaleFactor(SizeF AvailableSize, SizeF ContentSize, Stretch::Value 
     FLOAT ScaleX = 1.0f;
     FLOAT ScaleY = 1.0f;
 
-    BOOL ConstrainedWidth = (AvailableSize.width != FLT_MAX);
-    BOOL ConstrainedHeight = (AvailableSize.height != FLT_MAX);
+    BOOL ConstrainedWidth = (AvailableSize.width != std::numeric_limits< FLOAT >::max());
+    BOOL ConstrainedHeight = (AvailableSize.height != std::numeric_limits< FLOAT >::max());
 
     if((ContentStretch == Stretch::Uniform || ContentStretch == Stretch::UniformToFill || ContentStretch == Stretch::Fill) && (ConstrainedWidth || ConstrainedHeight))
     {

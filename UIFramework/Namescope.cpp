@@ -199,7 +199,7 @@ CNamedObjectHolder::GetObject(
 //
 // CNamescope
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value
 CNamescope_TypeIndex(
     )
@@ -207,7 +207,7 @@ CNamescope_TypeIndex(
     return TypeIndex::Namescope;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out CObjectWithType* 
 CNamescope_CastTo_CObjectWithType(
     __in CNamescope* pNamescope
@@ -216,7 +216,7 @@ CNamescope_CastTo_CObjectWithType(
     return pNamescope;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __out_opt CNamescope* 
 CObjectWithType_CastTo_CNamescope(
     __in CObjectWithType* pObject
@@ -225,7 +225,7 @@ CObjectWithType_CastTo_CNamescope(
     return (pObject->IsTypeOf(TypeIndex::Namescope)) ? (CNamescope*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT
 CNamescope_FindName(
     __in CNamescope* pScope, 

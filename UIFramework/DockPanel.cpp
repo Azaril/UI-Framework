@@ -300,19 +300,19 @@ Cleanup:
 //
 // CDockPanel
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CDockPanel_TypeIndex()
 {
     return TypeIndex::DockPanel;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CPanel* CDockPanel_CastTo_CPanel(CDockPanel* pDockPanel)
 {
     return pDockPanel;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CDockPanel* CObjectWithType_CastTo_CDockPanel(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::DockPanel)) ? (CDockPanel*)pObject : NULL;

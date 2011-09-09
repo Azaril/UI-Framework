@@ -458,7 +458,7 @@ class UIFRAMEWORK_API CTypedLayeredValue : public CTypedLocalLayeredValue< Owner
         {
             HRESULT hr = S_OK;
 
-            switch(m_ActualEffectiveValue)
+            switch(this->m_ActualEffectiveValue)
             {
                 case EffectiveValue::Style:
                     {

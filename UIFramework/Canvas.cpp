@@ -32,7 +32,7 @@ Cleanup:
 HRESULT CCanvas::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 {
     HRESULT hr = S_OK;
-    SizeF MaxSize(FLT_MAX, FLT_MAX);
+    SizeF MaxSize(std::numeric_limits< FLOAT >::max(), std::numeric_limits< FLOAT >::max());
     CUIElementCollection* pChildCollection = NULL;
 
     pChildCollection = GetChildCollection();
@@ -165,19 +165,19 @@ Cleanup:
 //
 // CCanvas
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CCanvas_TypeIndex()
 {
     return TypeIndex::Canvas;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CPanel* CCanvas_CastTo_CPanel(CCanvas* pCanvas)
 {
     return pCanvas;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CCanvas* CObjectWithType_CastTo_CCanvas(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::Canvas)) ? (CCanvas*)pObject : NULL;

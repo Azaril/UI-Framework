@@ -121,31 +121,31 @@ Cleanup:
 //
 // CPanel
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 TypeIndex::Value CPanel_TypeIndex()
 {
     return TypeIndex::Panel;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CFrameworkElement* CPanel_CastTo_CFrameworkElement(CPanel* pPanel)
 {
     return pPanel;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 CPanel* CObjectWithType_CastTo_CPanel(CObjectWithType* pObject)
 {
     return (pObject->IsTypeOf(TypeIndex::Panel)) ? (CPanel*)pObject : NULL;
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 HRESULT CPanel_AddChild(CPanel* pPanel, CUIElement* pChild)
 {
     return pPanel->AddChild(pChild);
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 HRESULT CPanel_RemoveChild(CPanel* pPanel, CUIElement* pChild)
 {
     return pPanel->RemoveChild(pChild);

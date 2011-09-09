@@ -155,25 +155,25 @@ Cleanup:
 //
 // CUIHost
 //
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void CUIHost_AddRef(CUIHost* pHost)
 {
     pHost->AddRef();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 void CUIHost_Release(CUIHost* pHost)
 {
     pHost->Release();
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 HRESULT CUIHost_GetRootElement(CUIHost* pHost, CRootUIElement** ppElement)
 {
     return pHost->GetRootElement(ppElement);
 }
 
-extern "C" __declspec(dllexport)
+extern "C" UIFRAMEWORK_API
 HRESULT CUIHost_GetFocusManager(CUIHost* pHost, CFocusManager** ppFocusManager)
 {
     return pHost->GetFocusManager(ppFocusManager);
