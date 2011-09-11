@@ -13,7 +13,14 @@ public:
     virtual ~EAGLContextBridgeGLES20(
     );
     
-    EAGLContext* GetContext(
+    virtual bool Apply(
+        );
+    
+    virtual bool Present(
+        unsigned int RenderBuffer
+        );
+    
+    virtual EAGLContext* GetContext(
         );
     
 protected:

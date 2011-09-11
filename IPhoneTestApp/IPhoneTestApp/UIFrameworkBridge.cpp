@@ -2,6 +2,9 @@
 #include "BasicTypeConverter.h"
 #include "DynamicClassResolver.h"
 #include "Parser.h"
+#include "UIHost.h"
+#include "OpenGLES20GraphicsDevice.h"
+#include "OpenGLES20RenderTarget.h"
 
 UIFrameworkBridge::UIFrameworkBridge(
     )
@@ -9,6 +12,9 @@ UIFrameworkBridge::UIFrameworkBridge(
     , m_pTypeConverter(NULL)
     , m_pProviders(NULL)
     , m_pParser(NULL)
+    , m_pGraphicsDevice(NULL)
+    , m_pRenderTarget(NULL)
+    , m_pUIHost(NULL)
 {
 }
 
@@ -19,11 +25,15 @@ UIFrameworkBridge::~UIFrameworkBridge(
     ReleaseObject(m_pTypeConverter);
     ReleaseObject(m_pProviders);
     ReleaseObject(m_pParser);
+    ReleaseObject(m_pRenderTarget);
+    ReleaseObject(m_pGraphicsDevice);
+    ReleaseObject(m_pUIHost);
 }
 
 bool
 UIFrameworkBridge::Initialize(
-    EAGLContextBridge* pContextBridge
+    COpenGLES20Context* pContext,
+    COpenGLES20RenderBufferStorageAllocator* pAllocator                              
     )
 {
     HRESULT hr = S_OK;
@@ -36,6 +46,59 @@ UIFrameworkBridge::Initialize(
     
     IFC(CParser::Create(m_pProviders, &m_pParser));
     
+    IFC(COpenGLES20GraphicsDevice::Create(&m_pGraphicsDevice));
+    
+    IFC(m_pGraphicsDevice->CreateRenderTarget(pAllocator, pContext, &m_pRenderTarget));
+    
+    IFC(CUIHost::Create(m_pGraphicsDevice, m_pRenderTarget, m_pProviders, &m_pUIHost));
+    
 Cleanup:
+    return SUCCEEDED(hr);
+}
+
+bool
+UIFrameworkBridge::Render(
+    )
+{
+    HRESULT hr = S_OK;
+
+    if (m_pUIHost != NULL)
+    {
+        IFC(m_pUIHost->Render());
+    }
+    
+Cleanup:
+    return SUCCEEDED(hr);
+}
+
+unsigned int
+UIFrameworkBridge::GetRenderBuffer(
+    )
+{
+    return m_pRenderTarget->GetRenderBuffer();
+}
+
+bool
+UIFrameworkBridge::LoadContent(
+    const wchar_t* pContent
+)
+{
+    HRESULT hr = S_OK;
+    CObjectWithType* pParsedRootObject = NULL;
+    CRootUIElement* pRootElement = NULL;
+    CUIElement* pParsedRootElement = NULL;
+    
+    IFC(m_pParser->LoadFromString(pContent, &pParsedRootObject));
+    
+    IFC(m_pUIHost->GetRootElement(&pRootElement));
+    
+    IFC(CastType(pParsedRootObject, &pParsedRootElement));
+    
+    IFC(pRootElement->SetChild(pParsedRootElement));
+    
+Cleanup:
+    ReleaseObject(pRootElement);
+    ReleaseObject(pParsedRootObject);
+    
     return SUCCEEDED(hr);
 }

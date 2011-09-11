@@ -24,6 +24,9 @@
 		3D846F24141A114600AC9C7D /* libUIFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846F21141A0FBF00AC9C7D /* libUIFramework.a */; };
 		3D846F27141A133400AC9C7D /* UIFrameworkBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F26141A133400AC9C7D /* UIFrameworkBridge.cpp */; };
 		3D846F2B141A257900AC9C7D /* EAGLContextBridgeGLES20.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */; };
+		3DF3D0EC141C058600431CFF /* EAGLLayerStorageAllocator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3DF3D0EB141C058600431CFF /* EAGLLayerStorageAllocator.mm */; };
+		3DF3D100141C3D2E00431CFF /* libxml2.2.7.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DF3D0FF141C3D2D00431CFF /* libxml2.2.7.3.dylib */; };
+		3DF3D102141C3D7300431CFF /* libiconv.2.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DF3D101141C3D7300431CFF /* libiconv.2.4.0.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +73,10 @@
 		3D846F28141A22A500AC9C7D /* EAGLContextBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLContextBridge.h; sourceTree = "<group>"; };
 		3D846F29141A242100AC9C7D /* EAGLContextBridgeGLES20.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLContextBridgeGLES20.h; sourceTree = "<group>"; };
 		3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLContextBridgeGLES20.mm; sourceTree = "<group>"; };
+		3DF3D0E8141C02E900431CFF /* EAGLLayerStorageAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLLayerStorageAllocator.h; sourceTree = "<group>"; };
+		3DF3D0EB141C058600431CFF /* EAGLLayerStorageAllocator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLLayerStorageAllocator.mm; sourceTree = "<group>"; };
+		3DF3D0FF141C3D2D00431CFF /* libxml2.2.7.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.7.3.dylib; path = usr/lib/libxml2.2.7.3.dylib; sourceTree = SDKROOT; };
+		3DF3D101141C3D7300431CFF /* libiconv.2.4.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.4.0.dylib; path = usr/lib/libiconv.2.4.0.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +84,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DF3D102141C3D7300431CFF /* libiconv.2.4.0.dylib in Frameworks */,
+				3DF3D100141C3D2E00431CFF /* libxml2.2.7.3.dylib in Frameworks */,
 				3D846F24141A114600AC9C7D /* libUIFramework.a in Frameworks */,
 				3D846EEF141A0F7F00AC9C7D /* UIKit.framework in Frameworks */,
 				3D846EF1141A0F7F00AC9C7D /* Foundation.framework in Frameworks */,
@@ -92,6 +101,8 @@
 		3D846EDF141A0F7F00AC9C7D = {
 			isa = PBXGroup;
 			children = (
+				3DF3D101141C3D7300431CFF /* libiconv.2.4.0.dylib */,
+				3DF3D0FF141C3D2D00431CFF /* libxml2.2.7.3.dylib */,
 				3D846F19141A0FBE00AC9C7D /* UIFramework.xcodeproj */,
 				3D846EF8141A0F7F00AC9C7D /* IPhoneTestApp */,
 				3D846EED141A0F7F00AC9C7D /* Frameworks */,
@@ -123,7 +134,6 @@
 			isa = PBXGroup;
 			children = (
 				3D846F26141A133400AC9C7D /* UIFrameworkBridge.cpp */,
-				3D846F28141A22A500AC9C7D /* EAGLContextBridge.h */,
 				3D846F25141A130600AC9C7D /* UIFrameworkBridge.h */,
 				3D846F01141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.h */,
 				3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m */,
@@ -132,9 +142,12 @@
 				3D846F09141A0F7F00AC9C7D /* Shader.vsh */,
 				3D846F0B141A0F7F00AC9C7D /* EAGLView.h */,
 				3D846F0C141A0F7F00AC9C7D /* EAGLView.m */,
-				3D846F29141A242100AC9C7D /* EAGLContextBridgeGLES20.h */,
 				3D846F0E141A0F7F00AC9C7D /* IPhoneTestAppViewController.h */,
 				3D846F0F141A0F7F00AC9C7D /* IPhoneTestAppViewController.mm */,
+				3DF3D0E8141C02E900431CFF /* EAGLLayerStorageAllocator.h */,
+				3DF3D0EB141C058600431CFF /* EAGLLayerStorageAllocator.mm */,
+				3D846F28141A22A500AC9C7D /* EAGLContextBridge.h */,
+				3D846F29141A242100AC9C7D /* EAGLContextBridgeGLES20.h */,
 				3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */,
 				3D846F11141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib */,
 				3D846EF9141A0F7F00AC9C7D /* Supporting Files */,
@@ -246,6 +259,7 @@
 				3D846F10141A0F7F00AC9C7D /* IPhoneTestAppViewController.mm in Sources */,
 				3D846F27141A133400AC9C7D /* UIFrameworkBridge.cpp in Sources */,
 				3D846F2B141A257900AC9C7D /* EAGLContextBridgeGLES20.mm in Sources */,
+				3DF3D0EC141C058600431CFF /* EAGLLayerStorageAllocator.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +397,7 @@
 				3D846F18141A0F8000AC9C7D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

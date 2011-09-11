@@ -330,6 +330,14 @@
 		3D0784AE1419D7E80052E0DE /* XMLReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0783411419D7E80052E0DE /* XMLReader.cpp */; };
 		3D0784AF1419D7E80052E0DE /* XMLReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0783421419D7E80052E0DE /* XMLReader.h */; };
 		3D9585B8141A02E30059E331 /* DummySal.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9585B7141A02E30059E331 /* DummySal.h */; };
+		3DF3D0DE141BEAE500431CFF /* OpenGLES20GraphicsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0DD141BEAE500431CFF /* OpenGLES20GraphicsDevice.h */; };
+		3DF3D0E1141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DF3D0E0141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp */; };
+		3DF3D0E3141BF7B800431CFF /* OpenGLES20RenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0E2141BF7B800431CFF /* OpenGLES20RenderTarget.h */; };
+		3DF3D0E5141BF7CA00431CFF /* OpenGLES20RenderTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DF3D0E4141BF7CA00431CFF /* OpenGLES20RenderTarget.cpp */; };
+		3DF3D0E7141BFF1C00431CFF /* OpenGLES20Context.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0E6141BFF1C00431CFF /* OpenGLES20Context.h */; };
+		3DF3D0EA141C033800431CFF /* OpenGLES20RenderBufferStorageAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0E9141C033800431CFF /* OpenGLES20RenderBufferStorageAllocator.h */; };
+		3DF3D0EE141C1DEC00431CFF /* LibXMLReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0ED141C1DEC00431CFF /* LibXMLReader.h */; };
+		3DF3D0F0141C233900431CFF /* LibXMLReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DF3D0EF141C233900431CFF /* LibXMLReader.cpp */; };
 		3DF92EEF1419FD3500628C4D /* SystemValues.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF92EEE1419FD3100628C4D /* SystemValues.h */; };
 /* End PBXBuildFile section */
 
@@ -659,6 +667,14 @@
 		3D0783411419D7E80052E0DE /* XMLReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLReader.cpp; sourceTree = "<group>"; };
 		3D0783421419D7E80052E0DE /* XMLReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLReader.h; sourceTree = "<group>"; };
 		3D9585B7141A02E30059E331 /* DummySal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummySal.h; sourceTree = "<group>"; };
+		3DF3D0DD141BEAE500431CFF /* OpenGLES20GraphicsDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20GraphicsDevice.h; sourceTree = "<group>"; };
+		3DF3D0E0141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20GraphicsDevice.cpp; sourceTree = "<group>"; };
+		3DF3D0E2141BF7B800431CFF /* OpenGLES20RenderTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20RenderTarget.h; sourceTree = "<group>"; };
+		3DF3D0E4141BF7CA00431CFF /* OpenGLES20RenderTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20RenderTarget.cpp; sourceTree = "<group>"; };
+		3DF3D0E6141BFF1C00431CFF /* OpenGLES20Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20Context.h; sourceTree = "<group>"; };
+		3DF3D0E9141C033800431CFF /* OpenGLES20RenderBufferStorageAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20RenderBufferStorageAllocator.h; sourceTree = "<group>"; };
+		3DF3D0ED141C1DEC00431CFF /* LibXMLReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibXMLReader.h; sourceTree = "<group>"; };
+		3DF3D0EF141C233900431CFF /* LibXMLReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LibXMLReader.cpp; sourceTree = "<group>"; };
 		3DF92EEE1419FD3100628C4D /* SystemValues.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemValues.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1026,6 +1042,14 @@
 				3D0783411419D7E80052E0DE /* XMLReader.cpp */,
 				3D0783421419D7E80052E0DE /* XMLReader.h */,
 				3DF92EEE1419FD3100628C4D /* SystemValues.h */,
+				3DF3D0DD141BEAE500431CFF /* OpenGLES20GraphicsDevice.h */,
+				3DF3D0E0141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp */,
+				3DF3D0E2141BF7B800431CFF /* OpenGLES20RenderTarget.h */,
+				3DF3D0E4141BF7CA00431CFF /* OpenGLES20RenderTarget.cpp */,
+				3DF3D0E6141BFF1C00431CFF /* OpenGLES20Context.h */,
+				3DF3D0E9141C033800431CFF /* OpenGLES20RenderBufferStorageAllocator.h */,
+				3DF3D0ED141C1DEC00431CFF /* LibXMLReader.h */,
+				3DF3D0EF141C233900431CFF /* LibXMLReader.cpp */,
 			);
 			path = UIFramework;
 			sourceTree = "<group>";
@@ -1202,6 +1226,11 @@
 				3D0784AF1419D7E80052E0DE /* XMLReader.h in Headers */,
 				3DF92EEF1419FD3500628C4D /* SystemValues.h in Headers */,
 				3D9585B8141A02E30059E331 /* DummySal.h in Headers */,
+				3DF3D0DE141BEAE500431CFF /* OpenGLES20GraphicsDevice.h in Headers */,
+				3DF3D0E3141BF7B800431CFF /* OpenGLES20RenderTarget.h in Headers */,
+				3DF3D0E7141BFF1C00431CFF /* OpenGLES20Context.h in Headers */,
+				3DF3D0EA141C033800431CFF /* OpenGLES20RenderBufferStorageAllocator.h in Headers */,
+				3DF3D0EE141C1DEC00431CFF /* LibXMLReader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1410,6 +1439,9 @@
 				3D0784A41419D7E80052E0DE /* VisualContext.cpp in Sources */,
 				3D0784A61419D7E80052E0DE /* VisualResource.cpp in Sources */,
 				3D0784AE1419D7E80052E0DE /* XMLReader.cpp in Sources */,
+				3DF3D0E1141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp in Sources */,
+				3DF3D0E5141BF7CA00431CFF /* OpenGLES20RenderTarget.cpp in Sources */,
+				3DF3D0F0141C233900431CFF /* LibXMLReader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1426,6 +1458,8 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"UIFRAMEWORK_EXPORTS=1",
+					"_DEBUG=1",
 					"DEBUG=1",
 					"$(inherited)",
 				);
@@ -1434,7 +1468,10 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/UIFramework/External/boost";
+				HEADER_SEARCH_PATHS = (
+					"$(SDKROOT)/usr/include/libxml2",
+					"$(SRCROOT)/UIFramework/External/boost",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "";
 				SDKROOT = iphoneos;
@@ -1448,11 +1485,15 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = "UIFRAMEWORK_EXPORTS=1";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/UIFramework/External/boost";
+				HEADER_SEARCH_PATHS = (
+					"$(SDKROOT)/usr/include/libxml2",
+					"$(SRCROOT)/UIFramework/External/boost",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "";
 				SDKROOT = iphoneos;

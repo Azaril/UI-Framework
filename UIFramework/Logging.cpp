@@ -2,6 +2,9 @@
 
 #ifdef _WINDOWS
 #include <atlstr.h>
+#else
+#include <stdio.h>
+#include <wchar.h>
 #endif
 
 namespace logging
@@ -13,6 +16,8 @@ void InternalDebugOutCallbackA(
 {
 #ifdef _WINDOWS    
     OutputDebugStringA(strText);
+#else
+    printf("%s", strText);
 #endif
 }
 
@@ -23,6 +28,8 @@ InternalDebugOutCallbackW(
 {
 #ifdef _WINDOWS
     OutputDebugStringW(strText);
+#else
+    wprintf(L"%ls", strText);
 #endif
 }
 
@@ -98,6 +105,17 @@ DebugOut(
     va_end(args);
 
     InternalDebugOut(FormattedString);
+#else
+    CHAR Buffer[2048];
+    
+    va_list args;
+    va_start(args, pFormat);
+    
+    vsnprintf(Buffer, sizeof(Buffer), pFormat, args);
+    
+    va_end(args);
+    
+    InternalDebugOut(Buffer);
 #endif
 }
 
@@ -118,6 +136,17 @@ DebugOut(
     va_end(args);
 
     InternalDebugOut(FormattedString);
+#else
+    WCHAR Buffer[2048];
+    
+    va_list args;
+    va_start(args, pFormat);
+    
+    vswprintf(Buffer, sizeof(Buffer), pFormat, args);
+    
+    va_end(args);
+    
+    InternalDebugOut(Buffer);
 #endif
 }
 
@@ -136,11 +165,18 @@ void ZoneOut(
 
     va_end(args);
 
-	CStringA ZoneFormat;
-
-	ZoneFormat.Format("[ %s ] - %s", pZone, (LPCSTR)FormattedString);
-
-    InternalDebugOut(ZoneFormat);
+    DebugOut("[ %s ] - %s", pZone, (LPCSTR)FormattedString);
+#else
+    CHAR Buffer[2048];
+    
+    va_list args;
+    va_start(args, pFormat);
+    
+    vsnprintf(Buffer, sizeof(Buffer), pFormat, args);
+    
+    va_end(args);
+    
+    DebugOut("[ %s ] - %s", pZone, Buffer);
 #endif
 }
 
@@ -161,11 +197,18 @@ ZoneOut(
 
     va_end(args);
 
-	CStringW ZoneFormat;
-
-	ZoneFormat.Format(L"[ %s ] - %s", pZone, (LPCWSTR)FormattedString);
-
-    InternalDebugOut(ZoneFormat);
+	DebugOut(L"[ %ls ] - %ls", pZone, (LPCWSTR)FormattedString);
+#else
+    WCHAR Buffer[2048];
+    
+    va_list args;
+    va_start(args, pFormat);
+    
+    vswprintf(Buffer, sizeof(Buffer), pFormat, args);
+    
+    va_end(args);
+    
+    DebugOut("[ %ls ] - %ls", pZone, Buffer);    
 #endif
 }
 
@@ -177,6 +220,14 @@ ZoneLevelOut(
     ...
     )
 {
+    const CHAR* LoggingLevelText[] = 
+    {   
+        "", 
+        "[ CRITICAL ] - ",
+        "[     INFO ] - ",
+        "[  VERBOSE ] - " 
+    };
+    
 #ifdef _WINDOWS
     CStringA FormattedString;
 
@@ -187,16 +238,18 @@ ZoneLevelOut(
 
     va_end(args);
 
-	CStringA ZoneFormat;
-
-    CONST LPCSTR LoggingLevelText[] = { "", 
-                                        "[ CRITICAL ] - ",
-                                        "[     INFO ] - ",
-                                        "[  VERBOSE ] - " };
-
-	ZoneFormat.Format("%s[ %s ] - %s", LoggingLevelText[Level], pZone, (LPCSTR)FormattedString);
-
-    InternalDebugOut(ZoneFormat);
+	DebugOut("%s[ %s ] - %s", LoggingLevelText[Level], pZone, (LPCSTR)FormattedString);
+#else
+    CHAR Buffer[2048];
+    
+    va_list args;
+    va_start(args, pFormat);
+    
+    vsnprintf(Buffer, sizeof(Buffer), pFormat, args);
+    
+    va_end(args);
+    
+    DebugOut("%s[ %s ] - %s", LoggingLevelText[Level], pZone, Buffer); 
 #endif
 }
 
@@ -208,26 +261,36 @@ ZoneLevelOut(
     ...
     )
 {
+    const WCHAR* LoggingLevelText[] = 
+    {   
+        L"", 
+        L"[ CRITICAL ] - ",
+        L"[     INFO ] - ",
+        L"[  VERBOSE ] - " 
+    };
+    
 #ifdef _WINDOWS
     CStringW FormattedString;
-
+    
     va_list args;
     va_start(args, pFormat);
-
+    
     FormattedString.FormatV(pFormat, args);
-
+    
     va_end(args);
-
-	CStringW ZoneFormat;
-
-    CONST LPCWSTR LoggingLevelText[] = { L"", 
-                                         L"[ CRITICAL ] - ",
-                                         L"[     INFO ] - ",
-                                         L"[  VERBOSE ] - " };
-
-	ZoneFormat.Format(L"%s[ %s ] - %s", LoggingLevelText[Level], pZone, (LPCWSTR)FormattedString);
-
-    InternalDebugOut(ZoneFormat);
+    
+	DebugOut(L"l%s[ %ls ] - %ls", LoggingLevelText[Level], pZone, (LPCSTR)FormattedString);
+#else
+    WCHAR Buffer[2048];
+    
+    va_list args;
+    va_start(args, pFormat);
+    
+    vswprintf(Buffer, sizeof(Buffer), pFormat, args);
+    
+    va_end(args);
+    
+    DebugOut(L"%ls[ %ls ] - %ls", LoggingLevelText[Level], pZone, Buffer);     
 #endif
 }
 
