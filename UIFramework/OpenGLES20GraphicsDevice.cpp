@@ -125,8 +125,8 @@ COpenGLES20GraphicsDevice::GetGeometryProvider(
 
     IFCPTR(ppGeometryProvider);
 
-    *ppGeometryProvider = m_GeometryProvider;
-    AddRefObject(m_GeometryProvider);
+    *ppGeometryProvider = m_pGeometryProvider;
+    AddRefObject(m_pGeometryProvider);
 
 Cleanup:
     return hr;

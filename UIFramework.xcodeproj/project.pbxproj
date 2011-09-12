@@ -111,8 +111,6 @@
 		3D0783CD1419D7E80052E0DE /* FocusManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07825B1419D7E80052E0DE /* FocusManager.h */; };
 		3D0783CE1419D7E80052E0DE /* FrameworkElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07825C1419D7E80052E0DE /* FrameworkElement.cpp */; };
 		3D0783CF1419D7E80052E0DE /* FrameworkElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07825D1419D7E80052E0DE /* FrameworkElement.h */; };
-		3D0783D01419D7E80052E0DE /* Geometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07825E1419D7E80052E0DE /* Geometry.cpp */; };
-		3D0783D11419D7E80052E0DE /* Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07825F1419D7E80052E0DE /* Geometry.h */; };
 		3D0783D21419D7E80052E0DE /* GeometryVisual.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782601419D7E80052E0DE /* GeometryVisual.cpp */; };
 		3D0783D31419D7E80052E0DE /* GeometryVisual.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782611419D7E80052E0DE /* GeometryVisual.h */; };
 		3D0783D41419D7E80052E0DE /* Gradient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782621419D7E80052E0DE /* Gradient.cpp */; };
@@ -329,6 +327,48 @@
 		3D0784A71419D7E80052E0DE /* VisualResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07833A1419D7E80052E0DE /* VisualResource.h */; };
 		3D0784AE1419D7E80052E0DE /* XMLReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0783411419D7E80052E0DE /* XMLReader.cpp */; };
 		3D0784AF1419D7E80052E0DE /* XMLReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0783421419D7E80052E0DE /* XMLReader.h */; };
+		3D07DECB141D882F00130174 /* BezierSegment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEA3141D882F00130174 /* BezierSegment.cpp */; };
+		3D07DECC141D882F00130174 /* BezierSegment.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEA4141D882F00130174 /* BezierSegment.h */; };
+		3D07DECD141D882F00130174 /* CoreFigureBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEA5141D882F00130174 /* CoreFigureBuilder.cpp */; };
+		3D07DECE141D882F00130174 /* CoreFigureBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEA6141D882F00130174 /* CoreFigureBuilder.h */; };
+		3D07DECF141D882F00130174 /* CoreFigureData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEA7141D882F00130174 /* CoreFigureData.cpp */; };
+		3D07DED0141D882F00130174 /* CoreFigureData.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEA8141D882F00130174 /* CoreFigureData.h */; };
+		3D07DED1141D882F00130174 /* CoreGeometryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEA9141D882F00130174 /* CoreGeometryProvider.cpp */; };
+		3D07DED2141D882F00130174 /* CoreGeometryProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEAA141D882F00130174 /* CoreGeometryProvider.h */; };
+		3D07DED3141D882F00130174 /* CoreGraphicsShapeBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEAB141D882F00130174 /* CoreGraphicsShapeBuilder.cpp */; };
+		3D07DED4141D882F00130174 /* CoreGraphicsShapeBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEAC141D882F00130174 /* CoreGraphicsShapeBuilder.h */; };
+		3D07DED5141D882F00130174 /* CorePathGraphicsGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEAD141D882F00130174 /* CorePathGraphicsGeometry.cpp */; };
+		3D07DED6141D882F00130174 /* CorePathGraphicsGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEAE141D882F00130174 /* CorePathGraphicsGeometry.h */; };
+		3D07DED7141D882F00130174 /* CoreRectangleGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEAF141D882F00130174 /* CoreRectangleGeometry.cpp */; };
+		3D07DED8141D882F00130174 /* CoreRectangleGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEB0141D882F00130174 /* CoreRectangleGeometry.h */; };
+		3D07DED9141D882F00130174 /* CoreRoundedRectangleGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEB1141D882F00130174 /* CoreRoundedRectangleGeometry.cpp */; };
+		3D07DEDA141D882F00130174 /* CoreRoundedRectangleGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEB2141D882F00130174 /* CoreRoundedRectangleGeometry.h */; };
+		3D07DEDB141D882F00130174 /* CoreShapeData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEB3141D882F00130174 /* CoreShapeData.cpp */; };
+		3D07DEDC141D882F00130174 /* CoreShapeData.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEB4141D882F00130174 /* CoreShapeData.h */; };
+		3D07DEDD141D882F00130174 /* FigureBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEB5141D882F00130174 /* FigureBuilder.cpp */; };
+		3D07DEDE141D882F00130174 /* FigureBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEB6141D882F00130174 /* FigureBuilder.h */; };
+		3D07DEDF141D882F00130174 /* GeometryBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEB7141D882F00130174 /* GeometryBuilder.cpp */; };
+		3D07DEE0141D882F00130174 /* GeometryBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEB8141D882F00130174 /* GeometryBuilder.h */; };
+		3D07DEE1141D882F00130174 /* GeometryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEB9141D882F00130174 /* GeometryProvider.cpp */; };
+		3D07DEE2141D882F00130174 /* GeometryProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEBA141D882F00130174 /* GeometryProvider.h */; };
+		3D07DEE3141D882F00130174 /* GeometrySink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEBB141D882F00130174 /* GeometrySink.cpp */; };
+		3D07DEE4141D882F00130174 /* GeometrySink.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEBC141D882F00130174 /* GeometrySink.h */; };
+		3D07DEE5141D882F00130174 /* GraphicsGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEBD141D882F00130174 /* GraphicsGeometry.cpp */; };
+		3D07DEE6141D882F00130174 /* GraphicsGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEBE141D882F00130174 /* GraphicsGeometry.h */; };
+		3D07DEE7141D882F00130174 /* GraphicsGeometryBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEBF141D882F00130174 /* GraphicsGeometryBuilder.cpp */; };
+		3D07DEE8141D882F00130174 /* GraphicsGeometryBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEC0141D882F00130174 /* GraphicsGeometryBuilder.h */; };
+		3D07DEE9141D882F00130174 /* PathGraphicsGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEC1141D882F00130174 /* PathGraphicsGeometry.cpp */; };
+		3D07DEEA141D882F00130174 /* PathGraphicsGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEC2141D882F00130174 /* PathGraphicsGeometry.h */; };
+		3D07DEEB141D882F00130174 /* RectangleGraphicsGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEC3141D882F00130174 /* RectangleGraphicsGeometry.cpp */; };
+		3D07DEEC141D882F00130174 /* RectangleGraphicsGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEC4141D882F00130174 /* RectangleGraphicsGeometry.h */; };
+		3D07DEED141D882F00130174 /* RoundedRectangleGraphicsGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEC5141D882F00130174 /* RoundedRectangleGraphicsGeometry.cpp */; };
+		3D07DEEE141D882F00130174 /* RoundedRectangleGraphicsGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEC6141D882F00130174 /* RoundedRectangleGraphicsGeometry.h */; };
+		3D07DEEF141D882F00130174 /* ShapeBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEC7141D882F00130174 /* ShapeBuilder.cpp */; };
+		3D07DEF0141D882F00130174 /* ShapeBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEC8141D882F00130174 /* ShapeBuilder.h */; };
+		3D07DEF1141D882F00130174 /* ShapeData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEC9141D882F00130174 /* ShapeData.cpp */; };
+		3D07DEF2141D882F00130174 /* ShapeData.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DECA141D882F00130174 /* ShapeData.h */; };
+		3D07DEF4141D8E1B00130174 /* OpenGLES20SolidColorBrush.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */; };
+		3D07DEF6141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */; };
 		3D9585B8141A02E30059E331 /* DummySal.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9585B7141A02E30059E331 /* DummySal.h */; };
 		3DF3D0DE141BEAE500431CFF /* OpenGLES20GraphicsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0DD141BEAE500431CFF /* OpenGLES20GraphicsDevice.h */; };
 		3DF3D0E1141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DF3D0E0141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp */; };
@@ -448,8 +488,6 @@
 		3D07825B1419D7E80052E0DE /* FocusManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FocusManager.h; sourceTree = "<group>"; };
 		3D07825C1419D7E80052E0DE /* FrameworkElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameworkElement.cpp; sourceTree = "<group>"; };
 		3D07825D1419D7E80052E0DE /* FrameworkElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameworkElement.h; sourceTree = "<group>"; };
-		3D07825E1419D7E80052E0DE /* Geometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Geometry.cpp; sourceTree = "<group>"; };
-		3D07825F1419D7E80052E0DE /* Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geometry.h; sourceTree = "<group>"; };
 		3D0782601419D7E80052E0DE /* GeometryVisual.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeometryVisual.cpp; sourceTree = "<group>"; };
 		3D0782611419D7E80052E0DE /* GeometryVisual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeometryVisual.h; sourceTree = "<group>"; };
 		3D0782621419D7E80052E0DE /* Gradient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Gradient.cpp; sourceTree = "<group>"; };
@@ -666,6 +704,48 @@
 		3D07833A1419D7E80052E0DE /* VisualResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualResource.h; sourceTree = "<group>"; };
 		3D0783411419D7E80052E0DE /* XMLReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLReader.cpp; sourceTree = "<group>"; };
 		3D0783421419D7E80052E0DE /* XMLReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLReader.h; sourceTree = "<group>"; };
+		3D07DEA3141D882F00130174 /* BezierSegment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BezierSegment.cpp; sourceTree = "<group>"; };
+		3D07DEA4141D882F00130174 /* BezierSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BezierSegment.h; sourceTree = "<group>"; };
+		3D07DEA5141D882F00130174 /* CoreFigureBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreFigureBuilder.cpp; sourceTree = "<group>"; };
+		3D07DEA6141D882F00130174 /* CoreFigureBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreFigureBuilder.h; sourceTree = "<group>"; };
+		3D07DEA7141D882F00130174 /* CoreFigureData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreFigureData.cpp; sourceTree = "<group>"; };
+		3D07DEA8141D882F00130174 /* CoreFigureData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreFigureData.h; sourceTree = "<group>"; };
+		3D07DEA9141D882F00130174 /* CoreGeometryProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreGeometryProvider.cpp; sourceTree = "<group>"; };
+		3D07DEAA141D882F00130174 /* CoreGeometryProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreGeometryProvider.h; sourceTree = "<group>"; };
+		3D07DEAB141D882F00130174 /* CoreGraphicsShapeBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreGraphicsShapeBuilder.cpp; sourceTree = "<group>"; };
+		3D07DEAC141D882F00130174 /* CoreGraphicsShapeBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreGraphicsShapeBuilder.h; sourceTree = "<group>"; };
+		3D07DEAD141D882F00130174 /* CorePathGraphicsGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CorePathGraphicsGeometry.cpp; sourceTree = "<group>"; };
+		3D07DEAE141D882F00130174 /* CorePathGraphicsGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CorePathGraphicsGeometry.h; sourceTree = "<group>"; };
+		3D07DEAF141D882F00130174 /* CoreRectangleGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreRectangleGeometry.cpp; sourceTree = "<group>"; };
+		3D07DEB0141D882F00130174 /* CoreRectangleGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreRectangleGeometry.h; sourceTree = "<group>"; };
+		3D07DEB1141D882F00130174 /* CoreRoundedRectangleGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreRoundedRectangleGeometry.cpp; sourceTree = "<group>"; };
+		3D07DEB2141D882F00130174 /* CoreRoundedRectangleGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreRoundedRectangleGeometry.h; sourceTree = "<group>"; };
+		3D07DEB3141D882F00130174 /* CoreShapeData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreShapeData.cpp; sourceTree = "<group>"; };
+		3D07DEB4141D882F00130174 /* CoreShapeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreShapeData.h; sourceTree = "<group>"; };
+		3D07DEB5141D882F00130174 /* FigureBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FigureBuilder.cpp; sourceTree = "<group>"; };
+		3D07DEB6141D882F00130174 /* FigureBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FigureBuilder.h; sourceTree = "<group>"; };
+		3D07DEB7141D882F00130174 /* GeometryBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeometryBuilder.cpp; sourceTree = "<group>"; };
+		3D07DEB8141D882F00130174 /* GeometryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeometryBuilder.h; sourceTree = "<group>"; };
+		3D07DEB9141D882F00130174 /* GeometryProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeometryProvider.cpp; sourceTree = "<group>"; };
+		3D07DEBA141D882F00130174 /* GeometryProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeometryProvider.h; sourceTree = "<group>"; };
+		3D07DEBB141D882F00130174 /* GeometrySink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeometrySink.cpp; sourceTree = "<group>"; };
+		3D07DEBC141D882F00130174 /* GeometrySink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeometrySink.h; sourceTree = "<group>"; };
+		3D07DEBD141D882F00130174 /* GraphicsGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsGeometry.cpp; sourceTree = "<group>"; };
+		3D07DEBE141D882F00130174 /* GraphicsGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicsGeometry.h; sourceTree = "<group>"; };
+		3D07DEBF141D882F00130174 /* GraphicsGeometryBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsGeometryBuilder.cpp; sourceTree = "<group>"; };
+		3D07DEC0141D882F00130174 /* GraphicsGeometryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicsGeometryBuilder.h; sourceTree = "<group>"; };
+		3D07DEC1141D882F00130174 /* PathGraphicsGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PathGraphicsGeometry.cpp; sourceTree = "<group>"; };
+		3D07DEC2141D882F00130174 /* PathGraphicsGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathGraphicsGeometry.h; sourceTree = "<group>"; };
+		3D07DEC3141D882F00130174 /* RectangleGraphicsGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RectangleGraphicsGeometry.cpp; sourceTree = "<group>"; };
+		3D07DEC4141D882F00130174 /* RectangleGraphicsGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RectangleGraphicsGeometry.h; sourceTree = "<group>"; };
+		3D07DEC5141D882F00130174 /* RoundedRectangleGraphicsGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RoundedRectangleGraphicsGeometry.cpp; sourceTree = "<group>"; };
+		3D07DEC6141D882F00130174 /* RoundedRectangleGraphicsGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedRectangleGraphicsGeometry.h; sourceTree = "<group>"; };
+		3D07DEC7141D882F00130174 /* ShapeBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeBuilder.cpp; sourceTree = "<group>"; };
+		3D07DEC8141D882F00130174 /* ShapeBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeBuilder.h; sourceTree = "<group>"; };
+		3D07DEC9141D882F00130174 /* ShapeData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeData.cpp; sourceTree = "<group>"; };
+		3D07DECA141D882F00130174 /* ShapeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeData.h; sourceTree = "<group>"; };
+		3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20SolidColorBrush.h; sourceTree = "<group>"; };
+		3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20SolidColorBrush.cpp; sourceTree = "<group>"; };
 		3D9585B7141A02E30059E331 /* DummySal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummySal.h; sourceTree = "<group>"; };
 		3DF3D0DD141BEAE500431CFF /* OpenGLES20GraphicsDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20GraphicsDevice.h; sourceTree = "<group>"; };
 		3DF3D0E0141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20GraphicsDevice.cpp; sourceTree = "<group>"; };
@@ -718,6 +798,46 @@
 		3D06B5CD1419D4880097C7D9 /* UIFramework */ = {
 			isa = PBXGroup;
 			children = (
+				3D07DEA3141D882F00130174 /* BezierSegment.cpp */,
+				3D07DEA4141D882F00130174 /* BezierSegment.h */,
+				3D07DEA5141D882F00130174 /* CoreFigureBuilder.cpp */,
+				3D07DEA6141D882F00130174 /* CoreFigureBuilder.h */,
+				3D07DEA7141D882F00130174 /* CoreFigureData.cpp */,
+				3D07DEA8141D882F00130174 /* CoreFigureData.h */,
+				3D07DEA9141D882F00130174 /* CoreGeometryProvider.cpp */,
+				3D07DEAA141D882F00130174 /* CoreGeometryProvider.h */,
+				3D07DEAB141D882F00130174 /* CoreGraphicsShapeBuilder.cpp */,
+				3D07DEAC141D882F00130174 /* CoreGraphicsShapeBuilder.h */,
+				3D07DEAD141D882F00130174 /* CorePathGraphicsGeometry.cpp */,
+				3D07DEAE141D882F00130174 /* CorePathGraphicsGeometry.h */,
+				3D07DEAF141D882F00130174 /* CoreRectangleGeometry.cpp */,
+				3D07DEB0141D882F00130174 /* CoreRectangleGeometry.h */,
+				3D07DEB1141D882F00130174 /* CoreRoundedRectangleGeometry.cpp */,
+				3D07DEB2141D882F00130174 /* CoreRoundedRectangleGeometry.h */,
+				3D07DEB3141D882F00130174 /* CoreShapeData.cpp */,
+				3D07DEB4141D882F00130174 /* CoreShapeData.h */,
+				3D07DEB5141D882F00130174 /* FigureBuilder.cpp */,
+				3D07DEB6141D882F00130174 /* FigureBuilder.h */,
+				3D07DEB7141D882F00130174 /* GeometryBuilder.cpp */,
+				3D07DEB8141D882F00130174 /* GeometryBuilder.h */,
+				3D07DEB9141D882F00130174 /* GeometryProvider.cpp */,
+				3D07DEBA141D882F00130174 /* GeometryProvider.h */,
+				3D07DEBB141D882F00130174 /* GeometrySink.cpp */,
+				3D07DEBC141D882F00130174 /* GeometrySink.h */,
+				3D07DEBD141D882F00130174 /* GraphicsGeometry.cpp */,
+				3D07DEBE141D882F00130174 /* GraphicsGeometry.h */,
+				3D07DEBF141D882F00130174 /* GraphicsGeometryBuilder.cpp */,
+				3D07DEC0141D882F00130174 /* GraphicsGeometryBuilder.h */,
+				3D07DEC1141D882F00130174 /* PathGraphicsGeometry.cpp */,
+				3D07DEC2141D882F00130174 /* PathGraphicsGeometry.h */,
+				3D07DEC3141D882F00130174 /* RectangleGraphicsGeometry.cpp */,
+				3D07DEC4141D882F00130174 /* RectangleGraphicsGeometry.h */,
+				3D07DEC5141D882F00130174 /* RoundedRectangleGraphicsGeometry.cpp */,
+				3D07DEC6141D882F00130174 /* RoundedRectangleGraphicsGeometry.h */,
+				3D07DEC7141D882F00130174 /* ShapeBuilder.cpp */,
+				3D07DEC8141D882F00130174 /* ShapeBuilder.h */,
+				3D07DEC9141D882F00130174 /* ShapeData.cpp */,
+				3D07DECA141D882F00130174 /* ShapeData.h */,
 				3D9585B7141A02E30059E331 /* DummySal.h */,
 				3D0781D01419D7E80052E0DE /* AddToCollectionCommand.cpp */,
 				3D0781D11419D7E80052E0DE /* AddToCollectionCommand.h */,
@@ -823,8 +943,6 @@
 				3D07825B1419D7E80052E0DE /* FocusManager.h */,
 				3D07825C1419D7E80052E0DE /* FrameworkElement.cpp */,
 				3D07825D1419D7E80052E0DE /* FrameworkElement.h */,
-				3D07825E1419D7E80052E0DE /* Geometry.cpp */,
-				3D07825F1419D7E80052E0DE /* Geometry.h */,
 				3D0782601419D7E80052E0DE /* GeometryVisual.cpp */,
 				3D0782611419D7E80052E0DE /* GeometryVisual.h */,
 				3D0782621419D7E80052E0DE /* Gradient.cpp */,
@@ -1050,6 +1168,8 @@
 				3DF3D0E9141C033800431CFF /* OpenGLES20RenderBufferStorageAllocator.h */,
 				3DF3D0ED141C1DEC00431CFF /* LibXMLReader.h */,
 				3DF3D0EF141C233900431CFF /* LibXMLReader.cpp */,
+				3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */,
+				3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */,
 			);
 			path = UIFramework;
 			sourceTree = "<group>";
@@ -1114,7 +1234,6 @@
 				3D0783CB1419D7E80052E0DE /* FloatAnimationBase.h in Headers */,
 				3D0783CD1419D7E80052E0DE /* FocusManager.h in Headers */,
 				3D0783CF1419D7E80052E0DE /* FrameworkElement.h in Headers */,
-				3D0783D11419D7E80052E0DE /* Geometry.h in Headers */,
 				3D0783D31419D7E80052E0DE /* GeometryVisual.h in Headers */,
 				3D0783D51419D7E80052E0DE /* Gradient.h in Headers */,
 				3D0783D71419D7E80052E0DE /* GradientBrush.h in Headers */,
@@ -1231,6 +1350,27 @@
 				3DF3D0E7141BFF1C00431CFF /* OpenGLES20Context.h in Headers */,
 				3DF3D0EA141C033800431CFF /* OpenGLES20RenderBufferStorageAllocator.h in Headers */,
 				3DF3D0EE141C1DEC00431CFF /* LibXMLReader.h in Headers */,
+				3D07DECC141D882F00130174 /* BezierSegment.h in Headers */,
+				3D07DECE141D882F00130174 /* CoreFigureBuilder.h in Headers */,
+				3D07DED0141D882F00130174 /* CoreFigureData.h in Headers */,
+				3D07DED2141D882F00130174 /* CoreGeometryProvider.h in Headers */,
+				3D07DED4141D882F00130174 /* CoreGraphicsShapeBuilder.h in Headers */,
+				3D07DED6141D882F00130174 /* CorePathGraphicsGeometry.h in Headers */,
+				3D07DED8141D882F00130174 /* CoreRectangleGeometry.h in Headers */,
+				3D07DEDA141D882F00130174 /* CoreRoundedRectangleGeometry.h in Headers */,
+				3D07DEDC141D882F00130174 /* CoreShapeData.h in Headers */,
+				3D07DEDE141D882F00130174 /* FigureBuilder.h in Headers */,
+				3D07DEE0141D882F00130174 /* GeometryBuilder.h in Headers */,
+				3D07DEE2141D882F00130174 /* GeometryProvider.h in Headers */,
+				3D07DEE4141D882F00130174 /* GeometrySink.h in Headers */,
+				3D07DEE6141D882F00130174 /* GraphicsGeometry.h in Headers */,
+				3D07DEE8141D882F00130174 /* GraphicsGeometryBuilder.h in Headers */,
+				3D07DEEA141D882F00130174 /* PathGraphicsGeometry.h in Headers */,
+				3D07DEEC141D882F00130174 /* RectangleGraphicsGeometry.h in Headers */,
+				3D07DEEE141D882F00130174 /* RoundedRectangleGraphicsGeometry.h in Headers */,
+				3D07DEF0141D882F00130174 /* ShapeBuilder.h in Headers */,
+				3D07DEF2141D882F00130174 /* ShapeData.h in Headers */,
+				3D07DEF4141D8E1B00130174 /* OpenGLES20SolidColorBrush.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1331,7 +1471,6 @@
 				3D0783CA1419D7E80052E0DE /* FloatAnimationBase.cpp in Sources */,
 				3D0783CC1419D7E80052E0DE /* FocusManager.cpp in Sources */,
 				3D0783CE1419D7E80052E0DE /* FrameworkElement.cpp in Sources */,
-				3D0783D01419D7E80052E0DE /* Geometry.cpp in Sources */,
 				3D0783D21419D7E80052E0DE /* GeometryVisual.cpp in Sources */,
 				3D0783D41419D7E80052E0DE /* Gradient.cpp in Sources */,
 				3D0783D61419D7E80052E0DE /* GradientBrush.cpp in Sources */,
@@ -1442,6 +1581,27 @@
 				3DF3D0E1141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp in Sources */,
 				3DF3D0E5141BF7CA00431CFF /* OpenGLES20RenderTarget.cpp in Sources */,
 				3DF3D0F0141C233900431CFF /* LibXMLReader.cpp in Sources */,
+				3D07DECB141D882F00130174 /* BezierSegment.cpp in Sources */,
+				3D07DECD141D882F00130174 /* CoreFigureBuilder.cpp in Sources */,
+				3D07DECF141D882F00130174 /* CoreFigureData.cpp in Sources */,
+				3D07DED1141D882F00130174 /* CoreGeometryProvider.cpp in Sources */,
+				3D07DED3141D882F00130174 /* CoreGraphicsShapeBuilder.cpp in Sources */,
+				3D07DED5141D882F00130174 /* CorePathGraphicsGeometry.cpp in Sources */,
+				3D07DED7141D882F00130174 /* CoreRectangleGeometry.cpp in Sources */,
+				3D07DED9141D882F00130174 /* CoreRoundedRectangleGeometry.cpp in Sources */,
+				3D07DEDB141D882F00130174 /* CoreShapeData.cpp in Sources */,
+				3D07DEDD141D882F00130174 /* FigureBuilder.cpp in Sources */,
+				3D07DEDF141D882F00130174 /* GeometryBuilder.cpp in Sources */,
+				3D07DEE1141D882F00130174 /* GeometryProvider.cpp in Sources */,
+				3D07DEE3141D882F00130174 /* GeometrySink.cpp in Sources */,
+				3D07DEE5141D882F00130174 /* GraphicsGeometry.cpp in Sources */,
+				3D07DEE7141D882F00130174 /* GraphicsGeometryBuilder.cpp in Sources */,
+				3D07DEE9141D882F00130174 /* PathGraphicsGeometry.cpp in Sources */,
+				3D07DEEB141D882F00130174 /* RectangleGraphicsGeometry.cpp in Sources */,
+				3D07DEED141D882F00130174 /* RoundedRectangleGraphicsGeometry.cpp in Sources */,
+				3D07DEEF141D882F00130174 /* ShapeBuilder.cpp in Sources */,
+				3D07DEF1141D882F00130174 /* ShapeData.cpp in Sources */,
+				3D07DEF6141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

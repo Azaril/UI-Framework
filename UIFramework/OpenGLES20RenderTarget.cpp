@@ -1,4 +1,8 @@
 #include "OpenGLES20RenderTarget.h"
+#include "OpenGLES20SolidColorBrush.h"
+#include "CoreRectangleGeometry.h"
+#include "CoreRoundedRectangleGeometry.h"
+#include "CorePathGraphicsGeometry.h"
 
 COpenGLES20RenderTarget::COpenGLES20RenderTarget(
 	) 
@@ -134,21 +138,17 @@ COpenGLES20RenderTarget::CreateSolidBrush(
 	)
 {
     HRESULT hr = S_OK;
-//     ID2D1SolidColorBrush* pD2DSolidColorBrush = NULL;
-//     CD2DSolidColorBrush* pSolidBrush = NULL;
+    COpenGLES20SolidColorBrush* pSolidBrush = NULL;
 
-//     IFCPTR(ppBrush);
+     IFCPTR(ppBrush);
 
-//     IFC(m_RenderTarget->CreateSolidColorBrush(Color, &pD2DSolidColorBrush));
+     IFC(COpenGLES20SolidColorBrush::Create(Color, &pSolidBrush));
 
-//     IFC(CD2DSolidColorBrush::Create(pD2DSolidColorBrush, &pSolidBrush));
+     *ppBrush = pSolidBrush;
+     pSolidBrush = NULL;
 
-//     *ppBrush = pSolidBrush;
-//     pSolidBrush = NULL;
-
-// Cleanup:
-//     ReleaseObject(pD2DSolidColorBrush);
-//     ReleaseObject(pSolidBrush);
+ Cleanup:
+     ReleaseObject(pSolidBrush);
 
     return hr;
 }
@@ -370,7 +370,7 @@ COpenGLES20RenderTarget::CreateBitmapBrush(
 
 __checkReturn HRESULT 
 COpenGLES20RenderTarget::FillGeometry(
-	__in const CGeometry* pGeometry,
+	__in const CGraphicsGeometry* pGeometry,
 	__in const CGraphicsBrush* pBrush
 	)
 {
@@ -382,39 +382,39 @@ COpenGLES20RenderTarget::FillGeometry(
 
     // pD2DBrush = (CD2DBrush*)pBrush;
 
-    // switch(pGeometry->GetType())
-    // {
-    //     case TypeIndex::RectangleGeometry:
-    //         {
-    //             CD2DRectangleGeometry* pRectangleGeometry = (CD2DRectangleGeometry*)pGeometry;
+    switch(pGeometry->GetType())
+    {
+        case TypeIndex::RectangleGraphicsGeometry:
+            {
+                CCoreRectangleGeometry* pRectangleGeometry = (CCoreRectangleGeometry*)pGeometry;
 
-    //             m_RenderTarget->FillGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
+                //m_RenderTarget->FillGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
 
-    //             break;
-    //         }
+                break;
+            }
 
-    //     case TypeIndex::RoundedRectangleGeometry:
-    //         {
-    //             CD2DRoundedRectangleGeometry* pRoundedRectangleGeometry = (CD2DRoundedRectangleGeometry*)pGeometry;
+        case TypeIndex::RoundedRectangleGraphicsGeometry:
+            {
+                CCoreRoundedRectangleGeometry* pRoundedRectangleGeometry = (CCoreRoundedRectangleGeometry*)pGeometry;
 
-    //             m_RenderTarget->FillGeometry(pRoundedRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
+                //m_RenderTarget->FillGeometry(pRoundedRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
 
-    //             break;
-    //         }
+                break;
+            }
 
-    //     default:
-    //         {
-    //             IFC(E_UNEXPECTED);
-    //         }
-    // }
+        default:
+            {
+                IFC(E_UNEXPECTED);
+            }
+    }
 
-// Cleanup:
+Cleanup:
     return hr;
 }
 
 __checkReturn HRESULT 
 COpenGLES20RenderTarget::DrawGeometry(
-	__in const CGeometry* pGeometry, 
+	__in const CGraphicsGeometry* pGeometry, 
 	__in const CGraphicsBrush* pBrush, 
 	FLOAT StrokeThickness
 	)
@@ -466,7 +466,7 @@ COpenGLES20RenderTarget::PushLayer(
 	__in const CLayer* pLayer, 
 	const RectF& ClippingRect,
 	FLOAT Opacity, 
-	__in_opt const CGeometry* pClippingGeometry
+	__in_opt const CGraphicsGeometry* pClippingGeometry
 	)
 {
     HRESULT hr = S_OK;

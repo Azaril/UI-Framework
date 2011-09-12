@@ -15,6 +15,15 @@ CCoreGeometryProvider::~CCoreGeometryProvider(
 {
 }
 
+__checkReturn HRESULT
+CCoreGeometryProvider::Initialize(
+    )
+{
+    HRESULT hr = S_OK;
+    
+    return hr;
+}
+
 __override __checkReturn HRESULT 
 CCoreGeometryProvider::CreateRectangleGeometry( 
 	const RectF& Rectangle, 

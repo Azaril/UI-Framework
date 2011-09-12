@@ -49,6 +49,10 @@ class COpenGLES20GraphicsDevice : public CGraphicsDevice
         virtual __checkReturn HRESULT CreateImagingProvider( 
             __deref_out CImagingProvider** ppImagingProvider 
             );            
+    
+        virtual __checkReturn HRESULT CreateGeometryProvider(
+            __deref_out CGeometryProvider** ppGeometryProvider
+            );
 
         CTextProvider* m_pTextProvider;
         CImagingProvider* m_pImagingProvider;

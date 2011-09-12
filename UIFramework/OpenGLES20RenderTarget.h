@@ -75,13 +75,13 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget
 			);
 
         __override virtual __checkReturn HRESULT DrawGeometry( 
-			__in const CGeometry* pGeometry, 
+			__in const CGraphicsGeometry* pGeometry, 
 			__in const CGraphicsBrush* pBrush, 
 			FLOAT StrokeThickness = 1.0f 
 			);
 
         __override virtual __checkReturn HRESULT FillGeometry( 
-			__in const CGeometry* pGeometry, 
+			__in const CGraphicsGeometry* pGeometry, 
 			__in const CGraphicsBrush* pBrush
 			);
 
@@ -93,7 +93,7 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget
 			__in const CLayer* pLayer, 
 			const RectF& ClippingRect,
 			FLOAT Opacity, 
-			__in const CGeometry* pClippingGeometry
+			__in const CGraphicsGeometry* pClippingGeometry
 			);
 
         __override virtual __checkReturn HRESULT PopLayer(
