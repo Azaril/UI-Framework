@@ -113,6 +113,18 @@
     <Filter Include="Framework\UI\Layout">
       <UniqueIdentifier>{b22d0d5e-e56d-49db-8d8e-f19b33b52c73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Graphics\Geometry">
+      <UniqueIdentifier>{bec7e689-9251-4ecf-8416-a8f018bf1b45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Graphics\Core">
+      <UniqueIdentifier>{0f30762d-1da7-4f66-9c7b-b3271bbf67dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\VisualResources\Brush">
+      <UniqueIdentifier>{cc689bee-2dc3-46b6-9606-878d3cecbd6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\UI\VisualResources\Geometry">
+      <UniqueIdentifier>{f938315d-88bd-417f-93d2-6ea5828375d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -134,9 +146,6 @@
       <Filter>Framework\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Bitmap.cpp">
-      <Filter>Framework\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry.cpp">
       <Filter>Framework\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsBrush.cpp">
@@ -336,24 +345,6 @@
     </ClCompile>
     <ClCompile Include="TypeConverter.cpp">
       <Filter>Framework\UI\Properties</Filter>
-    </ClCompile>
-    <ClCompile Include="Brush.cpp">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClCompile>
-    <ClCompile Include="GradientBrush.cpp">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClCompile>
-    <ClCompile Include="GradientStop.cpp">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageBrush.cpp">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClCompile>
-    <ClCompile Include="LinearGradientBrush.cpp">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClCompile>
-    <ClCompile Include="SolidColorBrush.cpp">
-      <Filter>Framework\UI\VisualResources</Filter>
     </ClCompile>
     <ClCompile Include="FocusManager.cpp">
       <Filter>Framework\UI\Input</Filter>
@@ -652,6 +643,93 @@
     <ClCompile Include="LayoutManager.cpp">
       <Filter>Framework\UI\Layout</Filter>
     </ClCompile>
+    <ClCompile Include="GeometryProvider.cpp">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DGeometryProvider.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreGeometryProvider.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryBuilder.cpp">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometrySink.cpp">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="BezierSegment.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsGeometry.cpp">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleGraphicsGeometry.cpp">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="RoundedRectangleGraphicsGeometry.cpp">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsGeometryBuilder.cpp">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreShapeData.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapeBuilder.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapeData.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreGraphicsShapeBuilder.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CorePathGraphicsGeometry.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="PathGraphicsGeometry.cpp">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="FigureBuilder.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreFigureBuilder.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreFigureData.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DGeometryBuilder.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DPathGeometry.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Brush.cpp">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClCompile>
+    <ClCompile Include="GradientBrush.cpp">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClCompile>
+    <ClCompile Include="GradientStop.cpp">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageBrush.cpp">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearGradientBrush.cpp">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClCompile>
+    <ClCompile Include="SolidColorBrush.cpp">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreRectangleGeometry.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreRoundedRectangleGeometry.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -673,9 +751,6 @@
       <Filter>Framework\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Bitmap.h">
-      <Filter>Framework\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry.h">
       <Filter>Framework\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsBrush.h">
@@ -878,24 +953,6 @@
     </ClInclude>
     <ClInclude Include="TypeIndex.h">
       <Filter>Framework\UI\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="Brush.h">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClInclude>
-    <ClInclude Include="GradientBrush.h">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClInclude>
-    <ClInclude Include="GradientStop.h">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageBrush.h">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClInclude>
-    <ClInclude Include="LinearGradientBrush.h">
-      <Filter>Framework\UI\VisualResources</Filter>
-    </ClInclude>
-    <ClInclude Include="SolidColorBrush.h">
-      <Filter>Framework\UI\VisualResources</Filter>
     </ClInclude>
     <ClInclude Include="FocusManager.h">
       <Filter>Framework\UI\Input</Filter>
@@ -1208,6 +1265,93 @@
     </ClInclude>
     <ClInclude Include="LayoutManager.h">
       <Filter>Framework\UI\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryProvider.h">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DGeometryProvider.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreGeometryProvider.h">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometrySink.h">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryBuilder.h">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="BezierSegment.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsGeometry.h">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleGraphicsGeometry.h">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="RoundedRectangleGraphicsGeometry.h">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsGeometryBuilder.h">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreShapeData.h">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeBuilder.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeData.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreGraphicsShapeBuilder.h">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePathGraphicsGeometry.h">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PathGraphicsGeometry.h">
+      <Filter>Framework\Graphics\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="FigureBuilder.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreFigureBuilder.h">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreFigureData.h">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DGeometryBuilder.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DPathGeometry.h">
+      <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="SolidColorBrush.h">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClInclude>
+    <ClInclude Include="Brush.h">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClInclude>
+    <ClInclude Include="GradientBrush.h">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClInclude>
+    <ClInclude Include="GradientStop.h">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageBrush.h">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearGradientBrush.h">
+      <Filter>Framework\UI\VisualResources\Brush</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreRectangleGeometry.h">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreRoundedRectangleGeometry.h">
+      <Filter>Framework\Graphics\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

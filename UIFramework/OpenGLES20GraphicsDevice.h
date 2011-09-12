@@ -28,15 +28,8 @@ class COpenGLES20GraphicsDevice : public CGraphicsDevice
             __deref_out CImagingProvider** ppImagingProvider 
             );
 
-        __override virtual __checkReturn HRESULT CreateRectangleGeometry( 
-            const RectF& Rectangle, 
-            __deref_out CRectangleGeometry** ppRectangleGeometry
-            );
-
-        __override virtual __checkReturn HRESULT CreateRoundedRectangleGeometry( 
-            const RectF& Rectangle, 
-            FLOAT CornerRadius, 
-            __deref_out CRoundedRectangleGeometry** ppRectangleGeometry 
+        __override virtual __checkReturn HRESULT GetGeometryProvider(
+            __deref_out CGeometryProvider** ppGeometryProvider
             );
 
 	protected:
@@ -59,4 +52,5 @@ class COpenGLES20GraphicsDevice : public CGraphicsDevice
 
         CTextProvider* m_pTextProvider;
         CImagingProvider* m_pImagingProvider;
+        CGeometryProvider* m_pGeometryProvider;
 };

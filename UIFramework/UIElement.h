@@ -393,7 +393,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual,
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
         virtual HRESULT RenderInternal( CRenderContext& Context );
 
-        virtual HRESULT GetClippingGeometry( CGeometry** ppGeometry );
+        virtual HRESULT GetClippingGeometry( CGraphicsGeometry** ppGeometry );
         virtual HRESULT GetClippingRectangle( RectF* pClippingRectangle );
 
         virtual BOOL ShouldClipToLayout();

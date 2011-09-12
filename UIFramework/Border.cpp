@@ -185,8 +185,9 @@ Cleanup:
 HRESULT CBorder::RebuildGeometry()
 {
     HRESULT hr = S_OK;
-    CRectangleGeometry* pRectangleGeometry = NULL;
-    CRoundedRectangleGeometry* pRoundedRectangleGeometry = NULL;
+    CGeometryProvider* pGeometryProvider = NULL;
+    CRectangleGraphicsGeometry* pRectangleGeometry = NULL;
+    CRoundedRectangleGraphicsGeometry* pRoundedRectangleGeometry = NULL;
     SizeF FinalSize = GetFinalSize();
     FLOAT BorderThickness = 0;
     FLOAT CornerRadius = 0;
@@ -200,15 +201,17 @@ HRESULT CBorder::RebuildGeometry()
     Rectangle.right = FinalSize.width - BorderThickness / 2;
     Rectangle.bottom = FinalSize.height - BorderThickness / 2;
 
+    IFC(m_VisualContext.GetGraphicsDevice()->GetGeometryProvider(&pGeometryProvider));
+
     if(CornerRadius == 0)
     {
-        IFC(m_VisualContext.GetGraphicsDevice()->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
+        IFC(pGeometryProvider->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
 
         IFC(m_BorderVisual->SetGeometry(pRectangleGeometry));
     }
     else
     {
-        IFC(m_VisualContext.GetGraphicsDevice()->CreateRoundedRectangleGeometry(Rectangle, CornerRadius, &pRoundedRectangleGeometry));
+        IFC(pGeometryProvider->CreateRoundedRectangleGeometry(Rectangle, CornerRadius, &pRoundedRectangleGeometry));
 
         IFC(m_BorderVisual->SetGeometry(pRoundedRectangleGeometry));
     }
@@ -216,6 +219,7 @@ HRESULT CBorder::RebuildGeometry()
 Cleanup:
     ReleaseObject(pRectangleGeometry);
     ReleaseObject(pRoundedRectangleGeometry);
+    ReleaseObject(pGeometryProvider);
 
     return hr;
 }

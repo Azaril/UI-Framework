@@ -46,6 +46,7 @@ _wtof(
 #include "Point2F.h"
 #include "Matrix3X2F.h"
 #include "Gradient.h"
+#include "BezierSegment.h"
 
 #ifndef ARRAYSIZE
 #define ARRAYSIZE(a) (sizeof(a)/sizeof(a[0]))

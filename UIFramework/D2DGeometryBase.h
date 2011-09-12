@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Geometry.h"
+#include "GraphicsGeometry.h"
 #include "Factory.h"
 
 #include <d2d1.h>

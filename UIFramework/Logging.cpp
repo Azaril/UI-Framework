@@ -279,7 +279,7 @@ ZoneLevelOut(
     
     va_end(args);
     
-	DebugOut(L"l%s[ %ls ] - %ls", LoggingLevelText[Level], pZone, (LPCSTR)FormattedString);
+	DebugOut(L"l%s[ %ls ] - %ls", LoggingLevelText[Level], pZone, (LPCWSTR)FormattedString);
 #else
     WCHAR Buffer[2048];
     

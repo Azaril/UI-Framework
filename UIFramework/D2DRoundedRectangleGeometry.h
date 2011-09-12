@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Geometry.h"
+#include "GraphicsGeometry.h"
 #include "Factory.h"
+#include "RoundedRectangleGraphicsGeometry.h"
 #include "D2DGeometryBase.h"
 
-class CD2DRoundedRectangleGeometry : public CD2DGeometryBase< CRefCountedObjectBase< CRoundedRectangleGeometry > >
+class CD2DRoundedRectangleGeometry : public CD2DGeometryBase< CRefCountedObjectBase< CRoundedRectangleGraphicsGeometry > >
 {
     public:
         DECLARE_FACTORY1( CD2DRoundedRectangleGeometry, ID2D1RoundedRectangleGeometry* );

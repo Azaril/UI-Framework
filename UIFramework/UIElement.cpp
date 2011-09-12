@@ -215,7 +215,7 @@ HRESULT CUIElement::RequiresLayer(BOOL* pRequiresLayer)
 {
     HRESULT hr = S_OK;
     RectF ClipRect;
-    CGeometry* pClipGeometry = NULL;
+    CGraphicsGeometry* pClipGeometry = NULL;
     Visibility::Value EffectiveVisibility = Visibility::Visible;
     FLOAT Opacity = 0;
 
@@ -297,7 +297,7 @@ BOOL CUIElement::ShouldClipToLayout()
     return m_ClipToLayoutBounds;
 }
 
-HRESULT CUIElement::GetClippingGeometry(CGeometry** ppGeometry)
+HRESULT CUIElement::GetClippingGeometry(CGraphicsGeometry** ppGeometry)
 {
     HRESULT hr = S_OK;
 
@@ -346,7 +346,7 @@ HRESULT CUIElement::Render(CRenderContext& Context)
     Visibility::Value EffectiveVisibility = Visibility::Visible;
     CRenderTarget* pRenderTarget = NULL;
     RectF ClipRect;
-    CGeometry* pClipGeometry = NULL;
+    CGraphicsGeometry* pClipGeometry = NULL;
     FLOAT Opacity = 1.0f;
 
     pRenderTarget = Context.GetRenderTarget();

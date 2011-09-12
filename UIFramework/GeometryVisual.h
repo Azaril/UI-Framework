@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Visual.h"
-#include "Geometry.h"
+#include "GraphicsGeometry.h"
 #include "Brush.h"
 
 class UIFRAMEWORK_API CGeometryVisual : public CVisual
@@ -12,7 +12,7 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
         DECLARE_TYPE_WITH_BASE( TypeIndex::GeometryVisual, CVisual );
 
         __checkReturn HRESULT SetGeometry(
-            __in_opt CGeometry* pGeometry 
+            __in_opt CGraphicsGeometry* pGeometry 
             );
 
         __checkReturn HRESULT SetFillBrush(
@@ -51,7 +51,7 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
             );
 
         __checkReturn HRESULT InternalSetGeometry( 
-            __in_opt CGeometry* pGeometry 
+            __in_opt CGraphicsGeometry* pGeometry 
             );
 
         __checkReturn HRESULT InternalSetFillBrush(
@@ -84,7 +84,7 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
             __in_opt CObjectWithType* pNewValue 
             );
 
-        CGeometry* m_Geometry;
+        CGraphicsGeometry* m_Geometry;
         CBrush* m_FillBrush;
         CBrush* m_StrokeBrush;
         CGraphicsBrush* m_FillGraphicsBrush;

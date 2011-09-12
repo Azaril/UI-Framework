@@ -338,7 +338,7 @@ Cleanup:
 
 __checkReturn HRESULT 
 CD2DRenderTarget::FillGeometry(
-	__in const CGeometry* pGeometry,
+	__in const CGraphicsGeometry* pGeometry,
 	__in const CGraphicsBrush* pBrush
 	)
 {
@@ -352,7 +352,7 @@ CD2DRenderTarget::FillGeometry(
 
     switch(pGeometry->GetType())
     {
-        case TypeIndex::RectangleGeometry:
+        case TypeIndex::RectangleGraphicsGeometry:
             {
                 CD2DRectangleGeometry* pRectangleGeometry = (CD2DRectangleGeometry*)pGeometry;
 
@@ -361,7 +361,7 @@ CD2DRenderTarget::FillGeometry(
                 break;
             }
 
-        case TypeIndex::RoundedRectangleGeometry:
+        case TypeIndex::RoundedRectangleGraphicsGeometry:
             {
                 CD2DRoundedRectangleGeometry* pRoundedRectangleGeometry = (CD2DRoundedRectangleGeometry*)pGeometry;
 
@@ -382,7 +382,7 @@ Cleanup:
 
 __checkReturn HRESULT 
 CD2DRenderTarget::UnwrapGeometry(
-	__in const CGeometry* pGeometry, 
+	__in const CGraphicsGeometry* pGeometry, 
 	__deref_out ID2D1Geometry** ppD2DGeometry
 	)
 {
@@ -394,7 +394,7 @@ CD2DRenderTarget::UnwrapGeometry(
 
     switch(pGeometry->GetType())
     {
-        case TypeIndex::RectangleGeometry:
+        case TypeIndex::RectangleGraphicsGeometry:
             {
                 CD2DRectangleGeometry* pRectangleGeometry = (CD2DRectangleGeometry*)pGeometry;
 
@@ -403,7 +403,7 @@ CD2DRenderTarget::UnwrapGeometry(
                 break;
             }
 
-        case TypeIndex::RoundedRectangleGeometry:
+        case TypeIndex::RoundedRectangleGraphicsGeometry:
             {
                 CD2DRoundedRectangleGeometry* pRoundedRectangleGeometry = (CD2DRoundedRectangleGeometry*)pGeometry;
 
@@ -427,7 +427,7 @@ Cleanup:
 
 __checkReturn HRESULT 
 CD2DRenderTarget::DrawGeometry(
-	__in const CGeometry* pGeometry, 
+	__in const CGraphicsGeometry* pGeometry, 
 	__in const CGraphicsBrush* pBrush, 
 	FLOAT StrokeThickness
 	)
@@ -479,7 +479,7 @@ CD2DRenderTarget::PushLayer(
 	__in const CLayer* pLayer, 
 	const RectF& ClippingRect,
 	FLOAT Opacity, 
-	__in_opt const CGeometry* pClippingGeometry
+	__in_opt const CGraphicsGeometry* pClippingGeometry
 	)
 {
     HRESULT hr = S_OK;

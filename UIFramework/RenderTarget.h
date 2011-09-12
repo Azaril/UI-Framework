@@ -6,7 +6,7 @@
 #include "TextLayout.h"
 #include "BitmapSource.h"
 #include "Bitmap.h"
-#include "Geometry.h"
+#include "GraphicsGeometry.h"
 #include "GradientStop.h"
 #include "Layer.h"
 
@@ -84,13 +84,13 @@ class UIFRAMEWORK_API CRenderTarget : public CRefCountedObject
 			) = 0;
 
         virtual __checkReturn HRESULT DrawGeometry( 
-			__in const CGeometry* pGeometry, 
+			__in const CGraphicsGeometry* pGeometry, 
 			__in const CGraphicsBrush* pBrush,
 			FLOAT StrokeThickness = 1.0f 
 			) = 0;
 
         virtual __checkReturn HRESULT FillGeometry(
-			__in const CGeometry* pGeometry, 
+			__in const CGraphicsGeometry* pGeometry, 
 			__in const CGraphicsBrush* pBrush 
 			) = 0;
 
@@ -102,7 +102,7 @@ class UIFRAMEWORK_API CRenderTarget : public CRefCountedObject
 			__in const CLayer* pLayer, 
 			const RectF& ClippingRect,
 			FLOAT Opacity, 
-			__in_opt const CGeometry* pClippingGeometry 
+			__in_opt const CGraphicsGeometry* pClippingGeometry 
 			) = 0;
 
         virtual __checkReturn HRESULT PopLayer(

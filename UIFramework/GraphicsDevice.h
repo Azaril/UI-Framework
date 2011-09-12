@@ -4,6 +4,7 @@
 #include "RenderTarget.h"
 #include "TextProvider.h"
 #include "ImagingProvider.h"
+#include "GeometryProvider.h"
 
 class CRenderTarget;
 
@@ -18,16 +19,9 @@ class UIFRAMEWORK_API CGraphicsDevice : public CRefCountedObject
 			__deref_out CImagingProvider** ppImagingProvider 
 			) = 0;
 
-        virtual __checkReturn HRESULT CreateRectangleGeometry( 
-			const RectF& Rectangle, 
-			__deref_out CRectangleGeometry** ppRectangleGeometry 
-			) = 0;
-
-        virtual __checkReturn HRESULT CreateRoundedRectangleGeometry( 
-			const RectF& Rectangle, 
-			FLOAT CornerRadius, 
-			__deref_out CRoundedRectangleGeometry** ppRectangleGeometry 
-			) = 0;
+        virtual __checkReturn HRESULT GetGeometryProvider(
+            __deref_out CGeometryProvider** ppGeometryProvider
+            ) = 0;
 };
 
 //HRESULT CreateGraphicsDevice( CGraphicsDevice** ppGraphicsDevice );

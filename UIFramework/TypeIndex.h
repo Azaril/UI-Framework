@@ -5,9 +5,10 @@ namespace TypeIndex
     enum Value
     {
         Object,
-            Geometry,
-                RectangleGeometry,
-                RoundedRectangleGeometry,
+            GraphicsGeometry,
+                RectangleGraphicsGeometry,
+                RoundedRectangleGraphicsGeometry,
+                PathGraphicsGeometry,
             TextLayout,
                 EditableTextLayout,
             PropertyObject,

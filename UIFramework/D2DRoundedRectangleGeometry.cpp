@@ -21,7 +21,7 @@ CD2DRoundedRectangleGeometry::Initialize(
 
     IFCPTR(pRoundedRectangleGeometry);
 
-    IFC(CD2DGeometryBase< CRefCountedObjectBase< CRoundedRectangleGeometry > >::Initialize(pRoundedRectangleGeometry));
+    IFC(CD2DGeometryBase< CRefCountedObjectBase< CRoundedRectangleGraphicsGeometry > >::Initialize(pRoundedRectangleGeometry));
 
     m_RoundedRectangleGeometry = pRoundedRectangleGeometry;
     AddRefObject(m_RoundedRectangleGeometry);

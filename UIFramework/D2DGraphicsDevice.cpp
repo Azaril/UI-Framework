@@ -6,6 +6,7 @@
 #include "WICImagingProvider.h"
 #include "D2DRectangleGeometry.h"
 #include "D2DRoundedRectangleGeometry.h"
+#include "D2DGeometryProvider.h"
 
 typedef HRESULT (WINAPI *D2D1CreateFactoryFunc)( 
 	__in D2D1_FACTORY_TYPE factoryType, 
@@ -20,6 +21,7 @@ CD2DGraphicsDevice::CD2DGraphicsDevice(
 	, m_Factory(NULL)
 	, m_TextProvider(NULL)
 	, m_ImagingProvider(NULL)
+    , m_GeometryProvider(NULL)
 {
 }
 
@@ -29,6 +31,7 @@ CD2DGraphicsDevice::~CD2DGraphicsDevice(
     ReleaseObject(m_Factory);
     ReleaseObject(m_TextProvider);
     ReleaseObject(m_ImagingProvider);
+    ReleaseObject(m_GeometryProvider);
 
     if(m_D2DModule != NULL)
     {
@@ -54,6 +57,8 @@ CD2DGraphicsDevice::Initialize(
     IFC(CreateTextProvider(&m_TextProvider));
 
     IFC(CreateImagingProvider(&m_ImagingProvider));
+
+    IFC(CreateGeometryProvider(&m_GeometryProvider));
 
 Cleanup:
     return hr;
@@ -151,6 +156,22 @@ Cleanup:
     return hr;
 }
 
+__override __checkReturn HRESULT 
+CD2DGraphicsDevice::GetGeometryProvider(
+	CGeometryProvider** ppGeometryProvider
+	)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppGeometryProvider);
+
+    *ppGeometryProvider = m_GeometryProvider;
+    AddRefObject(m_GeometryProvider);
+
+Cleanup:
+    return hr;
+}
+
 __checkReturn HRESULT 
 CD2DGraphicsDevice::CreateTextProvider(
 	__deref_out CTextProvider** ppTextProvider
@@ -201,56 +222,27 @@ Cleanup:
     return hr;
 }
 
-__override __checkReturn HRESULT 
-CD2DGraphicsDevice::CreateRectangleGeometry(
-	const RectF& Rectangle, 
-	__deref_out CRectangleGeometry** ppRectangleGeometry
+__checkReturn HRESULT 
+CD2DGraphicsDevice::CreateGeometryProvider(
+	__deref_out CGeometryProvider** ppGeometryProvider
 	)
 {
     HRESULT hr = S_OK;
-    ID2D1RectangleGeometry* pD2DRectangleGeometry = NULL;
-    CD2DRectangleGeometry* pGeometry = NULL;
+    CD2DGeometryProvider* pD2DGeometryProvider = NULL;
 
-    IFCPTR(ppRectangleGeometry);
+    IFCPTR(ppGeometryProvider);
 
-    IFC(m_Factory->CreateRectangleGeometry(Rectangle, &pD2DRectangleGeometry));
+    if(SUCCEEDED(CD2DGeometryProvider::Create(m_Factory, &pD2DGeometryProvider)))
+    {
+        *ppGeometryProvider = pD2DGeometryProvider;
+        pD2DGeometryProvider = NULL;
+        goto Cleanup;
+    }
 
-    IFC(CD2DRectangleGeometry::Create(pD2DRectangleGeometry, &pGeometry));
-
-    *ppRectangleGeometry = pGeometry;
-    pGeometry = NULL;
-
-Cleanup:
-    ReleaseObject(pD2DRectangleGeometry);
-    ReleaseObject(pGeometry);
-
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CD2DGraphicsDevice::CreateRoundedRectangleGeometry(
-	const RectF& Rectangle, 
-	FLOAT CornerRadius, 
-	__deref_out CRoundedRectangleGeometry** ppRoundedRectangleGeometry
-	)
-{
-    HRESULT hr = S_OK;
-    ID2D1RoundedRectangleGeometry* pD2DRoundedRectangleGeometry = NULL;
-    CD2DRoundedRectangleGeometry* pGeometry = NULL;
-    D2D1_ROUNDED_RECT RoundedRect = { Rectangle, CornerRadius, CornerRadius };
-
-    IFCPTR(ppRoundedRectangleGeometry);
-
-    IFC(m_Factory->CreateRoundedRectangleGeometry(RoundedRect, &pD2DRoundedRectangleGeometry));
-
-    IFC(CD2DRoundedRectangleGeometry::Create(pD2DRoundedRectangleGeometry, &pGeometry));
-
-    *ppRoundedRectangleGeometry = pGeometry;
-    pGeometry = NULL;
+    IFC(E_FAIL);
 
 Cleanup:
-    ReleaseObject(pD2DRoundedRectangleGeometry);
-    ReleaseObject(pGeometry);
+    ReleaseObject(pD2DGeometryProvider);
 
     return hr;
 }

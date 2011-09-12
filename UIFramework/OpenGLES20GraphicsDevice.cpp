@@ -1,10 +1,12 @@
 #include "OpenGLES20GraphicsDevice.h"
 #include "OpenGLES20RenderTarget.h"
+#include "CoreGeometryProvider.h"
 
 COpenGLES20GraphicsDevice::COpenGLES20GraphicsDevice(
     )
     : m_pTextProvider(NULL)
     , m_pImagingProvider(NULL)
+    , m_pGeometryProvider(NULL)
 {
 }
 
@@ -13,6 +15,7 @@ COpenGLES20GraphicsDevice::~COpenGLES20GraphicsDevice(
 {
 	ReleaseObject(m_pTextProvider);
 	ReleaseObject(m_pImagingProvider);
+    ReleaseObject(m_pGeometryProvider);
 }
 
 __checkReturn HRESULT
@@ -24,6 +27,8 @@ COpenGLES20GraphicsDevice::Initialize(
     IFC(CreateTextProvider(&m_pTextProvider));
 
     IFC(CreateImagingProvider(&m_pImagingProvider));
+
+    IFC(CreateGeometryProvider(&m_pGeometryProvider));
     
 Cleanup:
     return hr;
@@ -111,6 +116,22 @@ Cleanup:
     return hr;
 }
 
+__override __checkReturn HRESULT 
+COpenGLES20GraphicsDevice::GetGeometryProvider(
+	CGeometryProvider** ppGeometryProvider
+	)
+{
+    HRESULT hr = S_OK;
+
+    IFCPTR(ppGeometryProvider);
+
+    *ppGeometryProvider = m_GeometryProvider;
+    AddRefObject(m_GeometryProvider);
+
+Cleanup:
+    return hr;
+}
+
 __checkReturn HRESULT 
 COpenGLES20GraphicsDevice::CreateTextProvider(
 	__deref_out CTextProvider** ppTextProvider
@@ -161,31 +182,27 @@ Cleanup:
     return hr;
 }
 
-__override __checkReturn HRESULT 
-COpenGLES20GraphicsDevice::CreateRectangleGeometry(
-	const RectF& Rectangle, 
-	__deref_out CRectangleGeometry** ppRectangleGeometry
+__checkReturn HRESULT 
+COpenGLES20GraphicsDevice::CreateGeometryProvider(
+	__deref_out CGeometryProvider** ppGeometryProvider
 	)
 {
     HRESULT hr = S_OK;
+    CCoreGeometryProvider* pCoreGeometryProvider = NULL;
 
-    IFC(E_NOTIMPL);
+    IFCPTR(ppGeometryProvider);
 
-Cleanup:
-    return hr;
-}
+    if(SUCCEEDED(CCoreGeometryProvider::Create(&pCoreGeometryProvider)))
+    {
+        *ppGeometryProvider = pCoreGeometryProvider;
+        pCoreGeometryProvider = NULL;
+        goto Cleanup;
+    }
 
-__override __checkReturn HRESULT 
-COpenGLES20GraphicsDevice::CreateRoundedRectangleGeometry(
-	const RectF& Rectangle, 
-	FLOAT CornerRadius, 
-	__deref_out CRoundedRectangleGeometry** ppRoundedRectangleGeometry
-	)
-{
-    HRESULT hr = S_OK;
-
-    IFC(E_NOTIMPL);
+    IFC(E_FAIL);
 
 Cleanup:
+    ReleaseObject(pCoreGeometryProvider);
+
     return hr;
 }

@@ -211,14 +211,17 @@ Cleanup:
 HRESULT CImage::RebuildGeometry()
 {
     HRESULT hr = S_OK;
-    CRectangleGeometry* pRectangleGeometry = NULL;
+    CGeometryProvider* pGeometryProvider = NULL;
+    CRectangleGraphicsGeometry* pRectangleGeometry = NULL;
     SizeF FinalSize = GetFinalSize();
     SizeU ImageSize;
     RectF Rectangle(0, 0, FinalSize.width, FinalSize.height);
 
     if(m_ImageBrush != NULL)
     {
-        IFC(m_VisualContext.GetGraphicsDevice()->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
+        IFC(m_VisualContext.GetGraphicsDevice()->GetGeometryProvider(&pGeometryProvider));
+
+        IFC(pGeometryProvider->CreateRectangleGeometry(Rectangle, &pRectangleGeometry));
 
         IFC(m_ImageVisual->SetGeometry(pRectangleGeometry));
 
@@ -238,6 +241,7 @@ HRESULT CImage::RebuildGeometry()
 
 Cleanup:
     ReleaseObject(pRectangleGeometry);
+    ReleaseObject(pGeometryProvider);
 
     return hr;
 }

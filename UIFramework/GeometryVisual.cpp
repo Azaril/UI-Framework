@@ -45,7 +45,7 @@ Cleanup:
 
 __checkReturn HRESULT 
 CGeometryVisual::SetGeometry(
-    __in_opt CGeometry* pGeometry
+    __in_opt CGraphicsGeometry* pGeometry
     )
 {
     HRESULT hr = S_OK;
@@ -111,7 +111,7 @@ CGeometryVisual::SetFillBrushTransform(
 
 __checkReturn HRESULT 
 CGeometryVisual::InternalSetGeometry(
-    __in CGeometry* pGeometry
+    __in CGraphicsGeometry* pGeometry
     )
 {
     HRESULT hr = S_OK;
