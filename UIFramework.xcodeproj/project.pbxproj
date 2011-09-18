@@ -370,6 +370,11 @@
 		3D07DEF4141D8E1B00130174 /* OpenGLES20SolidColorBrush.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */; };
 		3D07DEF6141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */; };
 		3D9585B8141A02E30059E331 /* DummySal.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9585B7141A02E30059E331 /* DummySal.h */; };
+		3D9B191E142574E700EE37A3 /* OpenGLES20VertexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9B191D142574E700EE37A3 /* OpenGLES20VertexBuffer.h */; };
+		3D9B192114257D9100EE37A3 /* RenderVertex.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9B192014257D9100EE37A3 /* RenderVertex.h */; };
+		3D9B192314258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D9B192214258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp */; };
+		3D9B19251425904700EE37A3 /* StaticTesselator.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9B19241425904600EE37A3 /* StaticTesselator.h */; };
+		3D9B1927142591DC00EE37A3 /* StaticTesselator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D9B1926142591DC00EE37A3 /* StaticTesselator.cpp */; };
 		3DF3D0DE141BEAE500431CFF /* OpenGLES20GraphicsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0DD141BEAE500431CFF /* OpenGLES20GraphicsDevice.h */; };
 		3DF3D0E1141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DF3D0E0141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp */; };
 		3DF3D0E3141BF7B800431CFF /* OpenGLES20RenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0E2141BF7B800431CFF /* OpenGLES20RenderTarget.h */; };
@@ -747,6 +752,11 @@
 		3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20SolidColorBrush.h; sourceTree = "<group>"; };
 		3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20SolidColorBrush.cpp; sourceTree = "<group>"; };
 		3D9585B7141A02E30059E331 /* DummySal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummySal.h; sourceTree = "<group>"; };
+		3D9B191D142574E700EE37A3 /* OpenGLES20VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20VertexBuffer.h; sourceTree = "<group>"; };
+		3D9B192014257D9100EE37A3 /* RenderVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderVertex.h; sourceTree = "<group>"; };
+		3D9B192214258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20VertexBuffer.cpp; sourceTree = "<group>"; };
+		3D9B19241425904600EE37A3 /* StaticTesselator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticTesselator.h; sourceTree = "<group>"; };
+		3D9B1926142591DC00EE37A3 /* StaticTesselator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StaticTesselator.cpp; sourceTree = "<group>"; };
 		3DF3D0DD141BEAE500431CFF /* OpenGLES20GraphicsDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20GraphicsDevice.h; sourceTree = "<group>"; };
 		3DF3D0E0141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20GraphicsDevice.cpp; sourceTree = "<group>"; };
 		3DF3D0E2141BF7B800431CFF /* OpenGLES20RenderTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20RenderTarget.h; sourceTree = "<group>"; };
@@ -1170,6 +1180,11 @@
 				3DF3D0EF141C233900431CFF /* LibXMLReader.cpp */,
 				3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */,
 				3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */,
+				3D9B191D142574E700EE37A3 /* OpenGLES20VertexBuffer.h */,
+				3D9B192214258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp */,
+				3D9B192014257D9100EE37A3 /* RenderVertex.h */,
+				3D9B19241425904600EE37A3 /* StaticTesselator.h */,
+				3D9B1926142591DC00EE37A3 /* StaticTesselator.cpp */,
 			);
 			path = UIFramework;
 			sourceTree = "<group>";
@@ -1371,6 +1386,9 @@
 				3D07DEF0141D882F00130174 /* ShapeBuilder.h in Headers */,
 				3D07DEF2141D882F00130174 /* ShapeData.h in Headers */,
 				3D07DEF4141D8E1B00130174 /* OpenGLES20SolidColorBrush.h in Headers */,
+				3D9B191E142574E700EE37A3 /* OpenGLES20VertexBuffer.h in Headers */,
+				3D9B192114257D9100EE37A3 /* RenderVertex.h in Headers */,
+				3D9B19251425904700EE37A3 /* StaticTesselator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1602,6 +1620,8 @@
 				3D07DEEF141D882F00130174 /* ShapeBuilder.cpp in Sources */,
 				3D07DEF1141D882F00130174 /* ShapeData.cpp in Sources */,
 				3D07DEF6141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp in Sources */,
+				3D9B192314258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp in Sources */,
+				3D9B1927142591DC00EE37A3 /* StaticTesselator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

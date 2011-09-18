@@ -63,3 +63,10 @@ CCoreRectangleGeometry::FillContainsPoint(
 
     return hr;
 }
+
+const RectF&
+CCoreRectangleGeometry::GetRectangle(
+    )
+{
+    return m_Rect;
+}

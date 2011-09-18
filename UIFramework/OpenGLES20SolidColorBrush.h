@@ -12,6 +12,9 @@ class COpenGLES20SolidColorBrush : public CGraphicsBrush
             const Matrix3X2F& Transform
             );
 
+        __override virtual const ColorF& GetDiffuseColor(
+        	);
+
 	protected:
 		COpenGLES20SolidColorBrush(
 			);

@@ -21,6 +21,9 @@ class CCoreRectangleGeometry : public CRefCountedObjectBase< CRectangleGraphicsG
 			const Point2F& LocalPoint, 
 			__out BOOL* pContainsPoint 
 			);
+    
+        const RectF& GetRectangle(
+            );
 
     protected:
         CCoreRectangleGeometry(

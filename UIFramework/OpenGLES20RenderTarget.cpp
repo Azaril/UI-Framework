@@ -3,6 +3,7 @@
 #include "CoreRectangleGeometry.h"
 #include "CoreRoundedRectangleGeometry.h"
 #include "CorePathGraphicsGeometry.h"
+#include "StaticTesselator.h"
 
 COpenGLES20RenderTarget::COpenGLES20RenderTarget(
 	) 
@@ -11,7 +12,19 @@ COpenGLES20RenderTarget::COpenGLES20RenderTarget(
 	, m_pContext(NULL)
 	, m_Width(0)
 	, m_Height(0)
+    , m_Transform(Matrix3X2F::Identity())
+    , m_pVertexCache(NULL)
+    , m_pCacheWriteOffset(NULL)
+    , m_VertexCacheSize(0)
+    , m_NextVertexBuffer(0)
+    , m_ShaderProgram(0)
+    , m_PositionAttribute(-1)
+    , m_ColorAttribute(-1)
 {
+    for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
+    {
+        m_pVertexBuffers[i] = NULL;
+    }
 }
 
 COpenGLES20RenderTarget::~COpenGLES20RenderTarget(
@@ -28,6 +41,59 @@ COpenGLES20RenderTarget::~COpenGLES20RenderTarget(
 	{
 		glDeleteRenderbuffers(1, &m_RenderBuffer);
 	}
+    
+    for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
+    {
+        ReleaseObject(m_pVertexBuffers[i]);
+    }
+    
+    if (m_ShaderProgram != 0)
+    {
+        glDeleteProgram(m_ShaderProgram);
+    }
+    
+    delete [] m_pVertexCache;
+}
+
+const char g_VertexShaderSource[] =
+"attribute vec2 position;\n"
+"attribute vec4 color;\n"
+"\n"
+"varying vec4 colorVarying;\n"
+"\n"
+"uniform mat4 transform;\n"
+"\n"
+"void main()\n"
+"{\n"
+"gl_Position.xy = position;\n"
+"gl_Position.z = 1.0;\n"
+"gl_Position.w = 1.0;\n"
+"gl_Position = transform * gl_Position;\n"
+"\n"
+"colorVarying = color;\n"
+"}\n"
+"\n";
+
+const UINT32 g_VertexShaderSourceLength = ARRAYSIZE(g_VertexShaderSource);
+
+const char g_PixelShaderSource[] =
+"varying lowp vec4 colorVarying;\n"
+"\n"
+"void main()\n"
+"{\n"
+"gl_FragColor = colorVarying;\n"
+"}\n"
+"\r\n";
+
+const UINT32 g_PixelShaderSourceLength = ARRAYSIZE(g_PixelShaderSource);
+
+namespace ShaderAttribute
+{
+    enum Value
+    {
+        Position,
+        Color
+    };
 }
 
 __checkReturn HRESULT
@@ -38,6 +104,9 @@ COpenGLES20RenderTarget::Initialize(
 	)
 {
     HRESULT hr = S_OK;
+    GLuint vertexBuffers[ARRAYSIZE(m_pVertexBuffers)] = { };
+    GLuint vertexShader = 0;
+    GLuint fragmentShader = 0;
 
 	m_RenderBuffer = RenderBuffer;
 	m_FrameBuffer = FrameBuffer;
@@ -49,8 +118,155 @@ COpenGLES20RenderTarget::Initialize(
 	glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBuffer);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &m_Width);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &m_Height);
+    
+    glGenBuffers(ARRAYSIZE(vertexBuffers), vertexBuffers);
+    
+    for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
+    {
+        IFC(COpenGLES20VertexBuffer::Create(vertexBuffers[i], &m_pVertexBuffers[i]));     
+        
+        vertexBuffers[i] = 0;   
+    }
+    
+    m_VertexCacheSize = 10240;
+    
+    m_pVertexCache = new RenderVertex[m_VertexCacheSize];
+    IFCOOM(m_pVertexCache);
+    
+    m_pCacheWriteOffset = m_pVertexCache;
+    
+    //TODO: Split out shader loader and cleanup.
+    m_ShaderProgram = glCreateProgram();
+    
+    IFC(CreateShader(GL_VERTEX_SHADER, g_VertexShaderSource, &vertexShader));
+    IFC(CreateShader(GL_FRAGMENT_SHADER, g_PixelShaderSource, &fragmentShader));
+    
+    glAttachShader(m_ShaderProgram, vertexShader);
+    glAttachShader(m_ShaderProgram, fragmentShader);
+    
+    IFC(LinkProgram(m_ShaderProgram));
+    
+    m_PositionAttribute = glGetAttribLocation(m_ShaderProgram, "position");
+    m_ColorAttribute = glGetAttribLocation(m_ShaderProgram, "color");
+    m_TransformUniform = glGetUniformLocation(m_ShaderProgram, "transform");
+    
+    //TODO: Use glValidateProgram?
+    
+Cleanup:
+    for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
+    {
+        if (vertexBuffers[i] != 0)
+        {
+            glDeleteBuffers(1, &vertexBuffers[i]);
+        }
+    }
+    
+    if (vertexShader != 0)
+    {
+        glDeleteShader(vertexShader);
+    }
+    
+    if (fragmentShader != 0)
+    {
+        glDeleteShader(fragmentShader);
+    }
+
+    return hr;
+}
+
+__checkReturn HRESULT
+COpenGLES20RenderTarget::CreateShader(
+    const GLenum ShaderType,
+    __in_z const CHAR* pShaderSource,
+    __out GLuint* pShader
+    )
+{
+    HRESULT hr = S_OK;
+    GLuint shader = 0;
+    GLint compileStatus = 0;
+#ifdef DEBUG
+    GLchar* pLog = NULL;
+#endif
+    
+    shader = glCreateShader(ShaderType);
+    glShaderSource(shader, 1, &pShaderSource, NULL);
+    glCompileShader(shader);
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);        
+    
+#if defined(DEBUG)
+    {
+        GLint logLength;
+        
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
+        
+        if (logLength > 0)
+        {
+            pLog = new GLchar[logLength];
+            IFCOOM(pLog);
+            
+            glGetShaderInfoLog(shader, logLength, &logLength, pLog);
+            
+            logging::DebugOut("%s", pLog);
+        }
+    }
+#endif              
+    
+    IFCEXPECT(compileStatus != GL_FALSE);
+
+    *pShader = shader;
+    shader = 0;
 
 Cleanup:
+    if (shader != 0)
+    {
+        glDeleteShader(shader);
+    }
+    
+#ifdef DEBUG
+    delete [] pLog;
+#endif    
+
+    return hr;
+}
+
+__checkReturn HRESULT
+COpenGLES20RenderTarget::LinkProgram(
+    GLuint Program
+    )
+{
+    HRESULT hr = S_OK;
+    GLint linkStatus = 0;
+    CHAR* pLog = NULL;
+    
+    glLinkProgram(Program);
+    
+    glGetProgramiv(Program, GL_LINK_STATUS, &linkStatus);   
+    
+#if defined(DEBUG)
+    {
+        GLint logLength;
+        
+        glGetProgramiv(Program, GL_INFO_LOG_LENGTH, &logLength);
+        
+        if (logLength > 0)
+        {
+            pLog = new GLchar[logLength];
+            IFCOOM(pLog);
+            
+            glGetProgramInfoLog(Program, logLength, &logLength, pLog);
+            
+            logging::DebugOut("%s", pLog);
+        }
+    }
+#endif        
+    
+    IFCEXPECT(linkStatus != GL_FALSE);
+    
+Cleanup:
+#ifdef DEBUG
+    delete [] pLog;    
+#endif
+    
     return hr;
 }
 
@@ -88,13 +304,49 @@ COpenGLES20RenderTarget::BeginRendering(
 	)
 {
     HRESULT hr = S_OK;
+    FLOAT projectionMatrix[16] = { };
 
     IFC(ApplyContext());
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer);
-    //TODO: Is this needed? Does the render buffer stay attached?
-    // glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_RenderBuffer);
-
+    
+    glViewport(0, 0, m_Width, m_Height);
+    
+    //
+    // Set up orthographic projection matrix.
+    // 
+    {
+        FLOAT near = 0.001f;
+        FLOAT far = 1000.0f;
+        
+        FLOAT left = 0.0f;
+        FLOAT right = m_Width;
+        FLOAT top = 0.0f;
+        FLOAT bottom = m_Height;
+        
+        projectionMatrix[0] = 2.0f / (right - left);
+        projectionMatrix[1] = 0.0f;
+        projectionMatrix[2] = 0.0f;
+        projectionMatrix[3] = 0.0f;
+        
+        projectionMatrix[4] = 0.0f;
+        projectionMatrix[5] = 2.0f / (top - bottom);
+        projectionMatrix[6] = 0.0f;
+        projectionMatrix[7] = 0.0f;
+        
+        projectionMatrix[8] = 0.0f;
+        projectionMatrix[9] = 0.0f;
+        projectionMatrix[10] = 2.0f / (far - near);
+        projectionMatrix[11] = 0.0f;
+        
+        projectionMatrix[12] = -(right + left) / (right - left);
+        projectionMatrix[13] = -(top + bottom) / (top - bottom);
+        projectionMatrix[14] = -(far + near) / (far - near);
+        projectionMatrix[15] = 1.0f;
+        
+        glUniformMatrix4fv(m_TransformUniform, 1, 0, projectionMatrix);
+    }
+    
 Cleanup:
     return hr;
 }
@@ -105,6 +357,12 @@ COpenGLES20RenderTarget::EndRendering(
 {
     HRESULT hr = S_OK;
 
+    if (GetUsedVertexBufferCount() > 0)
+    {
+        IFC(FlushVertexCache());
+    }
+
+Cleanup:
     return hr;
 }
 
@@ -114,6 +372,8 @@ COpenGLES20RenderTarget::SetTransform(
 	)
 {
     HRESULT hr = S_OK;
+    
+    m_Transform = Transform;
 
     return hr;
 }
@@ -226,15 +486,65 @@ COpenGLES20RenderTarget::DrawRectangle(
 	)
 {
     HRESULT hr = S_OK;
-//     CD2DBrush* pD2DBrush = NULL;
+    
+    IFCPTR(pBrush);
 
-//     IFCPTR(pBrush);
+Cleanup:
+    return hr;
+}
 
-//     pD2DBrush = (CD2DBrush*)pBrush;
+size_t
+COpenGLES20RenderTarget::GetUsedVertexBufferCount(
+    )
+{
+    return (m_pCacheWriteOffset - m_pVertexCache);
+}
 
-//     m_RenderTarget->DrawRectangle(Size, pD2DBrush->GetD2DBrush(), 0, NULL);
+size_t
+COpenGLES20RenderTarget::GetAvailableVertexBufferCount(
+    )
+{
+    return m_VertexCacheSize - GetUsedVertexBufferCount();
+}
 
-// Cleanup:
+__checkReturn HRESULT
+COpenGLES20RenderTarget::FlushVertexCache(
+    )
+{
+    HRESULT hr = S_OK;
+    COpenGLES20VertexBuffer* pBuffer = NULL;
+    UINT32 vertexCount = 0;
+
+    vertexCount = GetUsedVertexBufferCount();
+
+    if (vertexCount > 0)
+    {
+        pBuffer = m_pVertexBuffers[m_NextVertexBuffer];
+        
+        IFC(pBuffer->SetVertices(m_pVertexCache, vertexCount));
+
+        IFC(pBuffer->Bind(GL_ARRAY_BUFFER));
+        
+        glUseProgram(m_ShaderProgram);
+        
+        if (m_PositionAttribute != -1)
+        {
+            glVertexAttribPointer(ShaderAttribute::Position, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_POSITION_OFFSET);
+            glEnableVertexAttribArray(m_PositionAttribute);
+        }
+
+        if (m_ColorAttribute != -1 )
+        {
+            glVertexAttribPointer(m_ColorAttribute, 4, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_COLOR_OFFSET);
+            glEnableVertexAttribArray(m_ColorAttribute);              
+        }
+
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+        
+        m_NextVertexBuffer = (m_NextVertexBuffer + 1) % ARRAYSIZE(m_pVertexBuffers);
+    }
+    
+Cleanup:
     return hr;
 }
 
@@ -245,15 +555,30 @@ COpenGLES20RenderTarget::FillRectangle(
 	)
 {
     HRESULT hr = S_OK;
-//     CD2DBrush* pD2DBrush = NULL;
-
-//     IFCPTR(pBrush);
-
-//     pD2DBrush = (CD2DBrush*)pBrush;
-
-//     m_RenderTarget->FillRectangle(Size, pD2DBrush->GetD2DBrush());
-
-// Cleanup:
+    
+    IFCPTR(pBrush);
+    
+    if (GetAvailableVertexBufferCount() < StaticTesselator::VerticesNeededForRectangleTesselation)
+    {
+        IFC(FlushVertexCache());
+    }
+    
+    {
+        ColorF Color = ((COpenGLES20SolidColorBrush*)pBrush)->GetDiffuseColor();
+        
+        UINT32 writtenVertices = 0;
+        
+        IFC(StaticTesselator::TesselateRectangle(Size, m_Transform, m_pCacheWriteOffset, GetAvailableVertexBufferCount(), &writtenVertices));
+        
+        for (UINT32 i = 0; i < writtenVertices; ++i)
+        {
+            m_pCacheWriteOffset[i].Color = Color;
+        }
+        
+        m_pCacheWriteOffset += writtenVertices;
+    }
+    
+Cleanup:
     return hr;
 }
 
@@ -388,6 +713,7 @@ COpenGLES20RenderTarget::FillGeometry(
             {
                 CCoreRectangleGeometry* pRectangleGeometry = (CCoreRectangleGeometry*)pGeometry;
 
+                IFC(FillRectangle(pRectangleGeometry->GetRectangle(), pBrush));
                 //m_RenderTarget->FillGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
 
                 break;

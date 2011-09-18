@@ -1,6 +1,6 @@
 #pragma once
 
-#import <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/gl.h>
 
 class COpenGLES20RenderBufferStorageAllocator
 {

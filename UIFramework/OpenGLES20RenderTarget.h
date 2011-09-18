@@ -1,9 +1,10 @@
 #pragma once
 
-#import <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/gl.h>
 
 #include "RenderTarget.h"
 #include "OpenGLES20Context.h"
+#include "OpenGLES20VertexBuffer.h"
 
 class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget
 {
@@ -114,10 +115,39 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget
 
 		__checkReturn HRESULT ApplyContext(
 			);
+    
+        __out size_t GetAvailableVertexBufferCount(
+            );
+    
+        __out size_t GetUsedVertexBufferCount(
+            );
+    
+        __checkReturn HRESULT FlushVertexCache(
+            );
+
+        __checkReturn HRESULT CreateShader(
+			const GLenum ShaderType,
+			__in_z const CHAR* pShaderSource,
+			__out GLuint* pShader
+			);
+    
+        __checkReturn HRESULT LinkProgram(
+            GLuint Program
+            );
 
 		GLuint m_RenderBuffer;
 		GLuint m_FrameBuffer;
 		GLint m_Width;
 		GLint m_Height;
 		COpenGLES20Context* m_pContext;
+        Matrix3X2F m_Transform;
+        COpenGLES20VertexBuffer* m_pVertexBuffers[2];
+        UINT32 m_NextVertexBuffer;
+        RenderVertex* m_pVertexCache;
+        UINT32 m_VertexCacheSize;
+        RenderVertex* m_pCacheWriteOffset;
+        GLuint m_ShaderProgram;
+        GLint m_PositionAttribute;
+        GLint m_ColorAttribute;
+        GLint m_TransformUniform;
 };

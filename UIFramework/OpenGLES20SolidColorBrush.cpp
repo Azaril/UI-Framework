@@ -35,3 +35,10 @@ COpenGLES20SolidColorBrush::SetTransform(
 
 	return hr;
 }
+
+__override const ColorF&
+COpenGLES20SolidColorBrush::GetDiffuseColor(
+    )
+{
+    return m_Color;
+}
