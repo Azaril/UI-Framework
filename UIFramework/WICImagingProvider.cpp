@@ -29,15 +29,18 @@ CWICImagingProvider::Initialize(
 {
     HRESULT hr = S_OK;
 
-    if(FAILED(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_Factory)))
-    {
-        if(SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED)))
-        {
-            m_UninitializeCOM = TRUE;
+    hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
-            IFC(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_Factory));
-        }
+    if (hr == RPC_E_CHANGED_MODE)
+    {
+        hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
     }
+
+    IFC(hr);
+
+    m_UninitializeCOM = TRUE;
+
+    IFC(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_Factory));
 
     m_ShlwapiModule = LoadLibrary(L"Shlwapi.dll");
     IFCEXPECT(m_ShlwapiModule != NULL);
