@@ -1,9 +1,8 @@
 #pragma once
 
-#include "GraphicsBrush.h"
-#include "Factory.h"
+#include "OpenGLES20Brush.h"
 
-class COpenGLES20SolidColorBrush : public CGraphicsBrush
+class COpenGLES20SolidColorBrush : public COpenGLES20Brush
 {
 	public:
 		DECLARE_FACTORY1( COpenGLES20SolidColorBrush, const ColorF& );

@@ -2,8 +2,9 @@
 
 #include "Factory.h"
 #include "RectangleGraphicsGeometry.h"
+#include "CoreGeometry.h"
 
-class CCoreRectangleGeometry : public CRefCountedObjectBase< CRectangleGraphicsGeometry >
+class CCoreRectangleGeometry : public CCoreGeometry< CRectangleGraphicsGeometry >
 {
     public:
         DECLARE_FACTORY1( CCoreRectangleGeometry, const RectF& );
@@ -22,8 +23,9 @@ class CCoreRectangleGeometry : public CRefCountedObjectBase< CRectangleGraphicsG
 			__out BOOL* pContainsPoint 
 			);
     
-        const RectF& GetRectangle(
-            );
+        __override virtual __checkReturn HRESULT TesselateFill(
+            __in ITesselationSink* pSink
+           );
 
     protected:
         CCoreRectangleGeometry(

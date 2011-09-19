@@ -19,6 +19,9 @@ class COpenGLES20VertexBuffer : public CRefCountedObject
             __in_ecount(VertexCount) RenderVertex* pVertices,
             UINT32 VertexCount            
             );
+    
+        UINT32 GetVertexCount(
+            );
         
     protected:
         COpenGLES20VertexBuffer(
@@ -32,4 +35,5 @@ class COpenGLES20VertexBuffer : public CRefCountedObject
             );
     
         GLuint m_BufferID;
+        UINT32 m_VertexCount;
 };

@@ -16,8 +16,6 @@
 		3D846EFF141A0F7F00AC9C7D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D846EFE141A0F7F00AC9C7D /* main.m */; };
 		3D846F03141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m */; };
 		3D846F06141A0F7F00AC9C7D /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3D846F04141A0F7F00AC9C7D /* MainWindow.xib */; };
-		3D846F08141A0F7F00AC9C7D /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 3D846F07141A0F7F00AC9C7D /* Shader.fsh */; };
-		3D846F0A141A0F7F00AC9C7D /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 3D846F09141A0F7F00AC9C7D /* Shader.vsh */; };
 		3D846F0D141A0F7F00AC9C7D /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F0C141A0F7F00AC9C7D /* EAGLView.m */; };
 		3D846F10141A0F7F00AC9C7D /* IPhoneTestAppViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F0F141A0F7F00AC9C7D /* IPhoneTestAppViewController.mm */; };
 		3D846F13141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3D846F11141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib */; };
@@ -60,8 +58,6 @@
 		3D846F01141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IPhoneTestAppAppDelegate.h; sourceTree = "<group>"; };
 		3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IPhoneTestAppAppDelegate.m; sourceTree = "<group>"; };
 		3D846F05141A0F7F00AC9C7D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		3D846F07141A0F7F00AC9C7D /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = Shaders/Shader.fsh; sourceTree = "<group>"; };
-		3D846F09141A0F7F00AC9C7D /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = Shaders/Shader.vsh; sourceTree = "<group>"; };
 		3D846F0B141A0F7F00AC9C7D /* EAGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
 		3D846F0C141A0F7F00AC9C7D /* EAGLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EAGLView.m; sourceTree = "<group>"; };
 		3D846F0E141A0F7F00AC9C7D /* IPhoneTestAppViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IPhoneTestAppViewController.h; sourceTree = "<group>"; };
@@ -133,13 +129,11 @@
 		3D846EF8141A0F7F00AC9C7D /* IPhoneTestApp */ = {
 			isa = PBXGroup;
 			children = (
-				3D846F26141A133400AC9C7D /* UIFrameworkBridge.cpp */,
 				3D846F25141A130600AC9C7D /* UIFrameworkBridge.h */,
+				3D846F26141A133400AC9C7D /* UIFrameworkBridge.cpp */,
 				3D846F01141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.h */,
 				3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m */,
 				3D846F04141A0F7F00AC9C7D /* MainWindow.xib */,
-				3D846F07141A0F7F00AC9C7D /* Shader.fsh */,
-				3D846F09141A0F7F00AC9C7D /* Shader.vsh */,
 				3D846F0B141A0F7F00AC9C7D /* EAGLView.h */,
 				3D846F0C141A0F7F00AC9C7D /* EAGLView.m */,
 				3D846F0E141A0F7F00AC9C7D /* IPhoneTestAppViewController.h */,
@@ -240,8 +234,6 @@
 			files = (
 				3D846EFD141A0F7F00AC9C7D /* InfoPlist.strings in Resources */,
 				3D846F06141A0F7F00AC9C7D /* MainWindow.xib in Resources */,
-				3D846F08141A0F7F00AC9C7D /* Shader.fsh in Resources */,
-				3D846F0A141A0F7F00AC9C7D /* Shader.vsh in Resources */,
 				3D846F13141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

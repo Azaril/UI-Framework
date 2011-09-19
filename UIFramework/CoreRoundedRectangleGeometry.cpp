@@ -67,3 +67,15 @@ CCoreRoundedRectangleGeometry::FillContainsPoint(
 
     return hr;
 }
+
+__override __checkReturn HRESULT 
+CCoreRoundedRectangleGeometry::TesselateFill(
+    __in ITesselationSink* pSink
+    )
+{
+    HRESULT hr = S_OK;
+    
+    //TODO: Implement.
+    
+    return hr;
+}

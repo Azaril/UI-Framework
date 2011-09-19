@@ -41,7 +41,7 @@
     frameworkBridge = new UIFrameworkBridge();
     frameworkBridge->Initialize(contextBridge, storageAllocator);
     
-    frameworkBridge->LoadContent(L"<Grid><Border Background=\"Blue\"/><Border Width=\"100\" Background=\"Green\"/></Grid>");
+    frameworkBridge->LoadContent(L"<Grid><Border Background=\"Blue\"/><Border Width=\"200\" Background=\"Red\"/><Border Width=\"100\" Background=\"Green\"/></Grid>");
 }
 
 - (void)dealloc

@@ -3,8 +3,9 @@
 #include "RefCounted.h"
 #include "PathGraphicsGeometry.h"
 #include "CoreShapeData.h"
+#include "CoreGeometry.h"
 
-class CCorePathGraphicsGeometry : public CRefCountedObjectBase< CPathGraphicsGeometry >
+class CCorePathGraphicsGeometry : public CCoreGeometry< CPathGraphicsGeometry >
 {
     public:
         DECLARE_FACTORY1( CCorePathGraphicsGeometry, CCoreShapeData* );
@@ -22,6 +23,10 @@ class CCorePathGraphicsGeometry : public CRefCountedObjectBase< CPathGraphicsGeo
 			const Point2F& LocalPoint, 
 			__out BOOL* pContainsPoint 
 			);
+    
+        __override virtual __checkReturn HRESULT TesselateFill(
+            __in ITesselationSink* pSink
+            );    
 
     protected:
         CCorePathGraphicsGeometry(

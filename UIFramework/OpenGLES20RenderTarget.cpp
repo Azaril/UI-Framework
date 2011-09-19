@@ -5,56 +5,6 @@
 #include "CorePathGraphicsGeometry.h"
 #include "StaticTesselator.h"
 
-COpenGLES20RenderTarget::COpenGLES20RenderTarget(
-	) 
-	: m_RenderBuffer(0)
-	, m_FrameBuffer(0)
-	, m_pContext(NULL)
-	, m_Width(0)
-	, m_Height(0)
-    , m_Transform(Matrix3X2F::Identity())
-    , m_pVertexCache(NULL)
-    , m_pCacheWriteOffset(NULL)
-    , m_VertexCacheSize(0)
-    , m_NextVertexBuffer(0)
-    , m_ShaderProgram(0)
-    , m_PositionAttribute(-1)
-    , m_ColorAttribute(-1)
-{
-    for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
-    {
-        m_pVertexBuffers[i] = NULL;
-    }
-}
-
-COpenGLES20RenderTarget::~COpenGLES20RenderTarget(
-	)
-{
-	IGNOREHR(ApplyContext());
-	
-	if (m_FrameBuffer != 0)
-	{
-		glDeleteFramebuffers(1, &m_FrameBuffer);
-	}
-
-	if (m_RenderBuffer != 0)
-	{
-		glDeleteRenderbuffers(1, &m_RenderBuffer);
-	}
-    
-    for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
-    {
-        ReleaseObject(m_pVertexBuffers[i]);
-    }
-    
-    if (m_ShaderProgram != 0)
-    {
-        glDeleteProgram(m_ShaderProgram);
-    }
-    
-    delete [] m_pVertexCache;
-}
-
 const char g_VertexShaderSource[] =
 "attribute vec2 position;\n"
 "attribute vec4 color;\n"
@@ -87,13 +37,51 @@ const char g_PixelShaderSource[] =
 
 const UINT32 g_PixelShaderSourceLength = ARRAYSIZE(g_PixelShaderSource);
 
-namespace ShaderAttribute
+COpenGLES20RenderTarget::COpenGLES20RenderTarget(
+	) 
+	: m_RenderBuffer(0)
+	, m_FrameBuffer(0)
+	, m_pContext(NULL)
+	, m_Width(0)
+	, m_Height(0)
+    , m_Transform(Matrix3X2F::Identity())
+    , m_ShaderProgram(0)
+    , m_PositionAttribute(-1)
+    , m_ColorAttribute(-1)
+    , m_pTesselationSink(NULL)
 {
-    enum Value
+    for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
     {
-        Position,
-        Color
-    };
+        m_pVertexBuffers[i] = NULL;
+    }
+}
+
+COpenGLES20RenderTarget::~COpenGLES20RenderTarget(
+	)
+{
+	IGNOREHR(ApplyContext());
+    
+    ReleaseObject(m_pTesselationSink);
+	
+	if (m_FrameBuffer != 0)
+	{
+		glDeleteFramebuffers(1, &m_FrameBuffer);
+	}
+
+	if (m_RenderBuffer != 0)
+	{
+		glDeleteRenderbuffers(1, &m_RenderBuffer);
+	}
+    
+    for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
+    {
+        ReleaseObject(m_pVertexBuffers[i]);
+    }
+    
+    if (m_ShaderProgram != 0)
+    {
+        glDeleteProgram(m_ShaderProgram);
+    }
 }
 
 __checkReturn HRESULT
@@ -128,13 +116,6 @@ COpenGLES20RenderTarget::Initialize(
         vertexBuffers[i] = 0;   
     }
     
-    m_VertexCacheSize = 10240;
-    
-    m_pVertexCache = new RenderVertex[m_VertexCacheSize];
-    IFCOOM(m_pVertexCache);
-    
-    m_pCacheWriteOffset = m_pVertexCache;
-    
     //TODO: Split out shader loader and cleanup.
     m_ShaderProgram = glCreateProgram();
     
@@ -146,11 +127,21 @@ COpenGLES20RenderTarget::Initialize(
     
     IFC(LinkProgram(m_ShaderProgram));
     
+    {
+        GLint validationStatus = 0;
+        
+        glValidateProgram(m_ShaderProgram);
+        
+        glGetProgramiv(m_ShaderProgram, GL_VALIDATE_STATUS, &validationStatus);
+        
+        IFCEXPECT(validationStatus != GL_FALSE);
+    }
+    
     m_PositionAttribute = glGetAttribLocation(m_ShaderProgram, "position");
     m_ColorAttribute = glGetAttribLocation(m_ShaderProgram, "color");
     m_TransformUniform = glGetUniformLocation(m_ShaderProgram, "transform");
     
-    //TODO: Use glValidateProgram?
+    IFC(COpenGLES20TesselationSink::Create(this, m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &m_pTesselationSink));
     
 Cleanup:
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
@@ -357,10 +348,7 @@ COpenGLES20RenderTarget::EndRendering(
 {
     HRESULT hr = S_OK;
 
-    if (GetUsedVertexBufferCount() > 0)
-    {
-        IFC(FlushVertexCache());
-    }
+    IFC(m_pTesselationSink->Flush());
 
 Cleanup:
     return hr;
@@ -493,43 +481,26 @@ Cleanup:
     return hr;
 }
 
-size_t
-COpenGLES20RenderTarget::GetUsedVertexBufferCount(
-    )
-{
-    return (m_pCacheWriteOffset - m_pVertexCache);
-}
-
-size_t
-COpenGLES20RenderTarget::GetAvailableVertexBufferCount(
-    )
-{
-    return m_VertexCacheSize - GetUsedVertexBufferCount();
-}
-
 __checkReturn HRESULT
-COpenGLES20RenderTarget::FlushVertexCache(
+COpenGLES20RenderTarget::OnTesselatedGeometryBatch(
+    __in COpenGLES20VertexBuffer* pVertexBuffer
     )
 {
     HRESULT hr = S_OK;
     COpenGLES20VertexBuffer* pBuffer = NULL;
     UINT32 vertexCount = 0;
 
-    vertexCount = GetUsedVertexBufferCount();
+    vertexCount = pVertexBuffer->GetVertexCount();
 
     if (vertexCount > 0)
     {
-        pBuffer = m_pVertexBuffers[m_NextVertexBuffer];
-        
-        IFC(pBuffer->SetVertices(m_pVertexCache, vertexCount));
-
-        IFC(pBuffer->Bind(GL_ARRAY_BUFFER));
+        IFC(pVertexBuffer->Bind(GL_ARRAY_BUFFER));
         
         glUseProgram(m_ShaderProgram);
         
         if (m_PositionAttribute != -1)
         {
-            glVertexAttribPointer(ShaderAttribute::Position, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_POSITION_OFFSET);
+            glVertexAttribPointer(m_PositionAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_POSITION_OFFSET);
             glEnableVertexAttribArray(m_PositionAttribute);
         }
 
@@ -540,8 +511,6 @@ COpenGLES20RenderTarget::FlushVertexCache(
         }
 
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-        
-        m_NextVertexBuffer = (m_NextVertexBuffer + 1) % ARRAYSIZE(m_pVertexBuffers);
     }
     
 Cleanup:
@@ -555,28 +524,14 @@ COpenGLES20RenderTarget::FillRectangle(
 	)
 {
     HRESULT hr = S_OK;
+    COpenGLES20Brush* pOpenGLESBrush = NULL;
     
-    IFCPTR(pBrush);
+    pOpenGLESBrush = (COpenGLES20Brush*)pBrush;    
     
-    if (GetAvailableVertexBufferCount() < StaticTesselator::VerticesNeededForRectangleTesselation)
-    {
-        IFC(FlushVertexCache());
-    }
+    IFC(m_pTesselationSink->SetDiffuseColor(pOpenGLESBrush->GetDiffuseColor()));
+    IFC(m_pTesselationSink->SetTransform(m_Transform));
     
-    {
-        ColorF Color = ((COpenGLES20SolidColorBrush*)pBrush)->GetDiffuseColor();
-        
-        UINT32 writtenVertices = 0;
-        
-        IFC(StaticTesselator::TesselateRectangle(Size, m_Transform, m_pCacheWriteOffset, GetAvailableVertexBufferCount(), &writtenVertices));
-        
-        for (UINT32 i = 0; i < writtenVertices; ++i)
-        {
-            m_pCacheWriteOffset[i].Color = Color;
-        }
-        
-        m_pCacheWriteOffset += writtenVertices;
-    }
+    IFC(StaticTesselator::TesselateRectangle(Size, m_pTesselationSink));
     
 Cleanup:
     return hr;
@@ -700,22 +655,21 @@ COpenGLES20RenderTarget::FillGeometry(
 	)
 {
     HRESULT hr = S_OK;
-    // CD2DBrush* pD2DBrush = NULL;
-
-    // IFCPTR(pGeometry);
-    // IFCPTR(pBrush);
-
-    // pD2DBrush = (CD2DBrush*)pBrush;
+    COpenGLES20Brush* pOpenGLESBrush = NULL;
+    
+    pOpenGLESBrush = (COpenGLES20Brush*)pBrush;
 
     switch(pGeometry->GetType())
     {
         case TypeIndex::RectangleGraphicsGeometry:
             {
                 CCoreRectangleGeometry* pRectangleGeometry = (CCoreRectangleGeometry*)pGeometry;
-
-                IFC(FillRectangle(pRectangleGeometry->GetRectangle(), pBrush));
-                //m_RenderTarget->FillGeometry(pRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
-
+                
+                IFC(m_pTesselationSink->SetDiffuseColor(pOpenGLESBrush->GetDiffuseColor()));
+                IFC(m_pTesselationSink->SetTransform(m_Transform));
+                
+                IFC(pRectangleGeometry->TesselateFill(m_pTesselationSink));
+                    
                 break;
             }
 
@@ -723,7 +677,9 @@ COpenGLES20RenderTarget::FillGeometry(
             {
                 CCoreRoundedRectangleGeometry* pRoundedRectangleGeometry = (CCoreRoundedRectangleGeometry*)pGeometry;
 
-                //m_RenderTarget->FillGeometry(pRoundedRectangleGeometry->GetD2DGeometry(), pD2DBrush->GetD2DBrush());
+//                COpenGLES20TesselationSink Sink(this);
+
+//                IFC(pRectangleGeometry->TesselateFill(&Sink));          
 
                 break;
             }

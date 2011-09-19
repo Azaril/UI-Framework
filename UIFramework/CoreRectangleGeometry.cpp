@@ -1,4 +1,5 @@
 #include "CoreRectangleGeometry.h"
+#include "StaticTesselator.h"
 
 CCoreRectangleGeometry::CCoreRectangleGeometry(
     )
@@ -64,9 +65,15 @@ CCoreRectangleGeometry::FillContainsPoint(
     return hr;
 }
 
-const RectF&
-CCoreRectangleGeometry::GetRectangle(
+__override __checkReturn HRESULT
+CCoreRectangleGeometry::TesselateFill(
+    __in ITesselationSink* pSink
     )
 {
-    return m_Rect;
+    HRESULT hr = S_OK;
+    
+    IFC(StaticTesselator::TesselateRectangle(m_Rect, Matrix3X2F::Identity(), pSink));
+    
+Cleanup:
+    return hr;
 }

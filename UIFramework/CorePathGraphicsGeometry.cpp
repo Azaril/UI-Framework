@@ -62,3 +62,15 @@ CCorePathGraphicsGeometry::FillContainsPoint(
 
     return hr;
 }
+
+__override __checkReturn HRESULT 
+CCorePathGraphicsGeometry::TesselateFill(
+    __in ITesselationSink* pSink
+    )
+{
+    HRESULT hr = S_OK;
+    
+    //TODO: Implement.
+    
+    return hr;
+}

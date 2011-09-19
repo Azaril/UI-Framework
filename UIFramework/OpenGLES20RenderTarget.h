@@ -5,8 +5,10 @@
 #include "RenderTarget.h"
 #include "OpenGLES20Context.h"
 #include "OpenGLES20VertexBuffer.h"
+#include "OpenGLES20TesselationSink.h"
 
-class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget
+class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
+                                                private ITesselationBatchCallback
 {
     public:
     	DECLARE_FACTORY3( COpenGLES20RenderTarget, GLuint, GLuint, COpenGLES20Context* );
@@ -115,15 +117,6 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget
 
 		__checkReturn HRESULT ApplyContext(
 			);
-    
-        __out size_t GetAvailableVertexBufferCount(
-            );
-    
-        __out size_t GetUsedVertexBufferCount(
-            );
-    
-        __checkReturn HRESULT FlushVertexCache(
-            );
 
         __checkReturn HRESULT CreateShader(
 			const GLenum ShaderType,
@@ -134,6 +127,10 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget
         __checkReturn HRESULT LinkProgram(
             GLuint Program
             );
+    
+        __checkReturn HRESULT OnTesselatedGeometryBatch(
+            __in COpenGLES20VertexBuffer* pVertexBuffer
+            );
 
 		GLuint m_RenderBuffer;
 		GLuint m_FrameBuffer;
@@ -142,12 +139,9 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget
 		COpenGLES20Context* m_pContext;
         Matrix3X2F m_Transform;
         COpenGLES20VertexBuffer* m_pVertexBuffers[2];
-        UINT32 m_NextVertexBuffer;
-        RenderVertex* m_pVertexCache;
-        UINT32 m_VertexCacheSize;
-        RenderVertex* m_pCacheWriteOffset;
         GLuint m_ShaderProgram;
         GLint m_PositionAttribute;
         GLint m_ColorAttribute;
         GLint m_TransformUniform;
+        COpenGLES20TesselationSink* m_pTesselationSink;
 };

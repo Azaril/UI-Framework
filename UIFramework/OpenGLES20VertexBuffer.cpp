@@ -3,6 +3,7 @@
 COpenGLES20VertexBuffer::COpenGLES20VertexBuffer(
 	)
 	: m_BufferID(0)
+    , m_VertexCount(0)
 {
 }
 
@@ -38,6 +39,8 @@ COpenGLES20VertexBuffer::SetVertices(
     glBindBuffer(GL_ARRAY_BUFFER, m_BufferID);
     glBufferData(GL_ARRAY_BUFFER, sizeof(RenderVertex) * VertexCount, pVertices, GL_STREAM_DRAW);
     
+    m_VertexCount = VertexCount;
+    
     return hr;
 }
 
@@ -51,4 +54,11 @@ COpenGLES20VertexBuffer::Bind(
     glBindBuffer(Buffer, m_BufferID);
     
     return hr;
+}
+
+UINT32
+COpenGLES20VertexBuffer::GetVertexCount(
+    )
+{
+    return m_VertexCount;
 }
