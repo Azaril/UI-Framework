@@ -14,6 +14,10 @@ class CD2DBrush : public CGraphicsBrush
 			const Matrix3X2F& Transform 
 			);
 
+        __override virtual void GetTransform(
+            Matrix3X2F& Transform
+            ) const;
+
     protected:
         CD2DBrush(
 			);

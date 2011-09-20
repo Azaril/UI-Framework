@@ -15,9 +15,11 @@ CGeometryVisual::CGeometryVisual(
     , m_StrokeGraphicsBrush(NULL)
     , m_StrokeThickness(1.0f)
     , m_UpdateFillTransform(TRUE)
+    , m_UpdateStrokeTransform(TRUE)
 {
     m_FillBrushTransform = Matrix3X2F::Identity();
-    m_ModifyFillBrushTransform = Matrix3X2F::Identity();
+    m_StrokeBrushTransform = Matrix3X2F::Identity();
+    m_BrushTransform = Matrix3X2F::Identity();
 }
 
 CGeometryVisual::~CGeometryVisual(
@@ -96,15 +98,16 @@ Cleanup:
 }
 
 __checkReturn HRESULT
-CGeometryVisual::SetFillBrushTransform(
+CGeometryVisual::SetBrushTransform(
     const Matrix3X2F& Transform
     )
 {
     HRESULT hr = S_OK;
 
-    m_ModifyFillBrushTransform = Transform;
+    m_BrushTransform = Transform;
 
     m_UpdateFillTransform = TRUE;
+    m_UpdateStrokeTransform = TRUE;
 
     return hr;
 }
@@ -239,7 +242,6 @@ CGeometryVisual::PreRender(
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
-    BOOL GenerateStrokeTransform = FALSE;
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
@@ -264,11 +266,11 @@ CGeometryVisual::PreRender(
         }
         else
         {
-            GenerateStrokeTransform = TRUE;
+            m_UpdateStrokeTransform = TRUE;
         }
     }
 
-    if(m_UpdateFillTransform || GenerateStrokeTransform)
+    if(m_UpdateFillTransform || m_UpdateStrokeTransform)
     {
         RectF GeometryBounds;
 
@@ -278,20 +280,21 @@ CGeometryVisual::PreRender(
         {
             m_UpdateFillTransform = FALSE;
 
-            m_FillBrushTransform = m_ModifyFillBrushTransform * Matrix3X2F::Scale(GeometryBounds.right - GeometryBounds.left, GeometryBounds.bottom - GeometryBounds.top) * Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top);
+            FLOAT GeometryWidth = GeometryBounds.right - GeometryBounds.left;
+            FLOAT GeometryHeight = GeometryBounds.bottom - GeometryBounds.top;
 
-            //FLOAT GeometryWidth = GeometryBounds.right - GeometryBounds.left;
-            //FLOAT ScaleX = GeometryWidth / Bounds.width;
-
-            //FLOAT GeometryHeight = GeometryBounds.bottom - GeometryBounds.top;
-            //FLOAT ScaleY = GeometryHeight / Bounds.height;
-
-            //m_FillBrushTransform = Matrix3X2F::Scale(ScaleX, ScaleY);
+            m_FillBrushTransform = m_BrushTransform * Matrix3X2F::Scale(GeometryWidth, GeometryHeight) * Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top);
         }
 
-        if(GenerateStrokeTransform)
+        if(m_UpdateStrokeTransform)
         {
-            m_StrokeBrushTransform = Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top) * Matrix3X2F::Scale(GeometryBounds.right - GeometryBounds.left, GeometryBounds.bottom - GeometryBounds.top);
+            m_UpdateStrokeTransform = FALSE;
+
+            FLOAT GeometryWidth = GeometryBounds.right - GeometryBounds.left;
+            FLOAT GeometryHeight = GeometryBounds.bottom - GeometryBounds.top;
+
+            //TODO: This should use the stroked bounds most likely.
+            m_StrokeBrushTransform = m_BrushTransform * Matrix3X2F::Scale(GeometryWidth, GeometryHeight) * Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top);
         }
     }
 
@@ -321,7 +324,7 @@ CGeometryVisual::RenderTransformed(
 
         if(m_StrokeGraphicsBrush != NULL)
         {
-            IFC(m_StrokeGraphicsBrush->SetTransform(m_FillBrushTransform));
+            IFC(m_StrokeGraphicsBrush->SetTransform(m_StrokeBrushTransform));
 
             IFC(pRenderTarget->DrawGeometry(m_Geometry, m_StrokeGraphicsBrush, m_StrokeThickness));
         }

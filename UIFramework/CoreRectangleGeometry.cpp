@@ -34,7 +34,7 @@ CCoreRectangleGeometry::GetBounds(
 {
     HRESULT hr = S_OK;
 
-    //TODO: Implement.
+    *pBounds = m_Rect;
 
     return hr;
 }
@@ -46,8 +46,35 @@ CCoreRectangleGeometry::GetBounds(
 	)
 {
     HRESULT hr = S_OK;
+    RectF TransformedBounds;
 
-    //TODO: Implement.
+    Point2F Points[] =
+    {
+        Point2F(m_Rect.left, m_Rect.top),
+        Point2F(m_Rect.right, m_Rect.top),
+        Point2F(m_Rect.left, m_Rect.bottom),
+        Point2F(m_Rect.right, m_Rect.bottom)
+    };
+    
+    for (UINT32 i = 0; i < ARRAYSIZE(Points); ++i)
+    {
+        Points[i] = Transform.TransformPoint(Points[i]);
+    }
+    
+    TransformedBounds.left = Points[0].x;
+    TransformedBounds.right = Points[0].x;
+    TransformedBounds.top = Points[0].y;
+    TransformedBounds.bottom = Points[0].y;
+    
+    for (UINT32 i = 1; i < ARRAYSIZE(Points); ++i)
+    {
+        TransformedBounds.left = std::min(TransformedBounds.left, Points[0].x);
+        TransformedBounds.right = std::max(TransformedBounds.right, Points[0].x);
+        TransformedBounds.top = std::min(TransformedBounds.top, Points[0].y);
+        TransformedBounds.bottom = std::max(TransformedBounds.bottom, Points[0].y);        
+    }
+    
+    *pBounds = TransformedBounds;
 
     return hr;
 }
@@ -60,7 +87,7 @@ CCoreRectangleGeometry::FillContainsPoint(
 {
     HRESULT hr = S_OK;
 
-    //TODO: Implement.
+    *pContainsPoint = m_Rect.ContainsPoint(LocalPoint);
 
     return hr;
 }

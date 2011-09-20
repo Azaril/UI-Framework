@@ -6,6 +6,7 @@ struct RenderVertex
 {
     Point2F Position;
     ColorF Color;
+    Point2F TextureCoordinates;
 };
 
 #define RENDERVERTEX_POSITION_OFFSET    (0)

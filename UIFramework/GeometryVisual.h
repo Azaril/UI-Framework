@@ -27,7 +27,7 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
             FLOAT Thickness 
             );
 
-        __checkReturn HRESULT SetFillBrushTransform( 
+        __checkReturn HRESULT SetBrushTransform( 
             const Matrix3X2F& Transform 
             );
 
@@ -92,8 +92,9 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
         FLOAT m_StrokeThickness;
         Matrix3X2F m_FillBrushTransform;
         Matrix3X2F m_StrokeBrushTransform;
-        Matrix3X2F m_ModifyFillBrushTransform;
+        Matrix3X2F m_BrushTransform;
         BOOL m_UpdateFillTransform;
+        BOOL m_UpdateStrokeTransform;
 };
 
 template< >

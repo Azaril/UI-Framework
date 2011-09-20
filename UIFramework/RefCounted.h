@@ -119,3 +119,10 @@ __override virtual INT32 Release( \
 {   \
     return base::Release(); \
 }
+
+#define DECLARE_ADDREF_RELEASE_INTERFACE()   \
+virtual INT32 AddRef(   \
+    ) = 0;  \
+\
+virtual INT32 Release(  \
+    ) = 0;

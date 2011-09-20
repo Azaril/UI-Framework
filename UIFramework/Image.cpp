@@ -229,9 +229,10 @@ HRESULT CImage::RebuildGeometry()
 
         if(ImageSize.width > 0 && ImageSize.height > 0)
         {
+            //TODO: This seems wrong... Mapping from 1.0f to geometry range is handled by geometry visual.
             Matrix3X2F Transform = Matrix3X2F::Scale(1.0f / ImageSize.width, 1.0f / ImageSize.height);
 
-            IFC(m_ImageVisual->SetFillBrushTransform(Transform));
+            IFC(m_ImageVisual->SetBrushTransform(Transform));
         }
     }
     else

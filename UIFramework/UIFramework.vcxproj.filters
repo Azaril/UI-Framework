@@ -730,6 +730,9 @@
     <ClCompile Include="CoreRoundedRectangleGeometry.cpp">
       <Filter>Framework\Graphics\Core</Filter>
     </ClCompile>
+    <ClCompile Include="StaticTesselator.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">

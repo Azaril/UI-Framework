@@ -36,7 +36,7 @@ CD2DBrush::GetD2DBrush(
     return m_Brush;
 }
 
-__checkReturn HRESULT 
+__override __checkReturn HRESULT 
 CD2DBrush::SetTransform(
 	const Matrix3X2F& Transform
 	)
@@ -46,4 +46,12 @@ CD2DBrush::SetTransform(
     m_Brush->SetTransform(Transform);
 
     return hr;
+}
+
+__override void
+CD2DBrush::GetTransform(
+    Matrix3X2F& Transform
+    ) const
+{
+    return m_Brush->GetTransform(&Transform);
 }

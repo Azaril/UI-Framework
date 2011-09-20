@@ -159,6 +159,7 @@
     <ClCompile Include="BitmapSource.cpp" />
     <ClCompile Include="ImagingProvider.cpp" />
     <ClCompile Include="SourcedBinding.cpp" />
+    <ClCompile Include="StaticTesselator.cpp" />
     <ClCompile Include="Thumb.cpp" />
     <ClCompile Include="TimeController.cpp" />
     <ClCompile Include="TimeSink.cpp" />
