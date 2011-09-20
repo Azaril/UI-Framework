@@ -6,10 +6,6 @@ class COpenGLES20SolidColorBrush : public COpenGLES20Brush
 {
 	public:
 		DECLARE_FACTORY1( COpenGLES20SolidColorBrush, const ColorF& );
-    
-        __override virtual __checkReturn HRESULT SetTransform(
-            const Matrix3X2F& Transform
-            );
 
         __override virtual const ColorF& GetDiffuseColor(
         	);

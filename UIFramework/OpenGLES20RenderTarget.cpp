@@ -531,6 +531,8 @@ COpenGLES20RenderTarget::FillRectangle(
     IFC(m_pTesselationSink->SetDiffuseColor(pOpenGLESBrush->GetDiffuseColor()));
     IFC(m_pTesselationSink->SetTransform(m_Transform));
     
+    IFC(ApplyBrushTransformToSink(pBrush));
+    
     IFC(StaticTesselator::TesselateRectangle(Size, m_pTesselationSink));
     
 Cleanup:
@@ -668,6 +670,8 @@ COpenGLES20RenderTarget::FillGeometry(
                 IFC(m_pTesselationSink->SetDiffuseColor(pOpenGLESBrush->GetDiffuseColor()));
                 IFC(m_pTesselationSink->SetTransform(m_Transform));
                 
+                IFC(ApplyBrushTransformToSink(pBrush));
+                
                 IFC(pRectangleGeometry->TesselateFill(m_pTesselationSink));
                     
                 break;
@@ -778,5 +782,59 @@ COpenGLES20RenderTarget::PopLayer(
 
     //m_RenderTarget->PopLayer();
 
+    return hr;
+}
+
+__checkReturn HRESULT
+COpenGLES20RenderTarget::CreateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out COpenGLES20Texture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    GLuint textureID = 0;
+    COpenGLES20Texture* pOpenGLESTexture = NULL;
+    
+    IFC(ApplyContext());
+    
+    glGenTextures(1, &textureID);
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    IFC(COpenGLES20Texture::Create(textureID, Width, Height, PixelFormat::B8G8R8A8, &pOpenGLESTexture));
+    
+    textureID = 0;
+    
+    *ppTexture = pOpenGLESTexture;
+    pOpenGLESTexture = NULL;
+    
+Cleanup:
+    if (textureID != 0)
+    {
+        glDeleteTextures(1, &textureID);
+    }
+    
+    ReleaseObject(pOpenGLESTexture);
+    
+    return hr;
+}
+
+__checkReturn HRESULT
+COpenGLES20RenderTarget::ApplyBrushTransformToSink(
+    __in const CGraphicsBrush* pBrush
+    )
+{
+    HRESULT hr = S_OK;
+    
+    //TODO: Optimize solid color brushes out.
+    IFC(m_pTesselationSink->SetBrushTransform(&pBrush->GetTransform()));
+    
+Cleanup:    
     return hr;
 }

@@ -2,6 +2,8 @@
 
 #include "Defines.h"
 #include "DataTypes.h"
+#include "Point2F.h"
+#include "SizeF.h"
 
 #ifdef _WINDOWS
 #include <D2D1.h>
@@ -53,6 +55,13 @@ struct UIFRAMEWORK_API RectF
         return RectF(std::numeric_limits< FLOAT >::min(), std::numeric_limits< FLOAT >::min(), std::numeric_limits< FLOAT >::max(), std::numeric_limits< FLOAT >::max());
     }
     
+    inline BOOL ContainsPoint(
+        const Point2F& Point
+        )
+    {
+        return (Point.x >= left && Point.x <= right && Point.y >= top && Point.y <= bottom);
+    }
+    
 #ifndef _WINDOWS
     FLOAT left;
     FLOAT top;
@@ -78,9 +87,6 @@ operator!=(
 {
     return (Val1.left != Val2.left || Val1.top != Val2.top || Val1.right != Val2.right || Val1.bottom != Val2.bottom);
 }
-
-#include "SizeF.h"
-#include "Point2F.h"
 
 inline RectF 
 MakeRect(

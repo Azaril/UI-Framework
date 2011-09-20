@@ -6,6 +6,8 @@
 #include "OpenGLES20Context.h"
 #include "OpenGLES20VertexBuffer.h"
 #include "OpenGLES20TesselationSink.h"
+#include "OpenGLES20Texture.h"
+#include "OpenGLES20Brush.h"
 
 class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
                                                 private ITesselationBatchCallback
@@ -128,8 +130,18 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
             GLuint Program
             );
     
+        __checkReturn HRESULT CreateTexture(
+            UINT32 Width,
+            UINT32 Height,
+            __deref_out COpenGLES20Texture** ppTexture
+            );
+    
         __checkReturn HRESULT OnTesselatedGeometryBatch(
             __in COpenGLES20VertexBuffer* pVertexBuffer
+            );
+    
+        __checkReturn HRESULT ApplyBrushTransformToSink(
+            __in const CGraphicsBrush* pBrush
             );
 
 		GLuint m_RenderBuffer;

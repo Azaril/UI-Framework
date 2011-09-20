@@ -8,4 +8,7 @@ class CGraphicsBrush : public CRefCountedObject
         virtual __checkReturn HRESULT SetTransform( 
 			const Matrix3X2F& Transform 
 			) = 0;
+    
+        virtual const Matrix3X2F& GetTransform(
+            ) const = 0;
 };

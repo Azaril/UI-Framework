@@ -33,6 +33,10 @@ class COpenGLES20TesselationSink : public CRefCountedObjectBase< ITesselationSin
         __checkReturn HRESULT SetTransform(
             const Matrix3X2F& Transform
             );
+    
+        __checkReturn HRESULT SetBrushTransform(
+            __in_opt const Matrix3X2F* pTransform
+            );
 
     protected:    
         COpenGLES20TesselationSink(
@@ -64,4 +68,6 @@ class COpenGLES20TesselationSink : public CRefCountedObjectBase< ITesselationSin
         RenderVertex* m_pCacheWriteOffset;    
         ColorF m_DiffuseColor;
         Matrix3X2F m_Transform;
+        BOOL m_NeedsBrushTransform;
+        Matrix3X2F m_BrushTransform;
 };

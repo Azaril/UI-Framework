@@ -321,7 +321,7 @@ CGeometryVisual::RenderTransformed(
 
         if(m_StrokeGraphicsBrush != NULL)
         {
-            IFC(m_StrokeGraphicsBrush->SetTransform(m_FillBrushTransform));
+            IFC(m_StrokeGraphicsBrush->SetTransform(m_StrokeBrushTransform));
 
             IFC(pRenderTarget->DrawGeometry(m_Geometry, m_StrokeGraphicsBrush, m_StrokeThickness));
         }

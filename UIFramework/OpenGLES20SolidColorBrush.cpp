@@ -22,20 +22,6 @@ COpenGLES20SolidColorBrush::Initialize(
 	return hr;
 }
 
-__checkReturn HRESULT
-COpenGLES20SolidColorBrush::SetTransform(
-	const Matrix3X2F& Transform
-	)
-{
-	HRESULT hr = S_OK;
-
-	//
-	// Transform has no effect on solid color brushes.
-	//
-
-	return hr;
-}
-
 __override const ColorF&
 COpenGLES20SolidColorBrush::GetDiffuseColor(
     )
