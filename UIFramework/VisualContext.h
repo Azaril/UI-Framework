@@ -6,6 +6,7 @@
 class CGraphicsDevice;
 class CVisual;
 class CProperty;
+class CTimeSource;
 
 class UIFRAMEWORK_API CVisualAttachContext 
 {
@@ -15,16 +16,21 @@ class UIFRAMEWORK_API CVisualAttachContext
 
         CVisualAttachContext(
             __in CVisual* pParent,
-            __in_opt OnValueChangeFunc ChangeFunc
+            __in_opt OnValueChangeFunc ChangeFunc,
+            __in CTimeSource* pTimeSource
             );
 
         CVisualAttachContext( 
             __in CVisual* pParent,
             __in_opt OnValueChangeFunc ChangeFunc,
+            __in CTimeSource* pTimeSource,
             __in CGraphicsDevice* pGraphicsDevice
             );
 
         __out_opt CVisual* GetParent(
+            );
+
+        __out_opt CTimeSource* GetTimeSource(
             );
 
         __out_opt OnValueChangeFunc GetChangeCallback(
@@ -39,6 +45,7 @@ class UIFRAMEWORK_API CVisualAttachContext
     protected:
         CVisual* m_Parent;
         OnValueChangeFunc m_ChangeCallback;
+        CTimeSource* m_TimeSource;
         CGraphicsDevice* m_GraphicsDevice;
 };
 

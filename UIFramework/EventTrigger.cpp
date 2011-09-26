@@ -8,12 +8,12 @@
 // Properties
 //
 CStaticProperty CEventTrigger::RoutedEventProperty(L"RoutedEvent", TypeIndex::RoutedEvent, StaticPropertyFlags::None);
-CStaticProperty CEventTrigger::SettersProperty(L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
+CStaticProperty CEventTrigger::ActionsProperty(L"Actions", TypeIndex::TriggerAction, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
 
 CEventTrigger::CEventTrigger(
     ) 
     : m_RoutedEvent(NULL)
-    , m_Setters(NULL)
+    , m_Actions(NULL)
     , m_Providers(NULL)
 {
 }
@@ -22,7 +22,7 @@ CEventTrigger::~CEventTrigger(
     )
 {
     ReleaseObject(m_RoutedEvent);
-    ReleaseObject(m_Setters);
+    ReleaseObject(m_Actions);
     ReleaseObject(m_Providers);
 }
 
@@ -38,7 +38,7 @@ CEventTrigger::Initialize(
     m_Providers = pProviders;
     AddRefObject(m_Providers);
 
-    IFC(CSetterCollection::Create(&m_Setters));
+    IFC(CTriggerActionCollection::Create(&m_Actions));
 
 Cleanup:
     return hr;
@@ -59,11 +59,11 @@ CEventTrigger::ResolveTrigger(
 
     IFC(CResolvedEventTrigger::Create(pObject, m_RoutedEvent, m_Providers, pCallback, &pResolvedEventTrigger));
 
-    for(UINT32 i = 0; i < m_Setters->GetCount(); i++)
+    for(UINT32 i = 0; i < m_Actions->GetCount(); i++)
     {
-        CSetter* pSetter = m_Setters->GetAtIndex(i);
+        CTriggerAction* pAction = m_Actions->GetAtIndex(i);
 
-        IFC(pResolvedEventTrigger->AddSetter(pSetter));
+        IFC(pResolvedEventTrigger->AddAction(pAction));
     }
 
     *ppResolvedTrigger = pResolvedEventTrigger;
@@ -86,7 +86,7 @@ CEventTrigger::CreatePropertyInformation(
     CStaticProperty* Properties[] =
     {
         &RoutedEventProperty,
-        &SettersProperty
+        &ActionsProperty
     };
     
     IFCPTR(ppInformation);
@@ -150,10 +150,10 @@ CEventTrigger::GetValue(
         *ppValue = m_RoutedEvent;
         AddRefObject(m_RoutedEvent);
     }
-    else if(pProperty == &CEventTrigger::SettersProperty)
+    else if(pProperty == &CEventTrigger::ActionsProperty)
     {
-        *ppValue = m_Setters;
-        AddRefObject(m_Setters);
+        *ppValue = m_Actions;
+        AddRefObject(m_Actions);
     }
     else
     {
@@ -166,7 +166,7 @@ Cleanup:
 
 CResolvedEventTrigger::CResolvedEventTrigger(
     ) 
-    : m_Setters(NULL)
+    : m_pActions(NULL)
 {
 }
 
@@ -174,7 +174,7 @@ CResolvedEventTrigger::~CResolvedEventTrigger(
     )
 {
     m_Connection.disconnect();
-    ReleaseObject(m_Setters);
+    ReleaseObject(m_pActions);
 }
 
 __checkReturn HRESULT
@@ -191,7 +191,7 @@ CResolvedEventTrigger::Initialize(
     IFCPTR(pProviders);
     IFCPTR(pRoutedEvent);
 
-    IFC(CResolvedSetters::Create(pObject, pProviders, pCallback, &m_Setters));
+    IFC(CResolvedTriggerActions::Create(pObject, pProviders, pCallback, &m_pActions));
 
     IFC(pObject->AddHandler(pRoutedEvent, bind(&CResolvedEventTrigger::OnEvent, this, _1, _2), &m_Connection));
 
@@ -200,15 +200,15 @@ Cleanup:
 }
 
 __checkReturn HRESULT
-CResolvedEventTrigger::AddSetter(
-    __in CSetter* pSetter
+CResolvedEventTrigger::AddAction(
+    __in CTriggerAction* pAction
     )
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pSetter);
+    IFCPTR(pAction);
 
-    IFC(m_Setters->AddSetter(pSetter));
+    IFC(m_pActions->AddAction(pAction));
 
 Cleanup:
     return hr;
@@ -222,7 +222,7 @@ CResolvedEventTrigger::OnEvent(
 {
     HRESULT hr = S_OK;
 
-    IFC(m_Setters->Apply());
+    IFC(m_pActions->Apply());
 
 Cleanup:
     ;

@@ -26,7 +26,8 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::BindingDirection, ConvertStringToBindingDirection },
     { TypeIndex::String, TypeIndex::Stretch, ConvertStringToStretch },
     { TypeIndex::String, TypeIndex::StretchDirection, ConvertStringToStretchDirection },
-    { TypeIndex::String, TypeIndex::Orientation, ConvertStringToOrientation }    
+    { TypeIndex::String, TypeIndex::Orientation, ConvertStringToOrientation },
+    { TypeIndex::String, TypeIndex::Duration, ConvertStringToDuration }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -1294,6 +1295,216 @@ ConvertStringToOrientation(
 
 Cleanup:
     ReleaseObject(pOutValue);
+
+    return hr;
+}
+
+namespace DurationParseState
+{
+    enum Value
+    {
+        BeforeNumber,
+        InNumber,
+        AfterNumber
+    };
+}
+
+__checkReturn HRESULT
+ConvertStringToDuration(
+    __in CConversionContext* pContext,
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue
+    )
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+    CDurationValue* pDurationValue = NULL;
+    LONGLONG TotalMilliseconds = 0;
+    FLOAT Values[4] = { 0 };
+    UINT32 ValueCount = 0;
+    const WCHAR* pParsePoint = NULL;
+    WCHAR ValueBuffer[1024];
+    UINT32 ValueBufferIndex = 0;
+    DurationParseState::Value ParseState = DurationParseState::BeforeNumber;
+    BOOL Continue = TRUE;
+    BOOL GotSeperator = FALSE;
+    BOOL GotDigit = FALSE;
+
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    pParsePoint = pStringValue->GetValue();
+
+    while(Continue)
+    {
+        const WCHAR Token = *pParsePoint;
+
+        switch(ParseState)
+        {
+            case DurationParseState::BeforeNumber:
+                {
+                    if(iswdigit(Token) || Token == L'.')
+                    {
+                        ParseState = DurationParseState::InNumber;
+                    }
+                    else if(Token == L':')
+                    {
+                        IFC(E_FAIL);
+                    }
+                    else if(iswspace(Token))
+                    {
+                        ++pParsePoint;
+                    }
+                    else if(Token == L'\0')
+                    {
+                        IFC(E_FAIL)
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case DurationParseState::InNumber:
+                {
+                    if(iswdigit(Token))
+                    {
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        ValueBuffer[ValueBufferIndex++] = Token;
+
+                        GotDigit = TRUE;
+
+                        ++pParsePoint;
+                    }
+                    else if(Token == L'.')
+                    {
+                        IFCEXPECT(!GotSeperator);
+
+                        GotSeperator = TRUE;
+
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        ValueBuffer[ValueBufferIndex++] = Token;
+
+                        ++pParsePoint;
+                    }
+                    else if(Token == ':' || iswspace(Token) || Token == L'\0')
+                    {
+                        ParseState = DurationParseState::AfterNumber;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+
+            case DurationParseState::AfterNumber:
+                {
+                    if(iswdigit(Token) || Token == L'.')
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+                    else if(Token == ':' || Token == L'\0')
+                    {
+                        IFCEXPECT(ValueCount < ARRAYSIZE(Values));
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        IFCEXPECT(ValueBufferIndex > 0);
+                        IFCEXPECT(GotDigit);
+
+                        ValueBuffer[ValueBufferIndex] = L'\0';
+                        ValueBufferIndex = 0;
+
+                        Values[ValueCount] = (FLOAT)_wtof(ValueBuffer);
+
+                        ++ValueCount;
+
+                        if(Token == L'\0')
+                        {
+                            Continue = FALSE;
+                        }
+                        else
+                        {
+                            ParseState = DurationParseState::BeforeNumber;
+
+                            GotSeperator = FALSE;
+                            GotDigit = FALSE;
+
+                            ++pParsePoint;
+                        }
+                    }
+                    else if(iswspace(Token))
+                    {
+                        ++pParsePoint;
+                    }
+                    else
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+
+                    break;
+                }
+        }
+    }
+
+    switch(ValueCount)
+    {
+        case 1:
+            {
+                TotalMilliseconds = (LONGLONG)(Values[0] * 1000.0f);
+
+                break;
+            }
+
+        case 2:
+            {
+                TotalMilliseconds = (LONGLONG)(Values[1] * 1000.0f);
+                TotalMilliseconds += (LONGLONG)(Values[0] * 60000.0f);
+
+                break;
+            }
+
+        case 3:
+            {
+                TotalMilliseconds = (LONGLONG)(Values[2] * 1000.0f);
+                TotalMilliseconds += (LONGLONG)(Values[1] * 60000.0f);
+                TotalMilliseconds += (LONGLONG)(Values[0] * 3600000.0f);
+
+                break;
+            }
+
+        case 4:
+            {
+                TotalMilliseconds = (LONGLONG)(Values[3] * 1000.0f);
+                TotalMilliseconds += (LONGLONG)(Values[2] * 60000.0f);
+                TotalMilliseconds += (LONGLONG)(Values[1] * 3600000.0f);
+                TotalMilliseconds += (LONGLONG)(Values[0] * 86400000.0f);
+
+                break;
+            }
+
+        default:
+            {
+                IFC(E_UNEXPECTED);
+            }
+    }
+
+    IFC(CDurationValue::Create(CTimeSpan::FromMilliseconds(TotalMilliseconds), &pDurationValue));
+
+    *ppConvertedValue = pDurationValue;
+    pDurationValue = NULL;
+
+Cleanup:
+    ReleaseObject(pDurationValue);
 
     return hr;
 }

@@ -30,6 +30,7 @@ class UIFRAMEWORK_API CUIHost : public CRefCountedObject
 
         HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders );
 
+        CTime m_Time;
         CRenderTarget* m_RenderTarget;
         CRootUIElement* m_RootElement;
         CFocusManager* m_FocusManager;

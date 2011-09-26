@@ -6,7 +6,7 @@
 #include "RoutedEventArgs.h"
 #include "StyleCallback.h"
 #include "Setter.h"
-#include "ResolvedSetters.h"
+#include "ResolvedTriggerActions.h"
 
 class CEventTrigger : public CTrigger
 {
@@ -34,7 +34,7 @@ class CEventTrigger : public CTrigger
         // Properties
         //
         static CStaticProperty RoutedEventProperty;
-        static CStaticProperty SettersProperty;
+        static CStaticProperty ActionsProperty;
 
     protected:
         CEventTrigger(
@@ -54,7 +54,7 @@ class CEventTrigger : public CTrigger
 
         CProviders* m_Providers;
         CRoutedEvent* m_RoutedEvent;
-        CSetterCollection* m_Setters;
+        CTriggerActionCollection* m_Actions;
 };
 
 template< >
@@ -68,8 +68,8 @@ class CResolvedEventTrigger : public CResolvedTrigger
     public:
         DECLARE_FACTORY4( CResolvedEventTrigger, CUIElement*, CRoutedEvent*, CProviders*, IStyleCallback* );
 
-        __checkReturn HRESULT AddSetter(
-            __in CSetter* pSetter 
+        __checkReturn HRESULT AddAction(
+            __in CTriggerAction* pAction
             );
 
     protected:
@@ -92,5 +92,5 @@ class CResolvedEventTrigger : public CResolvedTrigger
             );
 
         events::signals::connection m_Connection;
-        CResolvedSetters* m_Setters;
+        CResolvedTriggerActions* m_pActions;
 };

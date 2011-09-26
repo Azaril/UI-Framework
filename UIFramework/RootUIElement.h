@@ -10,7 +10,7 @@ class UIFRAMEWORK_API CRootUIElement : public CFrameworkElement,
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::RootUIElement, CFrameworkElement );
 
-        HRESULT SetContext( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CStaticTreeData* pTreeData );
+        HRESULT SetContext( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CTimeSource* pTimeSource, CStaticTreeData* pTreeData );
 
         virtual HRESULT RenderRoot( CRenderContext& Context );
 

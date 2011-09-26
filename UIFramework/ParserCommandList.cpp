@@ -42,6 +42,7 @@ CParserCommandList::Execute(
 	)
 {
     HRESULT hr = S_OK;
+    CObjectWithType* pObject = NULL;
 
     CParserCommandContext Context(m_Providers, pCallback);
 
@@ -50,9 +51,22 @@ CParserCommandList::Execute(
         IFC((*It)->Execute(Context));
     }
 
-    IFC(Context.GetObject(ppObject));
+    IFC(Context.GetObject(&pObject));
+
+    //
+    // Implicit pop of final object on stack.
+    //
+    if(pCallback)
+    {
+        IFC(pCallback->OnPopObject(pObject));
+    }
+
+    *ppObject = pObject;
+    pObject = NULL;
 
 Cleanup:
+    ReleaseObject(pObject);
+
     return hr;
 }
 

@@ -26,6 +26,10 @@
 #include "Thumb.h"
 #include "Track.h"
 #include "RangeBase.h"
+#include "BeginStoryboard.h"
+#include "AnimationTimeline.h"
+#include "FloatAnimation.h"
+#include "Storyboard.h"
 
 template< typename FromType >
 class StaticClassFactory
@@ -272,6 +276,14 @@ ClassInformation Classes[] =
         NULL),
 
     ClassInformation(
+        L"BeginStoryboard",
+        TypeIndex::BeginStoryboard,
+        &StaticClassFactory< CBeginStoryboard >::Create,
+        &CBeginStoryboard::CreatePropertyInformation,
+        NULL,
+        NULL),
+
+    ClassInformation(
         L"DynamicResource",
         TypeIndex::DynamicResource,
         &StaticClassFactory< CDynamicResource >::Create,
@@ -316,6 +328,30 @@ ClassInformation Classes[] =
         TypeIndex::Type,
         &StaticClassFactory< CTypeMarkupExtension >::Create,
         &CTypeMarkupExtension::CreatePropertyInformation,
+        NULL,
+        NULL),
+
+    ClassInformation(
+        L"AnimationTimeline",
+        TypeIndex::AnimationTimeline,
+        NULL,
+        &CAnimationTimeline::CreatePropertyInformation,
+        NULL,
+        NULL),
+
+    ClassInformation(
+        L"FloatAnimation",
+        TypeIndex::FloatAnimation,
+        &StaticClassFactory< CFloatAnimation >::Create,
+        &CFloatAnimation::CreatePropertyInformation,
+        NULL,
+        NULL),
+
+    ClassInformation(
+        L"Storyboard",
+        TypeIndex::Storyboard,
+        &StaticClassFactory< CStoryboard >::Create,
+        &CStoryboard::CreatePropertyInformation,
         NULL,
         NULL)
 };

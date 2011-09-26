@@ -391,9 +391,6 @@
     <ClCompile Include="EventTrigger.cpp">
       <Filter>Framework\UI\Styling</Filter>
     </ClCompile>
-    <ClCompile Include="ResolvedSetters.cpp">
-      <Filter>Framework\UI\Styling</Filter>
-    </ClCompile>
     <ClCompile Include="ResolvedTriggers.cpp">
       <Filter>Framework\UI\Styling</Filter>
     </ClCompile>
@@ -733,6 +730,21 @@
     <ClCompile Include="StaticTesselator.cpp">
       <Filter>Framework\Graphics\Core</Filter>
     </ClCompile>
+    <ClCompile Include="TriggerAction.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="ResolvedTriggerActions.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="BeginStoryboard.cpp">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClCompile>
+    <ClCompile Include="Storyboard.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTimelineCollection.cpp">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1000,9 +1012,6 @@
       <Filter>Framework\UI\Namescope</Filter>
     </ClInclude>
     <ClInclude Include="EventTrigger.h">
-      <Filter>Framework\UI\Styling</Filter>
-    </ClInclude>
-    <ClInclude Include="ResolvedSetters.h">
       <Filter>Framework\UI\Styling</Filter>
     </ClInclude>
     <ClInclude Include="ResolvedTriggers.h">
@@ -1355,6 +1364,21 @@
     </ClInclude>
     <ClInclude Include="CoreRoundedRectangleGeometry.h">
       <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerAction.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="ResolvedTriggerActions.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="BeginStoryboard.h">
+      <Filter>Framework\UI\Styling</Filter>
+    </ClInclude>
+    <ClInclude Include="Storyboard.h">
+      <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTimelineCollection.h">
+      <Filter>Framework\UI\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

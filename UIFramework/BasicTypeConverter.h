@@ -101,3 +101,9 @@ __checkReturn HRESULT ConvertStringToOrientation(
     __in CObjectWithType* pValue, 
     __deref_out CObjectWithType** ppConvertedValue 
     );
+
+__checkReturn HRESULT ConvertStringToDuration(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );

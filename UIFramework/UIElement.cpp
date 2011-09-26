@@ -1263,6 +1263,8 @@ HRESULT CUIElement::CreateEventInformation(CEventInformation** ppInformation)
 
     CRoutedEvent* Events[] = 
     {
+        &AttachedEvent,
+        &DetachedEvent,
         &MouseButtonEvent,
         &MouseDownEvent,
         &MouseLeftButtonDownEvent,
@@ -2054,27 +2056,9 @@ Cleanup:
     return hr;
 }
 
-CTimeSource* CUIElement::GetTimeSource()
-{
-    return m_Context.GetTimeSource();
-}
-
 CLayoutManager* CUIElement::GetLayoutManager()
 {
     return m_Context.GetLayoutManager();
-}
-
-HRESULT CUIElement::GetAnimationBaseValue(CProperty* pProperty, CObjectWithType** ppValue)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    IFC(GetEffectiveValue(pProperty, ppValue));
-
-Cleanup:
-    return hr;
 }
 
 HRESULT CUIElement::SetAnimationValue(CProperty* pProperty, CObjectWithType* pValue)

@@ -9,16 +9,17 @@
 #include "Providers.h"
 #include "StyleCallback.h"
 #include "ParserCommandList.h"
+#include "TriggerAction.h"
 
 class CResolvedSetter;
 class CUIElement;
 
-class CSetter : public CRefCountedObjectBase< CPropertyObject >
+class CSetter : public CRefCountedObjectBase< CTriggerAction >
 {
     public:
         DECLARE_FACTORY1( CSetter, CProviders* );
 
-        DECLARE_TYPE_WITH_BASE( TypeIndex::Setter, CPropertyObject );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Setter, CTriggerAction );
 
         static __checkReturn HRESULT CreatePropertyInformation( 
             __deref_out CPropertyInformation** ppInformation
@@ -30,10 +31,10 @@ class CSetter : public CRefCountedObjectBase< CPropertyObject >
         __out_opt CObjectWithType* GetPropertyValue(
             );
 
-        virtual __checkReturn HRESULT ResolveSetter(
+        virtual __checkReturn HRESULT ResolveAction(
             __in CUIElement* pObject,
             __in IStyleCallback* pCallback,
-            __deref_out CResolvedSetter** ppResolvedSetter 
+            __deref_out CResolvedTriggerAction** ppResolvedAction 
             );
 
         //
@@ -97,7 +98,7 @@ struct ObjectTypeTraits< CSetterCollection >
     static const TypeIndex::Value Type = TypeIndex::SetterCollection;
 };
 
-class CResolvedSetter : public CRefCountedObject
+class CResolvedSetter : public CResolvedTriggerAction
 {
     public:
         DECLARE_FACTORY3( CResolvedSetter, CProperty*, CObjectWithType*, IStyleCallback* );

@@ -56,7 +56,7 @@ CAnimatable::ApplyAnimationClock(
 
     for(std::vector< CAnimationInfo* >::iterator It = m_Animations.begin(); It != m_Animations.end(); ++It)
     {
-        if((*It)->GetProperty() == pProperty)
+        if((*It)->GetProperty() == pProperty && (*It)->GetClock() != pClock)
         {
             (*It)->Disconnect();
 
@@ -107,7 +107,10 @@ CAnimatable::OnClockChanged(
 
     IFC(pClock->GetCurrentValue(pInfo->GetInitialValue(), pInfo->GetInitialValue(), &pValue));
 
-    IFC(SetAnimationValue(pInfo->GetProperty(), pValue));
+    if (pValue != NULL)
+    {
+        IFC(SetAnimationValue(pInfo->GetProperty(), pValue));
+    }
 
 Cleanup:
     ReleaseObject(pInfo);
@@ -169,11 +172,7 @@ CAnimationInfo::SetClock(
     __in CAnimationClock* pClock
     )
 {
-    ReleaseObject(m_Clock);
-
-    m_Clock = pClock;
-
-    AddRefObject(m_Clock);
+    SetObject(m_Clock, pClock);
 }
 
 void 

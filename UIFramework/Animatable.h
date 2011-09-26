@@ -7,16 +7,19 @@
 class CAnimationTimeline;
 class CAnimationClock;
 class CAnimationInfo;
+class CStoryboard;
 
-class UIFRAMEWORK_API CAnimatable
+class UIFRAMEWORK_API CAnimatable : public CRefCountedObjectBase< CPropertyObject >
 {
     public:
-        virtual HRESULT BeginAnimation( 
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Animatable, CPropertyObject );
+
+        virtual __checkReturn HRESULT BeginAnimation( 
             __in CProperty* pProperty,
             __in CAnimationTimeline* pTimeline 
             );
 
-        virtual HRESULT ApplyAnimationClock(
+        virtual __checkReturn HRESULT ApplyAnimationClock(
             __in CProperty* pProperty, 
             __in CAnimationClock* pClock 
             );
@@ -46,6 +49,12 @@ class UIFRAMEWORK_API CAnimatable
             );
 
         std::vector< CAnimationInfo* > m_Animations;
+};
+
+template< >
+struct ObjectTypeTraits< CAnimatable >
+{
+    static const TypeIndex::Value Type = TypeIndex::Animatable;
 };
 
 class CAnimationInfo : public CRefCountedObject

@@ -28,7 +28,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::SetContext(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CStaticTreeData* pTreeData)
+HRESULT CRootUIElement::SetContext(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CTimeSource* pTimeSource, CStaticTreeData* pTreeData)
 {
     HRESULT hr = S_OK;
 
@@ -39,7 +39,7 @@ HRESULT CRootUIElement::SetContext(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     IFCEXPECT(!IsAttached());
 
     {
-        CVisualAttachContext VisualContext(NULL, NULL, pGraphicsDevice);
+        CVisualAttachContext VisualContext(NULL, NULL, pTimeSource, pGraphicsDevice);
 
         IFC(OnVisualAttach(VisualContext));
     }

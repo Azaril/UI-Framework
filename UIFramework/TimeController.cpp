@@ -2,8 +2,8 @@
 
 CTimeController::CTimeController(
     ) 
-    : m_LastTime(CTime::Now())
-    , m_CallingSinks(FALSE)
+    : m_CallingSinks(FALSE)
+    , m_CurrentSinkIndex(0)
 {
 }
 
@@ -15,12 +15,9 @@ CTimeController::~CTimeController(
 
 __checkReturn HRESULT 
 CTimeController::Initialize(
-    const CTime& Time
     )
 {
     HRESULT hr = S_OK;
-
-    m_LastTime = Time;
 
     return hr;
 }
@@ -33,7 +30,7 @@ CTimeController::Disconnect(
 
     for(vector< CTimeSink* >::iterator It = m_Sinks.begin(); It != m_Sinks.end(); ++It)
     {
-        (*It)->Release();
+        //(*It)->Release();
     }
 
     m_Sinks.clear();
@@ -43,58 +40,27 @@ CTimeController::Disconnect(
 
 __checkReturn HRESULT 
 CTimeController::UpdateTime(
-    const CTime& Time
+    const CTimeSpan& TimeDelta
     )
 {
     HRESULT hr = S_OK;
-    CTimeSpan TimeDelta = Time - m_LastTime;
-
-    m_LastTime = Time;
-
-    IFC(CallSinks(TimeDelta));
-
-    for(vector< CAsyncOp >::iterator It = m_AsyncOperations.begin(); It != m_AsyncOperations.end(); ++It)
-    {
-        switch(It->GetOperation())
-        {
-            case AsyncTimeControllerOp::Add:
-                {
-                    IFC(AddSinkInternal(It->GetSink()));
-
-                    break;
-                }
-
-            case AsyncTimeControllerOp::Remove:
-                {
-                    IFC(RemoveSinkInternal(It->GetSink()));
-
-                    break;
-                }
-        }
-    }
-
-    m_AsyncOperations.clear();
-
-Cleanup:
-    return hr;
-}
-
-__checkReturn HRESULT
-CTimeController::CallSinks(
-    const CTimeSpan& Delta
-    )
-{
-    HRESULT hr = S_OK;
+    CTimeSink* pCurrentSink = NULL;
 
     m_CallingSinks = TRUE;
 
-    for(vector< CTimeSink* >::iterator It = m_Sinks.begin(); It != m_Sinks.end(); ++It)
+    for(m_CurrentSinkIndex = 0; m_CurrentSinkIndex < m_Sinks.size(); ++m_CurrentSinkIndex)
     {
-        IFC((*It)->OnTimeUpdate(Delta));
+        SetObject(pCurrentSink, m_Sinks[m_CurrentSinkIndex]);
+
+        IFC(pCurrentSink->OnTimeUpdate(TimeDelta));
+
+        ReleaseObject(pCurrentSink);
     }
 
 Cleanup:
     m_CallingSinks = FALSE;
+
+    ReleaseObject(pCurrentSink);
 
     return hr;
 }
@@ -109,30 +75,6 @@ CTimeController::AddSink(
     IFCPTR(pSink);
 
     //NOTE: Don't validate as this will potentially contain every active animation in the tree.
-
-    if(!m_CallingSinks)
-    {
-        IFC(AddSinkInternal(pSink));
-    }
-    else
-    {
-        m_AsyncOperations.push_back(CAsyncOp(AsyncTimeControllerOp::Add, pSink));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__checkReturn HRESULT 
-CTimeController::AddSinkInternal(
-    __in CTimeSink* pSink
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pSink);
-
-    AddRefObject(pSink);
 
     m_Sinks.push_back(pSink);
 
@@ -151,35 +93,19 @@ CTimeController::RemoveSink(
 
     //NOTE: Don't validate as this will potentially contain every active animation in the tree.
 
-    if(!m_CallingSinks)
+    for (UINT32 i = 0; i < m_Sinks.size(); ++i)
     {
-        IFC(RemoveSinkInternal(pSink));
-    }
-    else
-    {
-        m_AsyncOperations.push_back(CAsyncOp(AsyncTimeControllerOp::Remove, pSink));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__checkReturn HRESULT 
-CTimeController::RemoveSinkInternal(
-    __in CTimeSink* pSink
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pSink);
-
-    for(vector< CTimeSink* >::iterator It = m_Sinks.begin(); It != m_Sinks.end(); ++It)
-    {
-        if((*It) == pSink)
+        if (m_Sinks[i] == pSink)
         {
-            (*It)->Release();
+            m_Sinks.erase(m_Sinks.begin() + i);
 
-            m_Sinks.erase(It);
+            if (m_CallingSinks)
+            {
+                if (i <= m_CurrentSinkIndex)
+                {
+                    --m_CurrentSinkIndex;
+                }
+            }
         }
     }
 

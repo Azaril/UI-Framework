@@ -9,7 +9,7 @@
 #include "StaticPropertyInformation.h"
 #include "Trigger.h"
 #include "ResolvedTriggers.h"
-#include "ResolvedSetters.h"
+#include "ResolvedTriggerActions.h"
 
 class CResolvedStyle;
 
@@ -66,7 +66,7 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
         __checkReturn HRESULT ResolveSetters( 
             __in CUIElement* pObject, 
             __in IStyleCallback* pCallback,
-            __deref_out CResolvedSetters** ppResolvedSetters 
+            __deref_out CResolvedTriggerActions** ppResolvedActions
             );
 
         __checkReturn HRESULT ResolveTriggers(
@@ -89,7 +89,7 @@ struct ObjectTypeTraits< CStyle >
 class CResolvedStyle : public CRefCountedObject
 {
     public:
-        DECLARE_FACTORY2( CResolvedStyle, CResolvedSetters*, CResolvedTriggers* );
+        DECLARE_FACTORY2( CResolvedStyle, CResolvedTriggerActions*, CResolvedTriggers* );
         
     protected:
         CResolvedStyle(
@@ -99,10 +99,10 @@ class CResolvedStyle : public CRefCountedObject
             );
 
         __checkReturn HRESULT Initialize(
-            __in CResolvedSetters* pSetters, 
+            __in CResolvedTriggerActions* pActions, 
             __in CResolvedTriggers* pTriggers 
             );
 
-        CResolvedSetters* m_Setters;
+        CResolvedTriggerActions* m_Actions;
         CResolvedTriggers* m_Triggers;
 };

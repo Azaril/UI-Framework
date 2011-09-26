@@ -16,6 +16,16 @@ CAnimationClock::CAnimationClock(
 CAnimationClock::~CAnimationClock(
     )
 {
+    if (m_Connected)
+    {
+        if (m_TimeSource != NULL)
+        {
+            IGNOREHR(m_TimeSource->RemoveSink(this));
+        }
+
+        m_Connected = FALSE;
+    }
+
     ReleaseObject(m_Timeline);
 }
 
@@ -38,6 +48,8 @@ CAnimationClock::Initialize(
 
     IFC(m_TimeSource->AddSink(this));
 
+    m_Connected = TRUE;
+
 Cleanup:
     return hr;
 }
@@ -51,13 +63,6 @@ CAnimationClock::AddChangeListener(
     HRESULT hr = S_OK;
 
     IFCPTR(pConnection);
-
-    if(!m_Connected)
-    {
-        IFC(m_TimeSource->AddSink(this));
-
-        m_Connected = TRUE;
-    }
 
     *pConnection = m_ValueChanged.connect(Handler);
 
@@ -111,7 +116,7 @@ CAnimationClock::OnTimeUpdate(
 
                 IFC(m_Timeline->GetDuration(&pDuration));
 
-                if(pDuration && pDuration->HasTimeSpan())
+                if(pDuration != NULL && pDuration->HasTimeSpan())
                 {
                     const CTimeSpan* pTimeSpan = pDuration->GetTimeSpan();
 
@@ -125,9 +130,7 @@ CAnimationClock::OnTimeUpdate(
                     //{
                         if(Progress >= 1.0f)
                         {
-                            m_ClockState = ClockState::Filling;
-
-                            RaiseCompleted();
+                            IFC(Complete());
                         }
 
                         m_Progress = std::min(Progress, 1.0f);
@@ -138,20 +141,37 @@ CAnimationClock::OnTimeUpdate(
 
                 break;
             }
+
+        case ClockState::Filling:
+            {
+                break;
+            }
     }
-
-    //if(m_Connected.empty())
-    //{
-    //    IFC(m_TimeSource->RemoveSink(this));
-
-    //    m_Connected = FALSE;
-
-    //    goto Cleanup;
-    //}    
 
 Cleanup:
     ReleaseObject(pDuration);
 
+    return hr;
+}
+
+__checkReturn HRESULT
+CAnimationClock::Complete(
+    )
+{
+    HRESULT hr = S_OK;
+
+    m_ClockState = ClockState::Filling;
+
+    if (m_Connected)
+    {
+        IFC(m_TimeSource->RemoveSink(this));
+
+        m_Connected = FALSE;
+    }
+
+    RaiseCompleted();
+
+Cleanup:
     return hr;
 }
 

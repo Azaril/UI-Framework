@@ -93,19 +93,20 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CSetter::ResolveSetter(
+CSetter::ResolveAction(
     __in CUIElement* pObject, 
     __in IStyleCallback* pCallback, 
-    __deref_out CResolvedSetter** ppResolvedSetter
+    __deref_out CResolvedTriggerAction** ppResolvedAction
     )
 {
     HRESULT hr = S_OK;
     CClassResolver* pClassResolver = NULL;
     CProperty* pProperty = NULL;
     CObjectWithType* pValue = NULL;
+    CResolvedSetter* pResolvedSetter = NULL;
 
     IFCPTR(pObject);
-    IFCPTR(ppResolvedSetter);
+    IFCPTR(ppResolvedAction);
 
     pClassResolver = m_Providers->GetClassResolver();
     IFCPTR(pClassResolver);
@@ -128,11 +129,15 @@ CSetter::ResolveSetter(
         AddRefObject(pValue);
     }
 
-    IFC(CResolvedSetter::Create(pProperty, pValue, pCallback, ppResolvedSetter));
+    IFC(CResolvedSetter::Create(pProperty, pValue, pCallback, &pResolvedSetter));
+
+    *ppResolvedAction = pResolvedSetter;
+    pResolvedSetter = NULL;
 
 Cleanup:
     ReleaseObject(pProperty);
     ReleaseObject(pValue);
+    ReleaseObject(pResolvedSetter);
 
     return hr;
 }

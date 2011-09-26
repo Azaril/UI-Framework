@@ -52,7 +52,7 @@ CStyle::ResolveStyle(
     )
 {
     HRESULT hr = S_OK;
-    CResolvedSetters* pResolvedSetters = NULL;
+    CResolvedTriggerActions* pResolvedSetters = NULL;
     CResolvedTriggers* pResolvedTriggers = NULL;
 
     IFCPTR(pObject);
@@ -60,11 +60,11 @@ CStyle::ResolveStyle(
 
     IFC(ResolveSetters(pObject, pCallback, &pResolvedSetters));
 
+    IFC(pResolvedSetters->Apply());
+
     IFC(ResolveTriggers(pObject, pCallback, &pResolvedTriggers));
 
     IFC(CResolvedStyle::Create(pResolvedSetters, pResolvedTriggers, ppResolvedStyle));
-
-    IFC(pResolvedSetters->Apply());
 
 Cleanup:
     ReleaseObject(pResolvedSetters);
@@ -77,25 +77,25 @@ __checkReturn HRESULT
 CStyle::ResolveSetters(
     __in CUIElement* pObject,
     __in IStyleCallback* pCallback, 
-    __deref_out CResolvedSetters** ppResolvedSetters
+    __deref_out CResolvedTriggerActions** ppResolvedActions
     )
 {
     HRESULT hr = S_OK;
-    CResolvedSetters* pResolvedSetters = NULL;
+    CResolvedTriggerActions* pResolvedSetters = NULL;
 
     IFCPTR(pObject);
-    IFCPTR(ppResolvedSetters);
+    IFCPTR(ppResolvedActions);
 
-    IFC(CResolvedSetters::Create(pObject, m_Providers, pCallback, &pResolvedSetters));
+    IFC(CResolvedTriggerActions::Create(pObject, m_Providers, pCallback, &pResolvedSetters));
 
     for(UINT32 i = 0; i < m_Setters->GetCount(); i++)
     {
         CSetter* pSetter = m_Setters->GetAtIndex(i);
 
-        IFC(pResolvedSetters->AddSetter(pSetter));
+        IFC(pResolvedSetters->AddAction(pSetter));
     }
 
-    *ppResolvedSetters = pResolvedSetters;
+    *ppResolvedActions = pResolvedSetters;
     pResolvedSetters = NULL;
 
 Cleanup:
@@ -216,30 +216,33 @@ Cleanup:
     return hr;
 }
 
-
-
-
-
-CResolvedStyle::CResolvedStyle() : m_Setters(NULL),
-                                   m_Triggers(NULL)
+CResolvedStyle::CResolvedStyle(
+    ) 
+    : m_Actions(NULL)
+    , m_Triggers(NULL)
 {
 }
 
-CResolvedStyle::~CResolvedStyle()
+CResolvedStyle::~CResolvedStyle(
+    )
 {
-    ReleaseObject(m_Setters);
+    ReleaseObject(m_Actions);
     ReleaseObject(m_Triggers);
 }
 
-HRESULT CResolvedStyle::Initialize(CResolvedSetters* pSetters, CResolvedTriggers* pTriggers)
+__checkReturn HRESULT
+CResolvedStyle::Initialize(
+    __in CResolvedTriggerActions* pSetters,
+    __in CResolvedTriggers* pTriggers
+    )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pSetters);
     IFCPTR(pTriggers);
 
-    m_Setters = pSetters;
-    AddRefObject(m_Setters);
+    m_Actions = pSetters;
+    AddRefObject(m_Actions);
 
     m_Triggers = pTriggers;
     AddRefObject(m_Triggers);

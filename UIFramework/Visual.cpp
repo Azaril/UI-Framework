@@ -64,14 +64,14 @@ CVisual::OnVisualAttach(
     {
         for(VisualChildCollection::iterator It = m_VisualChildren.begin(); It != m_VisualChildren.end(); ++It)
         {
-            CVisualAttachContext VisualContext(this, &INSTANCE_CHANGE_CALLBACK( CVisual, OnChildInvalidated ), Context.GetGraphicsDevice());
+            CVisualAttachContext VisualContext(this, &INSTANCE_CHANGE_CALLBACK( CVisual, OnChildInvalidated ), Context.GetTimeSource(), Context.GetGraphicsDevice());
 
             IFC((*It)->OnVisualAttach(VisualContext));
         }
 
         for(VisualResourceCollection::iterator It = m_VisualResources.begin(); It != m_VisualResources.end(); ++It)
         {
-            CVisualAttachContext VisualContext(this, It->second, Context.GetGraphicsDevice());
+            CVisualAttachContext VisualContext(this, It->second, Context.GetTimeSource(), Context.GetGraphicsDevice());
 
             IFC(It->first->OnVisualAttach(VisualContext));
         }
@@ -124,6 +124,41 @@ Cleanup:
     return hr;
 }
 
+__override __out_opt CTimeSource* 
+CVisual::GetTimeSource(
+    )
+{
+    return m_VisualContext.GetTimeSource();
+}
+
+__override __checkReturn HRESULT 
+CVisual::SetAnimationValue(
+    __in CProperty* pProperty,
+    __in CObjectWithType* pValue 
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(SetValue(pProperty, pValue));
+
+Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT
+CVisual::GetAnimationBaseValue(
+    __in CProperty* pProperty,
+    __deref_out CObjectWithType** ppValue 
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(GetEffectiveValue(pProperty, ppValue));
+
+Cleanup:
+    return hr;
+}
+
 __checkReturn HRESULT 
 CVisual::AddChildVisual(
     __in CVisual* pVisualChild
@@ -147,7 +182,7 @@ CVisual::AddChildVisual(
 
     if(m_VisualAttached)
     {
-        CVisualAttachContext VisualContext(this, &INSTANCE_CHANGE_CALLBACK( CVisual, OnChildInvalidated ), m_VisualContext.GetGraphicsDevice());
+        CVisualAttachContext VisualContext(this, &INSTANCE_CHANGE_CALLBACK( CVisual, OnChildInvalidated ), m_VisualContext.GetTimeSource(), m_VisualContext.GetGraphicsDevice());
 
         IFC(pVisualChild->OnVisualAttach(VisualContext));
     }
@@ -375,7 +410,7 @@ CVisual::AddVisualResource(
 
     if(m_VisualAttached)
     {
-        CVisualAttachContext VisualContext(this, ChangeFunc, m_VisualContext.GetGraphicsDevice());
+        CVisualAttachContext VisualContext(this, ChangeFunc, m_VisualContext.GetTimeSource(), m_VisualContext.GetGraphicsDevice());
 
         IFC(pVisualResource->OnVisualAttach(VisualContext));
     }

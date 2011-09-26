@@ -1,6 +1,6 @@
-#include "ResolvedSetters.h"
+#include "ResolvedTriggerActions.h"
 
-CResolvedSetters::CResolvedSetters(
+CResolvedTriggerActions::CResolvedTriggerActions(
     ) 
     : m_Owner(NULL)
     , m_Providers(NULL)
@@ -8,21 +8,19 @@ CResolvedSetters::CResolvedSetters(
 {
 }
 
-CResolvedSetters::~CResolvedSetters(
+CResolvedTriggerActions::~CResolvedTriggerActions(
     )
 {
-    for(std::vector< CResolvedSetter* >::iterator It = m_Setters.begin(); It != m_Setters.end(); ++It)
+    for(std::vector< CResolvedTriggerAction* >::iterator It = m_Actions.begin(); It != m_Actions.end(); ++It)
     {
         (*It)->Release();
     }
-
-    m_Setters.clear();
 
     ReleaseObject(m_Providers);
 }
 
 __checkReturn HRESULT 
-CResolvedSetters::Initialize(
+CResolvedTriggerActions::Initialize(
     __in CUIElement* pObject,
     __in CProviders* pProviders, 
     __in IStyleCallback* pCallback
@@ -46,35 +44,35 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CResolvedSetters::AddSetter(
-    __in CSetter* pSetter
+CResolvedTriggerActions::AddAction(
+    __in CTriggerAction* pAction
     )
 {
     HRESULT hr = S_OK;
-    CResolvedSetter* pResolvedSetter = NULL;
+    CResolvedTriggerAction* pResolvedAction = NULL;
 
-    IFCPTR(pSetter);
+    IFCPTR(pAction);
 
-    if(SUCCEEDED(pSetter->ResolveSetter(m_Owner, m_Callback, &pResolvedSetter)))
+    if(SUCCEEDED(pAction->ResolveAction(m_Owner, m_Callback, &pResolvedAction)))
     {
-        m_Setters.push_back(pResolvedSetter);
+        m_Actions.push_back(pResolvedAction);
 
-        pResolvedSetter = NULL;
+        pResolvedAction = NULL;
     }
 
 Cleanup:
-    ReleaseObject(pResolvedSetter);
+    ReleaseObject(pResolvedAction);
 
     return hr;
 }
 
 __checkReturn HRESULT
-CResolvedSetters::Apply(
+CResolvedTriggerActions::Apply(
     )
 {
     HRESULT hr = S_OK;
 
-    for(std::vector< CResolvedSetter* >::iterator It = m_Setters.begin(); It != m_Setters.end(); ++It)
+    for(std::vector< CResolvedTriggerAction* >::iterator It = m_Actions.begin(); It != m_Actions.end(); ++It)
     {
         IFC((*It)->Apply());
     }

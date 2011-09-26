@@ -1,6 +1,8 @@
 #pragma once
 
 #include "AnimationTimeline.h"
+#include "Factory.h"
+#include "AnimationClock.h"
 
 class UIFRAMEWORK_API CFloatAnimationBase : public CAnimationTimeline
 {
@@ -15,4 +17,3 @@ class UIFRAMEWORK_API CFloatAnimationBase : public CAnimationTimeline
         virtual ~CFloatAnimationBase(
             );
 };
-

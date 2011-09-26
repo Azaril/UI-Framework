@@ -1,12 +1,12 @@
 #pragma once
 
 #include "TimeSink.h"
+#include "RefCounted.h"
 
 class CTimeSource
 {
     public:
-        virtual INT32 AddRef() = 0;
-        virtual INT32 Release() = 0;
+        DECLARE_ADDREF_RELEASE_INTERFACE();
 
         virtual __checkReturn HRESULT AddSink(
             __in CTimeSink* pSink 

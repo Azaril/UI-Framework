@@ -107,6 +107,29 @@ inline void ReleaseObject(
     }
 }
 
+template< typename T1, typename T2 >
+inline void ReplaceObject(
+    __inout T1*& pObj,
+    __in_opt T2* pNewObj 
+    )
+{
+    AddRefObject(pNewObj);
+    ReleaseObject(pObj);
+
+    pObj = pNewObj;
+}
+
+template< typename T1, typename T2 >
+inline void SetObject(
+    __inout T1*& pObj,
+    __in_opt T2* pNewObj 
+    )
+{
+    AddRefObject(pNewObj);
+
+    pObj = pNewObj;
+}
+
 #define DELEGATE_REFCOUNTING( base )    \
 __override virtual INT32 AddRef( \
     )  \

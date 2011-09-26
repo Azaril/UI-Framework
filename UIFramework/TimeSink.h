@@ -2,12 +2,12 @@
 
 #include "Types.h"
 #include "TimeValue.h"
+#include "RefCounted.h"
 
 class CTimeSink
 {
     public:
-        virtual INT32 AddRef() = 0;
-        virtual INT32 Release() = 0;
+        DECLARE_ADDREF_RELEASE_INTERFACE();
 
         virtual __checkReturn HRESULT OnTimeUpdate( 
             const CTimeSpan& TimeDelta 

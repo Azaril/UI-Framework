@@ -63,6 +63,16 @@ class UIFRAMEWORK_API CAnimationClock : public CRefCountedObjectBase< CTimeSink 
             __out FLOAT* pProgress 
             );
 
+        __checkReturn HRESULT AddAnimationTarget(
+            __in CPropertyObject* pPropertyObject,
+            __in CProperty* pProperty
+            );
+
+        __checkReturn HRESULT RemoveAnimationTarget(
+            __in CPropertyObject* pPropertyObject,
+            __in CProperty* pProperty
+            );
+
     protected:
         CAnimationClock(
             );
@@ -73,6 +83,9 @@ class UIFRAMEWORK_API CAnimationClock : public CRefCountedObjectBase< CTimeSink 
         __checkReturn HRESULT Initialize(
             __in CTimeSource* pTimeSource,
             __in CAnimationTimeline* pTimeline 
+            );
+
+        __checkReturn HRESULT Complete(
             );
 
         void RaiseValueChanged(

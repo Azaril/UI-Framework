@@ -98,6 +98,8 @@
     <ClCompile Include="Animatable.cpp" />
     <ClCompile Include="AnimationClock.cpp" />
     <ClCompile Include="AnimationTimeline.cpp" />
+    <ClCompile Include="AnimationTimelineCollection.cpp" />
+    <ClCompile Include="BeginStoryboard.cpp" />
     <ClCompile Include="BezierSegment.cpp" />
     <ClCompile Include="BindingBase.cpp" />
     <ClCompile Include="BindingContext.cpp" />
@@ -160,12 +162,14 @@
     <ClCompile Include="ImagingProvider.cpp" />
     <ClCompile Include="SourcedBinding.cpp" />
     <ClCompile Include="StaticTesselator.cpp" />
+    <ClCompile Include="Storyboard.cpp" />
     <ClCompile Include="Thumb.cpp" />
     <ClCompile Include="TimeController.cpp" />
     <ClCompile Include="TimeSink.cpp" />
     <ClCompile Include="TimeSource.cpp" />
     <ClCompile Include="TimeValue.cpp" />
     <ClCompile Include="Track.cpp" />
+    <ClCompile Include="TriggerAction.cpp" />
     <ClCompile Include="WICBitmapSource.cpp" />
     <ClCompile Include="WICImagingProvider.cpp" />
     <ClCompile Include="Enums.cpp" />
@@ -234,7 +238,7 @@
     <ClCompile Include="HitTestResult.cpp" />
     <ClCompile Include="Namescope.cpp" />
     <ClCompile Include="EventTrigger.cpp" />
-    <ClCompile Include="ResolvedSetters.cpp" />
+    <ClCompile Include="ResolvedTriggerActions.cpp" />
     <ClCompile Include="ResolvedTriggers.cpp" />
     <ClCompile Include="Setter.cpp" />
     <ClCompile Include="Style.cpp" />
@@ -302,6 +306,8 @@
     <ClInclude Include="Animatable.h" />
     <ClInclude Include="AnimationClock.h" />
     <ClInclude Include="AnimationTimeline.h" />
+    <ClInclude Include="AnimationTimelineCollection.h" />
+    <ClInclude Include="BeginStoryboard.h" />
     <ClInclude Include="BezierSegment.h" />
     <ClInclude Include="BindingBase.h" />
     <ClInclude Include="BindingContext.h" />
@@ -363,12 +369,14 @@
     <ClInclude Include="BitmapSource.h" />
     <ClInclude Include="ImagingProvider.h" />
     <ClInclude Include="SourcedBinding.h" />
+    <ClInclude Include="Storyboard.h" />
     <ClInclude Include="Thumb.h" />
     <ClInclude Include="TimeController.h" />
     <ClInclude Include="TimeSink.h" />
     <ClInclude Include="TimeSource.h" />
     <ClInclude Include="TimeValue.h" />
     <ClInclude Include="Track.h" />
+    <ClInclude Include="TriggerAction.h" />
     <ClInclude Include="WICBitmapSource.h" />
     <ClInclude Include="WICImagingProvider.h" />
     <ClInclude Include="Enums.h" />
@@ -438,7 +446,7 @@
     <ClInclude Include="HitTestResult.h" />
     <ClInclude Include="Namescope.h" />
     <ClInclude Include="EventTrigger.h" />
-    <ClInclude Include="ResolvedSetters.h" />
+    <ClInclude Include="ResolvedTriggerActions.h" />
     <ClInclude Include="ResolvedTriggers.h" />
     <ClInclude Include="Setter.h" />
     <ClInclude Include="Style.h" />

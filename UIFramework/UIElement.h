@@ -27,11 +27,10 @@ class CLayoutManager;
 class CStaticTreeData
 {
     public:
-        CStaticTreeData( CFocusManager* pFocusManager, CMouseController* pMouseController, CKeyboardController* pKeyboardController, CTimeSource* pTimeSource, CLayoutManager* pLayoutManager ) : m_FocusManager(pFocusManager),
-                                                                                                                                                                                                  m_MouseController(pMouseController),
-                                                                                                                                                                                                  m_KeyboardController(pKeyboardController),
-                                                                                                                                                                                                  m_TimeSource(pTimeSource),
-                                                                                                                                                                                                  m_LayoutManager(pLayoutManager)
+        CStaticTreeData( CFocusManager* pFocusManager, CMouseController* pMouseController, CKeyboardController* pKeyboardController, CLayoutManager* pLayoutManager ) : m_FocusManager(pFocusManager),
+                                                                                                                                                                        m_MouseController(pMouseController),
+                                                                                                                                                                        m_KeyboardController(pKeyboardController),
+                                                                                                                                                                        m_LayoutManager(pLayoutManager)
         {
         }
 
@@ -50,11 +49,6 @@ class CStaticTreeData
             return m_KeyboardController;
         }
 
-        CTimeSource* GetTimeSource()
-        {
-            return m_TimeSource;
-        }
-
         CLayoutManager* GetLayoutManager()
         {
             return m_LayoutManager;
@@ -64,7 +58,6 @@ class CStaticTreeData
         CFocusManager* m_FocusManager;
         CMouseController* m_MouseController;
         CKeyboardController* m_KeyboardController;
-        CTimeSource* m_TimeSource;
         CLayoutManager* m_LayoutManager;
 };
 
@@ -127,11 +120,6 @@ class CUIAttachContext
         CKeyboardController* GetKeyboardController()
         {
             return (m_StaticData != NULL) ? m_StaticData->GetKeyboardController() :  NULL;
-        }
-
-        CTimeSource* GetTimeSource()
-        {
-            return (m_StaticData != NULL) ? m_StaticData->GetTimeSource() : NULL;
         }
 
         CLayoutManager* GetLayoutManager()
@@ -258,8 +246,7 @@ class CEventHandlerChain : public CRefCountedObject
         events::signal< void ( CObjectWithType*, CRoutedEventArgs* ) > m_Handlers;
 };
 
-class UIFRAMEWORK_API CUIElement : public CVisual,
-                                   public CAnimatable
+class UIFRAMEWORK_API CUIElement : public CVisual
 {
     public:
         DELEGATE_REFCOUNTING( CVisual );
@@ -309,7 +296,6 @@ class UIFRAMEWORK_API CUIElement : public CVisual,
         CBindingManager* GetBindingManager();
         CMouseController* GetMouseController();
         CKeyboardController* GetKeyboardController();
-        virtual CTimeSource* GetTimeSource();
         CLayoutManager* GetLayoutManager();
 
         virtual HRESULT SetVisibility( Visibility::Value State );
@@ -455,7 +441,6 @@ class UIFRAMEWORK_API CUIElement : public CVisual,
 
         CStaticTreeData* GetStaticTreeData();
 
-        virtual HRESULT GetAnimationBaseValue( CProperty* pProperty, CObjectWithType** ppValue );
         virtual HRESULT SetAnimationValue( CProperty* pProperty, CObjectWithType* pValue );
 
         //

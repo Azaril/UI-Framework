@@ -364,7 +364,7 @@ __checkReturn HRESULT CastType(
     IFCPTR(pBaseObject);
     IFCPTR(ppObject);
 
-    IFCEXPECT(pBaseObject->IsTypeOf(ObjectTypeTraits< T >::Type));
+    IFCEXPECT_NOTRACE(pBaseObject->IsTypeOf(ObjectTypeTraits< T >::Type));
 
     *ppObject = (T*)pBaseObject;
 

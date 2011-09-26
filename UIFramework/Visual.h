@@ -9,17 +9,31 @@
 #include "VisualResource.h"
 #include "HitTestResult.h"
 #include "Transform.h"
+#include "Animatable.h"
 
-class UIFRAMEWORK_API CVisual : public CRefCountedObjectBase< CPropertyObject >
+class UIFRAMEWORK_API CVisual : public CAnimatable
 {
     typedef std::vector< CVisual* > VisualChildCollection;
     typedef std::vector< std::pair< CVisualResource*, OnValueChangeFunc > > VisualResourceCollection;
 
     public:
-        DECLARE_TYPE_WITH_BASE( TypeIndex::Visual, CPropertyObject );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Visual, CAnimatable );
 
         static __checkReturn HRESULT CreatePropertyInformation( 
             __deref_out CPropertyInformation** ppInformation 
+            );
+
+        __override virtual __out CTimeSource* GetTimeSource(
+            );
+
+        __override virtual __checkReturn HRESULT SetAnimationValue(
+            __in CProperty* pProperty,
+            __in CObjectWithType* pValue 
+            );
+
+        __override virtual __checkReturn HRESULT GetAnimationBaseValue(
+            __in CProperty* pProperty,
+            __deref_out CObjectWithType** ppValue 
             );
 
         virtual __checkReturn HRESULT PreRender(
