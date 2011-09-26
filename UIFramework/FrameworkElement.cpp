@@ -34,7 +34,8 @@ CFrameworkElement::CFrameworkElement() : m_ChildrenSubscriber(*this),
                                          m_Children(NULL),
                                          m_RegisteredName(NULL),
                                          m_ResolvedStyle(NULL),
-                                         m_AutomaticNamescopeParticipation(TRUE)
+                                         m_AutomaticNamescopeParticipation(TRUE),
+                                         m_ChildrenNeedLoading(FALSE)
 {
 }
 
@@ -132,8 +133,39 @@ HRESULT CFrameworkElement::OnDetach(CUIDetachContext& Context)
 
     IFC(CUIElement::OnDetach(Context));
 
+    m_ChildrenNeedLoading = TRUE;
+
 Cleanup:
     ReleaseObject(m_RegisteredName);
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CFrameworkElement::EnsureLoaded(
+    )
+{
+    HRESULT hr = S_OK;
+    CRoutedEventArgs* pLoadedEventArgs = NULL;
+
+    IFC(CUIElement::EnsureLoaded());
+
+    if (m_ChildrenNeedLoading)
+    {
+        m_ChildrenNeedLoading = FALSE;
+
+        CUIElementCollection* pChildCollection = GetChildCollection();
+
+        for (UINT32 i = 0; i < pChildCollection->GetCount(); ++i)
+        {
+            CUIElement* pChildElement = pChildCollection->GetAtIndex(i);
+
+            IFC(pChildElement->EnsureLoaded());
+        }
+    }
+
+Cleanup:
+    ReleaseObject(pLoadedEventArgs);
 
     return hr;
 }
@@ -244,6 +276,8 @@ void CFrameworkElement::OnChildAdded(CUIElement* pElement)
 
         IFC(pElement->OnAttach(ChildContext));
     }
+
+    m_ChildrenNeedLoading = TRUE;
 
 Cleanup:
     ;

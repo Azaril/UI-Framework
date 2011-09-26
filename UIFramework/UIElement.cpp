@@ -68,6 +68,8 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CUIElement, OnOpacityChanged );
 CStaticRoutedEvent CUIElement::AttachedEvent(L"Attached", RoutingStrategy::Direct);
 CStaticRoutedEvent CUIElement::DetachedEvent(L"Detached", RoutingStrategy::Direct);
 
+CStaticRoutedEvent CUIElement::LoadedEvent(L"Loaded", RoutingStrategy::Direct);
+
 CStaticRoutedEvent CUIElement::MouseButtonEvent(L"MouseButton", RoutingStrategy::Bubbling);
 
 CStaticRoutedEvent CUIElement::MouseDownEvent(L"MouseDown", RoutingStrategy::Direct);
@@ -99,6 +101,7 @@ CStaticRoutedEvent CUIElement::KeyUpEvent(L"KeyUp", RoutingStrategy::Direct);
 CStaticRoutedEvent CUIElement::TextEvent(L"Text", RoutingStrategy::Bubbling);
 
 CUIElement::CUIElement() : m_Attached(FALSE),
+                           m_Loaded(FALSE),
                            m_MeasureDirty(TRUE),
                            m_NotifiedParentMeasureDirty(FALSE),
                            m_ArrangeDirty(TRUE),
@@ -192,6 +195,28 @@ HRESULT CUIElement::Initialize(CProviders* pProviders)
     IFC(AddHandler(&KeyEvent, boost::bind(&CUIElement::OnKey, this, _1, _2), &m_KeyConnection));
     
 Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CUIElement::EnsureLoaded(
+    )
+{
+    HRESULT hr = S_OK;
+    CRoutedEventArgs* pLoadedEventArgs = NULL;
+
+    if (!m_Loaded)
+    {
+        m_Loaded = TRUE;
+
+        IFC(CRoutedEventArgs::Create(&CUIElement::LoadedEvent, &pLoadedEventArgs));
+
+        IFC(RaiseEvent(pLoadedEventArgs));
+    }
+
+Cleanup:
+    ReleaseObject(pLoadedEventArgs);
+
     return hr;
 }
 
@@ -439,10 +464,12 @@ HRESULT CUIElement::OnDetach(CUIDetachContext& Context)
 
     IFCEXPECT(IsAttached());
 
-    //TODO: Unfiy when dirtiness is actually required.
+    //TODO: Unify when dirtiness is actually required.
     IFC(InvalidateMeasure());
 
     m_Attached = FALSE;
+
+    m_Loaded = FALSE;
 
     m_Context.Reset();
     
@@ -459,16 +486,6 @@ Cleanup:
 BOOL CUIElement::IsAttached()
 {
     return m_Attached;
-}
-
-HRESULT CUIElement::SetSize(SizeF Size)
-{
-    HRESULT hr = S_OK;
-
-    //IFC(InternalSetWidth(Size.width));
-    //IFC(InternalSetHeight(Size.height));
-
-    return hr;
 }
 
 HRESULT CUIElement::GetMinMaxSize(SizeF& MinimumSize, SizeF& MaximumSize)
@@ -1265,6 +1282,7 @@ HRESULT CUIElement::CreateEventInformation(CEventInformation** ppInformation)
     {
         &AttachedEvent,
         &DetachedEvent,
+        &LoadedEvent,
         &MouseButtonEvent,
         &MouseDownEvent,
         &MouseLeftButtonDownEvent,

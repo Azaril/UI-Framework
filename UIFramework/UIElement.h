@@ -270,8 +270,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
             );
 
         BOOL IsAttached();
-
-        HRESULT SetSize( SizeF Size );
+        BOOL IsLoaded();
 
         virtual HRESULT Measure( SizeF Size );
         virtual SizeF GetDesiredSize();
@@ -316,6 +315,8 @@ class UIFRAMEWORK_API CUIElement : public CVisual
 
         virtual HRESULT SetBinding( CProperty* pProperty, CBindingBase* pBinding );
 
+        virtual HRESULT EnsureLoaded();
+
         //
         // Properties
         //
@@ -338,6 +339,8 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         //
         static CStaticRoutedEvent AttachedEvent;
         static CStaticRoutedEvent DetachedEvent;
+
+        static CStaticRoutedEvent LoadedEvent;
 
         static CStaticRoutedEvent MouseButtonEvent;
 
@@ -494,6 +497,8 @@ class UIFRAMEWORK_API CUIElement : public CVisual
     private:
         CProviders* m_Providers;
         BOOL m_Attached;
+
+        BOOL m_Loaded;
 
         SizeF m_LastMeasureSize;
         RectF m_LastArrangeBounds;

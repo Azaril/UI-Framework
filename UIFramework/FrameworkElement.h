@@ -42,6 +42,8 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
 
         HRESULT FindName( const WCHAR* pName, CObjectWithType** ppObject );
 
+        virtual HRESULT EnsureLoaded();
+
         template< typename T >
         HRESULT FindName( const WCHAR* pName, T** ppObject )
         {
@@ -169,6 +171,8 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
 
         BOOL m_StyleDirty;
         CResolvedStyle* m_ResolvedStyle;
+
+        BOOL m_ChildrenNeedLoading;
 
     private:
         CUIElementCollection* m_Children;

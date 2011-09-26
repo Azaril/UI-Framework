@@ -148,6 +148,10 @@ HRESULT CUIHost::Render()
 
     IFC(m_LayoutManager->EnsureLayout());
 
+    IFC(m_RootElement->EnsureLoaded());
+
+    IFC(m_LayoutManager->EnsureLayout());
+
     {
         CPreRenderContext PreRenderContext(m_RenderTarget);
 
