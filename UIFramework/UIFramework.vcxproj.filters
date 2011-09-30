@@ -745,6 +745,12 @@
     <ClCompile Include="AnimationTimelineCollection.cpp">
       <Filter>Framework\UI\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="TextureAtlas.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureAtlasPool.cpp">
+      <Filter>Framework\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1379,6 +1385,18 @@
     </ClInclude>
     <ClInclude Include="AnimationTimelineCollection.h">
       <Filter>Framework\UI\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureAllocator.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureAtlas.h">
+      <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureAtlasPool.h">
+      <Filter>Framework\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

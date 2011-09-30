@@ -163,6 +163,8 @@
     <ClCompile Include="SourcedBinding.cpp" />
     <ClCompile Include="StaticTesselator.cpp" />
     <ClCompile Include="Storyboard.cpp" />
+    <ClCompile Include="TextureAtlas.cpp" />
+    <ClCompile Include="TextureAtlasPool.cpp" />
     <ClCompile Include="Thumb.cpp" />
     <ClCompile Include="TimeController.cpp" />
     <ClCompile Include="TimeSink.cpp" />
@@ -370,6 +372,10 @@
     <ClInclude Include="ImagingProvider.h" />
     <ClInclude Include="SourcedBinding.h" />
     <ClInclude Include="Storyboard.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureAllocator.h" />
+    <ClInclude Include="TextureAtlas.h" />
+    <ClInclude Include="TextureAtlasPool.h" />
     <ClInclude Include="Thumb.h" />
     <ClInclude Include="TimeController.h" />
     <ClInclude Include="TimeSink.h" />

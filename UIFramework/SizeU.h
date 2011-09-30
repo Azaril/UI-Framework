@@ -34,3 +34,21 @@ struct UIFRAMEWORK_API SizeU
     UINT32 height;
 #endif    
 };
+
+inline bool 
+    operator==(
+    const SizeU& Val1,
+    const SizeU& Val2
+    )
+{
+    return (Val1.width == Val2.width && Val1.height == Val2.height);
+}
+
+inline bool 
+    operator!=(
+    const SizeU& Val1,
+    const SizeU& Val2
+    )
+{
+    return (Val1.width != Val2.width || Val1.height != Val2.height);
+}
