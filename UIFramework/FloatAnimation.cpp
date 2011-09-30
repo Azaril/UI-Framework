@@ -160,19 +160,24 @@ CFloatAnimation::GetCurrentValue(
     )
 {
     HRESULT hr = S_OK;
-    CFloatValue* pDefaultFrom = NULL;
-    CFloatValue* pDefaultTo = NULL;
     FLOAT Progress = 0;
     CFloatValue* pOutVal = NULL;
 
     CFloatValue* pFrom = NULL;
     CFloatValue* pTo = NULL;
 
-    IFC(CastType(pDefaultInitialValue, &pDefaultFrom));
-    IFC(CastType(pDefaultFinalValue, &pDefaultTo));
-
-    pFrom = (m_From != NULL) ? m_From : pDefaultFrom;
-    pTo = (m_To != NULL) ? m_To : pDefaultTo;
+    pFrom = m_From;
+    pTo = m_To;
+    
+    if (pFrom == NULL)
+    {
+        IFC(CastType(pDefaultInitialValue, &pFrom));
+    }
+    
+    if (pTo == NULL)
+    {
+        IFC(CastType(pDefaultFinalValue, &pTo));
+    }
 
     if (pFrom != NULL && pTo != NULL)
     {

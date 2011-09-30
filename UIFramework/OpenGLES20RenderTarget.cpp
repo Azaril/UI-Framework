@@ -49,6 +49,7 @@ COpenGLES20RenderTarget::COpenGLES20RenderTarget(
     , m_PositionAttribute(-1)
     , m_ColorAttribute(-1)
     , m_pTesselationSink(NULL)
+    , m_pTextureAtlasPool(NULL)
 {
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
     {
@@ -62,6 +63,8 @@ COpenGLES20RenderTarget::~COpenGLES20RenderTarget(
 	IGNOREHR(ApplyContext());
     
     ReleaseObject(m_pTesselationSink);
+    
+    ReleaseObject(m_pTextureAtlasPool);
 	
 	if (m_FrameBuffer != 0)
 	{
@@ -142,6 +145,14 @@ COpenGLES20RenderTarget::Initialize(
     m_TransformUniform = glGetUniformLocation(m_ShaderProgram, "transform");
     
     IFC(COpenGLES20TesselationSink::Create(this, m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &m_pTesselationSink));
+    
+    {
+        GLint maxTextureSize = 0;
+        
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+
+        IFC(CTextureAtlasPool::Create(maxTextureSize, maxTextureSize, 1, this, &m_pTextureAtlasPool));
+    }
     
 Cleanup:
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
@@ -785,6 +796,27 @@ COpenGLES20RenderTarget::PopLayer(
     return hr;
 }
 
+__override __checkReturn HRESULT
+COpenGLES20RenderTarget::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out ITexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    COpenGLES20Texture* pOpenGLESTexture = NULL;
+    
+    IFC(CreateTexture(Width, Height, &pOpenGLESTexture));
+    
+    *ppTexture = pOpenGLESTexture;
+    pOpenGLESTexture = NULL;
+    
+Cleanup:
+    ReleaseObject(pOpenGLESTexture);
+    
+    return hr;
+}
+
 __checkReturn HRESULT
 COpenGLES20RenderTarget::CreateTexture(
     UINT32 Width,
@@ -834,7 +866,7 @@ COpenGLES20RenderTarget::ApplyBrushTransformToSink(
     Matrix3X2F brushTransform;
 
     //TODO: Optimize solid color brushes out.
-    pBrush->GetTransform(&brushTransform);
+    pBrush->GetTransform(brushTransform);
 
     IFC(m_pTesselationSink->SetBrushTransform(&brushTransform));
     

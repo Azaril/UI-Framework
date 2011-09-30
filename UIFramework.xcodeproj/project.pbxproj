@@ -210,8 +210,6 @@
 		3D0784321419D7E80052E0DE /* RenderContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782C01419D7E80052E0DE /* RenderContext.h */; };
 		3D0784331419D7E80052E0DE /* RenderTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782C11419D7E80052E0DE /* RenderTarget.cpp */; };
 		3D0784341419D7E80052E0DE /* RenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782C21419D7E80052E0DE /* RenderTarget.h */; };
-		3D0784351419D7E80052E0DE /* ResolvedSetters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782C31419D7E80052E0DE /* ResolvedSetters.cpp */; };
-		3D0784361419D7E80052E0DE /* ResolvedSetters.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782C41419D7E80052E0DE /* ResolvedSetters.h */; };
 		3D0784371419D7E80052E0DE /* ResolvedTriggers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782C51419D7E80052E0DE /* ResolvedTriggers.cpp */; };
 		3D0784381419D7E80052E0DE /* ResolvedTriggers.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782C61419D7E80052E0DE /* ResolvedTriggers.h */; };
 		3D0784391419D7E80052E0DE /* Resource.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782C71419D7E80052E0DE /* Resource.h */; };
@@ -375,6 +373,21 @@
 		3D42B62014285CFE00E76CE6 /* Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B61F14285CFD00E76CE6 /* Texture.h */; };
 		3D42B622142861BD00E76CE6 /* OpenGLES20Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B621142861BD00E76CE6 /* OpenGLES20Texture.cpp */; };
 		3D42B6241428714100E76CE6 /* OpenGLES20Brush.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B6231428714000E76CE6 /* OpenGLES20Brush.cpp */; };
+		3D42B626142E5C3600E76CE6 /* TextureAtlasPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B625142E5C3500E76CE6 /* TextureAtlasPool.h */; };
+		3D42B628142E5D2A00E76CE6 /* TextureAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B627142E5D2A00E76CE6 /* TextureAllocator.h */; };
+		3D42B62A142E721900E76CE6 /* TextureAtlasPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B629142E721800E76CE6 /* TextureAtlasPool.cpp */; };
+		3D42B62C142E737400E76CE6 /* TextureAtlas.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B62B142E737300E76CE6 /* TextureAtlas.h */; };
+		3D42B62E142E746D00E76CE6 /* TextureAtlas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B62D142E746C00E76CE6 /* TextureAtlas.cpp */; };
+		3D42B64014302F5600E76CE6 /* AnimationTimelineCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B63614302F5400E76CE6 /* AnimationTimelineCollection.cpp */; };
+		3D42B64114302F5600E76CE6 /* AnimationTimelineCollection.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B63714302F5400E76CE6 /* AnimationTimelineCollection.h */; };
+		3D42B64214302F5600E76CE6 /* BeginStoryboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B63814302F5400E76CE6 /* BeginStoryboard.cpp */; };
+		3D42B64314302F5600E76CE6 /* BeginStoryboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B63914302F5500E76CE6 /* BeginStoryboard.h */; };
+		3D42B64414302F5600E76CE6 /* ResolvedTriggerActions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B63A14302F5500E76CE6 /* ResolvedTriggerActions.cpp */; };
+		3D42B64514302F5600E76CE6 /* ResolvedTriggerActions.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B63B14302F5500E76CE6 /* ResolvedTriggerActions.h */; };
+		3D42B64614302F5600E76CE6 /* Storyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B63C14302F5500E76CE6 /* Storyboard.cpp */; };
+		3D42B64714302F5600E76CE6 /* Storyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B63D14302F5500E76CE6 /* Storyboard.h */; };
+		3D42B64814302F5600E76CE6 /* TriggerAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B63E14302F5500E76CE6 /* TriggerAction.cpp */; };
+		3D42B64914302F5600E76CE6 /* TriggerAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B63F14302F5600E76CE6 /* TriggerAction.h */; };
 		3D9585B8141A02E30059E331 /* DummySal.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9585B7141A02E30059E331 /* DummySal.h */; };
 		3D9655A414267EE100132E4D /* OpenGLES20Brush.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9655A314267EE100132E4D /* OpenGLES20Brush.h */; };
 		3D9655A7142681A200132E4D /* CoreGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9655A6142681A200132E4D /* CoreGeometry.h */; };
@@ -601,8 +614,6 @@
 		3D0782C01419D7E80052E0DE /* RenderContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderContext.h; sourceTree = "<group>"; };
 		3D0782C11419D7E80052E0DE /* RenderTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderTarget.cpp; sourceTree = "<group>"; };
 		3D0782C21419D7E80052E0DE /* RenderTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderTarget.h; sourceTree = "<group>"; };
-		3D0782C31419D7E80052E0DE /* ResolvedSetters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResolvedSetters.cpp; sourceTree = "<group>"; };
-		3D0782C41419D7E80052E0DE /* ResolvedSetters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResolvedSetters.h; sourceTree = "<group>"; };
 		3D0782C51419D7E80052E0DE /* ResolvedTriggers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResolvedTriggers.cpp; sourceTree = "<group>"; };
 		3D0782C61419D7E80052E0DE /* ResolvedTriggers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResolvedTriggers.h; sourceTree = "<group>"; };
 		3D0782C71419D7E80052E0DE /* Resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Resource.h; sourceTree = "<group>"; };
@@ -766,6 +777,21 @@
 		3D42B61F14285CFD00E76CE6 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
 		3D42B621142861BD00E76CE6 /* OpenGLES20Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20Texture.cpp; sourceTree = "<group>"; };
 		3D42B6231428714000E76CE6 /* OpenGLES20Brush.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20Brush.cpp; sourceTree = "<group>"; };
+		3D42B625142E5C3500E76CE6 /* TextureAtlasPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasPool.h; sourceTree = "<group>"; };
+		3D42B627142E5D2A00E76CE6 /* TextureAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAllocator.h; sourceTree = "<group>"; };
+		3D42B629142E721800E76CE6 /* TextureAtlasPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlasPool.cpp; sourceTree = "<group>"; };
+		3D42B62B142E737300E76CE6 /* TextureAtlas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlas.h; sourceTree = "<group>"; };
+		3D42B62D142E746C00E76CE6 /* TextureAtlas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlas.cpp; sourceTree = "<group>"; };
+		3D42B63614302F5400E76CE6 /* AnimationTimelineCollection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimationTimelineCollection.cpp; sourceTree = "<group>"; };
+		3D42B63714302F5400E76CE6 /* AnimationTimelineCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationTimelineCollection.h; sourceTree = "<group>"; };
+		3D42B63814302F5400E76CE6 /* BeginStoryboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BeginStoryboard.cpp; sourceTree = "<group>"; };
+		3D42B63914302F5500E76CE6 /* BeginStoryboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeginStoryboard.h; sourceTree = "<group>"; };
+		3D42B63A14302F5500E76CE6 /* ResolvedTriggerActions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResolvedTriggerActions.cpp; sourceTree = "<group>"; };
+		3D42B63B14302F5500E76CE6 /* ResolvedTriggerActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResolvedTriggerActions.h; sourceTree = "<group>"; };
+		3D42B63C14302F5500E76CE6 /* Storyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Storyboard.cpp; sourceTree = "<group>"; };
+		3D42B63D14302F5500E76CE6 /* Storyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storyboard.h; sourceTree = "<group>"; };
+		3D42B63E14302F5500E76CE6 /* TriggerAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TriggerAction.cpp; sourceTree = "<group>"; };
+		3D42B63F14302F5600E76CE6 /* TriggerAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriggerAction.h; sourceTree = "<group>"; };
 		3D9585B7141A02E30059E331 /* DummySal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummySal.h; sourceTree = "<group>"; };
 		3D9655A314267EE100132E4D /* OpenGLES20Brush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20Brush.h; sourceTree = "<group>"; };
 		3D9655A6142681A200132E4D /* CoreGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreGeometry.h; sourceTree = "<group>"; };
@@ -826,6 +852,16 @@
 		3D06B5CD1419D4880097C7D9 /* UIFramework */ = {
 			isa = PBXGroup;
 			children = (
+				3D42B63614302F5400E76CE6 /* AnimationTimelineCollection.cpp */,
+				3D42B63714302F5400E76CE6 /* AnimationTimelineCollection.h */,
+				3D42B63814302F5400E76CE6 /* BeginStoryboard.cpp */,
+				3D42B63914302F5500E76CE6 /* BeginStoryboard.h */,
+				3D42B63A14302F5500E76CE6 /* ResolvedTriggerActions.cpp */,
+				3D42B63B14302F5500E76CE6 /* ResolvedTriggerActions.h */,
+				3D42B63C14302F5500E76CE6 /* Storyboard.cpp */,
+				3D42B63D14302F5500E76CE6 /* Storyboard.h */,
+				3D42B63E14302F5500E76CE6 /* TriggerAction.cpp */,
+				3D42B63F14302F5600E76CE6 /* TriggerAction.h */,
 				3D07DEA3141D882F00130174 /* BezierSegment.cpp */,
 				3D07DEA4141D882F00130174 /* BezierSegment.h */,
 				3D07DEA5141D882F00130174 /* CoreFigureBuilder.cpp */,
@@ -1071,8 +1107,6 @@
 				3D0782C01419D7E80052E0DE /* RenderContext.h */,
 				3D0782C11419D7E80052E0DE /* RenderTarget.cpp */,
 				3D0782C21419D7E80052E0DE /* RenderTarget.h */,
-				3D0782C31419D7E80052E0DE /* ResolvedSetters.cpp */,
-				3D0782C41419D7E80052E0DE /* ResolvedSetters.h */,
 				3D0782C51419D7E80052E0DE /* ResolvedTriggers.cpp */,
 				3D0782C61419D7E80052E0DE /* ResolvedTriggers.h */,
 				3D0782C71419D7E80052E0DE /* Resource.h */,
@@ -1197,7 +1231,6 @@
 				3DF3D0E4141BF7CA00431CFF /* OpenGLES20RenderTarget.cpp */,
 				3D42B61D14285AF500E76CE6 /* OpenGLES20Texture.h */,
 				3D42B621142861BD00E76CE6 /* OpenGLES20Texture.cpp */,
-				3D42B61F14285CFD00E76CE6 /* Texture.h */,
 				3DF3D0E6141BFF1C00431CFF /* OpenGLES20Context.h */,
 				3DF3D0E9141C033800431CFF /* OpenGLES20RenderBufferStorageAllocator.h */,
 				3D9655A314267EE100132E4D /* OpenGLES20Brush.h */,
@@ -1208,10 +1241,16 @@
 				3D9B192214258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp */,
 				3D1BD98C14271EAF00FC1EFE /* OpenGLES20TesselationSink.h */,
 				3D1BD98F1427294200FC1EFE /* OpenGLES20TesselationSink.cpp */,
+				3D42B61F14285CFD00E76CE6 /* Texture.h */,
+				3D42B627142E5D2A00E76CE6 /* TextureAllocator.h */,
 				3D9B192014257D9100EE37A3 /* RenderVertex.h */,
 				3D9B19241425904600EE37A3 /* StaticTesselator.h */,
 				3D9B1926142591DC00EE37A3 /* StaticTesselator.cpp */,
 				3D9655A81426F93000132E4D /* TesselationSink.h */,
+				3D42B625142E5C3500E76CE6 /* TextureAtlasPool.h */,
+				3D42B629142E721800E76CE6 /* TextureAtlasPool.cpp */,
+				3D42B62B142E737300E76CE6 /* TextureAtlas.h */,
+				3D42B62D142E746C00E76CE6 /* TextureAtlas.cpp */,
 			);
 			path = UIFramework;
 			sourceTree = "<group>";
@@ -1325,7 +1364,6 @@
 				3D0784301419D7E80052E0DE /* RefCounted.h in Headers */,
 				3D0784321419D7E80052E0DE /* RenderContext.h in Headers */,
 				3D0784341419D7E80052E0DE /* RenderTarget.h in Headers */,
-				3D0784361419D7E80052E0DE /* ResolvedSetters.h in Headers */,
 				3D0784381419D7E80052E0DE /* ResolvedTriggers.h in Headers */,
 				3D0784391419D7E80052E0DE /* Resource.h in Headers */,
 				3D07843B1419D7E80052E0DE /* ResourceDictionary.h in Headers */,
@@ -1422,6 +1460,14 @@
 				3D1BD98D14271EAF00FC1EFE /* OpenGLES20TesselationSink.h in Headers */,
 				3D42B61E14285AF600E76CE6 /* OpenGLES20Texture.h in Headers */,
 				3D42B62014285CFE00E76CE6 /* Texture.h in Headers */,
+				3D42B626142E5C3600E76CE6 /* TextureAtlasPool.h in Headers */,
+				3D42B628142E5D2A00E76CE6 /* TextureAllocator.h in Headers */,
+				3D42B62C142E737400E76CE6 /* TextureAtlas.h in Headers */,
+				3D42B64114302F5600E76CE6 /* AnimationTimelineCollection.h in Headers */,
+				3D42B64314302F5600E76CE6 /* BeginStoryboard.h in Headers */,
+				3D42B64514302F5600E76CE6 /* ResolvedTriggerActions.h in Headers */,
+				3D42B64714302F5600E76CE6 /* Storyboard.h in Headers */,
+				3D42B64914302F5600E76CE6 /* TriggerAction.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1572,7 +1618,6 @@
 				3D07842F1419D7E80052E0DE /* RefCounted.cpp in Sources */,
 				3D0784311419D7E80052E0DE /* RenderContext.cpp in Sources */,
 				3D0784331419D7E80052E0DE /* RenderTarget.cpp in Sources */,
-				3D0784351419D7E80052E0DE /* ResolvedSetters.cpp in Sources */,
 				3D0784371419D7E80052E0DE /* ResolvedTriggers.cpp in Sources */,
 				3D07843A1419D7E80052E0DE /* ResourceDictionary.cpp in Sources */,
 				3D07843C1419D7E80052E0DE /* RichPropertyNodeCallback.cpp in Sources */,
@@ -1658,6 +1703,13 @@
 				3D1BD9901427294200FC1EFE /* OpenGLES20TesselationSink.cpp in Sources */,
 				3D42B622142861BD00E76CE6 /* OpenGLES20Texture.cpp in Sources */,
 				3D42B6241428714100E76CE6 /* OpenGLES20Brush.cpp in Sources */,
+				3D42B62A142E721900E76CE6 /* TextureAtlasPool.cpp in Sources */,
+				3D42B62E142E746D00E76CE6 /* TextureAtlas.cpp in Sources */,
+				3D42B64014302F5600E76CE6 /* AnimationTimelineCollection.cpp in Sources */,
+				3D42B64214302F5600E76CE6 /* BeginStoryboard.cpp in Sources */,
+				3D42B64414302F5600E76CE6 /* ResolvedTriggerActions.cpp in Sources */,
+				3D42B64614302F5600E76CE6 /* Storyboard.cpp in Sources */,
+				3D42B64814302F5600E76CE6 /* TriggerAction.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

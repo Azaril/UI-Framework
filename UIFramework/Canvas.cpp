@@ -4,12 +4,20 @@
 #include "BasicTypes.h"
 
 //
+// Property Defaults
+//
+DEFINE_GET_DEFAULT_NULL( Left );
+DEFINE_GET_DEFAULT_NULL( Top );
+DEFINE_GET_DEFAULT_NULL( Right );
+DEFINE_GET_DEFAULT_NULL( Bottom );
+
+//
 // Properties
 // 
-CStaticProperty CCanvas::LeftProperty( L"Left", TypeIndex::Float, StaticPropertyFlags::Attached );
-CStaticProperty CCanvas::TopProperty( L"Top", TypeIndex::Float, StaticPropertyFlags::Attached );
-CStaticProperty CCanvas::RightProperty( L"Right", TypeIndex::Float, StaticPropertyFlags::Attached );
-CStaticProperty CCanvas::BottomProperty( L"Bottom", TypeIndex::Float, StaticPropertyFlags::Attached );
+CStaticProperty CCanvas::LeftProperty( L"Left", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Left ), &CCanvas::OnLeftChanged );
+CStaticProperty CCanvas::TopProperty( L"Top", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Top ), &CCanvas::OnTopChanged );
+CStaticProperty CCanvas::RightProperty( L"Right", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Right ), &CCanvas::OnRightChanged );
+CStaticProperty CCanvas::BottomProperty( L"Bottom", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Bottom ), &CCanvas::OnBottomChanged );
 
 CCanvas::CCanvas()
 {
@@ -159,6 +167,82 @@ Cleanup:
     ReleaseObject(pBaseInformation);
     ReleaseObject(pDelegatingPropertyInformation);
 
+    return hr;
+}
+
+__checkReturn HRESULT 
+CCanvas::OnLeftChanged(
+    __in CPropertyObject* pObject,
+    __in_opt CObjectWithType* pOldValue,
+    __in_opt CObjectWithType* pNewValue
+    )
+{
+    HRESULT hr = S_OK;
+    CUIElement* pUIElement = NULL;
+
+    if (SUCCEEDED(CastType(pObject, &pUIElement)))
+    {
+        IFC(pUIElement->InvalidateArrange());
+    }
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CCanvas::OnRightChanged(
+    __in CPropertyObject* pObject,
+    __in_opt CObjectWithType* pOldValue,
+    __in_opt CObjectWithType* pNewValue
+    )
+{
+    HRESULT hr = S_OK;
+    CUIElement* pUIElement = NULL;
+
+    if (SUCCEEDED(CastType(pObject, &pUIElement)))
+    {
+        IFC(pUIElement->InvalidateArrange());
+    }
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CCanvas::OnTopChanged(
+    __in CPropertyObject* pObject,
+    __in_opt CObjectWithType* pOldValue,
+    __in_opt CObjectWithType* pNewValue
+    )
+{
+    HRESULT hr = S_OK;
+    CUIElement* pUIElement = NULL;
+
+    if (SUCCEEDED(CastType(pObject, &pUIElement)))
+    {
+        IFC(pUIElement->InvalidateArrange());
+    }
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CCanvas::OnBottomChanged(
+    __in CPropertyObject* pObject,
+    __in_opt CObjectWithType* pOldValue,
+    __in_opt CObjectWithType* pNewValue
+    )
+{
+    HRESULT hr = S_OK;
+    CUIElement* pUIElement = NULL;
+
+    if (SUCCEEDED(CastType(pObject, &pUIElement)))
+    {
+        IFC(pUIElement->InvalidateArrange());
+    }
+
+Cleanup:
     return hr;
 }
 

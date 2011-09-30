@@ -13,6 +13,8 @@
 #define __out_opt
 #define __out_ecount(Count)
 
+#define __inout
+
 #define __deref_out
 #define __deref_out_opt
 #define __deref_out_ecount(Count)

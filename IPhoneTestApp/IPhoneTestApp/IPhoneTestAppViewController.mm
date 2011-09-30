@@ -29,6 +29,19 @@
 @synthesize contextBridge;
 @synthesize storageAllocator;
 
+const wchar_t g_MarkupContent[] =
+L"<Canvas>"
+L"<Border Name=\"BlueBorder\" Background=\"Blue\" Height=\"100\" Width=\"100\">"
+L"<Border.Style><Style><Style.Triggers><EventTrigger RoutedEvent=\"UIElement.Loaded\">"
+L"<BeginStoryboard>"
+L"<Storyboard>"
+L"<FloatAnimation Storyboard.TargetName=\"BlueBorder\" Storyboard.TargetProperty=\"Canvas.Left\" Duration=\"5\" From=\"0\" To=\"200\" />"
+L"</Storyboard>"
+L"</BeginStoryboard>"
+L"</EventTrigger></Style.Triggers></Style></Border.Style>"
+L"</Border>"
+L"</Canvas>";
+
 - (void)awakeFromNib
 {
     contextBridge = new EAGLContextBridgeGLES20();
@@ -41,7 +54,7 @@
     frameworkBridge = new UIFrameworkBridge();
     frameworkBridge->Initialize(contextBridge, storageAllocator);
     
-    frameworkBridge->LoadContent(L"<Grid><Border Background=\"Blue\"/><Border Width=\"200\" Background=\"Red\"/><Border Width=\"100\" Background=\"Green\"/></Grid>");
+    frameworkBridge->LoadContent(g_MarkupContent);
 }
 
 - (void)dealloc

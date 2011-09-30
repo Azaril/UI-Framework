@@ -8,9 +8,12 @@
 #include "OpenGLES20TesselationSink.h"
 #include "OpenGLES20Texture.h"
 #include "OpenGLES20Brush.h"
+#include "TextureAllocator.h"
+#include "TextureAtlasPool.h"
 
 class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
-                                                private ITesselationBatchCallback
+                                                private ITesselationBatchCallback,
+                                                private ITextureAllocator
 {
     public:
     	DECLARE_FACTORY3( COpenGLES20RenderTarget, GLuint, GLuint, COpenGLES20Context* );
@@ -130,6 +133,12 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
             GLuint Program
             );
     
+        __override __checkReturn HRESULT AllocateTexture(
+            UINT32 Width,
+            UINT32 Height,
+            __deref_out ITexture** ppTexture
+            );
+    
         __checkReturn HRESULT CreateTexture(
             UINT32 Width,
             UINT32 Height,
@@ -156,4 +165,5 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
         GLint m_ColorAttribute;
         GLint m_TransformUniform;
         COpenGLES20TesselationSink* m_pTesselationSink;
+        CTextureAtlasPool* m_pTextureAtlasPool;
 };

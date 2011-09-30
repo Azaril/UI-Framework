@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.h"
+#include "RefCounted.h"
 
 namespace PixelFormat 
 {
@@ -25,5 +26,18 @@ struct ITexture
         ) = 0;
     
     virtual PixelFormat::Value GetPixelFormat(
+        ) = 0;
+    
+    virtual __checkReturn HRESULT SetData(
+        __in_ecount(DataSize) BYTE* pData,
+        UINT32 DataSize,
+        INT32 Stride
+        ) = 0;
+    
+    virtual __checkReturn HRESULT SetSubData(
+        const RectU& Region,
+        __in_ecount(DataSize) BYTE* pData,
+        UINT32 DataSize,
+        INT32 Stride
         ) = 0;
 };

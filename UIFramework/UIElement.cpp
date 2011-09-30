@@ -2084,9 +2084,14 @@ HRESULT CUIElement::SetAnimationValue(CProperty* pProperty, CObjectWithType* pVa
     HRESULT hr = S_OK;
     CLayeredValue* pLayeredValue = NULL;
 
-    IFC(GetLayeredValue(pProperty, &pLayeredValue));
-
-    IFC(pLayeredValue->SetAnimationValue(pValue));
+    if (SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
+    {
+        IFC(pLayeredValue->SetAnimationValue(pValue));
+    }
+    else
+    {
+        IFC(CVisual::SetAnimationValue(pProperty, pValue));
+    }
 
 Cleanup:
     return hr;

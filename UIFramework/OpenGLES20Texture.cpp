@@ -66,3 +66,40 @@ COpenGLES20Texture::GetPixelFormat(
 {
 	return m_PixelFormat;
 }
+
+__override __checkReturn HRESULT 
+COpenGLES20Texture::SetData(
+    __in_ecount(DataSize) BYTE* pData,
+    UINT32 DataSize,
+    INT32 Stride
+    )
+{
+    HRESULT hr = S_OK;
+    
+    //TODO: Handle stride and data size to enforce the bits can be copied in to opengl.
+    
+    glBindTexture(GL_TEXTURE_2D, m_TextureID);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+    
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+COpenGLES20Texture::SetSubData(
+    const RectU& Region,
+    __in_ecount(DataSize) BYTE* pData,
+    UINT32 DataSize,
+    INT32 Stride
+    )
+{
+    HRESULT hr = S_OK;
+    
+    //TODO: Handle stride and data size to enforce the bits can be copied in to opengl.
+    
+    glBindTexture(GL_TEXTURE_2D, m_TextureID);
+    
+    glTexSubImage2D(GL_TEXTURE_2D, 0, Region.left, Region.top, Region.right - Region.left, Region.bottom - Region.top, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+    
+    return hr;
+}

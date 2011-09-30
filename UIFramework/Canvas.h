@@ -26,6 +26,31 @@ class UIFRAMEWORK_API CCanvas : public CPanel
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
+    
+        static __checkReturn HRESULT OnLeftChanged(
+            __in CPropertyObject* pObject,
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue
+            );
+
+        static __checkReturn HRESULT OnRightChanged(
+            __in CPropertyObject* pObject,
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue
+            );
+            
+        static __checkReturn HRESULT OnTopChanged(
+            __in CPropertyObject* pObject,
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue
+            );
+            
+        static __checkReturn HRESULT OnBottomChanged(
+            __in CPropertyObject* pObject,
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue
+            );                                    
+    
 };
 
 template< >
