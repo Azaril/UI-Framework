@@ -2,6 +2,7 @@
 
 #include "GraphicsBrush.h"
 #include "Factory.h"
+#include "Texture.h"
 
 class COpenGLES20Brush : public CGraphicsBrush
 {
@@ -13,9 +14,16 @@ class COpenGLES20Brush : public CGraphicsBrush
         __override virtual void GetTransform(
             Matrix3X2F& Transform
             ) const;
+    
+        virtual void GetFinalTransform(
+            Matrix3X2F& Transform
+            ) const;
         
-        virtual const ColorF& GetDiffuseColor(
-            ) = 0;
+        virtual ColorF GetDiffuseColor(
+            ) const = 0;
+    
+        virtual __out_opt ITexture* GetTexture(
+            ) const = 0;
         
     protected:
         COpenGLES20Brush(

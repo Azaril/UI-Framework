@@ -175,15 +175,7 @@ COpenGLES20TesselationSink::SetBrushTransform(
     {
         m_BrushTransform = *pTransform;
         
-        //TODO: Validate brush transform mapping is correct.
-        if (m_BrushTransform.Invert())
-        {
-            m_NeedsBrushTransform = TRUE;
-        }
-        else
-        {
-            m_NeedsBrushTransform = FALSE;
-        }
+        m_NeedsBrushTransform = TRUE;
     }
     else
     {

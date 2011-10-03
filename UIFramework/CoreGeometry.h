@@ -5,12 +5,17 @@
 #include "CoreShapeData.h"
 #include "TesselationSink.h"
 
-template< typename T >
-class CCoreGeometry : public CRefCountedObjectBase< T >
+struct ICoreGeometry
 {
-    public:
-        virtual __checkReturn HRESULT TesselateFill(
-            __in ITesselationSink* pSink
-            ) = 0;    
+    virtual __checkReturn HRESULT TesselateFill(
+        __in ITesselationSink* pSink
+        ) = 0;       
+};
+
+template< typename T >
+class CCoreGeometry : public CRefCountedObjectBase< T >,
+                      public ICoreGeometry
+{
+    public: 
 };
 

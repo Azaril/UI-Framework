@@ -129,19 +129,20 @@ CLibXMLReader::LoadFromFile(
     IFCPTR(pCallback);
     
     {
-        size_t PathTextLength = wcslen(pPath) * sizeof(WCHAR);
+        size_t PathTextLength = wcslen(pPath);
         size_t ConvertedTextLength = 0;
 
-        IFC(ConvertedTextBuffer.EnsureBufferSize(PathTextLength + 1));
+        IFC(ConvertedTextBuffer.EnsureBufferSize((PathTextLength * 2) + 1));
 
         {
             CHAR* pInputBuffer = (CHAR*)pPath;
-		    CHAR* pOutputBuffer = ConvertedTextBuffer.GetBuffer();        
+		    CHAR* pOutputBuffer = ConvertedTextBuffer.GetBuffer();  
+            size_t SourceTextBufferSize = PathTextLength * sizeof(WCHAR);
 		    size_t ConvertedTextBufferSize = ConvertedTextBuffer.GetBufferByteSize();  
 		    
 		    Converter = iconv_open("utf-8", "WCHAR_T");
 		       
-		    ConversionResult = iconv(Converter, &pInputBuffer, &PathTextLength, &pOutputBuffer, &ConvertedTextBufferSize);
+		    ConversionResult = iconv(Converter, &pInputBuffer, &SourceTextBufferSize, &pOutputBuffer, &ConvertedTextBufferSize);
 
 		    IFCEXPECT(ConversionResult != (size_t)-1);
 		    
@@ -190,19 +191,20 @@ CLibXMLReader::LoadFromString(
     IFCPTR(pCallback);
     
     {
-        size_t TextLength = wcslen(pText) * sizeof(WCHAR);
+        size_t TextLength = wcslen(pText);
         size_t ConvertedTextLength = 0;
 
-        IFC(ConvertedTextBuffer.EnsureBufferSize(TextLength + 1));
+        IFC(ConvertedTextBuffer.EnsureBufferSize((TextLength * 2) + 1));
 
         {
             CHAR* pInputBuffer = (CHAR*)pText;
 		    CHAR* pOutputBuffer = ConvertedTextBuffer.GetBuffer();        
+            size_t SourceTextBufferSize = TextLength * sizeof(WCHAR);
 		    size_t ConvertedTextBufferSize = ConvertedTextBuffer.GetBufferByteSize();  
 		    
 		    Converter = iconv_open("utf-8", "WCHAR_T");
 		       
-		    ConversionResult = iconv(Converter, &pInputBuffer, &TextLength, &pOutputBuffer, &ConvertedTextBufferSize);
+		    ConversionResult = iconv(Converter, &pInputBuffer, &SourceTextBufferSize, &pOutputBuffer, &ConvertedTextBufferSize);
 
 		    IFCEXPECT(ConversionResult != (size_t)-1);
 		    

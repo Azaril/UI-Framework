@@ -4,6 +4,7 @@
 #include "DataTypes.h"
 #include "Point2F.h"
 #include "SizeF.h"
+#include "RectF.h"
 
 #include <math.h>
 
@@ -158,6 +159,114 @@ struct UIFRAMEWORK_API Matrix3X2F
         )
     {
         return Scale(SizeF(x, y), Center);
+    }
+    
+    static inline Matrix3X2F Rotation(
+        FLOAT Angle,
+        const Point2F& Center = Point2F(0, 0)
+        )
+    {
+        FLOAT sinVal;
+        FLOAT cosVal;
+        Matrix3X2F Result;
+        FLOAT normalizedAngle = fmod(Angle, 360.0f);
+        
+        if (normalizedAngle == 0.0f)
+        {
+            sinVal = 0.0f;
+            cosVal = 1.0f;
+        }
+        else if(normalizedAngle == 90.0f)
+        {
+            sinVal = 1.0f;
+            cosVal = 0.0f;
+        }
+        else if(normalizedAngle == 180.0f)
+        {
+            sinVal = 0.0f;
+            cosVal = -1.0f;
+        }
+        else if(normalizedAngle == 270.0f)
+        {
+            sinVal = -1.0f;
+            cosVal = 0.0f;
+        }
+        else
+        {
+            FLOAT normalizedRadians = (normalizedAngle * (3.1415927f / 180.0f));
+            
+            sinVal = sin(normalizedRadians);
+            cosVal = cos(normalizedRadians);
+        }
+        
+        Result._11 = cosVal;
+        Result._12 = sinVal;
+        Result._21 = -sinVal;
+        Result._22 = cosVal;
+        Result._31 = (Center.x * (1.0f - cosVal)) + (Center.y * sinVal);
+        Result._32 = (Center.y * (1.0f - cosVal)) + (Center.x * sinVal);
+        
+        return Result;
+    }
+    
+    static inline Matrix3X2F InferAffineMatrix(
+        const Point2F& point1,
+        const Point2F& point2,
+        const Point2F& point3,
+        const RectF& source
+        )
+    {
+        Matrix3X2F Result = Matrix3X2F::Identity();
+        FLOAT x0, y0, x1, y1, x2, y2;
+        FLOAT u0, v0, u1, v1, u2, v2;
+        FLOAT d;
+        
+        x0 = point1.x;
+        y0 = point2.y;  
+
+        x1 = point2.x;
+        y1 = point2.y;
+
+        x2 = point3.x;
+        y2 = point3.y;
+
+        u0 = source.left;
+        v0 = source.top;
+
+        u1 = u0 + source.GetWidth();
+        v1 = v0;
+
+        u2 = u0;
+        v2 = v0 + source.GetHeight();
+
+        d = u0 * (v1 - v2) - v0 * (u1 - u2) + (u1 * v2 - u2 * v1);
+
+        d = 1.0f / d;
+
+        FLOAT t0, t1, t2;
+
+        t0 = v1 - v2;
+        t1 = v2 - v0;
+        t2 = v0 - v1;
+
+        Result._11 = d * (x0 * t0 + x1 * t1 + x2 * t2);
+        Result._12 = d * (y0 * t0 + y1 * t1 + y2 * t2);
+
+        t0 = u2 - u1;
+        t1 = u0 - u2;
+        t2 = u1 - u0;
+
+        Result._21 = d * (x0 * t0 + x1 * t1 + x2 * t2);
+        Result._22 = d * (y0 * t0 + y1 * t1 + y2 * t2);
+
+        t0 = u1 * v2 - u2 * v1;
+        t1 = u2 * v0 - u0 * v2;
+        t2 = u2 * v1 - u1 * v0;
+
+        Result._31 = d * (x0 * t0 + x1 * t1 + x2 * t2);
+        Result._32 = d * (y0 * t0 + y1 * t1 + y2 * t2);
+
+        return Result;
     }
 
 #ifndef _WINDOWS

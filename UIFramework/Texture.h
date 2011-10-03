@@ -10,6 +10,21 @@ namespace PixelFormat
         Unknown,
         B8G8R8A8
     };
+        
+    inline UINT32 GetLineSize(
+        const PixelFormat::Value& format,
+        UINT32 width
+        )
+    {
+        switch (format)
+        {
+            case PixelFormat::B8G8R8A8:
+                return 4 * width;
+                
+            default:
+                return 0;
+        }
+    }
 }
 
 struct ITexture

@@ -7,8 +7,11 @@ class COpenGLES20SolidColorBrush : public COpenGLES20Brush
 	public:
 		DECLARE_FACTORY1( COpenGLES20SolidColorBrush, const ColorF& );
 
-        __override virtual const ColorF& GetDiffuseColor(
-        	);
+        __override virtual ColorF GetDiffuseColor(
+        	) const;
+    
+        __override virtual __out_opt ITexture* GetTexture(
+            ) const;
 
 	protected:
 		COpenGLES20SolidColorBrush(

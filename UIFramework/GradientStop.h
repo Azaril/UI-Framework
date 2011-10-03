@@ -29,10 +29,15 @@ class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
         static CStaticProperty OffsetProperty;
 
     protected:
-        CGradientStop();
-        virtual ~CGradientStop();
+        CGradientStop(
+            );
+    
+        virtual ~CGradientStop(
+            );
 
-        __checkReturn HRESULT Initialize( CProviders* pProviders );
+        __checkReturn HRESULT Initialize( 
+            CProviders* pProviders 
+            );
 
         virtual __checkReturn HRESULT SetValueInternal(
             __in CProperty* pProperty, 

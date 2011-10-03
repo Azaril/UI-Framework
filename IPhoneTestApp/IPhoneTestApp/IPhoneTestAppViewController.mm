@@ -31,11 +31,19 @@
 
 const wchar_t g_MarkupContent[] =
 L"<Canvas>"
-L"<Border Name=\"BlueBorder\" Background=\"Blue\" Height=\"100\" Width=\"100\">"
+L"<Border Name=\"BlueBorder\" Height=\"100\" Width=\"100\" Canvas.Left=\"150\" Canvas.Top=\"150\">"
+L"<Border.Background>"
+L"<LinearGradientBrush StartPoint=\"0,0\" EndPoint=\"1,1\">"
+L"<GradientStop Color=\"Red\" Offset=\"0\" />"
+L"<GradientStop Color=\"Blue\" Offset=\"0.25\" />"
+L"<GradientStop Color=\"Green\" Offset=\"0.75\" />"
+L"<GradientStop Color=\"Yellow\" Offset=\"1\" />"
+L"</LinearGradientBrush>"
+L"</Border.Background>"
 L"<Border.Style><Style><Style.Triggers><EventTrigger RoutedEvent=\"UIElement.Loaded\">"
 L"<BeginStoryboard>"
 L"<Storyboard>"
-L"<FloatAnimation Storyboard.TargetName=\"BlueBorder\" Storyboard.TargetProperty=\"Canvas.Left\" Duration=\"5\" From=\"0\" To=\"200\" />"
+//L"<FloatAnimation Storyboard.TargetName=\"BlueBorder\" Storyboard.TargetProperty=\"Canvas.Left\" Duration=\"5\" From=\"0\" To=\"200\" />"
 L"</Storyboard>"
 L"</BeginStoryboard>"
 L"</EventTrigger></Style.Triggers></Style></Border.Style>"
@@ -156,28 +164,5 @@ L"</Canvas>";
 
     contextBridge->Present(frameworkBridge->GetRenderBuffer());
 }
-
-/*
-- (BOOL)validateProgram:(GLuint)prog
-{
-    GLint logLength, status;
-    
-    glValidateProgram(prog);
-    glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
-    if (logLength > 0)
-    {
-        GLchar *log = (GLchar *)malloc(logLength);
-        glGetProgramInfoLog(prog, logLength, &logLength, log);
-        NSLog(@"Program validate log:\n%s", log);
-        free(log);
-    }
-    
-    glGetProgramiv(prog, GL_VALIDATE_STATUS, &status);
-    if (status == 0)
-        return FALSE;
-    
-    return TRUE;
-}
- */
 
 @end

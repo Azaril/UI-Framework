@@ -20,6 +20,13 @@ COpenGLES20Texture::~COpenGLES20Texture(
 	}
 }
 
+GLuint
+COpenGLES20Texture::GetTextureID(
+    )
+{
+    return m_TextureID;
+}
+
 __checkReturn HRESULT
 COpenGLES20Texture::Initialize(
 	GLuint TextureID,

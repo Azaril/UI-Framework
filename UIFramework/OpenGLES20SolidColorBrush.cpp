@@ -22,9 +22,16 @@ COpenGLES20SolidColorBrush::Initialize(
 	return hr;
 }
 
-__override const ColorF&
+__override ColorF
 COpenGLES20SolidColorBrush::GetDiffuseColor(
-    )
+    ) const
 {
     return m_Color;
+}
+
+__override __out_opt ITexture*
+COpenGLES20SolidColorBrush::GetTexture(
+    ) const
+{
+	return NULL;
 }

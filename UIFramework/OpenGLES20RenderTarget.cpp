@@ -1,15 +1,19 @@
 #include "OpenGLES20RenderTarget.h"
 #include "OpenGLES20SolidColorBrush.h"
+#include "OpenGLES20LinearGradientBrush.h"
 #include "CoreRectangleGeometry.h"
 #include "CoreRoundedRectangleGeometry.h"
 #include "CorePathGraphicsGeometry.h"
 #include "StaticTesselator.h"
+#include <algorithm>
 
 const char g_VertexShaderSource[] =
 "attribute vec2 position;\n"
 "attribute vec4 color;\n"
+"attribute vec2 textureCoords;\n"
 "\n"
 "varying vec4 colorVarying;\n"
+"varying vec2 textureCoordsVarying;\n"
 "\n"
 "uniform mat4 transform;\n"
 "\n"
@@ -21,6 +25,8 @@ const char g_VertexShaderSource[] =
 "gl_Position = transform * gl_Position;\n"
 "\n"
 "colorVarying = color;\n"
+"\n"
+"textureCoordsVarying = textureCoords;\n"
 "}\n"
 "\n";
 
@@ -28,10 +34,13 @@ const UINT32 g_VertexShaderSourceLength = ARRAYSIZE(g_VertexShaderSource);
 
 const char g_PixelShaderSource[] =
 "varying lowp vec4 colorVarying;\n"
+"varying lowp vec2 textureCoordsVarying;\n"
+"\n"
+"uniform sampler2D brushTexture;\n"
 "\n"
 "void main()\n"
 "{\n"
-"gl_FragColor = colorVarying;\n"
+"gl_FragColor = colorVarying * texture2D(brushTexture, textureCoordsVarying);\n"
 "}\n"
 "\r\n";
 
@@ -48,6 +57,9 @@ COpenGLES20RenderTarget::COpenGLES20RenderTarget(
     , m_ShaderProgram(0)
     , m_PositionAttribute(-1)
     , m_ColorAttribute(-1)
+    , m_TextureCoordsAttribute(-1)
+    , m_TransformUniform(-1)
+    , m_BrushTextureUniform(-1)
     , m_pTesselationSink(NULL)
     , m_pTextureAtlasPool(NULL)
 {
@@ -142,7 +154,10 @@ COpenGLES20RenderTarget::Initialize(
     
     m_PositionAttribute = glGetAttribLocation(m_ShaderProgram, "position");
     m_ColorAttribute = glGetAttribLocation(m_ShaderProgram, "color");
+    m_TextureCoordsAttribute = glGetAttribLocation(m_ShaderProgram, "textureCoords");    
+    
     m_TransformUniform = glGetUniformLocation(m_ShaderProgram, "transform");
+    m_BrushTextureUniform = glGetUniformLocation(m_ShaderProgram, "brushTexture"); 
     
     IFC(COpenGLES20TesselationSink::Create(this, m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &m_pTesselationSink));
     
@@ -151,7 +166,7 @@ COpenGLES20RenderTarget::Initialize(
         
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 
-        IFC(CTextureAtlasPool::Create(maxTextureSize, maxTextureSize, 1, this, &m_pTextureAtlasPool));
+        IFC(CTextureAtlasPool< TEXTURE_ATLAS_PADDING >::Create(maxTextureSize, maxTextureSize, this, &m_pTextureAtlasPool));
     }
     
 Cleanup:
@@ -349,6 +364,12 @@ COpenGLES20RenderTarget::BeginRendering(
         glUniformMatrix4fv(m_TransformUniform, 1, 0, projectionMatrix);
     }
     
+    //
+    // Set up alpha blending.
+    //
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
 Cleanup:
     return hr;
 }
@@ -422,30 +443,150 @@ COpenGLES20RenderTarget::CreateLinearGradientBrush(
 	)
 {
     HRESULT hr = S_OK;
-//     D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES BrushProperties = { 0 };
-//     ID2D1GradientStopCollection* pD2DGradientStops = NULL;
-//     ID2D1LinearGradientBrush* pD2DLinearGradientBrush = NULL;
-//     CD2DLinearGradientBrush* pLinearGradientBrush = NULL;
+    ITexture* pGradientTexture = NULL;
+    COpenGLES20LinearGradientBrush* pGradientBrush = NULL;
+    GradientStop* pSortedGradientStops = NULL;
+    BYTE* pColorBuffer = NULL;
+    UINT32 colorBufferSize = 0;    
+    PixelFormat::Value format = PixelFormat::Unknown;
+    //TODO: Dynamically figure out how large this should be.
+    UINT32 textureLength = 256 - (TEXTURE_ATLAS_PADDING * 2);
+    Matrix3X2F textureToBrushTransform;
+    Point2F directionPoint;
+    
+    IFCEXPECT(GradientStopCount > 0);
+    
+    //
+    // Allocate space for sorting gradient stops.
+    //
+    pSortedGradientStops = new GradientStop[GradientStopCount];
+    IFCOOM(pSortedGradientStops);
+    
+    //
+    // Copy and sort the original gradient stops.
+    //
+    memcpy(pSortedGradientStops, pGradientStops, sizeof(GradientStop) * GradientStopCount);
+    
+    std::stable_sort(pSortedGradientStops, pSortedGradientStops + GradientStopCount);
+    
+    //
+    // Allocate the gradient texture.
+    //
+    IFC(m_pTextureAtlasPool->AllocateTexture(textureLength, 1, &pGradientTexture));
+    
+    format = pGradientTexture->GetPixelFormat();
+    IFCEXPECT(format != PixelFormat::Unknown);
+    
+    colorBufferSize = PixelFormat::GetLineSize(format, textureLength);
+    IFCEXPECT(colorBufferSize > 0);
+    
+    pColorBuffer = new BYTE[colorBufferSize];
+    IFCOOM(pColorBuffer);
+    
+    //
+    // Calculate gradient direction (perpendicular to gradient).
+    //
+    //directionPoint.x = -(EndPoint.y - StartPoint.y) + StartPoint.x;
+    //directionPoint.y = (EndPoint.x - StartPoint.x) + StartPoint.y;
+    
+    //
+    // Calculate the transform.
+    //
+    if (StartPoint != EndPoint)
+    {
+        Point2F direction = (EndPoint - StartPoint).Normalize();
+        FLOAT rotationAngle = atan2(direction.y, direction.x) * (180.0f / 3.1415927);
+        FLOAT scaleX = direction.x != 0.0f ? 1.0f / fabs(direction.x) : 1.0f;
+        FLOAT scaleY = direction.y != 0.0f ? 1.0f / fabs(direction.y) : 1.0f; 
+        
+        textureToBrushTransform = Matrix3X2F::Rotation(rotationAngle) * Matrix3X2F::Translation(StartPoint.x, StartPoint.y) * Matrix3X2F::Scale(scaleX, scaleY);
+    }
+    else
+    {        
+        textureToBrushTransform = Matrix3X2F::Scale(0, 0);
+    }
+    
+    //
+    // Generate the gradient texture.
+    //
+    {
+        FLOAT step = 1 / (FLOAT)(textureLength - 1);
+        INT32 fromColorIndex = 0;
+        BYTE* pWriteOffset = pColorBuffer;
+        
+        for (UINT32 i = 0; i < textureLength; ++i)
+        {
+            ColorF texelColor;
+            
+            FLOAT offset = step * (FLOAT)i;
+            
+            while (fromColorIndex < (INT32)GradientStopCount - 2)
+            {
+                if (offset >= pSortedGradientStops[fromColorIndex + 1].position)
+                {
+                    ++fromColorIndex;
+                }
+                else
+                {
+                    break;
+                }
+            }            
+            
+            if (offset <= pSortedGradientStops[fromColorIndex].position)
+            {
+                texelColor = pSortedGradientStops[fromColorIndex].color;
+            }
+            else if(offset >= pSortedGradientStops[fromColorIndex + 1].position)
+            {
+                texelColor = pSortedGradientStops[fromColorIndex + 1].color;
+            }
+            else
+            {
+                FLOAT interpolateVal = (offset - pSortedGradientStops[fromColorIndex].position) / (pSortedGradientStops[fromColorIndex + 1].position -pSortedGradientStops[fromColorIndex].position);
+                
+                texelColor = ColorF::Interpolate(pSortedGradientStops[fromColorIndex].color, pSortedGradientStops[fromColorIndex + 1].color, interpolateVal);
+            }
+            
+            switch(format)
+            {
+                case PixelFormat::B8G8R8A8:
+                    {
+                        *pWriteOffset = (BYTE)(texelColor.r * 255.0f);
+                        ++pWriteOffset;
 
-//     IFCPTR(ppBrush);
+                        *pWriteOffset = (BYTE)(texelColor.g * 255.0f);
+                        ++pWriteOffset;
 
-//     BrushProperties.startPoint = StartPoint;
-//     BrushProperties.endPoint = EndPoint;
+                        *pWriteOffset = (BYTE)(texelColor.b * 255.0f);
+                        ++pWriteOffset;
 
-//     IFC(m_RenderTarget->CreateGradientStopCollection(pGradientStops, GradientStopCount, D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_CLAMP, &pD2DGradientStops));
+                        *pWriteOffset = (BYTE)(texelColor.a * 255.0f);
+                        ++pWriteOffset;
 
-//     IFC(m_RenderTarget->CreateLinearGradientBrush(BrushProperties, pD2DGradientStops, &pD2DLinearGradientBrush));
+                        break;
+                    }
+                    
+                default:
+                    {
+                        IFC(E_UNEXPECTED);
+                    }
+            }
+        }
+    }
+    
+    IFC(pGradientTexture->SetData(pColorBuffer, colorBufferSize, colorBufferSize));
+        
+    IFC(COpenGLES20LinearGradientBrush::Create(pGradientTexture, textureToBrushTransform, &pGradientBrush));        
+    
+    *ppBrush = pGradientBrush;
+    pGradientBrush = NULL;
 
-//     IFC(CD2DLinearGradientBrush::Create(pD2DLinearGradientBrush, &pLinearGradientBrush));
-
-//     *ppBrush = pLinearGradientBrush;
-//     pLinearGradientBrush = NULL;
-
-// Cleanup:
-//     ReleaseObject(pD2DGradientStops);
-//     ReleaseObject(pD2DLinearGradientBrush);
-//     ReleaseObject(pLinearGradientBrush);
-
+Cleanup:
+    ReleaseObject(pGradientTexture);
+    ReleaseObject(pGradientBrush);
+    delete [] pSortedGradientStops;
+    delete [] pColorBuffer;
+    
     return hr;
 }
 
@@ -492,42 +633,6 @@ Cleanup:
     return hr;
 }
 
-__checkReturn HRESULT
-COpenGLES20RenderTarget::OnTesselatedGeometryBatch(
-    __in COpenGLES20VertexBuffer* pVertexBuffer
-    )
-{
-    HRESULT hr = S_OK;
-    COpenGLES20VertexBuffer* pBuffer = NULL;
-    UINT32 vertexCount = 0;
-
-    vertexCount = pVertexBuffer->GetVertexCount();
-
-    if (vertexCount > 0)
-    {
-        IFC(pVertexBuffer->Bind(GL_ARRAY_BUFFER));
-        
-        glUseProgram(m_ShaderProgram);
-        
-        if (m_PositionAttribute != -1)
-        {
-            glVertexAttribPointer(m_PositionAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_POSITION_OFFSET);
-            glEnableVertexAttribArray(m_PositionAttribute);
-        }
-
-        if (m_ColorAttribute != -1 )
-        {
-            glVertexAttribPointer(m_ColorAttribute, 4, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_COLOR_OFFSET);
-            glEnableVertexAttribArray(m_ColorAttribute);              
-        }
-
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-    }
-    
-Cleanup:
-    return hr;
-}
-
 __checkReturn HRESULT 
 COpenGLES20RenderTarget::FillRectangle(
 	const RectF& Size,
@@ -539,10 +644,9 @@ COpenGLES20RenderTarget::FillRectangle(
     
     pOpenGLESBrush = (COpenGLES20Brush*)pBrush;    
     
-    IFC(m_pTesselationSink->SetDiffuseColor(pOpenGLESBrush->GetDiffuseColor()));
     IFC(m_pTesselationSink->SetTransform(m_Transform));
     
-    IFC(ApplyBrushTransformToSink(pBrush));
+    IFC(ApplyBrush(pOpenGLESBrush));
     
     IFC(StaticTesselator::TesselateRectangle(Size, m_pTesselationSink));
     
@@ -669,6 +773,7 @@ COpenGLES20RenderTarget::FillGeometry(
 {
     HRESULT hr = S_OK;
     COpenGLES20Brush* pOpenGLESBrush = NULL;
+    ICoreGeometry* pCoreGeometry = NULL;
     
     pOpenGLESBrush = (COpenGLES20Brush*)pBrush;
 
@@ -676,25 +781,14 @@ COpenGLES20RenderTarget::FillGeometry(
     {
         case TypeIndex::RectangleGraphicsGeometry:
             {
-                CCoreRectangleGeometry* pRectangleGeometry = (CCoreRectangleGeometry*)pGeometry;
-                
-                IFC(m_pTesselationSink->SetDiffuseColor(pOpenGLESBrush->GetDiffuseColor()));
-                IFC(m_pTesselationSink->SetTransform(m_Transform));
-                
-                IFC(ApplyBrushTransformToSink(pBrush));
-                
-                IFC(pRectangleGeometry->TesselateFill(m_pTesselationSink));
+                pCoreGeometry = (CCoreRectangleGeometry*)pGeometry;  
                     
                 break;
             }
 
         case TypeIndex::RoundedRectangleGraphicsGeometry:
             {
-                CCoreRoundedRectangleGeometry* pRoundedRectangleGeometry = (CCoreRoundedRectangleGeometry*)pGeometry;
-
-//                COpenGLES20TesselationSink Sink(this);
-
-//                IFC(pRectangleGeometry->TesselateFill(&Sink));          
+                pCoreGeometry = (CCoreRoundedRectangleGeometry*)pGeometry;
 
                 break;
             }
@@ -704,6 +798,12 @@ COpenGLES20RenderTarget::FillGeometry(
                 IFC(E_UNEXPECTED);
             }
     }
+    
+    IFC(m_pTesselationSink->SetTransform(m_Transform));
+    
+    IFC(ApplyBrush(pOpenGLESBrush));
+    
+    IFC(pCoreGeometry->TesselateFill(m_pTesselationSink)); 
 
 Cleanup:
     return hr;
@@ -839,9 +939,28 @@ COpenGLES20RenderTarget::CreateTexture(
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);    
+    
     IFC(COpenGLES20Texture::Create(textureID, Width, Height, PixelFormat::B8G8R8A8, &pOpenGLESTexture));
     
     textureID = 0;
+    
+    //TODO: Move this to atlas texture, handle gutters.
+    {
+        UINT32 stride = PixelFormat::GetLineSize(PixelFormat::B8G8R8A8, Width);
+        UINT32 dataSize = stride * Height;
+        BYTE* pData = new BYTE[dataSize];
+        
+        for(UINT32 i = 0; i < dataSize; ++i)
+        {
+            pData[i] = 0xFF;
+        }
+        
+        pOpenGLESTexture->SetData(pData, dataSize, stride);
+        
+        delete [] pData;
+    }
     
     *ppTexture = pOpenGLESTexture;
     pOpenGLESTexture = NULL;
@@ -858,18 +977,140 @@ Cleanup:
 }
 
 __checkReturn HRESULT
-COpenGLES20RenderTarget::ApplyBrushTransformToSink(
-    __in const CGraphicsBrush* pBrush
+COpenGLES20RenderTarget::ApplyBrush(
+    __in const COpenGLES20Brush* pBrush
+    )
+{
+    HRESULT hr = S_OK;
+    ITexture* pBrushTexture = NULL;
+    Matrix3X2F textureToBrushTransform;
+    
+    //TODO: Don't flush every brush change, use solid color pixel etc and check texture.
+    IFC(Flush());
+    
+    pBrushTexture = pBrush->GetTexture();
+    
+    if (pBrushTexture != NULL)
+    {
+        CTextureAtlasView* pView = (CTextureAtlasView*)pBrushTexture;
+        COpenGLES20Texture* pOpenGLESTexture = (COpenGLES20Texture*)pView->GetTexture();
+            
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, pOpenGLESTexture->GetTextureID());
+        glUniform1i(m_BrushTextureUniform, 0);
+        
+        {
+            const RectU& viewBounds = pView->GetRect();
+            const FLOAT textureWidth = (FLOAT)pOpenGLESTexture->GetWidth();
+            const FLOAT textureHeight = (FLOAT)pOpenGLESTexture->GetHeight();
+            
+            const FLOAT left = (viewBounds.left / textureWidth) + (0.5 / textureWidth);
+            const FLOAT right = (viewBounds.right / textureWidth) - (0.5 / textureWidth);
+            const FLOAT top = (viewBounds.top / textureHeight) + (0.5 / textureHeight);
+            const FLOAT bottom = (viewBounds.bottom / textureHeight) - (0.5 / textureHeight);
+            
+            //
+            // Scale from [0, 1] range to texture view UV range.
+            //
+            textureToBrushTransform = Matrix3X2F::Scale(SizeF(right - left, bottom - top), Point2F(left, top));
+        }
+    }
+    else
+    {
+        //TODO: Apply solid color texture.
+    }
+    
+    IFC(ApplyBrushToTesselationSink(textureToBrushTransform, pBrush));    
+    
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT
+COpenGLES20RenderTarget::ApplyBrushToTesselationSink(
+    const Matrix3X2F& textureToBrushTransform,
+    __in const COpenGLES20Brush* pBrush
     )
 {
     HRESULT hr = S_OK;
     Matrix3X2F brushTransform;
+    
+    IFC(m_pTesselationSink->SetDiffuseColor(pBrush->GetDiffuseColor()));    
 
     //TODO: Optimize solid color brushes out.
-    pBrush->GetTransform(brushTransform);
+    pBrush->GetFinalTransform(brushTransform);
 
-    IFC(m_pTesselationSink->SetBrushTransform(&brushTransform));
+    //
+    // Invert the brush transform to normalize to a [0, 1] range.
+    // 
+    if(!brushTransform.Invert())
+    {
+        brushTransform = Matrix3X2F::Scale(0, 0);
+    }
+    
+    {
+        //
+        // Combine the texture to brush transform and the brush transform.
+        //
+        Matrix3X2F finalTransform = brushTransform * textureToBrushTransform;
+        
+        IFC(m_pTesselationSink->SetBrushTransform(&finalTransform));    
+    }
     
 Cleanup:    
+    return hr;
+}
+
+__checkReturn HRESULT
+COpenGLES20RenderTarget::Flush(
+    )
+{
+    HRESULT hr = S_OK;
+    
+    IFC(m_pTesselationSink->Flush());
+    
+Cleanup:    
+    return hr;
+}
+
+__checkReturn HRESULT
+COpenGLES20RenderTarget::OnTesselatedGeometryBatch(
+    __in COpenGLES20VertexBuffer* pVertexBuffer
+    )
+{
+    HRESULT hr = S_OK;
+    COpenGLES20VertexBuffer* pBuffer = NULL;
+    UINT32 vertexCount = 0;
+    
+    vertexCount = pVertexBuffer->GetVertexCount();
+    
+    if (vertexCount > 0)
+    {
+        IFC(pVertexBuffer->Bind(GL_ARRAY_BUFFER));
+        
+        glUseProgram(m_ShaderProgram);
+        
+        if (m_PositionAttribute != -1)
+        {
+            glVertexAttribPointer(m_PositionAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_POSITION_OFFSET);
+            glEnableVertexAttribArray(m_PositionAttribute);
+        }
+        
+        if (m_ColorAttribute != -1)
+        {
+            glVertexAttribPointer(m_ColorAttribute, 4, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_COLOR_OFFSET);
+            glEnableVertexAttribArray(m_ColorAttribute);              
+        }
+        
+        if (m_TextureCoordsAttribute != -1)
+        {
+            glVertexAttribPointer(m_TextureCoordsAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_TEXCOORDS_OFFSET);
+            glEnableVertexAttribArray(m_TextureCoordsAttribute);
+        }
+        
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    }
+    
+Cleanup:
     return hr;
 }

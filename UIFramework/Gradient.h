@@ -29,6 +29,13 @@ struct UIFRAMEWORK_API GradientStop
         color = Color;
     }
     
+    inline bool operator<(
+        const GradientStop& Other
+        ) const
+    {
+        return position < Other.position;
+    }
+    
 #ifndef _WINDOWS
     FLOAT position;
     ColorF color;

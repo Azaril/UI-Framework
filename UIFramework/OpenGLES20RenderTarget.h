@@ -11,6 +11,8 @@
 #include "TextureAllocator.h"
 #include "TextureAtlasPool.h"
 
+#define TEXTURE_ATLAS_PADDING 1
+
 class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
                                                 private ITesselationBatchCallback,
                                                 private ITextureAllocator
@@ -149,8 +151,16 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
             __in COpenGLES20VertexBuffer* pVertexBuffer
             );
     
-        __checkReturn HRESULT ApplyBrushTransformToSink(
-            __in const CGraphicsBrush* pBrush
+        __checkReturn HRESULT Flush(
+            );
+    
+        __checkReturn HRESULT ApplyBrush(
+            __in const COpenGLES20Brush* pBrush
+            );
+    
+        __checkReturn HRESULT ApplyBrushToTesselationSink(
+            __in const Matrix3X2F& textureToBrushTransform,
+            __in const COpenGLES20Brush* pBrush
             );
 
 		GLuint m_RenderBuffer;
@@ -163,7 +173,9 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
         GLuint m_ShaderProgram;
         GLint m_PositionAttribute;
         GLint m_ColorAttribute;
+        GLint m_TextureCoordsAttribute;
         GLint m_TransformUniform;
+        GLint m_BrushTextureUniform;
         COpenGLES20TesselationSink* m_pTesselationSink;
-        CTextureAtlasPool* m_pTextureAtlasPool;
+        CTextureAtlasPool< TEXTURE_ATLAS_PADDING >* m_pTextureAtlasPool;
 };

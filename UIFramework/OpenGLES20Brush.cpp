@@ -11,7 +11,7 @@ COpenGLES20Brush::~COpenGLES20Brush(
 {
 }
 
-__checkReturn HRESULT
+__override __checkReturn HRESULT
 COpenGLES20Brush::SetTransform(
     const Matrix3X2F& Transform
     )
@@ -23,10 +23,18 @@ COpenGLES20Brush::SetTransform(
 	return hr;
 }
 
-void
+__override void
 COpenGLES20Brush::GetTransform(
     Matrix3X2F& Transform
     ) const
 {
     Transform = m_Transform;
+}
+
+void
+COpenGLES20Brush::GetFinalTransform(
+    Matrix3X2F& Transform
+    ) const
+{
+    GetTransform(Transform);
 }

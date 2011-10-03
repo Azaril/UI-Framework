@@ -62,6 +62,30 @@ struct UIFRAMEWORK_API RectF
         return (Point.x >= left && Point.x <= right && Point.y >= top && Point.y <= bottom);
     }
     
+    inline FLOAT GetWidth(
+        ) const
+    {
+        return right - left;
+    }
+    
+    inline FLOAT GetHeight(
+    ) const
+    {
+        return bottom - top;
+    }
+    
+    inline SizeF GetSize(
+        ) const
+    {
+        return SizeF(GetWidth(), GetHeight());
+    }
+    
+    inline Point2F GetTopLeft(
+        ) const
+    {
+        return Point2F(top, left);
+    }    
+    
 #ifndef _WINDOWS
     FLOAT left;
     FLOAT top;

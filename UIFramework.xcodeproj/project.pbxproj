@@ -369,6 +369,11 @@
 		3D07DEF6141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */; };
 		3D1BD98D14271EAF00FC1EFE /* OpenGLES20TesselationSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D1BD98C14271EAF00FC1EFE /* OpenGLES20TesselationSink.h */; };
 		3D1BD9901427294200FC1EFE /* OpenGLES20TesselationSink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D1BD98F1427294200FC1EFE /* OpenGLES20TesselationSink.cpp */; };
+		3D2D610414359BE400CA7259 /* OpenGLES20LinearGradientBrush.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D2D610314359BE300CA7259 /* OpenGLES20LinearGradientBrush.h */; };
+		3D2D610714359C5C00CA7259 /* OpenGLES20LinearGradientBrush.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D2D610614359C5B00CA7259 /* OpenGLES20LinearGradientBrush.cpp */; };
+		3D4071E61439834800C65589 /* TextureAtlasView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D4071E51439834800C65589 /* TextureAtlasView.h */; };
+		3D4071E9143983CF00C65589 /* TextureAtlasView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D4071E8143983CE00C65589 /* TextureAtlasView.cpp */; };
+		3D4071EB1439842B00C65589 /* TextureAtlasNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D4071EA1439842B00C65589 /* TextureAtlasNode.h */; };
 		3D42B61E14285AF600E76CE6 /* OpenGLES20Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B61D14285AF500E76CE6 /* OpenGLES20Texture.h */; };
 		3D42B62014285CFE00E76CE6 /* Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B61F14285CFD00E76CE6 /* Texture.h */; };
 		3D42B622142861BD00E76CE6 /* OpenGLES20Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B621142861BD00E76CE6 /* OpenGLES20Texture.cpp */; };
@@ -773,6 +778,11 @@
 		3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20SolidColorBrush.cpp; sourceTree = "<group>"; };
 		3D1BD98C14271EAF00FC1EFE /* OpenGLES20TesselationSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20TesselationSink.h; sourceTree = "<group>"; };
 		3D1BD98F1427294200FC1EFE /* OpenGLES20TesselationSink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20TesselationSink.cpp; sourceTree = "<group>"; };
+		3D2D610314359BE300CA7259 /* OpenGLES20LinearGradientBrush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20LinearGradientBrush.h; sourceTree = "<group>"; };
+		3D2D610614359C5B00CA7259 /* OpenGLES20LinearGradientBrush.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20LinearGradientBrush.cpp; sourceTree = "<group>"; };
+		3D4071E51439834800C65589 /* TextureAtlasView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasView.h; sourceTree = "<group>"; };
+		3D4071E8143983CE00C65589 /* TextureAtlasView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlasView.cpp; sourceTree = "<group>"; };
+		3D4071EA1439842B00C65589 /* TextureAtlasNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasNode.h; sourceTree = "<group>"; };
 		3D42B61D14285AF500E76CE6 /* OpenGLES20Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20Texture.h; sourceTree = "<group>"; };
 		3D42B61F14285CFD00E76CE6 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
 		3D42B621142861BD00E76CE6 /* OpenGLES20Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20Texture.cpp; sourceTree = "<group>"; };
@@ -1237,6 +1247,8 @@
 				3D42B6231428714000E76CE6 /* OpenGLES20Brush.cpp */,
 				3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */,
 				3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */,
+				3D2D610314359BE300CA7259 /* OpenGLES20LinearGradientBrush.h */,
+				3D2D610614359C5B00CA7259 /* OpenGLES20LinearGradientBrush.cpp */,
 				3D9B191D142574E700EE37A3 /* OpenGLES20VertexBuffer.h */,
 				3D9B192214258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp */,
 				3D1BD98C14271EAF00FC1EFE /* OpenGLES20TesselationSink.h */,
@@ -1249,7 +1261,10 @@
 				3D9655A81426F93000132E4D /* TesselationSink.h */,
 				3D42B625142E5C3500E76CE6 /* TextureAtlasPool.h */,
 				3D42B629142E721800E76CE6 /* TextureAtlasPool.cpp */,
+				3D4071E51439834800C65589 /* TextureAtlasView.h */,
+				3D4071E8143983CE00C65589 /* TextureAtlasView.cpp */,
 				3D42B62B142E737300E76CE6 /* TextureAtlas.h */,
+				3D4071EA1439842B00C65589 /* TextureAtlasNode.h */,
 				3D42B62D142E746C00E76CE6 /* TextureAtlas.cpp */,
 			);
 			path = UIFramework;
@@ -1468,6 +1483,9 @@
 				3D42B64514302F5600E76CE6 /* ResolvedTriggerActions.h in Headers */,
 				3D42B64714302F5600E76CE6 /* Storyboard.h in Headers */,
 				3D42B64914302F5600E76CE6 /* TriggerAction.h in Headers */,
+				3D2D610414359BE400CA7259 /* OpenGLES20LinearGradientBrush.h in Headers */,
+				3D4071E61439834800C65589 /* TextureAtlasView.h in Headers */,
+				3D4071EB1439842B00C65589 /* TextureAtlasNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1710,6 +1728,8 @@
 				3D42B64414302F5600E76CE6 /* ResolvedTriggerActions.cpp in Sources */,
 				3D42B64614302F5600E76CE6 /* Storyboard.cpp in Sources */,
 				3D42B64814302F5600E76CE6 /* TriggerAction.cpp in Sources */,
+				3D2D610714359C5C00CA7259 /* OpenGLES20LinearGradientBrush.cpp in Sources */,
+				3D4071E9143983CF00C65589 /* TextureAtlasView.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -47,6 +47,22 @@ struct UIFRAMEWORK_API ColorF
         a = Alpha;
     }
     
+    static ColorF Interpolate(
+        const ColorF& from,
+        const ColorF& to,
+        FLOAT val
+        )
+    {
+        ColorF interoplatedColor(
+            from.r + ((to.r - from.r) * val),
+            from.g + ((to.g - from.g) * val),
+            from.b + ((to.b - from.b) * val),
+            from.a + ((to.a - from.a) * val)
+        );
+        
+        return interoplatedColor;
+    }
+    
 #ifndef _WINDOWS
     FLOAT r;
     FLOAT g;
