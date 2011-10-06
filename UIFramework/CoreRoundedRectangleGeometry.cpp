@@ -79,3 +79,16 @@ CCoreRoundedRectangleGeometry::TesselateFill(
     
     return hr;
 }
+
+__override __checkReturn HRESULT
+CCoreRoundedRectangleGeometry::TesselateStroke(
+    FLOAT strokeThickness,
+    __in ITesselationSink* pSink
+    )
+{
+    HRESULT hr = S_OK;
+    
+    //TODO: Implement.
+    
+    return hr;
+}

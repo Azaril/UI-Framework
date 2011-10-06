@@ -27,6 +27,11 @@ class CCorePathGraphicsGeometry : public CCoreGeometry< CPathGraphicsGeometry >
         __override virtual __checkReturn HRESULT TesselateFill(
             __in ITesselationSink* pSink
             );    
+    
+        __override virtual __checkReturn HRESULT TesselateStroke(
+            FLOAT strokeThickness,
+            __in ITesselationSink* pSink
+            );     
 
     protected:
         CCorePathGraphicsGeometry(

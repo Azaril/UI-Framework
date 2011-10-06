@@ -10,6 +10,11 @@ struct ICoreGeometry
     virtual __checkReturn HRESULT TesselateFill(
         __in ITesselationSink* pSink
         ) = 0;       
+    
+    virtual __checkReturn HRESULT TesselateStroke(
+        FLOAT strokeThickness,
+        __in ITesselationSink* pSink
+        ) = 0;
 };
 
 template< typename T >

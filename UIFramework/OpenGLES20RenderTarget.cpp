@@ -626,9 +626,17 @@ COpenGLES20RenderTarget::DrawRectangle(
 	)
 {
     HRESULT hr = S_OK;
+    COpenGLES20Brush* pOpenGLESBrush = NULL;
     
-    IFCPTR(pBrush);
-
+    pOpenGLESBrush = (COpenGLES20Brush*)pBrush;    
+    
+    IFC(m_pTesselationSink->SetTransform(m_Transform));
+    
+    IFC(ApplyBrush(pOpenGLESBrush));
+    
+    //TODO: This should probably have stroke width...
+    IFC(StaticTesselator::TesselateRectangleStroke(Size, 1.0f, m_pTesselationSink));
+    
 Cleanup:
     return hr;
 }
@@ -817,21 +825,40 @@ COpenGLES20RenderTarget::DrawGeometry(
 	)
 {
     HRESULT hr = S_OK;
-//     CD2DBrush* pD2DBrush = NULL;
-//     ID2D1Geometry* pD2DGeometry = NULL;
-
-//     IFCPTR(pGeometry);
-//     IFCPTR(pBrush);
-
-//     pD2DBrush = (CD2DBrush*)pBrush;
-
-//     IFC(UnwrapGeometry(pGeometry, &pD2DGeometry));
-
-//     m_RenderTarget->DrawGeometry(pD2DGeometry, pD2DBrush->GetD2DBrush(), StrokeThickness);
-
-// Cleanup:
-//     ReleaseObject(pD2DGeometry);
-
+    COpenGLES20Brush* pOpenGLESBrush = NULL;
+    ICoreGeometry* pCoreGeometry = NULL;
+    
+    pOpenGLESBrush = (COpenGLES20Brush*)pBrush;
+    
+    switch(pGeometry->GetType())
+    {
+        case TypeIndex::RectangleGraphicsGeometry:
+        {
+            pCoreGeometry = (CCoreRectangleGeometry*)pGeometry;  
+            
+            break;
+        }
+            
+        case TypeIndex::RoundedRectangleGraphicsGeometry:
+        {
+            pCoreGeometry = (CCoreRoundedRectangleGeometry*)pGeometry;
+            
+            break;
+        }
+            
+        default:
+        {
+            IFC(E_UNEXPECTED);
+        }
+    }
+    
+    IFC(m_pTesselationSink->SetTransform(m_Transform));
+    
+    IFC(ApplyBrush(pOpenGLESBrush));
+    
+    IFC(pCoreGeometry->TesselateStroke(StrokeThickness, m_pTesselationSink)); 
+    
+Cleanup:
     return hr;
 }
 

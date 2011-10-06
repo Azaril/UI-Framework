@@ -99,7 +99,21 @@ CCoreRectangleGeometry::TesselateFill(
 {
     HRESULT hr = S_OK;
     
-    IFC(StaticTesselator::TesselateRectangle(m_Rect, Matrix3X2F::Identity(), pSink));
+    IFC(StaticTesselator::TesselateRectangle(m_Rect, pSink));
+    
+Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT
+CCoreRectangleGeometry::TesselateStroke(
+    FLOAT strokeThickness,
+    __in ITesselationSink* pSink
+    )
+{
+    HRESULT hr = S_OK;
+    
+    IFC(StaticTesselator::TesselateRectangleStroke(m_Rect, strokeThickness, pSink));
     
 Cleanup:
     return hr;

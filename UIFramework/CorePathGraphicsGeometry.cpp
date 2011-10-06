@@ -74,3 +74,16 @@ CCorePathGraphicsGeometry::TesselateFill(
     
     return hr;
 }
+
+__override __checkReturn HRESULT
+CCorePathGraphicsGeometry::TesselateStroke(
+    FLOAT strokeThickness,
+    __in ITesselationSink* pSink
+    )
+{
+    HRESULT hr = S_OK;
+    
+    //TODO: Implement.
+    
+    return hr;
+}
