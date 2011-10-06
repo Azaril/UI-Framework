@@ -4,6 +4,7 @@
 CTextureAtlasView::CTextureAtlasView( 
     )
     : m_pNode(NULL)
+    , m_pAtlas(NULL)
 {
 }
 
@@ -17,16 +18,17 @@ CTextureAtlasView::~CTextureAtlasView(
 
 __checkReturn HRESULT
 CTextureAtlasView::Initialize(
+    __in ITextureAtlas* pAtlas,
     __in ITextureAtlasNode* pNode,
-    __in ITexture* pTexture,
     const RectU& Rect
     )
 {
     HRESULT hr = S_OK;
 
+    m_pAtlas = pAtlas;
     m_pNode = pNode;
 
-    SetObject(m_pTexture, pTexture);
+    SetObject(m_pTexture, pAtlas->GetTexture());
 
     m_Rect = Rect;
     
@@ -38,6 +40,13 @@ CTextureAtlasView::GetTexture(
     )
 {
     return m_pTexture;
+}
+
+__out ITextureAtlas*
+CTextureAtlasView::GetAtlas(
+    )
+{
+    return m_pAtlas;
 }
 
 const RectU&

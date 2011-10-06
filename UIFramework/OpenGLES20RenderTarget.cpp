@@ -62,6 +62,8 @@ COpenGLES20RenderTarget::COpenGLES20RenderTarget(
     , m_BrushTextureUniform(-1)
     , m_pTesselationSink(NULL)
     , m_pTextureAtlasPool(NULL)
+    , m_pLastRenderedTexture(NULL)
+    , m_pDefaultWhitePixelTexture(NULL)
 {
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
     {
@@ -73,6 +75,9 @@ COpenGLES20RenderTarget::~COpenGLES20RenderTarget(
 	)
 {
 	IGNOREHR(ApplyContext());
+    
+    ReleaseObject(m_pDefaultWhitePixelTexture);
+    ReleaseObject(m_pLastRenderedTexture);
     
     ReleaseObject(m_pTesselationSink);
     
@@ -110,6 +115,7 @@ COpenGLES20RenderTarget::Initialize(
     GLuint vertexBuffers[ARRAYSIZE(m_pVertexBuffers)] = { };
     GLuint vertexShader = 0;
     GLuint fragmentShader = 0;
+    COpenGLES20TextureAtlas* pFirstTextureAtlas = NULL;
 
 	m_RenderBuffer = RenderBuffer;
 	m_FrameBuffer = FrameBuffer;
@@ -166,10 +172,16 @@ COpenGLES20RenderTarget::Initialize(
         
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 
-        IFC(CTextureAtlasPool< TEXTURE_ATLAS_PADDING >::Create(maxTextureSize, maxTextureSize, this, &m_pTextureAtlasPool));
+        IFC(CTextureAtlasPool< COpenGLES20TextureAtlas >::Create(maxTextureSize, maxTextureSize, this, &m_pTextureAtlasPool));
     }
     
+    IFC(m_pTextureAtlasPool->GetOrCreateFirstTextureAtlas(&pFirstTextureAtlas));
+    
+    SetObject(m_pDefaultWhitePixelTexture, (CTextureAtlasView*)pFirstTextureAtlas->GetWhitePixelTexture());
+    
 Cleanup:
+    ReleaseObject(pFirstTextureAtlas);
+    
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
     {
         if (vertexBuffers[i] != 0)
@@ -370,6 +382,8 @@ COpenGLES20RenderTarget::BeginRendering(
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
+    ReplaceObject(m_pLastRenderedTexture, (COpenGLES20TextureAtlas*)NULL);
+    
 Cleanup:
     return hr;
 }
@@ -380,7 +394,9 @@ COpenGLES20RenderTarget::EndRendering(
 {
     HRESULT hr = S_OK;
 
-    IFC(m_pTesselationSink->Flush());
+    IFC(Flush());
+    
+    ReplaceObject(m_pLastRenderedTexture, (COpenGLES20TextureAtlas*)NULL);
 
 Cleanup:
     return hr;
@@ -450,7 +466,7 @@ COpenGLES20RenderTarget::CreateLinearGradientBrush(
     UINT32 colorBufferSize = 0;    
     PixelFormat::Value format = PixelFormat::Unknown;
     //TODO: Dynamically figure out how large this should be.
-    UINT32 textureLength = 256 - (TEXTURE_ATLAS_PADDING * 2);
+    UINT32 textureLength = 256 - 2;
     Matrix3X2F textureToBrushTransform;
     Point2F directionPoint;
     
@@ -1009,22 +1025,39 @@ COpenGLES20RenderTarget::ApplyBrush(
     )
 {
     HRESULT hr = S_OK;
-    ITexture* pBrushTexture = NULL;
+    CTextureAtlasView* pView = NULL;
     Matrix3X2F textureToBrushTransform;
     
-    //TODO: Don't flush every brush change, use solid color pixel etc and check texture.
-    IFC(Flush());
+    pView = (CTextureAtlasView*)pBrush->GetTexture();
     
-    pBrushTexture = pBrush->GetTexture();
-    
-    if (pBrushTexture != NULL)
+    if (pView == NULL)
     {
-        CTextureAtlasView* pView = (CTextureAtlasView*)pBrushTexture;
+        if (m_pLastRenderedTexture != NULL)
+        {
+            pView = (CTextureAtlasView*)m_pLastRenderedTexture->GetWhitePixelTexture();
+        }
+        else
+        {
+            pView = m_pDefaultWhitePixelTexture;
+        }
+    }
+    
+    //
+    // The last rendered texture should only ever be NULL for the first draw in a frame.
+    //
+    if (m_pLastRenderedTexture != NULL && pView->GetTexture() != m_pLastRenderedTexture->GetTexture())
+    {
+        IFC(Flush());
+    }
+    
+    {
         COpenGLES20Texture* pOpenGLESTexture = (COpenGLES20Texture*)pView->GetTexture();
             
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, pOpenGLESTexture->GetTextureID());
         glUniform1i(m_BrushTextureUniform, 0);
+        
+        SetObject(m_pLastRenderedTexture, (COpenGLES20TextureAtlas*)pView->GetAtlas());
         
         {
             const RectU& viewBounds = pView->GetRect();
@@ -1041,10 +1074,6 @@ COpenGLES20RenderTarget::ApplyBrush(
             //
             textureToBrushTransform = Matrix3X2F::Scale(SizeF(right - left, bottom - top), Point2F(left, top));
         }
-    }
-    else
-    {
-        //TODO: Apply solid color texture.
     }
     
     IFC(ApplyBrushToTesselationSink(textureToBrushTransform, pBrush));    

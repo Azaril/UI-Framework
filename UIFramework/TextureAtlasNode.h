@@ -3,6 +3,8 @@
 #include "Texture.h"
 #include "Factory.h"
 
+struct ITextureAtlas;
+
 struct ITextureAtlasNode
 {    
     virtual void NotifyViewDeleted(
@@ -37,7 +39,7 @@ class CTextureAtlasNode : private ITextureAtlasNode
         }
 
         __checkReturn HRESULT Allocate(
-            __in ITexture* pTexture,
+            __in ITextureAtlas* pAtlas,
             const SizeU& Size,
             __deref_out CTextureAtlasView** ppView
             )
@@ -56,14 +58,14 @@ class CTextureAtlasNode : private ITextureAtlasNode
             //
             // Attempt to allocate a view from the left child.
             //
-            if (m_pLeftChild != NULL && SUCCEEDED(m_pLeftChild->Allocate(pTexture, Size, ppView)))
+            if (m_pLeftChild != NULL && SUCCEEDED(m_pLeftChild->Allocate(pAtlas, Size, ppView)))
             {
                 goto Cleanup;
             }
             //
             // Attempt to allocate a view from the right child.
             //
-            else if(m_pRightChild != NULL && SUCCEEDED(m_pRightChild->Allocate(pTexture, Size, ppView)))
+            else if(m_pRightChild != NULL && SUCCEEDED(m_pRightChild->Allocate(pAtlas, Size, ppView)))
             {
                 goto Cleanup;
             }
@@ -87,7 +89,7 @@ class CTextureAtlasNode : private ITextureAtlasNode
                     //
                     RectU viewRect(m_Rect.left + Padding, m_Rect.top + Padding, m_Rect.right - Padding, m_Rect.bottom - Padding);
                     
-                    IFC(CTextureAtlasView::Create(this, pTexture, viewRect, &pNewView));
+                    IFC(CTextureAtlasView::Create(pAtlas, this, viewRect, &pNewView));
 
                     //
                     // NOTE: This node does not hold on to the view as when it is released we want
@@ -136,7 +138,7 @@ class CTextureAtlasNode : private ITextureAtlasNode
                     //
                     // Allocate and get view from newly allocated node.
                     //
-                    IFC(m_pLeftChild->Allocate(pTexture, Size, ppView));
+                    IFC(m_pLeftChild->Allocate(pAtlas, Size, ppView));
                 }
             }
 

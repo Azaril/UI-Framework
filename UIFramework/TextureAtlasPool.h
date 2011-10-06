@@ -5,11 +5,9 @@
 #include "TextureAllocator.h"
 #include "TextureAtlas.h"
 
-template< UINT32 Padding >
+template< typename AtlasType >
 class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAllocator >
 {
-    typedef CTextureAtlas< Padding > AtlasType;
-    
     public:
         DECLARE_FACTORY3( CTextureAtlasPool, UINT32, UINT32, ITextureAllocator* );
     
@@ -20,7 +18,6 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAllocator >
             )
         {
             HRESULT hr = S_OK;
-            ITexture* pNewAtlasStorageTexture = NULL;
             AtlasType* pNewAtlas = NULL;
 
             //TODO: Implement a better algorithm here, this will get slow as more textures get allocated and fragmentation happens.
@@ -34,19 +31,33 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAllocator >
                 }
             }
 
-            IFC(m_pTextureAllocator->AllocateTexture(m_Width, m_Height, &pNewAtlasStorageTexture));
-
-            IFC(AtlasType::Create(pNewAtlasStorageTexture, &pNewAtlas));
-
+            IFC(CreateNewAtlas(&pNewAtlas));
+            
             IFC(pNewAtlas->AllocateTexture(Width, Height, ppTexture));
 
-            m_Textures.push_back(pNewAtlas);
-            pNewAtlas = NULL;
-
-            Cleanup:
-            ReleaseObject(pNewAtlasStorageTexture);
+        Cleanup:
+            ReleaseObject(pNewAtlas);
 
             return hr;        
+        }
+    
+        __checkReturn HRESULT GetOrCreateFirstTextureAtlas(
+            __deref_out AtlasType** ppAtlas
+            )
+        {
+            HRESULT hr = S_OK;
+            
+            if (m_Textures.empty())
+            {
+                IFC(CreateNewAtlas(ppAtlas));
+            }
+            else
+            {
+                SetObject(*ppAtlas, m_Textures[0]);
+            }
+            
+        Cleanup:
+            return hr;
         }
     
     protected:
@@ -80,6 +91,30 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAllocator >
             m_pTextureAllocator = pAllocator;
 
             return hr;            
+        }
+    
+        __checkReturn HRESULT CreateNewAtlas(
+            __deref_out AtlasType** ppAtlas
+            )
+        {
+            HRESULT hr = S_OK;
+            AtlasType* pNewAtlas = NULL;
+            ITexture* pNewAtlasStorageTexture = NULL;
+            
+            IFC(m_pTextureAllocator->AllocateTexture(m_Width, m_Height, &pNewAtlasStorageTexture));
+            
+            IFC(AtlasType::Create(pNewAtlasStorageTexture, &pNewAtlas));
+            
+            SetObject(*ppAtlas, pNewAtlas);
+            
+            m_Textures.push_back(pNewAtlas);
+            pNewAtlas = NULL;
+            
+        Cleanup:
+            ReleaseObject(pNewAtlasStorageTexture);
+            ReleaseObject(pNewAtlas);
+            
+            return hr;              
         }
     
         ITextureAllocator* m_pTextureAllocator;

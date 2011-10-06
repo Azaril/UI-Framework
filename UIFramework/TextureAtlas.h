@@ -6,8 +6,15 @@
 #include "TextureAtlasView.h"
 #include "TextureAtlasNode.h"
 
+struct ITextureAtlas
+{
+    __out virtual ITexture* GetTexture(
+        ) = 0;
+};
+
 template< UINT32 Padding >
-class CTextureAtlas : public CRefCountedObjectBase< ITextureAllocator >
+class CTextureAtlas : public CRefCountedObjectBase< ITextureAllocator >,
+                      public ITextureAtlas
 {
     public:
         DECLARE_FACTORY1( CTextureAtlas, ITexture* );
@@ -27,7 +34,7 @@ class CTextureAtlas : public CRefCountedObjectBase< ITextureAllocator >
             //
             const SizeU inflatedSize(Width + (Padding * 2), Height + (Padding * 2));
 
-            IFC(m_pRootNode->Allocate(m_pTexture, inflatedSize, &pAtlasView));
+            IFC(m_pRootNode->Allocate(this, inflatedSize, &pAtlasView));
 
             *ppTexture = pAtlasView;
             pAtlasView = NULL;
@@ -36,6 +43,12 @@ class CTextureAtlas : public CRefCountedObjectBase< ITextureAllocator >
             ReleaseObject(pAtlasView);
 
             return hr;            
+        }
+    
+        __override __out virtual ITexture* GetTexture(
+            )
+        {
+            return m_pTexture;
         }
     
     protected:

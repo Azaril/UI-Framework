@@ -4,12 +4,16 @@
 #include "TextureAllocator.h"
 #include "Factory.h"
 
+struct ITextureAtlas;
 struct ITextureAtlasNode;
 
 class CTextureAtlasView : public CRefCountedObjectBase< ITexture >
 {
     public:
-        DECLARE_FACTORY3( CTextureAtlasView, ITextureAtlasNode*, ITexture*, const RectU& );
+        DECLARE_FACTORY3( CTextureAtlasView, ITextureAtlas*, ITextureAtlasNode*, const RectU& );
+    
+        __out ITextureAtlas* GetAtlas(
+            );
     
         __out ITexture* GetTexture(
             );
@@ -50,11 +54,12 @@ class CTextureAtlasView : public CRefCountedObjectBase< ITexture >
             );
 
         __checkReturn HRESULT Initialize(
-            __in  ITextureAtlasNode* pNode,
-            __in ITexture* pTexture,
+            __in ITextureAtlas* pAtlas,
+            __in ITextureAtlasNode* pNode,
             const RectU& Rect
             );
 
+        ITextureAtlas* m_pAtlas;
         ITextureAtlasNode* m_pNode;
         ITexture* m_pTexture;
         RectU m_Rect;

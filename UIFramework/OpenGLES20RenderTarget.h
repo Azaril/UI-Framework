@@ -8,10 +8,9 @@
 #include "OpenGLES20TesselationSink.h"
 #include "OpenGLES20Texture.h"
 #include "OpenGLES20Brush.h"
+#include "OpenGLES20TextureAtlas.h"
 #include "TextureAllocator.h"
 #include "TextureAtlasPool.h"
-
-#define TEXTURE_ATLAS_PADDING 1
 
 class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
                                                 private ITesselationBatchCallback,
@@ -177,5 +176,7 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
         GLint m_TransformUniform;
         GLint m_BrushTextureUniform;
         COpenGLES20TesselationSink* m_pTesselationSink;
-        CTextureAtlasPool< TEXTURE_ATLAS_PADDING >* m_pTextureAtlasPool;
+        CTextureAtlasPool< COpenGLES20TextureAtlas >* m_pTextureAtlasPool;
+        COpenGLES20TextureAtlas* m_pLastRenderedTexture;
+        CTextureAtlasView* m_pDefaultWhitePixelTexture;
 };
