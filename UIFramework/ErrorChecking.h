@@ -10,7 +10,6 @@
 
 #if _WINDOWS
 
-#define NOMINMAX
 #include <windows.h>
 
 #else

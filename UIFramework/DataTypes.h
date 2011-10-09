@@ -2,7 +2,6 @@
 
 #if _WINDOWS
 
-#define NOMINMAX
 #include <windows.h>
 
 #include <float.h>

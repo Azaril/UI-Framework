@@ -618,18 +618,22 @@ CRenderTargetBase::ApplyBrush(
         }
     }
     
-    //
-    // The last rendered texture should only ever be NULL for the first draw in a frame.
-    //
-    if (m_pLastRenderedTextureAtlas != NULL && pView->GetTexture() != m_pLastRenderedTextureAtlas->GetTexture())
-    {
-        IFC(Flush());
-    }
-    
     {
         ITexture* pTexture = pView->GetTexture();
+        ITexture* pPreviousTexture = (m_pLastRenderedTextureAtlas != NULL) ? m_pLastRenderedTextureAtlas->GetTexture() : NULL;
+   
+        //
+        // The last rendered texture should only ever be NULL for the first draw in a frame.
+        //
+        if (pTexture != pPreviousTexture)
+        {
+            if (pPreviousTexture != NULL)
+            {
+                IFC(Flush());
+            }
 
-        IFC(BindTexture(pTexture));
+            IFC(BindTexture(pTexture));
+        }
         
         SetObject(m_pLastRenderedTextureAtlas, (ITextureAtlasWithWhitePixel*)pView->GetAtlas());
         

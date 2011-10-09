@@ -66,7 +66,7 @@ CD3D9RenderTarget::Initialize(
 
     IFC(pDevice->GetDeviceCaps(&deviceCapabilites));
 
-    IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(deviceCapabilites.MaxTextureWidth, deviceCapabilites.MaxTextureHeight, this, &pTextureAtlasPool));
+    IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(std::min((UINT32)deviceCapabilites.MaxTextureWidth, (UINT32)2048), std::min((UINT32)deviceCapabilites.MaxTextureWidth, (UINT32)2048), this, &pTextureAtlasPool));
 
     IFC(pTextureAtlasPool->GetOrCreateFirstTextureAtlas(&pFirstTextureAtlas));
 
@@ -227,7 +227,7 @@ CD3D9RenderTarget::OnTesselatedGeometryBatch(
 
     IFC(m_pDevice->SetStreamSource(0, pD3DVertexBuffer->GetD3DVertexBuffer(), 0, sizeof(RenderVertex)));
 
-    IFC(m_pDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, pVertexBuffer->GetVertexCount()));
+    IFC(m_pDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, pVertexBuffer->GetVertexCount() / 3));
 
 Cleanup:
     return hr;
