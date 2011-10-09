@@ -1,12 +1,12 @@
 #pragma once
 
-#include "OpenGLES20Brush.h"
+#include "GraphicsBrushBase.h"
 #include "Texture.h"
 
-class COpenGLES20LinearGradientBrush : public COpenGLES20Brush
+class CLinearGradientBrushBase : public CGraphicsBrushBase
 {
     public:
-        DECLARE_FACTORY2( COpenGLES20LinearGradientBrush, ITexture*, const Matrix3X2F& );
+        DECLARE_FACTORY2( CLinearGradientBrushBase, ITexture*, const Matrix3X2F& );
     
         __override virtual ColorF GetDiffuseColor(
             ) const;
@@ -19,10 +19,10 @@ class COpenGLES20LinearGradientBrush : public COpenGLES20Brush
             ) const;
     
     protected:
-        COpenGLES20LinearGradientBrush(
+        CLinearGradientBrushBase(
             );
     
-        virtual ~COpenGLES20LinearGradientBrush(
+        virtual ~CLinearGradientBrushBase(
             );
     
         __checkReturn HRESULT Initialize(

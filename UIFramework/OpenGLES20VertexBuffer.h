@@ -6,7 +6,7 @@
 #include "RenderVertex.h"
 #include "RefCounted.h"
 
-class COpenGLES20VertexBuffer : public CRefCountedObject
+class COpenGLES20VertexBuffer : public CRefCountedObjectBase< IVertexBuffer >
 {
     public:
         DECLARE_FACTORY1( COpenGLES20VertexBuffer, GLuint );

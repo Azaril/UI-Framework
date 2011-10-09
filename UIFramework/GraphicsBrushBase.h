@@ -4,7 +4,7 @@
 #include "Factory.h"
 #include "Texture.h"
 
-class COpenGLES20Brush : public CGraphicsBrush
+class CGraphicsBrushBase : public CGraphicsBrush
 {
     public:     
         __override virtual __checkReturn HRESULT SetTransform(
@@ -26,10 +26,10 @@ class COpenGLES20Brush : public CGraphicsBrush
             ) const = 0;
         
     protected:
-        COpenGLES20Brush(
+        CGraphicsBrushBase(
             );
         
-        virtual ~COpenGLES20Brush(
+        virtual ~CGraphicsBrushBase(
             );
     
         Matrix3X2F m_Transform;

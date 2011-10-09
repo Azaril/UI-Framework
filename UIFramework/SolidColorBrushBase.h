@@ -1,11 +1,11 @@
 #pragma once
 
-#include "OpenGLES20Brush.h"
+#include "GraphicsBrushBase.h"
 
-class COpenGLES20SolidColorBrush : public COpenGLES20Brush
+class CSolidColorBrushBase : public CGraphicsBrushBase
 {
 	public:
-		DECLARE_FACTORY1( COpenGLES20SolidColorBrush, const ColorF& );
+		DECLARE_FACTORY1( CSolidColorBrushBase, const ColorF& );
 
         __override virtual ColorF GetDiffuseColor(
         	) const;
@@ -14,10 +14,10 @@ class COpenGLES20SolidColorBrush : public COpenGLES20Brush
             ) const;
 
 	protected:
-		COpenGLES20SolidColorBrush(
+		CSolidColorBrushBase(
 			);
 		
-		virtual ~COpenGLES20SolidColorBrush(
+		virtual ~CSolidColorBrushBase(
 			);
 
 		__checkReturn HRESULT Initialize(

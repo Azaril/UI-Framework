@@ -125,6 +125,12 @@
     <Filter Include="Framework\UI\VisualResources\Geometry">
       <UniqueIdentifier>{f938315d-88bd-417f-93d2-6ea5828375d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Graphics\D3D9">
+      <UniqueIdentifier>{c6530ea9-d5fa-4251-9cae-b70de383b2c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Graphics\Common">
+      <UniqueIdentifier>{03e66c84-29b6-4af5-ae4c-1fd02ba263bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -745,11 +751,47 @@
     <ClCompile Include="AnimationTimelineCollection.cpp">
       <Filter>Framework\UI\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="D3D9GraphicsDevice.cpp">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D9RenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetBase.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsBrushBase.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureAtlasView.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureAtlasWithWhitePixel.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
     <ClCompile Include="TextureAtlas.cpp">
-      <Filter>Framework\Graphics</Filter>
+      <Filter>Framework\Graphics\Common</Filter>
     </ClCompile>
     <ClCompile Include="TextureAtlasPool.cpp">
-      <Filter>Framework\Graphics</Filter>
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearGradientBrushBase.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="SolidColorBrushBase.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryTesselationSink.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D9HWNDRenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D9Texture.cpp">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D9VertexBuffer.cpp">
+      <Filter>Framework\Graphics\D3D9</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1392,11 +1434,53 @@
     <ClInclude Include="TextureAllocator.h">
       <Filter>Framework\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="TextureAtlas.h">
-      <Filter>Framework\Graphics</Filter>
+    <ClInclude Include="D3D9GraphicsDevice.h">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D9RenderTarget.h">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetBase.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsBrushBase.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureAtlasNode.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureAtlasView.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureAtlasWithWhitePixel.h">
+      <Filter>Framework\Graphics\Common</Filter>
     </ClInclude>
     <ClInclude Include="TextureAtlasPool.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureAtlas.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="SolidColorBrushBase.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearGradientBrushBase.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryTesselationSink.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
       <Filter>Framework\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D9VertexBuffer.h">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D9HWNDRenderTarget.h">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D9Texture.h">
+      <Filter>Framework\Graphics\D3D9</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

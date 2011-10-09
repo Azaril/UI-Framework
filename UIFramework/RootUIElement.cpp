@@ -118,7 +118,7 @@ HRESULT CRootUIElement::RenderRoot(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
-    ColorF ClearColor;
+    ColorF ClearColor(0, 0, 0, 0);
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);

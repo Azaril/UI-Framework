@@ -37,9 +37,6 @@ struct ITexture
     virtual UINT32 GetHeight(
         ) = 0;
     
-    virtual INT32 GetStride(
-        ) = 0;
-    
     virtual PixelFormat::Value GetPixelFormat(
         ) = 0;
     

@@ -1,18 +1,18 @@
-#include "OpenGLES20Brush.h"
+#include "GraphicsBrushBase.h"
 
-COpenGLES20Brush::COpenGLES20Brush(
+CGraphicsBrushBase::CGraphicsBrushBase(
     )
     : m_Transform(Matrix3X2F::Identity())
 {
 }
 
-COpenGLES20Brush::~COpenGLES20Brush(
+CGraphicsBrushBase::~CGraphicsBrushBase(
     )
 {
 }
 
 __override __checkReturn HRESULT
-COpenGLES20Brush::SetTransform(
+CGraphicsBrushBase::SetTransform(
     const Matrix3X2F& Transform
     )
 {
@@ -24,7 +24,7 @@ COpenGLES20Brush::SetTransform(
 }
 
 __override void
-COpenGLES20Brush::GetTransform(
+CGraphicsBrushBase::GetTransform(
     Matrix3X2F& Transform
     ) const
 {
@@ -32,7 +32,7 @@ COpenGLES20Brush::GetTransform(
 }
 
 void
-COpenGLES20Brush::GetFinalTransform(
+CGraphicsBrushBase::GetFinalTransform(
     Matrix3X2F& Transform
     ) const
 {

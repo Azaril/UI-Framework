@@ -1,21 +1,21 @@
 #pragma once
 
+#include "Types.h"
 #include "TesselationSink.h"
-#include "OpenGLES20VertexBuffer.h"
-
-class COpenGLES20RenderTarget;
+#include "VertexBuffer.h"
+#include "Factory.h"
 
 struct ITesselationBatchCallback
 {
     virtual __checkReturn HRESULT OnTesselatedGeometryBatch(
-        __in COpenGLES20VertexBuffer* pBuffer
+        __in IVertexBuffer* pBuffer
         ) = 0;
 };
 
-class COpenGLES20TesselationSink : public CRefCountedObjectBase< ITesselationSink >
+class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink >
 {
     public:
-        DECLARE_FACTORY3( COpenGLES20TesselationSink, ITesselationBatchCallback*, COpenGLES20VertexBuffer**, UINT32 );
+        DECLARE_FACTORY3( CGeometryTesselationSink, ITesselationBatchCallback*, IVertexBuffer**, UINT32 );
     
 	    __override virtual __checkReturn HRESULT AddTriangle(
 	        const Point2F& point1,
@@ -39,15 +39,15 @@ class COpenGLES20TesselationSink : public CRefCountedObjectBase< ITesselationSin
             );
 
     protected:    
-        COpenGLES20TesselationSink(
+        CGeometryTesselationSink(
            );
     
-        virtual ~COpenGLES20TesselationSink(
+        virtual ~CGeometryTesselationSink(
             );    
     
         __checkReturn HRESULT Initialize(
 	        __in ITesselationBatchCallback* pCallback,
-	        __in_ecount(VertexBufferCount) COpenGLES20VertexBuffer** ppVertexBuffers,
+	        __in_ecount(VertexBufferCount) IVertexBuffer** ppVertexBuffers,
 	        UINT32 VertexBufferCount
 	        );
     
@@ -61,10 +61,11 @@ class COpenGLES20TesselationSink : public CRefCountedObjectBase< ITesselationSin
             );    
 
     	ITesselationBatchCallback* m_pCallback;
-        COpenGLES20VertexBuffer** m_ppVertexBuffers;
+        IVertexBuffer** m_ppVertexBuffers;
         UINT32 m_VertexBufferCount;
         UINT32 m_CurrentVertexBuffer;
-        RenderVertex m_VertexCache[2048];
+        RenderVertex* m_pVertexCache;
+        UINT32 m_VertexCacheSize;
         RenderVertex* m_pCacheWriteOffset;    
         ColorF m_DiffuseColor;
         Matrix3X2F m_Transform;

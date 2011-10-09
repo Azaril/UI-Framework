@@ -1,19 +1,19 @@
-#include "OpenGLES20LinearGradientBrush.h"
+#include "LinearGradientBrushBase.h"
 
-COpenGLES20LinearGradientBrush::COpenGLES20LinearGradientBrush(
+CLinearGradientBrushBase::CLinearGradientBrushBase(
 	)
 	: m_pTexture(NULL)
 {
 }
 
-COpenGLES20LinearGradientBrush::~COpenGLES20LinearGradientBrush(
+CLinearGradientBrushBase::~CLinearGradientBrushBase(
 	)
 {
 	ReleaseObject(m_pTexture);
 }
 
 __checkReturn HRESULT
-COpenGLES20LinearGradientBrush::Initialize(
+CLinearGradientBrushBase::Initialize(
 	__in ITexture* pTexture,
     const Matrix3X2F& textureToBrushTransform
 	)
@@ -28,21 +28,21 @@ COpenGLES20LinearGradientBrush::Initialize(
 }
 
 __override __out_opt ITexture*
-COpenGLES20LinearGradientBrush::GetTexture(
+CLinearGradientBrushBase::GetTexture(
 	) const
 {
 	return m_pTexture;
 }
 
 __override ColorF 
-COpenGLES20LinearGradientBrush::GetDiffuseColor(
+CLinearGradientBrushBase::GetDiffuseColor(
     ) const
 {
     return ColorF(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 __override void
-COpenGLES20LinearGradientBrush::GetFinalTransform(
+CLinearGradientBrushBase::GetFinalTransform(
     Matrix3X2F& Transform
     ) const
 {

@@ -70,13 +70,6 @@ CTextureAtlasView::GetHeight(
     return m_Rect.GetHeight();
 }
 
-__override INT32 
-CTextureAtlasView::GetStride(
-    )
-{
-    return m_pTexture->GetStride();
-}
-
 __override PixelFormat::Value 
 CTextureAtlasView::GetPixelFormat(
     )

@@ -1,6 +1,7 @@
-#include "OpenGLES20TesselationSink.h"
+#include "GeometryTesselationSink.h"
+#include "ErrorChecking.h"
 
-COpenGLES20TesselationSink::COpenGLES20TesselationSink(
+CGeometryTesselationSink::CGeometryTesselationSink(
 	)
 	: m_ppVertexBuffers(NULL)
 	, m_VertexBufferCount(0)
@@ -8,11 +9,13 @@ COpenGLES20TesselationSink::COpenGLES20TesselationSink(
     , m_Transform(Matrix3X2F::Identity())
     , m_BrushTransform(Matrix3X2F::Identity())
     , m_NeedsBrushTransform(FALSE)
+    , m_pVertexCache(NULL)
+    , m_VertexCacheSize(0)
+    , m_pCacheWriteOffset(NULL)
 {
-	m_pCacheWriteOffset = m_VertexCache;
 }
 
-COpenGLES20TesselationSink::~COpenGLES20TesselationSink(
+CGeometryTesselationSink::~CGeometryTesselationSink(
 	)
 {
 	if (m_ppVertexBuffers != NULL)
@@ -27,9 +30,9 @@ COpenGLES20TesselationSink::~COpenGLES20TesselationSink(
 }
 
 __checkReturn HRESULT
-COpenGLES20TesselationSink::Initialize(
+CGeometryTesselationSink::Initialize(
     __in ITesselationBatchCallback* pCallback,
-    __in_ecount(VertexBufferCount) COpenGLES20VertexBuffer** ppVertexBuffers,
+    __in_ecount(VertexBufferCount) IVertexBuffer** ppVertexBuffers,
     UINT32 VertexBufferCount
 	)
 {
@@ -37,23 +40,34 @@ COpenGLES20TesselationSink::Initialize(
 
 	m_pCallback = pCallback;
 
-	m_ppVertexBuffers = new COpenGLES20VertexBuffer*[VertexBufferCount];
+    IFCEXPECT(VertexBufferCount > 0);
+
+	m_ppVertexBuffers = new IVertexBuffer*[VertexBufferCount];
 	IFCOOM(m_ppVertexBuffers);
 
 	m_VertexBufferCount = VertexBufferCount;
+
+    m_VertexCacheSize = ppVertexBuffers[0]->GetMaximumVertices();
 
 	for (UINT32 i = 0; i < VertexBufferCount; ++i)
 	{
 		m_ppVertexBuffers[i] = ppVertexBuffers[i];
 		AddRefObject(m_ppVertexBuffers[i]);
+
+        m_VertexCacheSize = std::min(m_VertexCacheSize, ppVertexBuffers[i]->GetMaximumVertices());
 	}
+
+    m_pVertexCache = new RenderVertex[m_VertexCacheSize];
+    IFCOOM(m_pVertexCache);
+
+    m_pCacheWriteOffset = m_pVertexCache;
 
 Cleanup:
 	return hr;
 }
 
 __checkReturn HRESULT
-COpenGLES20TesselationSink::AddTriangle(
+CGeometryTesselationSink::AddTriangle(
     const Point2F& point1,
     const Point2F& point2,
     const Point2F& point3
@@ -89,7 +103,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT
-COpenGLES20TesselationSink::Flush(
+CGeometryTesselationSink::Flush(
 	)
 {
 	HRESULT hr = S_OK;
@@ -101,7 +115,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT
-COpenGLES20TesselationSink::FlushVertexCache(
+CGeometryTesselationSink::FlushVertexCache(
 	)
 {
 	HRESULT hr = S_OK;
@@ -111,15 +125,15 @@ COpenGLES20TesselationSink::FlushVertexCache(
 
 	if (vertexCount > 0)
 	{
-		COpenGLES20VertexBuffer* pBuffer = m_ppVertexBuffers[m_CurrentVertexBuffer];
+		IVertexBuffer* pBuffer = m_ppVertexBuffers[m_CurrentVertexBuffer];
 
-		IFC(pBuffer->SetVertices(m_VertexCache, vertexCount));
+		IFC(pBuffer->SetVertices(m_pVertexCache, vertexCount));
 
 		IFC(m_pCallback->OnTesselatedGeometryBatch(pBuffer));
 
 		m_CurrentVertexBuffer = (m_CurrentVertexBuffer + 1) % m_VertexBufferCount;		
 
-		m_pCacheWriteOffset = m_VertexCache;
+		m_pCacheWriteOffset = m_pVertexCache;
 	}
 
 Cleanup:
@@ -127,21 +141,21 @@ Cleanup:
 }
 
 size_t
-COpenGLES20TesselationSink::GetAvailableVertexBufferCount(
+CGeometryTesselationSink::GetAvailableVertexBufferCount(
 	)
 {
-	return ARRAYSIZE(m_VertexCache) - GetUsedVertexBufferCount();
+	return m_VertexCacheSize - GetUsedVertexBufferCount();
 }
 
 size_t
-COpenGLES20TesselationSink::GetUsedVertexBufferCount(
+CGeometryTesselationSink::GetUsedVertexBufferCount(
 	)
 {
-	return (m_pCacheWriteOffset - m_VertexCache);
+	return (m_pCacheWriteOffset - m_pVertexCache);
 }
 
 __checkReturn HRESULT
-COpenGLES20TesselationSink::SetDiffuseColor(
+CGeometryTesselationSink::SetDiffuseColor(
     const ColorF& Color
     )
 {
@@ -153,7 +167,7 @@ COpenGLES20TesselationSink::SetDiffuseColor(
 }
 
 __checkReturn HRESULT
-COpenGLES20TesselationSink::SetTransform(
+CGeometryTesselationSink::SetTransform(
     const Matrix3X2F& Transform
     )
 {
@@ -165,7 +179,7 @@ COpenGLES20TesselationSink::SetTransform(
 }
 
 __checkReturn HRESULT
-COpenGLES20TesselationSink::SetBrushTransform(
+CGeometryTesselationSink::SetBrushTransform(
     __in_opt const Matrix3X2F* pTransform
     )
 {
@@ -181,7 +195,6 @@ COpenGLES20TesselationSink::SetBrushTransform(
     {
         m_NeedsBrushTransform = FALSE;
     }
-     
-Cleanup:
+
     return hr;
 }

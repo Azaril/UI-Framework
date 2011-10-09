@@ -27,9 +27,6 @@ class CTextureAtlasView : public CRefCountedObjectBase< ITexture >
         __override virtual UINT32 GetHeight(
             );
 
-        __override virtual INT32 GetStride(
-            );
-
         __override virtual PixelFormat::Value GetPixelFormat(
             );
 

@@ -6,15 +6,16 @@
 #include "TextureAtlasView.h"
 #include "TextureAtlasNode.h"
 
-struct ITextureAtlas
+struct ITextureAtlas : public ITextureAllocator
 {
+    DECLARE_ADDREF_RELEASE_INTERFACE();
+
     __out virtual ITexture* GetTexture(
         ) = 0;
 };
 
-template< UINT32 Padding >
-class CTextureAtlas : public CRefCountedObjectBase< ITextureAllocator >,
-                      public ITextureAtlas
+template< typename Base, UINT32 Padding >
+class CTextureAtlas : public CRefCountedObjectBase< Base >
 {
     public:
         DECLARE_FACTORY1( CTextureAtlas, ITexture* );

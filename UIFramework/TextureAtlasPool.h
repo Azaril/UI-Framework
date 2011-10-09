@@ -5,8 +5,13 @@
 #include "TextureAllocator.h"
 #include "TextureAtlas.h"
 
+struct ITextureAtlasPool : public ITextureAllocator
+{
+    DECLARE_ADDREF_RELEASE_INTERFACE();
+};
+
 template< typename AtlasType >
-class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAllocator >
+class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
 {
     public:
         DECLARE_FACTORY3( CTextureAtlasPool, UINT32, UINT32, ITextureAllocator* );

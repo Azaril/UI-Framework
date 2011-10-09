@@ -16,13 +16,19 @@
 #include <Windowsx.h>
 #include <strsafe.h>
 
-#define BUILD_D2D
+//#define BUILD_D2D
+#define BUILD_D3D9
 
 #if defined(BUILD_D2D)
 
 #include <d2d1helper.h>
 #include "D2DHWNDRenderTarget.h"
 #include "D2DGraphicsDevice.h"
+
+#elif defined(BUILD_D3D9)
+
+#include "D3D9GraphicsDevice.h"
+#include "D3D9RenderTarget.h"
 
 #elif defined(BUILD_IRRLICHT)
 
@@ -48,6 +54,10 @@ LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
 CD2DHWNDRenderTarget* g_RenderTarget = NULL;
 
+#elif defined(BUILD_D3D9)
+
+CD3D9RenderTarget* g_RenderTarget = NULL;
+
 #elif defined(BUILD_IRRLICHT)
 
 
@@ -60,16 +70,6 @@ CKeyboardController* g_KeyboardController = NULL;
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
     HRESULT hr = S_OK;
-
-#if defined(BUILD_D2D)
-
-    HWND hWnd = NULL;
-    MSG msg = { 0 };
-	HACCEL hAccelTable = NULL;
-    CD2DHWNDRenderTarget* pRenderTarget = NULL;
-
-#endif
-
     CUIHost* pUIHost = NULL;
     CRootUIElement* pRootElement = NULL; 
     CUIElement* pParsedRoot = NULL;
@@ -80,9 +80,23 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CMouseController* pMouseController = NULL;
     CKeyboardController* pKeyboardController = NULL;
 
+#if defined(BUILD_D2D) || defined(BUILD_D3D9)
+
+    HWND hWnd = NULL;
+    MSG msg = { 0 };
+    HACCEL hAccelTable = NULL;
+
+#endif 
+
 #if defined(BUILD_D2D)
 
     CD2DGraphicsDevice* pGraphicsDevice = NULL;
+    CD2DHWNDRenderTarget* pRenderTarget = NULL;
+
+#elif defined(BUILD_D3D9)
+
+    CD3D9GraphicsDevice* pGraphicsDevice = NULL;
+    CD3D9HWNDRenderTarget* pRenderTarget = NULL;
 
 #elif defined(BUILD_IRRLICHT)
 
@@ -122,7 +136,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     IFC(pParser->LoadFromFile(L"c:\\testxml.xml", &pParsedRoot));
 
-#if defined(BUILD_D2D)
+#if defined(BUILD_D2D) || defined(BUILD_D3D9)
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -145,6 +159,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 #if defined(BUILD_D2D)
 
     IFC(CD2DGraphicsDevice::Create(&pGraphicsDevice));
+
+    IFC(pGraphicsDevice->CreateHWNDRenderTarget(hWnd, &pRenderTarget));
+
+#elif defined(BUILD_D3D9)
+
+    IFC(CD3D9GraphicsDevice::Create(&pGraphicsDevice));
 
     IFC(pGraphicsDevice->CreateHWNDRenderTarget(hWnd, &pRenderTarget));
 
@@ -190,7 +210,22 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     //
     // Message pump
     //
-#if defined(BUILD_IRRLICHT)
+#if defined(BUILD_D2D) || defined(BUILD_D3D9)
+
+    do
+    {
+        if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+	        TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+        else
+        {
+            IFC(pUIHost->Render());
+        }
+    } while(msg.message != WM_QUIT);
+
+#elif defined(BUILD_IRRLICHT)
 
     while(pIrrlichtDevice->run())
     {
@@ -206,21 +241,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
         IFCEXPECT(pDriver->endScene());
     }
-
-#else
-
-    do
-    {
-        if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-	        TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-        else
-        {
-            IFC(pUIHost->Render());
-        }
-    } while(msg.message != WM_QUIT);
 
 #endif
 
@@ -325,9 +345,17 @@ HRESULT UpdateRenderTargetSize(HWND Window)
 
     if(g_RenderTarget != NULL)
     {
+#if defined(BUILD_D2D)
+
         ID2D1HwndRenderTarget* pRenderTarget = g_RenderTarget->GetD2DHWNDRenderTarget();
-                    
+
         IFC(pRenderTarget->Resize(D2D1::SizeU(ClientSize.right - ClientSize.left, ClientSize.bottom - ClientSize.top)));
+
+#elif defined(BUILD_D3D9)
+
+        //TODO: Handle resize for D3D9.
+
+#endif                   
     }
 
 Cleanup:

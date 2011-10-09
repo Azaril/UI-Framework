@@ -23,6 +23,18 @@ struct UIFRAMEWORK_API ColorF
         a = 0;
     }
 
+#ifdef _WINDOWS
+    explicit ColorF(
+        const D2D1_COLOR_F& other
+        )
+    {
+        r = other.r;
+        g = other.g;
+        b = other.b;
+        a = other.a;        
+    }
+#endif
+
     ColorF(
 		FLOAT Red, 
 		FLOAT Green, 
