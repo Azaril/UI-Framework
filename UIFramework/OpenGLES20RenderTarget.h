@@ -5,16 +5,16 @@
 #include "RenderTarget.h"
 #include "OpenGLES20Context.h"
 #include "OpenGLES20VertexBuffer.h"
-#include "OpenGLES20TesselationSink.h"
+#include "GeometryTesselationSink.h"
 #include "OpenGLES20Texture.h"
-#include "OpenGLES20Brush.h"
-#include "OpenGLES20TextureAtlas.h"
+#include "GraphicsBrushBase.h"
+#include "TextureAtlasWithWhitePixel.h"
 #include "TextureAllocator.h"
 #include "TextureAtlasPool.h"
+#include "RenderTargetBase.h"
+#include "VertexBuffer.h"
 
-class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
-                                                private ITesselationBatchCallback,
-                                                private ITextureAllocator
+class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTargetBase
 {
     public:
     	DECLARE_FACTORY3( COpenGLES20RenderTarget, GLuint, GLuint, COpenGLES20Context* );
@@ -31,83 +31,10 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
         __override virtual __checkReturn HRESULT EndRendering(
 			);
 
-        __override virtual __checkReturn HRESULT SetTransform( 
-			const Matrix3X2F& Transform 
-			);
-
         __override virtual __checkReturn HRESULT Clear( 
 			const ColorF& Color 
 			);
-
-        __override virtual __checkReturn HRESULT CreateSolidBrush( 
-			const ColorF& Color, 
-			__deref_out CGraphicsBrush** ppBrush 
-			);
-
-        __override virtual __checkReturn HRESULT CreateLinearGradientBrush( 	
-			const Point2F& StartPoint, 
-			const Point2F& EndPoint, 
-			__in_ecount(GradientStopCount) const GradientStop* pGradientStops, 
-			UINT32 GradientStopCount, 
-			__deref_out CGraphicsBrush** ppBrush 
-			);
-
-        __override virtual __checkReturn HRESULT GetDefaultBrush(
-			DefaultBrush::Value Type, 
-			__deref_out CGraphicsBrush** ppBrush 
-			);
-
-        __override virtual __checkReturn HRESULT DrawRectangle( 
-			const RectF& Size, 
-			__in const CGraphicsBrush* pBrush 
-			);
-
-        __override virtual __checkReturn HRESULT FillRectangle(
-			const RectF& Size,
-			__in const CGraphicsBrush* pBrush 
-			);
-
-        __override virtual __checkReturn HRESULT RenderTextLayout( 
-			const Point2F& Origin, 
-			__in const CTextLayout* pTextLayout, 
-			__in const CGraphicsBrush* pBrush 
-			);
-
-        __override virtual __checkReturn HRESULT LoadBitmap( 
-			__in const CBitmapSource* pSource, 
-			__deref_out CBitmap** ppBitmap 
-			);
-
-        __override virtual __checkReturn HRESULT CreateBitmapBrush(
-			__in const CBitmap* pBitmap,
-			__deref_out CGraphicsBrush** CGraphicsBrush 
-			);
-
-        __override virtual __checkReturn HRESULT DrawGeometry( 
-			__in const CGraphicsGeometry* pGeometry, 
-			__in const CGraphicsBrush* pBrush, 
-			FLOAT StrokeThickness = 1.0f 
-			);
-
-        __override virtual __checkReturn HRESULT FillGeometry( 
-			__in const CGraphicsGeometry* pGeometry, 
-			__in const CGraphicsBrush* pBrush
-			);
-
-        __override virtual __checkReturn HRESULT CreateLayer(
-			__deref_out CLayer** ppLayer
-			);
-
-        __override virtual __checkReturn HRESULT PushLayer(
-			__in const CLayer* pLayer, 
-			const RectF& ClippingRect,
-			FLOAT Opacity, 
-			__in const CGraphicsGeometry* pClippingGeometry
-			);
-
-        __override virtual __checkReturn HRESULT PopLayer(
-			);
-
+    
     protected:
         COpenGLES20RenderTarget(
 			);
@@ -121,7 +48,7 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
 			__in_opt COpenGLES20Context* pContext
 			);
 
-		__checkReturn HRESULT ApplyContext(
+		__override __checkReturn HRESULT ApplyContext(
 			);
 
         __checkReturn HRESULT CreateShader(
@@ -146,20 +73,15 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
             __deref_out COpenGLES20Texture** ppTexture
             );
     
-        __checkReturn HRESULT OnTesselatedGeometryBatch(
-            __in COpenGLES20VertexBuffer* pVertexBuffer
+        __override __checkReturn HRESULT OnTesselatedGeometryBatch(
+            __in IVertexBuffer* pVertexBuffer
             );
     
-        __checkReturn HRESULT Flush(
+        __override __checkReturn HRESULT Flush(
             );
     
-        __checkReturn HRESULT ApplyBrush(
-            __in const COpenGLES20Brush* pBrush
-            );
-    
-        __checkReturn HRESULT ApplyBrushToTesselationSink(
-            __in const Matrix3X2F& textureToBrushTransform,
-            __in const COpenGLES20Brush* pBrush
+        __override virtual __checkReturn HRESULT BindTexture(
+            __in ITexture* pTexture
             );
 
 		GLuint m_RenderBuffer;
@@ -167,7 +89,6 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
 		GLint m_Width;
 		GLint m_Height;
 		COpenGLES20Context* m_pContext;
-        Matrix3X2F m_Transform;
         COpenGLES20VertexBuffer* m_pVertexBuffers[2];
         GLuint m_ShaderProgram;
         GLint m_PositionAttribute;
@@ -175,8 +96,4 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTarget,
         GLint m_TextureCoordsAttribute;
         GLint m_TransformUniform;
         GLint m_BrushTextureUniform;
-        COpenGLES20TesselationSink* m_pTesselationSink;
-        CTextureAtlasPool< COpenGLES20TextureAtlas >* m_pTextureAtlasPool;
-        COpenGLES20TextureAtlas* m_pLastRenderedTexture;
-        CTextureAtlasView* m_pDefaultWhitePixelTexture;
 };

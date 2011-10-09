@@ -365,19 +365,12 @@
 		3D07DEF0141D882F00130174 /* ShapeBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEC8141D882F00130174 /* ShapeBuilder.h */; };
 		3D07DEF1141D882F00130174 /* ShapeData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEC9141D882F00130174 /* ShapeData.cpp */; };
 		3D07DEF2141D882F00130174 /* ShapeData.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DECA141D882F00130174 /* ShapeData.h */; };
-		3D07DEF4141D8E1B00130174 /* OpenGLES20SolidColorBrush.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */; };
-		3D07DEF6141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */; };
-		3D1BD98D14271EAF00FC1EFE /* OpenGLES20TesselationSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D1BD98C14271EAF00FC1EFE /* OpenGLES20TesselationSink.h */; };
-		3D1BD9901427294200FC1EFE /* OpenGLES20TesselationSink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D1BD98F1427294200FC1EFE /* OpenGLES20TesselationSink.cpp */; };
-		3D2D610414359BE400CA7259 /* OpenGLES20LinearGradientBrush.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D2D610314359BE300CA7259 /* OpenGLES20LinearGradientBrush.h */; };
-		3D2D610714359C5C00CA7259 /* OpenGLES20LinearGradientBrush.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D2D610614359C5B00CA7259 /* OpenGLES20LinearGradientBrush.cpp */; };
 		3D4071E61439834800C65589 /* TextureAtlasView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D4071E51439834800C65589 /* TextureAtlasView.h */; };
 		3D4071E9143983CF00C65589 /* TextureAtlasView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D4071E8143983CE00C65589 /* TextureAtlasView.cpp */; };
 		3D4071EB1439842B00C65589 /* TextureAtlasNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D4071EA1439842B00C65589 /* TextureAtlasNode.h */; };
 		3D42B61E14285AF600E76CE6 /* OpenGLES20Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B61D14285AF500E76CE6 /* OpenGLES20Texture.h */; };
 		3D42B62014285CFE00E76CE6 /* Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B61F14285CFD00E76CE6 /* Texture.h */; };
 		3D42B622142861BD00E76CE6 /* OpenGLES20Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B621142861BD00E76CE6 /* OpenGLES20Texture.cpp */; };
-		3D42B6241428714100E76CE6 /* OpenGLES20Brush.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B6231428714000E76CE6 /* OpenGLES20Brush.cpp */; };
 		3D42B626142E5C3600E76CE6 /* TextureAtlasPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B625142E5C3500E76CE6 /* TextureAtlasPool.h */; };
 		3D42B628142E5D2A00E76CE6 /* TextureAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B627142E5D2A00E76CE6 /* TextureAllocator.h */; };
 		3D42B62A142E721900E76CE6 /* TextureAtlasPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B629142E721800E76CE6 /* TextureAtlasPool.cpp */; };
@@ -393,10 +386,20 @@
 		3D42B64714302F5600E76CE6 /* Storyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B63D14302F5500E76CE6 /* Storyboard.h */; };
 		3D42B64814302F5600E76CE6 /* TriggerAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B63E14302F5500E76CE6 /* TriggerAction.cpp */; };
 		3D42B64914302F5600E76CE6 /* TriggerAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B63F14302F5600E76CE6 /* TriggerAction.h */; };
-		3D556A88143D6AA20089CCDA /* OpenGLES20TextureAtlas.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556A87143D6AA10089CCDA /* OpenGLES20TextureAtlas.h */; };
-		3D556A8B143D6BB80089CCDA /* OpenGLES20TextureAtlas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556A8A143D6BB70089CCDA /* OpenGLES20TextureAtlas.cpp */; };
+		3D556AAC14418AF80089CCDA /* GeometryTesselationSink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556A9F14418AF70089CCDA /* GeometryTesselationSink.cpp */; };
+		3D556AAD14418AF80089CCDA /* GeometryTesselationSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AA014418AF70089CCDA /* GeometryTesselationSink.h */; };
+		3D556AAE14418AF80089CCDA /* GraphicsBrushBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556AA114418AF70089CCDA /* GraphicsBrushBase.cpp */; };
+		3D556AAF14418AF80089CCDA /* GraphicsBrushBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AA214418AF70089CCDA /* GraphicsBrushBase.h */; };
+		3D556AB014418AF80089CCDA /* LinearGradientBrushBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556AA314418AF70089CCDA /* LinearGradientBrushBase.cpp */; };
+		3D556AB114418AF80089CCDA /* LinearGradientBrushBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AA414418AF70089CCDA /* LinearGradientBrushBase.h */; };
+		3D556AB214418AF80089CCDA /* RenderTargetBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556AA514418AF70089CCDA /* RenderTargetBase.cpp */; };
+		3D556AB314418AF80089CCDA /* RenderTargetBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AA614418AF70089CCDA /* RenderTargetBase.h */; };
+		3D556AB414418AF80089CCDA /* SolidColorBrushBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556AA714418AF70089CCDA /* SolidColorBrushBase.cpp */; };
+		3D556AB514418AF80089CCDA /* SolidColorBrushBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AA814418AF70089CCDA /* SolidColorBrushBase.h */; };
+		3D556AB614418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556AA914418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp */; };
+		3D556AB714418AF80089CCDA /* TextureAtlasWithWhitePixel.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AAA14418AF80089CCDA /* TextureAtlasWithWhitePixel.h */; };
+		3D556AB814418AF80089CCDA /* VertexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AAB14418AF80089CCDA /* VertexBuffer.h */; };
 		3D9585B8141A02E30059E331 /* DummySal.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9585B7141A02E30059E331 /* DummySal.h */; };
-		3D9655A414267EE100132E4D /* OpenGLES20Brush.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9655A314267EE100132E4D /* OpenGLES20Brush.h */; };
 		3D9655A7142681A200132E4D /* CoreGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9655A6142681A200132E4D /* CoreGeometry.h */; };
 		3D9655A91426F93000132E4D /* TesselationSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9655A81426F93000132E4D /* TesselationSink.h */; };
 		3D9B191E142574E700EE37A3 /* OpenGLES20VertexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9B191D142574E700EE37A3 /* OpenGLES20VertexBuffer.h */; };
@@ -776,19 +779,12 @@
 		3D07DEC8141D882F00130174 /* ShapeBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeBuilder.h; sourceTree = "<group>"; };
 		3D07DEC9141D882F00130174 /* ShapeData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeData.cpp; sourceTree = "<group>"; };
 		3D07DECA141D882F00130174 /* ShapeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeData.h; sourceTree = "<group>"; };
-		3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20SolidColorBrush.h; sourceTree = "<group>"; };
-		3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20SolidColorBrush.cpp; sourceTree = "<group>"; };
-		3D1BD98C14271EAF00FC1EFE /* OpenGLES20TesselationSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20TesselationSink.h; sourceTree = "<group>"; };
-		3D1BD98F1427294200FC1EFE /* OpenGLES20TesselationSink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20TesselationSink.cpp; sourceTree = "<group>"; };
-		3D2D610314359BE300CA7259 /* OpenGLES20LinearGradientBrush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20LinearGradientBrush.h; sourceTree = "<group>"; };
-		3D2D610614359C5B00CA7259 /* OpenGLES20LinearGradientBrush.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20LinearGradientBrush.cpp; sourceTree = "<group>"; };
 		3D4071E51439834800C65589 /* TextureAtlasView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasView.h; sourceTree = "<group>"; };
 		3D4071E8143983CE00C65589 /* TextureAtlasView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlasView.cpp; sourceTree = "<group>"; };
 		3D4071EA1439842B00C65589 /* TextureAtlasNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasNode.h; sourceTree = "<group>"; };
 		3D42B61D14285AF500E76CE6 /* OpenGLES20Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20Texture.h; sourceTree = "<group>"; };
 		3D42B61F14285CFD00E76CE6 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
 		3D42B621142861BD00E76CE6 /* OpenGLES20Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20Texture.cpp; sourceTree = "<group>"; };
-		3D42B6231428714000E76CE6 /* OpenGLES20Brush.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20Brush.cpp; sourceTree = "<group>"; };
 		3D42B625142E5C3500E76CE6 /* TextureAtlasPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasPool.h; sourceTree = "<group>"; };
 		3D42B627142E5D2A00E76CE6 /* TextureAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAllocator.h; sourceTree = "<group>"; };
 		3D42B629142E721800E76CE6 /* TextureAtlasPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlasPool.cpp; sourceTree = "<group>"; };
@@ -804,10 +800,20 @@
 		3D42B63D14302F5500E76CE6 /* Storyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storyboard.h; sourceTree = "<group>"; };
 		3D42B63E14302F5500E76CE6 /* TriggerAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TriggerAction.cpp; sourceTree = "<group>"; };
 		3D42B63F14302F5600E76CE6 /* TriggerAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriggerAction.h; sourceTree = "<group>"; };
-		3D556A87143D6AA10089CCDA /* OpenGLES20TextureAtlas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20TextureAtlas.h; sourceTree = "<group>"; };
-		3D556A8A143D6BB70089CCDA /* OpenGLES20TextureAtlas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20TextureAtlas.cpp; sourceTree = "<group>"; };
+		3D556A9F14418AF70089CCDA /* GeometryTesselationSink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeometryTesselationSink.cpp; sourceTree = "<group>"; };
+		3D556AA014418AF70089CCDA /* GeometryTesselationSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeometryTesselationSink.h; sourceTree = "<group>"; };
+		3D556AA114418AF70089CCDA /* GraphicsBrushBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsBrushBase.cpp; sourceTree = "<group>"; };
+		3D556AA214418AF70089CCDA /* GraphicsBrushBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicsBrushBase.h; sourceTree = "<group>"; };
+		3D556AA314418AF70089CCDA /* LinearGradientBrushBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinearGradientBrushBase.cpp; sourceTree = "<group>"; };
+		3D556AA414418AF70089CCDA /* LinearGradientBrushBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinearGradientBrushBase.h; sourceTree = "<group>"; };
+		3D556AA514418AF70089CCDA /* RenderTargetBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderTargetBase.cpp; sourceTree = "<group>"; };
+		3D556AA614418AF70089CCDA /* RenderTargetBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderTargetBase.h; sourceTree = "<group>"; };
+		3D556AA714418AF70089CCDA /* SolidColorBrushBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SolidColorBrushBase.cpp; sourceTree = "<group>"; };
+		3D556AA814418AF70089CCDA /* SolidColorBrushBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SolidColorBrushBase.h; sourceTree = "<group>"; };
+		3D556AA914418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlasWithWhitePixel.cpp; sourceTree = "<group>"; };
+		3D556AAA14418AF80089CCDA /* TextureAtlasWithWhitePixel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasWithWhitePixel.h; sourceTree = "<group>"; };
+		3D556AAB14418AF80089CCDA /* VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexBuffer.h; sourceTree = "<group>"; };
 		3D9585B7141A02E30059E331 /* DummySal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummySal.h; sourceTree = "<group>"; };
-		3D9655A314267EE100132E4D /* OpenGLES20Brush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20Brush.h; sourceTree = "<group>"; };
 		3D9655A6142681A200132E4D /* CoreGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreGeometry.h; sourceTree = "<group>"; };
 		3D9655A81426F93000132E4D /* TesselationSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TesselationSink.h; sourceTree = "<group>"; };
 		3D9B191D142574E700EE37A3 /* OpenGLES20VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20VertexBuffer.h; sourceTree = "<group>"; };
@@ -866,6 +872,19 @@
 		3D06B5CD1419D4880097C7D9 /* UIFramework */ = {
 			isa = PBXGroup;
 			children = (
+				3D556A9F14418AF70089CCDA /* GeometryTesselationSink.cpp */,
+				3D556AA014418AF70089CCDA /* GeometryTesselationSink.h */,
+				3D556AA114418AF70089CCDA /* GraphicsBrushBase.cpp */,
+				3D556AA214418AF70089CCDA /* GraphicsBrushBase.h */,
+				3D556AA314418AF70089CCDA /* LinearGradientBrushBase.cpp */,
+				3D556AA414418AF70089CCDA /* LinearGradientBrushBase.h */,
+				3D556AA514418AF70089CCDA /* RenderTargetBase.cpp */,
+				3D556AA614418AF70089CCDA /* RenderTargetBase.h */,
+				3D556AA714418AF70089CCDA /* SolidColorBrushBase.cpp */,
+				3D556AA814418AF70089CCDA /* SolidColorBrushBase.h */,
+				3D556AA914418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp */,
+				3D556AAA14418AF80089CCDA /* TextureAtlasWithWhitePixel.h */,
+				3D556AAB14418AF80089CCDA /* VertexBuffer.h */,
 				3D42B63614302F5400E76CE6 /* AnimationTimelineCollection.cpp */,
 				3D42B63714302F5400E76CE6 /* AnimationTimelineCollection.h */,
 				3D42B63814302F5400E76CE6 /* BeginStoryboard.cpp */,
@@ -1247,18 +1266,8 @@
 				3D42B621142861BD00E76CE6 /* OpenGLES20Texture.cpp */,
 				3DF3D0E6141BFF1C00431CFF /* OpenGLES20Context.h */,
 				3DF3D0E9141C033800431CFF /* OpenGLES20RenderBufferStorageAllocator.h */,
-				3D9655A314267EE100132E4D /* OpenGLES20Brush.h */,
-				3D42B6231428714000E76CE6 /* OpenGLES20Brush.cpp */,
-				3D07DEF3141D8E1B00130174 /* OpenGLES20SolidColorBrush.h */,
-				3D07DEF5141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp */,
-				3D2D610314359BE300CA7259 /* OpenGLES20LinearGradientBrush.h */,
-				3D2D610614359C5B00CA7259 /* OpenGLES20LinearGradientBrush.cpp */,
 				3D9B191D142574E700EE37A3 /* OpenGLES20VertexBuffer.h */,
 				3D9B192214258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp */,
-				3D1BD98C14271EAF00FC1EFE /* OpenGLES20TesselationSink.h */,
-				3D1BD98F1427294200FC1EFE /* OpenGLES20TesselationSink.cpp */,
-				3D556A87143D6AA10089CCDA /* OpenGLES20TextureAtlas.h */,
-				3D556A8A143D6BB70089CCDA /* OpenGLES20TextureAtlas.cpp */,
 				3D42B61F14285CFD00E76CE6 /* Texture.h */,
 				3D42B627142E5D2A00E76CE6 /* TextureAllocator.h */,
 				3D9B192014257D9100EE37A3 /* RenderVertex.h */,
@@ -1471,14 +1480,11 @@
 				3D07DEEE141D882F00130174 /* RoundedRectangleGraphicsGeometry.h in Headers */,
 				3D07DEF0141D882F00130174 /* ShapeBuilder.h in Headers */,
 				3D07DEF2141D882F00130174 /* ShapeData.h in Headers */,
-				3D07DEF4141D8E1B00130174 /* OpenGLES20SolidColorBrush.h in Headers */,
 				3D9B191E142574E700EE37A3 /* OpenGLES20VertexBuffer.h in Headers */,
 				3D9B192114257D9100EE37A3 /* RenderVertex.h in Headers */,
 				3D9B19251425904700EE37A3 /* StaticTesselator.h in Headers */,
-				3D9655A414267EE100132E4D /* OpenGLES20Brush.h in Headers */,
 				3D9655A7142681A200132E4D /* CoreGeometry.h in Headers */,
 				3D9655A91426F93000132E4D /* TesselationSink.h in Headers */,
-				3D1BD98D14271EAF00FC1EFE /* OpenGLES20TesselationSink.h in Headers */,
 				3D42B61E14285AF600E76CE6 /* OpenGLES20Texture.h in Headers */,
 				3D42B62014285CFE00E76CE6 /* Texture.h in Headers */,
 				3D42B626142E5C3600E76CE6 /* TextureAtlasPool.h in Headers */,
@@ -1489,10 +1495,15 @@
 				3D42B64514302F5600E76CE6 /* ResolvedTriggerActions.h in Headers */,
 				3D42B64714302F5600E76CE6 /* Storyboard.h in Headers */,
 				3D42B64914302F5600E76CE6 /* TriggerAction.h in Headers */,
-				3D2D610414359BE400CA7259 /* OpenGLES20LinearGradientBrush.h in Headers */,
 				3D4071E61439834800C65589 /* TextureAtlasView.h in Headers */,
 				3D4071EB1439842B00C65589 /* TextureAtlasNode.h in Headers */,
-				3D556A88143D6AA20089CCDA /* OpenGLES20TextureAtlas.h in Headers */,
+				3D556AAD14418AF80089CCDA /* GeometryTesselationSink.h in Headers */,
+				3D556AAF14418AF80089CCDA /* GraphicsBrushBase.h in Headers */,
+				3D556AB114418AF80089CCDA /* LinearGradientBrushBase.h in Headers */,
+				3D556AB314418AF80089CCDA /* RenderTargetBase.h in Headers */,
+				3D556AB514418AF80089CCDA /* SolidColorBrushBase.h in Headers */,
+				3D556AB714418AF80089CCDA /* TextureAtlasWithWhitePixel.h in Headers */,
+				3D556AB814418AF80089CCDA /* VertexBuffer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1722,12 +1733,9 @@
 				3D07DEED141D882F00130174 /* RoundedRectangleGraphicsGeometry.cpp in Sources */,
 				3D07DEEF141D882F00130174 /* ShapeBuilder.cpp in Sources */,
 				3D07DEF1141D882F00130174 /* ShapeData.cpp in Sources */,
-				3D07DEF6141D8FD300130174 /* OpenGLES20SolidColorBrush.cpp in Sources */,
 				3D9B192314258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp in Sources */,
 				3D9B1927142591DC00EE37A3 /* StaticTesselator.cpp in Sources */,
-				3D1BD9901427294200FC1EFE /* OpenGLES20TesselationSink.cpp in Sources */,
 				3D42B622142861BD00E76CE6 /* OpenGLES20Texture.cpp in Sources */,
-				3D42B6241428714100E76CE6 /* OpenGLES20Brush.cpp in Sources */,
 				3D42B62A142E721900E76CE6 /* TextureAtlasPool.cpp in Sources */,
 				3D42B62E142E746D00E76CE6 /* TextureAtlas.cpp in Sources */,
 				3D42B64014302F5600E76CE6 /* AnimationTimelineCollection.cpp in Sources */,
@@ -1735,9 +1743,13 @@
 				3D42B64414302F5600E76CE6 /* ResolvedTriggerActions.cpp in Sources */,
 				3D42B64614302F5600E76CE6 /* Storyboard.cpp in Sources */,
 				3D42B64814302F5600E76CE6 /* TriggerAction.cpp in Sources */,
-				3D2D610714359C5C00CA7259 /* OpenGLES20LinearGradientBrush.cpp in Sources */,
 				3D4071E9143983CF00C65589 /* TextureAtlasView.cpp in Sources */,
-				3D556A8B143D6BB80089CCDA /* OpenGLES20TextureAtlas.cpp in Sources */,
+				3D556AAC14418AF80089CCDA /* GeometryTesselationSink.cpp in Sources */,
+				3D556AAE14418AF80089CCDA /* GraphicsBrushBase.cpp in Sources */,
+				3D556AB014418AF80089CCDA /* LinearGradientBrushBase.cpp in Sources */,
+				3D556AB214418AF80089CCDA /* RenderTargetBase.cpp in Sources */,
+				3D556AB414418AF80089CCDA /* SolidColorBrushBase.cpp in Sources */,
+				3D556AB614418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

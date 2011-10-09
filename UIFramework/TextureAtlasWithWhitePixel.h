@@ -43,7 +43,7 @@ class CTextureAtlasWithWhitePixel : public CTextureAtlas< ITextureAtlasWithWhite
 
 	        IFC(BaseAtlasType::Initialize(pTexture));
 
-	        IFC(AllocateTexture(1, 1, &m_pWhitePixel));
+	        IFC(BaseAtlasType::AllocateTexture(1, 1, &m_pWhitePixel));
 
 	        switch (m_pWhitePixel->GetPixelFormat())
 	        {

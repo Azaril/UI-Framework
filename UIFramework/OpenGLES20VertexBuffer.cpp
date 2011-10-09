@@ -62,3 +62,10 @@ COpenGLES20VertexBuffer::GetVertexCount(
 {
     return m_VertexCount;
 }
+
+UINT32 
+COpenGLES20VertexBuffer::GetMaximumVertices(
+    )
+{
+    return UINT32_MAX;
+}

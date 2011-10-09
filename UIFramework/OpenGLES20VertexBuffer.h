@@ -5,6 +5,7 @@
 #include "Factory.h"
 #include "RenderVertex.h"
 #include "RefCounted.h"
+#include "VertexBuffer.h"
 
 class COpenGLES20VertexBuffer : public CRefCountedObjectBase< IVertexBuffer >
 {
@@ -15,12 +16,15 @@ class COpenGLES20VertexBuffer : public CRefCountedObjectBase< IVertexBuffer >
            GLuint Buffer
            );
     
-        __checkReturn HRESULT SetVertices(
+        __override virtual __checkReturn HRESULT SetVertices(
             __in_ecount(VertexCount) RenderVertex* pVertices,
             UINT32 VertexCount            
             );
     
-        UINT32 GetVertexCount(
+        __override virtual UINT32 GetVertexCount(
+            );
+    
+        __override virtual UINT32 GetMaximumVertices(
             );
         
     protected:

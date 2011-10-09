@@ -47,7 +47,10 @@ CGeometryTesselationSink::Initialize(
 
 	m_VertexBufferCount = VertexBufferCount;
 
-    m_VertexCacheSize = ppVertexBuffers[0]->GetMaximumVertices();
+    //
+    // Maximum vertex cache size of 4096.
+    //
+    m_VertexCacheSize = 4096;
 
 	for (UINT32 i = 0; i < VertexBufferCount; ++i)
 	{
