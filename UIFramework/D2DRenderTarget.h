@@ -66,7 +66,7 @@ class UIFRAMEWORK_API CD2DRenderTarget : public CRenderTarget
 
         __override virtual __checkReturn HRESULT CreateBitmapBrush(
 			__in const CBitmap* pBitmap,
-			__deref_out CGraphicsBrush** CGraphicsBrush 
+			__deref_out CGraphicsBrush** ppBrush 
 			);
 
         __override virtual __checkReturn HRESULT DrawGeometry( 

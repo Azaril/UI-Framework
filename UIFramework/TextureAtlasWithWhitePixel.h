@@ -15,7 +15,7 @@ class CTextureAtlasWithWhitePixel : public CTextureAtlas< ITextureAtlasWithWhite
 
     public:
         DECLARE_FACTORY1( CTextureAtlasWithWhitePixel, ITexture* );
-    
+   
         __override __out ITexture* GetWhitePixelTexture(
             )
         {

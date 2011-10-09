@@ -8,10 +8,13 @@
 class CD2DBitmap : public CBitmap
 {
     public:
-        DECLARE_FACTORY1( CD2DBitmap, ID2D1Bitmap* );
+        DECLARE_FACTORY2( CD2DBitmap, ID2D1Bitmap*, const SizeU& );
 
         __out ID2D1Bitmap* GetD2DBitmap(
 			);
+
+        const SizeU& GetSize(
+            );
 
     protected:
         CD2DBitmap(
@@ -21,8 +24,10 @@ class CD2DBitmap : public CBitmap
 			);
 
         __checkReturn HRESULT Initialize( 
-			__in ID2D1Bitmap* pBitmap 
+			__in ID2D1Bitmap* pBitmap,
+            const SizeU& size
 			);
 
         ID2D1Bitmap* m_Bitmap;
+        SizeU m_Size;
 };

@@ -2,13 +2,14 @@
 
 #include "BitmapSource.h"
 #include "Factory.h"
+#include "BitmapSourceBase.h"
 
 #include <Wincodec.h>
 
-class CWICBitmapSource : public CBitmapSource
+class CWICBitmapSource : public CBitmapSourceBase
 {
     public:
-        DECLARE_FACTORY1( CWICBitmapSource, IWICBitmapSource* );
+        DECLARE_FACTORY2( CWICBitmapSource, IWICImagingFactory*, IWICBitmapSource* );
 
         __out IWICBitmapSource* GetWICBitmapSource(
 			);
@@ -21,6 +22,15 @@ class CWICBitmapSource : public CBitmapSource
 			__in IStream* pStream 
 			);
 
+        __override virtual __checkReturn HRESULT LoadIntoTexture(
+            __in ITexture* pTexture
+            );
+
+        __checkReturn HRESULT GetSourceAsFormat(
+            const WICPixelFormatGUID& format,
+            IWICBitmapSource** ppSource
+            );
+
     protected:
         CWICBitmapSource(
 			);
@@ -29,9 +39,11 @@ class CWICBitmapSource : public CBitmapSource
 			);
 
         __checkReturn HRESULT Initialize( 
+            __in IWICImagingFactory* pFactory,
 			__in IWICBitmapSource* pSource 
 			);
 
-        IWICBitmapSource* m_Source;
-        IStream* m_Stream;
+        IWICImagingFactory* m_pFactory;
+        IWICBitmapSource* m_pSource;
+        IStream* m_pStream;
 };

@@ -14,17 +14,16 @@ CD2DBitmap::~CD2DBitmap(
 
 __checkReturn HRESULT 
 CD2DBitmap::Initialize(
-	__in ID2D1Bitmap* pBitmap
+	__in ID2D1Bitmap* pBitmap,
+    const SizeU& size
 	)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pBitmap);
+    SetObject(m_Bitmap, pBitmap);
 
-    m_Bitmap = pBitmap;
-    AddRefObject(m_Bitmap);
+    m_Size = size;
 
-Cleanup:
     return hr;
 }
 
@@ -33,4 +32,11 @@ CD2DBitmap::GetD2DBitmap(
 	)
 {
     return m_Bitmap;
+}
+
+const SizeU&
+CD2DBitmap::GetSize( 
+    )
+{
+    return m_Size;
 }

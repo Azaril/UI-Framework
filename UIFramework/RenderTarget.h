@@ -80,7 +80,7 @@ class UIFRAMEWORK_API CRenderTarget : public CRefCountedObject
 
         virtual __checkReturn HRESULT CreateBitmapBrush( 
 			__in const CBitmap* pBitmap, 
-			__deref_out CGraphicsBrush** pBrush 
+			__deref_out CGraphicsBrush** ppBrush 
 			) = 0;
 
         virtual __checkReturn HRESULT DrawGeometry( 

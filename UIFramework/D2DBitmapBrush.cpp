@@ -14,7 +14,8 @@ CD2DBitmapBrush::~CD2DBitmapBrush(
 
 __checkReturn HRESULT 
 CD2DBitmapBrush::Initialize(
-	__in ID2D1BitmapBrush* pBrush
+	__in ID2D1BitmapBrush* pBrush,
+    const SizeU& size
 	)
 {
     HRESULT hr = S_OK;
@@ -26,6 +27,20 @@ CD2DBitmapBrush::Initialize(
     m_BitmapBrush = pBrush;
     AddRefObject(m_BitmapBrush);
 
+    m_Bounds = RectF(0, 0, (FLOAT)size.width, (FLOAT)size.height);
+
 Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD2DBitmapBrush::GetBounds( 
+    RectF& brushBounds
+    )
+{
+    HRESULT hr = S_OK;
+
+    brushBounds = m_Bounds;
+
     return hr;
 }

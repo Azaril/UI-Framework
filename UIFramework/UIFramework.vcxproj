@@ -104,6 +104,9 @@
     <ClCompile Include="BindingBase.cpp" />
     <ClCompile Include="BindingContext.cpp" />
     <ClCompile Include="BindingManager.cpp" />
+    <ClCompile Include="BitmapBase.cpp" />
+    <ClCompile Include="BitmapBrushBase.cpp" />
+    <ClCompile Include="BitmapSourceBase.cpp" />
     <ClCompile Include="Collections.cpp" />
     <ClCompile Include="CoreFigureBuilder.cpp" />
     <ClCompile Include="CoreFigureData.cpp" />
@@ -326,6 +329,9 @@
     <ClInclude Include="BindingBase.h" />
     <ClInclude Include="BindingContext.h" />
     <ClInclude Include="BindingManager.h" />
+    <ClInclude Include="BitmapBase.h" />
+    <ClInclude Include="BitmapBrushBase.h" />
+    <ClInclude Include="BitmapSourceBase.h" />
     <ClInclude Include="Collections.h" />
     <ClInclude Include="CoreFigureBuilder.h" />
     <ClInclude Include="CoreFigureData.h" />

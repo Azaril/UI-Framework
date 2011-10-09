@@ -74,7 +74,7 @@ class UIFRAMEWORK_API CD3D9RenderTarget : public CRenderTargetBase
 
         __override virtual __checkReturn HRESULT CreateBitmapBrush(
 			__in const CBitmap* pBitmap,
-			__deref_out CGraphicsBrush** CGraphicsBrush 
+			__deref_out CGraphicsBrush** ppBrush 
 			);
 
         __override virtual __checkReturn HRESULT DrawGeometry( 

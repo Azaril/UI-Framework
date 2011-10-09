@@ -36,7 +36,7 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
                 }
             }
 
-            IFC(CreateNewAtlas(&pNewAtlas));
+            IFC(CreateNewAtlas(Width, Height, &pNewAtlas));
             
             IFC(pNewAtlas->AllocateTexture(Width, Height, ppTexture));
 
@@ -54,7 +54,7 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
             
             if (m_Textures.empty())
             {
-                IFC(CreateNewAtlas(ppAtlas));
+                IFC(CreateNewAtlas(m_MinimumWidth, m_MinimumHeight, ppAtlas));
             }
             else
             {
@@ -68,8 +68,10 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
     protected:
         CTextureAtlasPool(
             )
-            : m_Width(0)
-            , m_Height(0)
+            : m_MinimumWidth(0)
+            , m_MinimumHeight(0)
+            , m_MaximumWidth(0)
+            , m_MaximumHeight(0)
             , m_pTextureAllocator(NULL)
         {
         }    
@@ -84,29 +86,55 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
         }
     
         __checkReturn HRESULT Initialize(
-            UINT32 Width,
-            UINT32 Height,
+            UINT32 MaximumWidth,
+            UINT32 MaximumHeight,
             __in ITextureAllocator* pAllocator
             )
         {
             HRESULT hr = S_OK;
 
-            m_Width = Width;
-            m_Height = Height;
+            m_MaximumWidth = MaximumWidth;
+            m_MaximumHeight = MaximumHeight;
+
+            m_MinimumWidth = std::min(NextPowerOfTwo(m_MaximumWidth), (UINT32)1024);
+            m_MinimumHeight = std::min(NextPowerOfTwo(m_MaximumHeight), (UINT32)1024);
+
+            IFCEXPECT(m_MinimumWidth <= m_MaximumWidth);
+            IFCEXPECT(m_MinimumHeight <= m_MaximumHeight);
+
             m_pTextureAllocator = pAllocator;
 
+        Cleanup:
             return hr;            
         }
     
         __checkReturn HRESULT CreateNewAtlas(
+            UINT32 Width,
+            UINT32 Height,
             __deref_out AtlasType** ppAtlas
             )
         {
             HRESULT hr = S_OK;
             AtlasType* pNewAtlas = NULL;
             ITexture* pNewAtlasStorageTexture = NULL;
+            UINT32 targetWidth = m_MinimumHeight;
+            UINT32 targetHeight = m_MinimumWidth;
+            UINT32 inflatedWidth = Width + (AtlasType::Padding * 2);
+            UINT32 inflatedHeight = Height + (AtlasType::Padding * 2);
+
+            IFCEXPECT(inflatedWidth <= m_MaximumWidth);
+            IFCEXPECT(inflatedHeight <= m_MaximumHeight);
+
+            while ((inflatedWidth > targetWidth || inflatedHeight > targetHeight) && (targetWidth <= m_MaximumWidth && targetHeight <= m_MaximumHeight))
+            {
+                targetWidth = targetWidth << 1;
+                targetHeight = targetHeight << 1;
+            }
+
+            IFCEXPECT(targetWidth <= m_MaximumWidth);
+            IFCEXPECT(targetHeight <= m_MaximumHeight);
             
-            IFC(m_pTextureAllocator->AllocateTexture(m_Width, m_Height, &pNewAtlasStorageTexture));
+            IFC(m_pTextureAllocator->AllocateTexture(targetWidth, targetHeight, &pNewAtlasStorageTexture));
             
             IFC(AtlasType::Create(pNewAtlasStorageTexture, &pNewAtlas));
             
@@ -121,9 +149,28 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
             
             return hr;              
         }
+
+        UINT32 NextPowerOfTwo(
+            UINT32 val
+            )
+        {
+            val--;
+
+            val |= val >> 1;
+            val |= val >> 2;
+            val |= val >> 4;
+            val |= val >> 8;
+            val |= val >> 16;
+
+            val++;
+
+            return val;
+        }
     
         ITextureAllocator* m_pTextureAllocator;
-        UINT32 m_Width;
-        UINT32 m_Height;
+        UINT32 m_MinimumWidth;
+        UINT32 m_MinimumHeight;
+        UINT32 m_MaximumWidth;
+        UINT32 m_MaximumHeight;
         std::vector< AtlasType* > m_Textures;
 };

@@ -10,6 +10,10 @@ class CD2DBrush : public CGraphicsBrush
         virtual __out ID2D1Brush* GetD2DBrush(
 			);
 
+        __override virtual __checkReturn HRESULT GetBounds( 
+            RectF& brushBounds
+            );
+
         __override virtual __checkReturn HRESULT SetTransform( 
 			const Matrix3X2F& Transform 
 			);

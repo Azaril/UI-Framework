@@ -5,6 +5,9 @@
 #include "StaticTesselator.h"
 #include "LinearGradientBrushBase.h"
 #include "SolidColorBrushBase.h"
+#include "BitmapSourceBase.h"
+#include "BitmapBase.h"
+#include "BitmapBrushBase.h"
 #include <algorithm>
 
 CRenderTargetBase::CRenderTargetBase(
@@ -397,25 +400,27 @@ CRenderTargetBase::LoadBitmap(
 	)
 {
     HRESULT hr = S_OK;
-//     CWICBitmapSource* pWICBitmapSource = NULL;
-//     ID2D1Bitmap* pD2DBitmap = NULL;
-//     CD2DBitmap* pBitmap = NULL;
+    CBitmapSourceBase* pBaseSource = NULL;
+    ITexture* pImageTexture = NULL;
+    CBitmapBase* pLoadedBitmap = NULL;
+    SizeU imageSize;
 
-//     IFCPTR_NOTRACE(pSource);
-//     IFCPTR(ppBitmap);
+    pBaseSource = (CBitmapSourceBase*)pSource;
 
-//     pWICBitmapSource = (CWICBitmapSource*)pSource;
+    IFC(pBaseSource->GetSize(&imageSize));
 
-//     IFC(m_RenderTarget->CreateBitmapFromWicBitmap(pWICBitmapSource->GetWICBitmapSource(), &pD2DBitmap));
+    IFC(m_pTextureAtlasPool->AllocateTexture(imageSize.width, imageSize.height, &pImageTexture));
 
-//     IFC(CD2DBitmap::Create(pD2DBitmap, &pBitmap));
+    IFC(pBaseSource->LoadIntoTexture(pImageTexture));
 
-//     *ppBitmap = pBitmap;
-//     pBitmap = NULL;
+    IFC(CBitmapBase::Create(pImageTexture, &pLoadedBitmap));
 
-// Cleanup:
-//     ReleaseObject(pD2DBitmap);
-//     ReleaseObject(pBitmap);
+    *ppBitmap = pLoadedBitmap;
+    pLoadedBitmap = NULL;
+
+Cleanup:
+    ReleaseObject(pImageTexture);
+    ReleaseObject(pLoadedBitmap);
 
     return hr;
 }
@@ -423,30 +428,22 @@ CRenderTargetBase::LoadBitmap(
 __checkReturn HRESULT 
 CRenderTargetBase::CreateBitmapBrush(
 	__in const CBitmap* pBitmap, 
-	__deref_out CGraphicsBrush** pBrush
+	__deref_out CGraphicsBrush** ppBrush
 	)
 {
     HRESULT hr = S_OK;
-//     CD2DBitmap* pD2DBitmap = NULL;
-//     CD2DBitmapBrush* pD2DBrush = NULL;
-//     ID2D1BitmapBrush* pD2DBitmapBrush = NULL;
-//     D2D1_BITMAP_BRUSH_PROPERTIES BrushProperties = D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP, D2D1_EXTEND_MODE_WRAP, D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
+    CBitmapBase* pBitmapBase = NULL;
+    CBitmapBrushBase* pBitmapBrush = NULL;
 
-//     IFCPTR(pBitmap);
-//     IFCPTR(pBrush);
+    pBitmapBase = (CBitmapBase*)pBitmap;
 
-//     pD2DBitmap = (CD2DBitmap*)pBitmap;
+    IFC(CBitmapBrushBase::Create(pBitmapBase->GetTexture(), &pBitmapBrush));
 
-//     IFC(m_RenderTarget->CreateBitmapBrush(pD2DBitmap->GetD2DBitmap(), BrushProperties, &pD2DBitmapBrush));
+    *ppBrush = pBitmapBrush;
+    pBitmapBrush = NULL;
 
-//     IFC(CD2DBitmapBrush::Create(pD2DBitmapBrush, &pD2DBrush));
-
-//     *pBrush = pD2DBrush;
-//     pD2DBrush = NULL;
-
-// Cleanup:
-//     ReleaseObject(pD2DBitmapBrush);
-//     ReleaseObject(pD2DBrush);
+Cleanup:
+    ReleaseObject(pBitmapBrush);
 
     return hr;
 }

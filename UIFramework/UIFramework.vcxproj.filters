@@ -793,6 +793,13 @@
     <ClCompile Include="D3D9VertexBuffer.cpp">
       <Filter>Framework\Graphics\D3D9</Filter>
     </ClCompile>
+    <ClCompile Include="BitmapSourceBase.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapBrushBase.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1482,6 +1489,13 @@
     <ClInclude Include="D3D9Texture.h">
       <Filter>Framework\Graphics\D3D9</Filter>
     </ClInclude>
+    <ClInclude Include="BitmapSourceBase.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapBrushBase.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapBase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="small.ico">

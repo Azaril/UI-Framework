@@ -1,5 +1,6 @@
 #include "D3D9GraphicsDevice.h"
 #include "CoreGeometryProvider.h"
+#include "WICImagingProvider.h"
 
 typedef HRESULT (WINAPI *D2D1CreateFactoryFunc)( 
     __in D2D1_FACTORY_TYPE factoryType, 
@@ -195,21 +196,21 @@ CD3D9GraphicsDevice::CreateImagingProvider(
     )
 {
     HRESULT hr = S_OK;
-    // CWICImagingProvider* pWICImagingProvider = NULL;
+    CWICImagingProvider* pWICImagingProvider = NULL;
 
     IFCPTR(ppImagingProvider);
 
-    // if(SUCCEEDED(CWICImagingProvider::Create(&pWICImagingProvider)))
-    // {
-    //     *ppImagingProvider = pWICImagingProvider;
-    //     pWICImagingProvider = NULL;
-    //     goto Cleanup;
-    // }
+    if(SUCCEEDED(CWICImagingProvider::Create(&pWICImagingProvider)))
+    {
+        *ppImagingProvider = pWICImagingProvider;
+        pWICImagingProvider = NULL;
+        goto Cleanup;
+    }
 
-    //IFC(E_FAIL);
+    IFC(E_FAIL);
 
 Cleanup:
-    // ReleaseObject(pWICImagingProvider);
+    ReleaseObject(pWICImagingProvider);
 
     return hr;
 }

@@ -285,15 +285,22 @@ CD2DRenderTarget::LoadBitmap(
     CWICBitmapSource* pWICBitmapSource = NULL;
     ID2D1Bitmap* pD2DBitmap = NULL;
     CD2DBitmap* pBitmap = NULL;
+    IWICBitmapSource* pWICDecoder = NULL;
+    UINT32 imageWidth = 0;
+    UINT32 imageHeight = 0;
 
     IFCPTR_NOTRACE(pSource);
     IFCPTR(ppBitmap);
 
     pWICBitmapSource = (CWICBitmapSource*)pSource;
 
-    IFC(m_RenderTarget->CreateBitmapFromWicBitmap(pWICBitmapSource->GetWICBitmapSource(), &pD2DBitmap));
+    IFC(pWICBitmapSource->GetSourceAsFormat(GUID_WICPixelFormat32bppPBGRA, &pWICDecoder));
 
-    IFC(CD2DBitmap::Create(pD2DBitmap, &pBitmap));
+    IFC(pWICDecoder->GetSize(&imageWidth, &imageHeight));
+
+    IFC(m_RenderTarget->CreateBitmapFromWicBitmap(pWICDecoder, &pD2DBitmap));
+
+    IFC(CD2DBitmap::Create(pD2DBitmap, SizeU(imageWidth, imageHeight), &pBitmap));
 
     *ppBitmap = pBitmap;
     pBitmap = NULL;
@@ -301,6 +308,7 @@ CD2DRenderTarget::LoadBitmap(
 Cleanup:
     ReleaseObject(pD2DBitmap);
     ReleaseObject(pBitmap);
+    ReleaseObject(pWICDecoder);
 
     return hr;
 }
@@ -308,7 +316,7 @@ Cleanup:
 __checkReturn HRESULT 
 CD2DRenderTarget::CreateBitmapBrush(
 	__in const CBitmap* pBitmap, 
-	__deref_out CGraphicsBrush** pBrush
+	__deref_out CGraphicsBrush** ppBrush
 	)
 {
     HRESULT hr = S_OK;
@@ -318,15 +326,15 @@ CD2DRenderTarget::CreateBitmapBrush(
     D2D1_BITMAP_BRUSH_PROPERTIES BrushProperties = D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP, D2D1_EXTEND_MODE_WRAP, D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
 
     IFCPTR(pBitmap);
-    IFCPTR(pBrush);
+    IFCPTR(ppBrush);
 
     pD2DBitmap = (CD2DBitmap*)pBitmap;
 
     IFC(m_RenderTarget->CreateBitmapBrush(pD2DBitmap->GetD2DBitmap(), BrushProperties, &pD2DBitmapBrush));
 
-    IFC(CD2DBitmapBrush::Create(pD2DBitmapBrush, &pD2DBrush));
+    IFC(CD2DBitmapBrush::Create(pD2DBitmapBrush, pD2DBitmap->GetSize(), &pD2DBrush));
 
-    *pBrush = pD2DBrush;
+    *ppBrush = pD2DBrush;
     pD2DBrush = NULL;
 
 Cleanup:

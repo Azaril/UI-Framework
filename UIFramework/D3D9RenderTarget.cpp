@@ -66,7 +66,7 @@ CD3D9RenderTarget::Initialize(
 
     IFC(pDevice->GetDeviceCaps(&deviceCapabilites));
 
-    IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(std::min((UINT32)deviceCapabilites.MaxTextureWidth, (UINT32)2048), std::min((UINT32)deviceCapabilites.MaxTextureWidth, (UINT32)2048), this, &pTextureAtlasPool));
+    IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(deviceCapabilites.MaxTextureWidth, deviceCapabilites.MaxTextureWidth, this, &pTextureAtlasPool));
 
     IFC(pTextureAtlasPool->GetOrCreateFirstTextureAtlas(&pFirstTextureAtlas));
 

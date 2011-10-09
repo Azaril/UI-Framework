@@ -16,8 +16,8 @@
 #include <Windowsx.h>
 #include <strsafe.h>
 
-//#define BUILD_D2D
-#define BUILD_D3D9
+#define BUILD_D2D
+//#define BUILD_D3D9
 
 #if defined(BUILD_D2D)
 

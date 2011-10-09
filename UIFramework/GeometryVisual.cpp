@@ -276,25 +276,39 @@ CGeometryVisual::PreRender(
 
         IFC(m_Geometry->GetBounds(&GeometryBounds));
 
-        if(m_UpdateFillTransform)
+        if(m_UpdateFillTransform && m_FillGraphicsBrush != NULL)
         {
+            RectF brushBounds;
+
+            IFC(m_FillGraphicsBrush->GetBounds(brushBounds));
+
             m_UpdateFillTransform = FALSE;
 
-            FLOAT GeometryWidth = GeometryBounds.right - GeometryBounds.left;
-            FLOAT GeometryHeight = GeometryBounds.bottom - GeometryBounds.top;
+            {
+                FLOAT GeometryWidth = GeometryBounds.right - GeometryBounds.left;
+                FLOAT GeometryHeight = GeometryBounds.bottom - GeometryBounds.top;
 
-            m_FillBrushTransform = m_BrushTransform * Matrix3X2F::Scale(GeometryWidth, GeometryHeight) * Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top);
+                //TODO: Handle brush translation.
+                m_FillBrushTransform = m_BrushTransform * Matrix3X2F::Scale(GeometryWidth / brushBounds.GetWidth(), GeometryHeight / brushBounds.GetHeight()) * Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top);
+            }
         }
 
-        if(m_UpdateStrokeTransform)
+        if(m_UpdateStrokeTransform && m_StrokeGraphicsBrush != NULL)
         {
+            RectF brushBounds;
+
+            IFC(m_StrokeGraphicsBrush->GetBounds(brushBounds));
+
             m_UpdateStrokeTransform = FALSE;
 
-            FLOAT GeometryWidth = GeometryBounds.right - GeometryBounds.left;
-            FLOAT GeometryHeight = GeometryBounds.bottom - GeometryBounds.top;
+            {
+                FLOAT GeometryWidth = GeometryBounds.right - GeometryBounds.left;
+                FLOAT GeometryHeight = GeometryBounds.bottom - GeometryBounds.top;
 
-            //TODO: This should use the stroked bounds most likely.
-            m_StrokeBrushTransform = m_BrushTransform * Matrix3X2F::Scale(GeometryWidth, GeometryHeight) * Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top);
+                //TODO: This should use the stroked bounds most likely.
+                //TODO: Handle brush translation.
+                m_StrokeBrushTransform = m_BrushTransform * Matrix3X2F::Scale(GeometryWidth / brushBounds.GetWidth(), GeometryHeight / brushBounds.GetHeight()) * Matrix3X2F::Translation(GeometryBounds.left, GeometryBounds.top);
+            }
         }
     }
 

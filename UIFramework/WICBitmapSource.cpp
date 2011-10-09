@@ -1,31 +1,32 @@
 #include "WICBitmapSource.h"
 
 CWICBitmapSource::CWICBitmapSource(
-	) : m_Source(NULL)
-	, m_Stream(NULL)
+	) 
+    : m_pSource(NULL)
+    , m_pFactory(NULL)
+	, m_pStream(NULL)
 {
 }
 
 CWICBitmapSource::~CWICBitmapSource(
 	)
 {
-    ReleaseObject(m_Source);
-    ReleaseObject(m_Stream);
+    ReleaseObject(m_pSource);
+    ReleaseObject(m_pStream);
+    ReleaseObject(m_pFactory);
 }
 
 __checkReturn HRESULT 
 CWICBitmapSource::Initialize(
+    __in IWICImagingFactory* pFactory,
 	__in IWICBitmapSource* pSource
 	)
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pSource);
+    SetObject(m_pFactory, pFactory);
+    SetObject(m_pSource, pSource);
 
-    m_Source = pSource;
-    AddRefObject(m_Source);
-
-Cleanup:
     return hr;
 }
 
@@ -33,7 +34,7 @@ __out IWICBitmapSource*
 CWICBitmapSource::GetWICBitmapSource(
 	)
 {
-    return m_Source;
+    return m_pSource;
 }
 
 __override __checkReturn HRESULT 
@@ -45,7 +46,7 @@ CWICBitmapSource::GetSize(
 
     IFCPTR(pSize);
 
-    IFC(m_Source->GetSize(&pSize->width, &pSize->height));
+    IFC(m_pSource->GetSize(&pSize->width, &pSize->height));
 
 Cleanup:
     return hr;
@@ -58,11 +59,127 @@ CWICBitmapSource::AssociateStream(
 {
     HRESULT hr = S_OK;
 
-    ReleaseObject(m_Stream);
+    ReplaceObject(m_pStream, pStream);
 
-    m_Stream = pStream;
+    return hr;
+}
 
-    AddRefObject(m_Stream);
+__checkReturn HRESULT
+PixelFormatToWICFormat(
+    PixelFormat::Value source,
+    __out WICPixelFormatGUID* pTargetFormat
+    )
+{
+    HRESULT hr = S_OK;
+
+    switch(source)
+    {
+        case PixelFormat::B8G8R8A8:
+            {
+                *pTargetFormat = GUID_WICPixelFormat32bppBGRA;
+
+                break;
+            }
+
+        default:
+            {
+                IFC(E_FAIL);
+            }
+    }
+
+Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT
+CWICBitmapSource::LoadIntoTexture( 
+    __in ITexture* pTexture 
+    )
+{
+    HRESULT hr = S_OK;
+    WICPixelFormatGUID sourceFormat;
+    WICPixelFormatGUID targetFormat;
+    IWICFormatConverter* pConverter = NULL;
+    BYTE* pDecodedPixels = NULL;
+    IWICBitmapSource* pDecodedSource = NULL;
+    PixelFormat::Value pixelFormat = PixelFormat::Unknown;
+
+    pixelFormat = pTexture->GetPixelFormat();
+
+    IFC(m_pSource->GetPixelFormat(&sourceFormat));
+
+    IFC(PixelFormatToWICFormat(pixelFormat, &targetFormat));
+
+    if (targetFormat != sourceFormat)
+    {
+        IFC(m_pFactory->CreateFormatConverter(&pConverter));
+
+        IFC(pConverter->Initialize(m_pSource, targetFormat, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
+
+        pDecodedSource = pConverter;
+    }
+    else
+    {
+        pDecodedSource = m_pSource;
+    }
+
+    {
+        SizeU sourceSize;
+
+        IFC(GetSize(&sourceSize));
+
+        IFCEXPECT(sourceSize.width <= pTexture->GetWidth());
+        IFCEXPECT(sourceSize.height <= pTexture->GetHeight());
+
+        {
+            UINT32 lineSize = PixelFormat::GetLineSize(pixelFormat, sourceSize.width);
+            UINT32 bufferSize = lineSize * pTexture->GetHeight();
+
+            pDecodedPixels = new BYTE[bufferSize];
+            IFCOOM(pDecodedPixels);
+
+            IFC(pDecodedSource->CopyPixels(NULL, lineSize, bufferSize, pDecodedPixels));
+
+            IFC(pTexture->SetData(pDecodedPixels, bufferSize, lineSize));
+        }
+    }    
+
+Cleanup:
+    ReleaseObject(pConverter);
+    
+    delete [] pDecodedPixels;
+
+    return hr;
+}
+
+__checkReturn HRESULT
+CWICBitmapSource::GetSourceAsFormat(
+    const WICPixelFormatGUID& format,
+    IWICBitmapSource** ppSource
+    )
+{
+    HRESULT hr = S_OK;
+    WICPixelFormatGUID sourceFormat;
+    IWICFormatConverter* pConverter = NULL;
+
+    IFC(m_pSource->GetPixelFormat(&sourceFormat));
+
+    if (format != sourceFormat)
+    {
+        IFC(m_pFactory->CreateFormatConverter(&pConverter));
+
+        IFC(pConverter->Initialize(m_pSource, format, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
+
+        *ppSource = pConverter;
+        pConverter = NULL;
+    }
+    else
+    {
+        SetObject(*ppSource, m_pSource);
+    }
+
+Cleanup:
+    ReleaseObject(pConverter);
 
     return hr;
 }

@@ -67,11 +67,7 @@ CWICImagingProvider::LoadBitmapFromDecoder(
 
     IFC(pDecoder->GetFrame(0, &pSource));
 
-    IFC(m_Factory->CreateFormatConverter(&pConverter));
-    
-    IFC(pConverter->Initialize(pSource, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
-
-    IFC(CWICBitmapSource::Create(pConverter, &pWICBitmapSource));
+    IFC(CWICBitmapSource::Create(m_Factory, pSource, &pWICBitmapSource));
 
     *ppBitmapSource = pWICBitmapSource;
     pWICBitmapSource = NULL;

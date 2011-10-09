@@ -37,6 +37,18 @@ CD2DBrush::GetD2DBrush(
 }
 
 __override __checkReturn HRESULT 
+CD2DBrush::GetBounds( 
+    RectF& brushBounds
+    )
+{
+    HRESULT hr = S_OK;
+
+    brushBounds = RectF(0.0, 0.0, 1.0, 1.0);
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
 CD2DBrush::SetTransform(
 	const Matrix3X2F& Transform
 	)

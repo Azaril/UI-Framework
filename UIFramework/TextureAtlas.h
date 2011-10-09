@@ -14,11 +14,13 @@ struct ITextureAtlas : public ITextureAllocator
         ) = 0;
 };
 
-template< typename Base, UINT32 Padding >
+template< typename Base, UINT32 texturePadding >
 class CTextureAtlas : public CRefCountedObjectBase< Base >
 {
     public:
         DECLARE_FACTORY1( CTextureAtlas, ITexture* );
+
+        static const UINT32 Padding = texturePadding;
 
         __override __checkReturn HRESULT AllocateTexture(
             UINT32 Width,
@@ -33,9 +35,9 @@ class CTextureAtlas : public CRefCountedObjectBase< Base >
             // Inflate the requested size by the required padding, it will be deflated
             // before being passed to the allocated view.
             //
-            const SizeU inflatedSize(Width + (Padding * 2), Height + (Padding * 2));
+            const SizeU inflatedSize(Width + (texturePadding * 2), Height + (texturePadding * 2));
 
-            IFC(m_pRootNode->Allocate(this, inflatedSize, &pAtlasView));
+            IFC_NOTRACE(m_pRootNode->Allocate(this, inflatedSize, &pAtlasView));
 
             *ppTexture = pAtlasView;
             pAtlasView = NULL;
@@ -77,7 +79,7 @@ class CTextureAtlas : public CRefCountedObjectBase< Base >
             m_pTexture = pTexture;
             AddRefObject(m_pTexture);
 
-            m_pRootNode = new CTextureAtlasNode< Padding >(MakeRect(SizeU(pTexture->GetWidth(), pTexture->GetHeight())));
+            m_pRootNode = new CTextureAtlasNode< texturePadding >(MakeRect(SizeU(pTexture->GetWidth(), pTexture->GetHeight())));
             IFCOOM(m_pRootNode);
 
         Cleanup:
@@ -85,5 +87,5 @@ class CTextureAtlas : public CRefCountedObjectBase< Base >
         }
 
         ITexture* m_pTexture;
-        CTextureAtlasNode< Padding >* m_pRootNode;
+        CTextureAtlasNode< texturePadding >* m_pRootNode;
 };
