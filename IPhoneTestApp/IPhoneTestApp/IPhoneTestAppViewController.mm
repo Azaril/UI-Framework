@@ -31,6 +31,7 @@
 
 const wchar_t g_MarkupContent[] =
 L"<Canvas>"
+L"<Image Name=\"TestImage\" Source=\"foo\" />"
 L"<Border Height=\"100\" Width=\"100\" Canvas.Left=\"50\" Canvas.Top=\"150\" BorderThickness=\"5\" BorderBrush=\"Red\"/>"
 L"<Border Height=\"100\" Width=\"100\" Canvas.Left=\"100\" Canvas.Top=\"170\" BorderThickness=\"5\" BorderBrush=\"Green\"/>"
 L"<Border Height=\"100\" Width=\"100\" Canvas.Left=\"150\" Canvas.Top=\"190\" BorderThickness=\"5\" BorderBrush=\"Blue\"/>"
