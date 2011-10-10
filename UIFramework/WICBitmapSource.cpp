@@ -97,31 +97,13 @@ CWICBitmapSource::LoadIntoTexture(
     )
 {
     HRESULT hr = S_OK;
-    WICPixelFormatGUID sourceFormat;
     WICPixelFormatGUID targetFormat;
-    IWICFormatConverter* pConverter = NULL;
     BYTE* pDecodedPixels = NULL;
     IWICBitmapSource* pDecodedSource = NULL;
-    PixelFormat::Value pixelFormat = PixelFormat::Unknown;
 
-    pixelFormat = pTexture->GetPixelFormat();
+    IFC(PixelFormatToWICFormat(pTexture->GetPixelFormat(), &targetFormat));
 
-    IFC(m_pSource->GetPixelFormat(&sourceFormat));
-
-    IFC(PixelFormatToWICFormat(pixelFormat, &targetFormat));
-
-    if (targetFormat != sourceFormat)
-    {
-        IFC(m_pFactory->CreateFormatConverter(&pConverter));
-
-        IFC(pConverter->Initialize(m_pSource, targetFormat, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
-
-        pDecodedSource = pConverter;
-    }
-    else
-    {
-        pDecodedSource = m_pSource;
-    }
+    IFC(GetSourceAsFormat(targetFormat, &pDecodedSource));
 
     {
         SizeU sourceSize;
@@ -140,12 +122,12 @@ CWICBitmapSource::LoadIntoTexture(
 
             IFC(pDecodedSource->CopyPixels(NULL, lineSize, bufferSize, pDecodedPixels));
 
-            IFC(pTexture->SetData(pDecodedPixels, bufferSize, lineSize));
+            IFC(pTexture->SetSubData(RectU(sourceSize), pDecodedPixels, bufferSize, lineSize));
         }
     }    
 
 Cleanup:
-    ReleaseObject(pConverter);
+    ReleaseObject(pDecodedSource);
     
     delete [] pDecodedPixels;
 

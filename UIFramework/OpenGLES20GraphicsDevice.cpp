@@ -1,6 +1,7 @@
 #include "OpenGLES20GraphicsDevice.h"
 #include "OpenGLES20RenderTarget.h"
 #include "CoreGeometryProvider.h"
+#include "CGImagingProvider.h"
 
 COpenGLES20GraphicsDevice::COpenGLES20GraphicsDevice(
     )
@@ -163,21 +164,19 @@ COpenGLES20GraphicsDevice::CreateImagingProvider(
 	)
 {
     HRESULT hr = S_OK;
-    // CWICImagingProvider* pWICImagingProvider = NULL;
+    CCGImagingProvider* pCGImagingProvider = NULL;
 
-    IFCPTR(ppImagingProvider);
+    if(SUCCEEDED(CCGImagingProvider::Create(&pCGImagingProvider)))
+    {
+        *ppImagingProvider = pCGImagingProvider;
+        pCGImagingProvider = NULL;
+        goto Cleanup;
+    }
 
-    // if(SUCCEEDED(CWICImagingProvider::Create(&pWICImagingProvider)))
-    // {
-    //     *ppImagingProvider = pWICImagingProvider;
-    //     pWICImagingProvider = NULL;
-    //     goto Cleanup;
-    // }
-
-    //IFC(E_FAIL);
+    IFC(E_FAIL);
 
 Cleanup:
-    // ReleaseObject(pWICImagingProvider);
+    ReleaseObject(pCGImagingProvider);
 
     return hr;
 }
