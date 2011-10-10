@@ -100,8 +100,11 @@ CWICBitmapSource::LoadIntoTexture(
     WICPixelFormatGUID targetFormat;
     BYTE* pDecodedPixels = NULL;
     IWICBitmapSource* pDecodedSource = NULL;
+    PixelFormat::Value pixelFormat = PixelFormat::Unknown;
 
-    IFC(PixelFormatToWICFormat(pTexture->GetPixelFormat(), &targetFormat));
+    pixelFormat = pTexture->GetPixelFormat();
+
+    IFC(PixelFormatToWICFormat(pixelFormat, &targetFormat));
 
     IFC(GetSourceAsFormat(targetFormat, &pDecodedSource));
 
@@ -122,7 +125,7 @@ CWICBitmapSource::LoadIntoTexture(
 
             IFC(pDecodedSource->CopyPixels(NULL, lineSize, bufferSize, pDecodedPixels));
 
-            IFC(pTexture->SetSubData(RectU(sourceSize), pDecodedPixels, bufferSize, lineSize));
+            IFC(pTexture->SetSubData(MakeRect(sourceSize), pDecodedPixels, bufferSize, lineSize));
         }
     }    
 
