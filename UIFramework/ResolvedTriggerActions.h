@@ -36,5 +36,5 @@ class CResolvedTriggerActions : public CRefCountedObject
         CUIElement* m_Owner;
         CProviders* m_Providers;
         IStyleCallback* m_Callback;
-        std::vector< CResolvedTriggerAction* > m_Actions;
+        vector< CResolvedTriggerAction* > m_Actions;
 };

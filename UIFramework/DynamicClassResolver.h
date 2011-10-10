@@ -7,7 +7,7 @@
 
 class UIFRAMEWORK_API CDynamicClassResolver : public CClassResolver
 {
-    typedef std::vector< CDynamicResolvedClass* > ClassContainer;
+    typedef vector< CDynamicResolvedClass* > ClassContainer;
 
     public:
         DECLARE_FACTORY( CDynamicClassResolver );
@@ -102,7 +102,7 @@ class UIFRAMEWORK_API CDynamicClassResolver : public CClassResolver
         __checkReturn HRESULT Initialize(
 			);
 
-        std::vector< CDynamicResolvedClass* > m_Classes;
+        vector< CDynamicResolvedClass* > m_Classes;
 };
 
 __checkReturn HRESULT LoadDefaultTypes( 

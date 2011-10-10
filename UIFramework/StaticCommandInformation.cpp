@@ -8,7 +8,7 @@ CStaticCommandInformation::CStaticCommandInformation(
 CStaticCommandInformation::~CStaticCommandInformation(
     )
 {
-    for(std::vector< CCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
+    for(vector< CCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
     {
         (*It)->Release();
     }
@@ -55,7 +55,7 @@ CStaticCommandInformation::GetCommand(
     IFCPTR(pCommandName);
     IFCPTR(ppCommand);
 
-    for(std::vector< CCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
+    for(vector< CCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
     {
         CCommand* pCommand = (*It);
 

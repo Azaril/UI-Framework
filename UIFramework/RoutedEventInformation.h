@@ -25,5 +25,5 @@ class CRoutedEventInformation : public CEventInformation
             UINT32 EventCount 
             );
 
-        std::vector< CRoutedEvent* > m_Events;
+        vector< CRoutedEvent* > m_Events;
 };

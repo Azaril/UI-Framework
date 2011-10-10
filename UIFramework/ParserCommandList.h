@@ -31,5 +31,5 @@ class CParserCommandList : public CRefCountedObjectBase< CObjectWithType >
 			);
 
         CProviders* m_Providers;
-        std::vector< CParserCommand* > m_Commands;
+        vector< CParserCommand* > m_Commands;
 };

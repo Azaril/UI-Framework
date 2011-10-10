@@ -293,7 +293,7 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
             __deref_out_opt CLayeredValue** ppLayeredValue
             );
 
-        std::vector< CAttachedPropertyHolder > m_AttachedProperties;
+        vector< CAttachedPropertyHolder > m_AttachedProperties;
         PropertyChangedSignal m_PropertyChangedSignal;
         CBindingContext* m_BindingContext;
 

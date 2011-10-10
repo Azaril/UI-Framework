@@ -92,7 +92,7 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
 
             pTypedObject = (T*)pObject;
 
-            for(typename std::vector< CDictionaryEntry >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
+            for(typename vector< CDictionaryEntry >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
             {
                 CObjectWithType* pOtherKey = It->GetKey();
 
@@ -120,7 +120,7 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
             IFCPTR(pKey);
             IFCPTR(pObject);
 
-            for(typename std::vector< CDictionaryEntry >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
+            for(typename vector< CDictionaryEntry >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
             {
                 CObjectWithType* pOtherKey = It->GetKey();
 
@@ -148,7 +148,7 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
             IFCPTR(pKey);
             IFCPTR(ppObject);
 
-            for(typename std::vector< CDictionaryEntry >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
+            for(typename vector< CDictionaryEntry >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
             {
                 CObjectWithType* pOtherKey = It->GetKey();
 
@@ -188,5 +188,5 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
             return hr;
         }
 
-        std::vector< CDictionaryEntry > m_Collection;
+        vector< CDictionaryEntry > m_Collection;
 };

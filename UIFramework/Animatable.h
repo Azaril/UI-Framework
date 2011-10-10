@@ -48,7 +48,7 @@ class UIFRAMEWORK_API CAnimatable : public CRefCountedObjectBase< CPropertyObjec
             __in CAnimationInfo* pInfo 
             );
 
-        std::vector< CAnimationInfo* > m_Animations;
+        vector< CAnimationInfo* > m_Animations;
 };
 
 template< >

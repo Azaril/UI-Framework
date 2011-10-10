@@ -8,7 +8,7 @@ CNamescope::CNamescope(
 CNamescope::~CNamescope(
     )
 {
-    for(std::vector< CNamedObjectHolder* >::iterator It = m_NamedObjects.begin(); It != m_NamedObjects.end(); ++It)
+    for(vector< CNamedObjectHolder* >::iterator It = m_NamedObjects.begin(); It != m_NamedObjects.end(); ++It)
     {
         (*It)->Release();
     }
@@ -36,7 +36,7 @@ CNamescope::InternalFindObject(
     IFCPTR(pName);
     IFCPTR(ppHolder);
 
-    for(std::vector< CNamedObjectHolder* >::iterator It = m_NamedObjects.begin(); It != m_NamedObjects.end(); ++It)
+    for(vector< CNamedObjectHolder* >::iterator It = m_NamedObjects.begin(); It != m_NamedObjects.end(); ++It)
     {
         CNamedObjectHolder* pHolder = (*It);
 
@@ -99,7 +99,7 @@ CNamescope::UnregisterName(
     IFCPTR(pName);
     IFCPTR(pObject);
 
-    for(std::vector< CNamedObjectHolder* >::iterator It = m_NamedObjects.begin(); It != m_NamedObjects.end(); ++It)
+    for(vector< CNamedObjectHolder* >::iterator It = m_NamedObjects.begin(); It != m_NamedObjects.end(); ++It)
     {
         CNamedObjectHolder* pHolder = (*It);
 

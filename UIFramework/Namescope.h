@@ -69,7 +69,7 @@ class CNamescope : public CRefCountedObjectBase< CObjectWithType >
         __checkReturn HRESULT Initialize(
             );
 
-        std::vector< CNamedObjectHolder* > m_NamedObjects;
+        vector< CNamedObjectHolder* > m_NamedObjects;
 };
 
 template< >

@@ -49,7 +49,7 @@ class CCoreFigureBuilder : public CFigureBuilder
             );
 
         CCoreShapeData* m_pShapeData;
-        std::vector< FigureDataType::Value > m_FigureDataType;
-        std::vector< Point2F > m_FigurePoints;
+        vector< FigureDataType::Value > m_FigureDataType;
+        vector< Point2F > m_FigurePoints;
 };
 

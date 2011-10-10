@@ -84,7 +84,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CWICImagingProvider::LoadBitmapFromFile(
 	__in_z const WCHAR* pPath, 
-	CBitmapSource** ppBitmapSource
+	__deref_out CBitmapSource** ppBitmapSource
 	)
 {
     HRESULT hr = S_OK;

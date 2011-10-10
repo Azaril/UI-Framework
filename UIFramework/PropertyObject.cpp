@@ -98,7 +98,7 @@ CPropertyObject::SetValuePrivate(
         {
             BOOL SetVal = FALSE;
 
-            for(std::vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
+            for(vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
             {
                 if(It->GetProperty() == pProperty)
                 {
@@ -167,7 +167,7 @@ CPropertyObject::GetValue(
 
     if(pProperty->IsAttached())
     {
-        for(std::vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
+        for(vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
         {
             if(It->GetProperty() == pProperty)
             {

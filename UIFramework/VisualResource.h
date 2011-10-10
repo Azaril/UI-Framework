@@ -37,5 +37,5 @@ class CVisualResource : public CRefCountedObjectBase< CPropertyObject >
             INT32 References;
         };
 
-        std::vector< VisualParentInfo > m_Parents;
+        vector< VisualParentInfo > m_Parents;
 };

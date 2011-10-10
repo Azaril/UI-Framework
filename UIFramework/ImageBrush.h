@@ -31,7 +31,7 @@
 
 class CImageBrushContext : public CRefCountedObject
 {
-    //typedef std::vector< CImageBrushRenderContext* > RenderTargetContextCollection;
+    //typedef vector< CImageBrushRenderContext* > RenderTargetContextCollection;
 
     public:
         DECLARE_FACTORY2( CImageBrushContext, CGraphicsDevice*, CBitmapSource* );
@@ -78,7 +78,7 @@ class CImageBrushContext : public CRefCountedObject
 
 class CImageBrush : public CBrush
 {
-    typedef std::vector< CImageBrushContext* > ContextCollection;
+    typedef vector< CImageBrushContext* > ContextCollection;
 
     public:
         DECLARE_FACTORY1( CImageBrush, CProviders* );

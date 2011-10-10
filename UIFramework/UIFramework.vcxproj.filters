@@ -131,6 +131,9 @@
     <Filter Include="Framework\Graphics\Common">
       <UniqueIdentifier>{03e66c84-29b6-4af5-ae4c-1fd02ba263bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Resources">
+      <UniqueIdentifier>{9ea11eb8-3c79-4552-8763-491e93875648}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -799,7 +802,24 @@
     <ClCompile Include="BitmapBrushBase.cpp">
       <Filter>Framework\Graphics\Common</Filter>
     </ClCompile>
-    <ClCompile Include="BitmapBase.cpp" />
+    <ClCompile Include="BitmapBase.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadStream.cpp">
+      <Filter>Framework\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceProvider.cpp">
+      <Filter>Framework\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="FileResourceProvider.cpp">
+      <Filter>Framework\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="FileResourceStream.cpp">
+      <Filter>Framework\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeResourceProvider.cpp">
+      <Filter>Framework\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1495,7 +1515,24 @@
     <ClInclude Include="BitmapBrushBase.h">
       <Filter>Framework\Graphics\Common</Filter>
     </ClInclude>
-    <ClInclude Include="BitmapBase.h" />
+    <ClInclude Include="BitmapBase.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadStream.h">
+      <Filter>Framework\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceProvider.h">
+      <Filter>Framework\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="FileResourceProvider.h">
+      <Filter>Framework\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="FileResourceStream.h">
+      <Filter>Framework\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeResourceProvider.h">
+      <Filter>Framework\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="small.ico">

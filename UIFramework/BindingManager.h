@@ -122,7 +122,7 @@ class CDefaultBindingContext : public CRefCountedObjectBase< CBindingContext >
                 events::signals::connection m_ChangeConnection;
         };
 
-        std::vector< CPropertyBinding > m_Bindings;
+        vector< CPropertyBinding > m_Bindings;
 };
 
 class CBindingManager : public CRefCountedObject

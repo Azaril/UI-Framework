@@ -24,7 +24,7 @@ struct ObjectTypeTraits< CUIElementCollection >
 
 class UIFRAMEWORK_API CFrameworkElement : public CUIElement
 {
-    typedef std::vector< CUIElement* > ChildCollection;
+    typedef vector< CUIElement* > ChildCollection;
 
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::FrameworkElement, CUIElement );

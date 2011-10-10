@@ -513,7 +513,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
 
         CUIAttachContext m_Context;
 
-        std::vector< CEventHandlerChain* > m_EventHandlers;
+        vector< CEventHandlerChain* > m_EventHandlers;
 
         events::signals::connection m_MouseButtonConnection;
         events::signals::connection m_MouseDownConnection;

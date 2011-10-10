@@ -189,5 +189,5 @@ class CResolvedBeginStoryboard : public CResolvedTriggerAction,
         CTimeSource* m_pTimeSource;
         BOOL m_RegisteredToTimeSource;
         CTimeController* m_pTimeController;
-        std::vector< CClockInfo > m_Animations;
+        vector< CClockInfo > m_Animations;
 };

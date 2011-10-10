@@ -26,5 +26,5 @@ class CStaticCommandInformation : public CCommandInformation
             UINT32 CommandCount 
             );
 
-        std::vector< CCommand* > m_Commands;
+        vector< CCommand* > m_Commands;
 };

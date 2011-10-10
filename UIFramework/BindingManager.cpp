@@ -132,7 +132,7 @@ CDefaultBindingContext::~CDefaultBindingContext(
     )
 {
     // Disconnect connections.
-    for(std::vector< CPropertyBinding >::iterator It = m_Bindings.begin(); It != m_Bindings.end(); ++It)
+    for(vector< CPropertyBinding >::iterator It = m_Bindings.begin(); It != m_Bindings.end(); ++It)
     {
         IGNOREHR(It->GetBinding()->ClearTarget());
 
@@ -159,7 +159,7 @@ CDefaultBindingContext::SetPropertyBinding(
 {
     HRESULT hr = S_OK;
 
-    for(std::vector< CPropertyBinding >::iterator It = m_Bindings.begin(); It != m_Bindings.end(); ++It)
+    for(vector< CPropertyBinding >::iterator It = m_Bindings.begin(); It != m_Bindings.end(); ++It)
     {
         if(It->GetProperty() == pProperty && It->GetSetFunction() == SetFunc)
         {

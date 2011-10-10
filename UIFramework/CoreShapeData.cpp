@@ -9,7 +9,7 @@ CCoreShapeData::CCoreShapeData(
 CCoreShapeData::~CCoreShapeData(
     )
 {
-    for (std::vector< CCoreFigureData* >::iterator it = m_Figures.begin(); it != m_Figures.end(); ++it)
+    for (vector< CCoreFigureData* >::iterator it = m_Figures.begin(); it != m_Figures.end(); ++it)
     {
         (*it)->Release();
     }

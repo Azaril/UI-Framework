@@ -50,5 +50,5 @@ class CParseContext : public CRefCountedObject
         CClassResolver* m_ClassResolver;
         CTypeConverter* m_TypeConverter;
 
-        std::vector< CParserCommandList* > m_CommandLists;
+        vector< CParserCommandList* > m_CommandLists;
 };

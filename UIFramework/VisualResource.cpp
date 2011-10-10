@@ -10,7 +10,7 @@ CVisualResource::OnVisualAttach(
     HRESULT hr = S_OK;
     BOOL AddedReference = FALSE;
 
-    for(std::vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
+    for(vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
     {
         if(It->Parent == Context.GetParent() && It->ChangeCallback == Context.GetChangeCallback())
         {
@@ -43,7 +43,7 @@ CVisualResource::OnVisualDetach(
 {
     HRESULT hr = S_OK;
 
-    for(std::vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
+    for(vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
     {
         if(It->Parent == Context.GetParent() && It->ChangeCallback == Context.GetChangeCallback())
         {
@@ -75,7 +75,7 @@ CVisualResource::InvalidateVisualResource(
 {
     HRESULT hr = S_OK;
 
-    for(std::vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
+    for(vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
     {
         if (It->Parent != NULL && It->ChangeCallback != NULL)
         {

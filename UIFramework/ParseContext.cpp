@@ -15,7 +15,7 @@ CParseContext::~CParseContext(
     ReleaseObject(m_TypeConverter);
     ReleaseObject(m_Providers);
 
-    for(std::vector< CParserCommandList* >::iterator It = m_CommandLists.begin(); It != m_CommandLists.end(); ++It)
+    for(vector< CParserCommandList* >::iterator It = m_CommandLists.begin(); It != m_CommandLists.end(); ++It)
     {
         (*It)->Release();
     }

@@ -31,7 +31,7 @@ class CCoreShapeData : public CShapeData
         __checkReturn HRESULT Initialize(
             );
 
-        std::vector< CCoreFigureData* > m_Figures;
+        vector< CCoreFigureData* > m_Figures;
         FillMode::Value m_FillMode;
 };
 

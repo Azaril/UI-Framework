@@ -24,7 +24,7 @@ class CWICImagingProvider : public CImagingProvider
 
         __override virtual __checkReturn HRESULT LoadBitmapFromFile(
 			__in_z const WCHAR* pPath, 
-			CBitmapSource** ppBitmapSource 
+			__deref_out CBitmapSource** ppBitmapSource 
 			);
 
         __override virtual __checkReturn HRESULT LoadBitmapFromMemory(

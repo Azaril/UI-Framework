@@ -64,6 +64,6 @@ class CParserCommandContext
 
     protected:
         CProviders* m_Providers;
-        std::vector< CObjectWithType* > m_ObjectStack;
+        vector< CObjectWithType* > m_ObjectStack;
         IParserCallback* m_Callback;
 };

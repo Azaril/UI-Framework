@@ -11,7 +11,7 @@ CResolvedTriggers::CResolvedTriggers(
 CResolvedTriggers::~CResolvedTriggers(
     )
 {
-    for(std::vector< CResolvedTrigger* >::iterator It = m_Triggers.begin(); It != m_Triggers.end(); ++It)
+    for(vector< CResolvedTrigger* >::iterator It = m_Triggers.begin(); It != m_Triggers.end(); ++It)
     {
         (*It)->Release();
     }

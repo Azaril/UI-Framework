@@ -11,7 +11,7 @@ CResolvedTriggerActions::CResolvedTriggerActions(
 CResolvedTriggerActions::~CResolvedTriggerActions(
     )
 {
-    for(std::vector< CResolvedTriggerAction* >::iterator It = m_Actions.begin(); It != m_Actions.end(); ++It)
+    for(vector< CResolvedTriggerAction* >::iterator It = m_Actions.begin(); It != m_Actions.end(); ++It)
     {
         (*It)->Release();
     }
@@ -72,7 +72,7 @@ CResolvedTriggerActions::Apply(
 {
     HRESULT hr = S_OK;
 
-    for(std::vector< CResolvedTriggerAction* >::iterator It = m_Actions.begin(); It != m_Actions.end(); ++It)
+    for(vector< CResolvedTriggerAction* >::iterator It = m_Actions.begin(); It != m_Actions.end(); ++It)
     {
         IFC((*It)->Apply());
     }

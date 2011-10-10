@@ -18,8 +18,8 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
     public:
         typedef ICollectionSubscriber< T > SubscriberType;
 
-        typedef std::vector< T* > CollectionType;
-        typedef std::vector< SubscriberType* > SubscriberCollectionType;
+        typedef vector< T* > CollectionType;
+        typedef vector< SubscriberType* > SubscriberCollectionType;
 
         DECLARE_FACTORY( CCollection< T > );
 
@@ -39,7 +39,7 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
             m_Collection.push_back(pTypedObject);
             AddRefObject(pTypedObject);
 
-            for(typename std::vector< SubscriberType* >::iterator SubscriberIt = m_Subscribers.begin(); SubscriberIt != m_Subscribers.end(); ++SubscriberIt)
+            for(typename vector< SubscriberType* >::iterator SubscriberIt = m_Subscribers.begin(); SubscriberIt != m_Subscribers.end(); ++SubscriberIt)
             {
                 (*SubscriberIt)->OnItemAdded(pTypedObject);
             }
@@ -56,7 +56,7 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
 
             IFCPTR(pObject);
 
-            for(typename std::vector< T* >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
+            for(typename vector< T* >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
             {
                 if((*It) == pObject)
                 {
@@ -64,7 +64,7 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
 
                     m_Collection.erase(It);
 
-                    for(typename std::vector< SubscriberType* >::iterator SubscriberIt = m_Subscribers.begin(); SubscriberIt != m_Subscribers.end(); ++SubscriberIt)
+                    for(typename vector< SubscriberType* >::iterator SubscriberIt = m_Subscribers.begin(); SubscriberIt != m_Subscribers.end(); ++SubscriberIt)
                     {
                         (*SubscriberIt)->OnItemRemoved(pTypedObject);
                     }
@@ -130,7 +130,7 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
 
             IFCPTR(pSubscriber);
 
-            for(typename std::vector< SubscriberType* >::iterator It = m_Subscribers.begin(); It != m_Subscribers.end(); ++It)
+            for(typename vector< SubscriberType* >::iterator It = m_Subscribers.begin(); It != m_Subscribers.end(); ++It)
             {
                 if((*It) == pSubscriber)
                 {
@@ -154,7 +154,7 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
         virtual ~CCollection(
             )
         {
-            for(typename std::vector< T* >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
+            for(typename vector< T* >::iterator It = m_Collection.begin(); It != m_Collection.end(); ++It)
             {
                 (*It)->Release();
             }

@@ -197,7 +197,7 @@ CResolvedBeginStoryboard::Apply(
     HRESULT hr = S_OK;
     CAnimationClock* pAnimationClock = NULL;
 
-    for (std::vector< CClockInfo >::iterator it = m_Animations.begin(); it != m_Animations.end(); ++it)
+    for (vector< CClockInfo >::iterator it = m_Animations.begin(); it != m_Animations.end(); ++it)
     {
         IFC(it->GetTimeline()->CreateClock(m_pTimeController, &pAnimationClock));
 

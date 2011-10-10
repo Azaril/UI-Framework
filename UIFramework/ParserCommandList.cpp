@@ -9,7 +9,7 @@ CParserCommandList::CParserCommandList(
 CParserCommandList::~CParserCommandList(
 	)
 {
-    for(std::vector< CParserCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
+    for(vector< CParserCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
     {
         (*It)->Release();
     }
@@ -46,7 +46,7 @@ CParserCommandList::Execute(
 
     CParserCommandContext Context(m_Providers, pCallback);
 
-    for(std::vector< CParserCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
+    for(vector< CParserCommand* >::iterator It = m_Commands.begin(); It != m_Commands.end(); ++It)
     {
         IFC((*It)->Execute(Context));
     }

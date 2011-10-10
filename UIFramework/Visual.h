@@ -13,8 +13,8 @@
 
 class UIFRAMEWORK_API CVisual : public CAnimatable
 {
-    typedef std::vector< CVisual* > VisualChildCollection;
-    typedef std::vector< std::pair< CVisualResource*, OnValueChangeFunc > > VisualResourceCollection;
+    typedef vector< CVisual* > VisualChildCollection;
+    typedef vector< std::pair< CVisualResource*, OnValueChangeFunc > > VisualResourceCollection;
 
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Visual, CAnimatable );

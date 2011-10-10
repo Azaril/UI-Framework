@@ -27,7 +27,7 @@ struct IRenderRoot
 
 class CPreRenderContext
 {
-    typedef std::vector< IRenderRoot* > RenderRootCollection;
+    typedef vector< IRenderRoot* > RenderRootCollection;
 
     public:
         CPreRenderContext( CRenderTarget* pRenderTarget );

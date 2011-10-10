@@ -28,5 +28,5 @@ class CResolvedTriggers : public CRefCountedObject
         CUIElement* m_Owner;
         CProviders* m_Providers;
         IStyleCallback* m_Callback;
-        std::vector< CResolvedTrigger* > m_Triggers;
+        vector< CResolvedTrigger* > m_Triggers;
 };

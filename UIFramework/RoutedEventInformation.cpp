@@ -9,7 +9,7 @@ CRoutedEventInformation::CRoutedEventInformation(
 CRoutedEventInformation::~CRoutedEventInformation(
     )
 {
-    for(std::vector< CRoutedEvent* >::iterator It = m_Events.begin(); It != m_Events.end(); ++It)
+    for(vector< CRoutedEvent* >::iterator It = m_Events.begin(); It != m_Events.end(); ++It)
     {
         (*It)->Release();
     }
@@ -56,7 +56,7 @@ CRoutedEventInformation::GetEvent(
     IFCPTR(pEventName);
     IFCPTR(ppEvent);
 
-    for(std::vector< CRoutedEvent* >::iterator It = m_Events.begin(); It != m_Events.end(); ++It)
+    for(vector< CRoutedEvent* >::iterator It = m_Events.begin(); It != m_Events.end(); ++It)
     {
         CRoutedEvent* pEvent = (*It);
 

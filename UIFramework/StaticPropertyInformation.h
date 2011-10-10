@@ -99,7 +99,7 @@ class CStaticPropertyInformation : public CPropertyInformation
             UINT32 PropertyCount 
             );
 
-        std::vector< CStaticProperty* > m_Properties;
+        vector< CStaticProperty* > m_Properties;
 };
 
 // HACK: Remove this as it triggers an allocation for every default value query.

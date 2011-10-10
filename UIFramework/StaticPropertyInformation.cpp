@@ -8,7 +8,7 @@ CStaticPropertyInformation::CStaticPropertyInformation(
 CStaticPropertyInformation::~CStaticPropertyInformation(
     )
 {
-    for(std::vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
+    for(vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
     {
         (*It)->Release();
     }
@@ -55,7 +55,7 @@ CStaticPropertyInformation::GetProperty(
     IFCPTR(pPropertyName);
     IFCPTR(ppProperty);
 
-    for(std::vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
+    for(vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
     {
         CStaticProperty* pProperty = (*It);
 
@@ -83,7 +83,7 @@ CStaticPropertyInformation::GetContentProperty(
 
     IFCPTR(ppProperty);
 
-    for(std::vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
+    for(vector< CStaticProperty* >::iterator It = m_Properties.begin(); It != m_Properties.end(); ++It)
     {
         CStaticProperty* pProperty = (*It);
 

@@ -26,7 +26,7 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
             AtlasType* pNewAtlas = NULL;
 
             //TODO: Implement a better algorithm here, this will get slow as more textures get allocated and fragmentation happens.
-            for (typename std::vector< AtlasType* >::reverse_iterator it = m_Textures.rbegin(); it != m_Textures.rend(); ++it)
+            for (typename vector< AtlasType* >::reverse_iterator it = m_Textures.rbegin(); it != m_Textures.rend(); ++it)
             {
                 AtlasType* pAtlas = (*it);
 
@@ -79,7 +79,7 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
         virtual ~CTextureAtlasPool(
             )
         {
-            for (typename std::vector< AtlasType* >::iterator it = m_Textures.begin(); it != m_Textures.end(); ++it)
+            for (typename vector< AtlasType* >::iterator it = m_Textures.begin(); it != m_Textures.end(); ++it)
             {
                 (*it)->Release();
             }            
@@ -172,5 +172,5 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
         UINT32 m_MinimumHeight;
         UINT32 m_MaximumWidth;
         UINT32 m_MaximumHeight;
-        std::vector< AtlasType* > m_Textures;
+        vector< AtlasType* > m_Textures;
 };

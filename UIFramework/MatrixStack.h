@@ -5,7 +5,7 @@
 
 class CMatrixStack
 {
-    typedef std::vector< Matrix3X2F > MatrixStack;
+    typedef vector< Matrix3X2F > MatrixStack;
 
     public:
         CMatrixStack(

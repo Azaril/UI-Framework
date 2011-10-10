@@ -108,6 +108,7 @@
     <ClCompile Include="BitmapBrushBase.cpp" />
     <ClCompile Include="BitmapSourceBase.cpp" />
     <ClCompile Include="Collections.cpp" />
+    <ClCompile Include="CompositeResourceProvider.cpp" />
     <ClCompile Include="CoreFigureBuilder.cpp" />
     <ClCompile Include="CoreFigureData.cpp" />
     <ClCompile Include="CoreGeometryProvider.cpp" />
@@ -129,6 +130,8 @@
     <ClCompile Include="ErrorChecking.cpp" />
     <ClCompile Include="Factory.cpp" />
     <ClCompile Include="FigureBuilder.cpp" />
+    <ClCompile Include="FileResourceProvider.cpp" />
+    <ClCompile Include="FileResourceStream.cpp" />
     <ClCompile Include="FloatAnimation.cpp" />
     <ClCompile Include="FloatAnimationBase.cpp" />
     <ClCompile Include="GeometryBuilder.cpp" />
@@ -141,6 +144,8 @@
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="LinearGradientBrushBase.cpp" />
+    <ClCompile Include="ReadStream.cpp" />
+    <ClCompile Include="ResourceProvider.cpp" />
     <ClCompile Include="SolidColorBrushBase.cpp" />
     <ClCompile Include="PathGraphicsGeometry.cpp" />
     <ClCompile Include="RangeBase.cpp" />
@@ -333,6 +338,7 @@
     <ClInclude Include="BitmapBrushBase.h" />
     <ClInclude Include="BitmapSourceBase.h" />
     <ClInclude Include="Collections.h" />
+    <ClInclude Include="CompositeResourceProvider.h" />
     <ClInclude Include="CoreFigureBuilder.h" />
     <ClInclude Include="CoreFigureData.h" />
     <ClInclude Include="CoreGeometryProvider.h" />
@@ -355,6 +361,8 @@
     <ClInclude Include="ErrorChecking.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="FigureBuilder.h" />
+    <ClInclude Include="FileResourceProvider.h" />
+    <ClInclude Include="FileResourceStream.h" />
     <ClInclude Include="FloatAnimation.h" />
     <ClInclude Include="FloatAnimationBase.h" />
     <ClInclude Include="GeometryBuilder.h" />
@@ -368,9 +376,11 @@
     <ClInclude Include="Logging.h" />
     <ClInclude Include="PathGraphicsGeometry.h" />
     <ClInclude Include="RangeBase.h" />
+    <ClInclude Include="ReadStream.h" />
     <ClInclude Include="RectangleGraphicsGeometry.h" />
     <ClInclude Include="RefCounted.h" />
     <ClInclude Include="RenderTargetBase.h" />
+    <ClInclude Include="ResourceProvider.h" />
     <ClInclude Include="RoundedRectangleGraphicsGeometry.h" />
     <ClInclude Include="ShapeBuilder.h" />
     <ClInclude Include="ShapeData.h" />

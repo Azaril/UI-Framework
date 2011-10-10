@@ -154,7 +154,7 @@ CUIElement::~CUIElement()
     m_MouseMoveConnection.disconnect();
     m_KeyConnection.disconnect();
 
-    for(std::vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
+    for(vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
     {
         (*It)->Release();
     }
@@ -1612,7 +1612,7 @@ HRESULT CUIElement::InternalRaiseEvent(CRoutedEventArgs* pRoutedEventArgs)
 
     IFCPTR(pRoutedEventArgs);
 
-    for(std::vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
+    for(vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
     {
         CEventHandlerChain* pCurrentChain = (*It);
 
@@ -1682,7 +1682,7 @@ HRESULT CUIElement::AddHandler(CRoutedEvent* pRoutedEvent, const RoutedEventHand
     IFCPTR(pRoutedEvent);
     IFCPTR(pConnection);
 
-    for(std::vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
+    for(vector< CEventHandlerChain* >::iterator It = m_EventHandlers.begin(); It != m_EventHandlers.end(); ++It)
     {
         CEventHandlerChain* pCurrentChain = (*It);
 

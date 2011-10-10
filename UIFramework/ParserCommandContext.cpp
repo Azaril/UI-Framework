@@ -13,7 +13,7 @@ CParserCommandContext::CParserCommandContext(
 CParserCommandContext::~CParserCommandContext(
 	)
 {
-    for(std::vector< CObjectWithType* >::iterator It = m_ObjectStack.begin(); It != m_ObjectStack.end(); ++It)
+    for(vector< CObjectWithType* >::iterator It = m_ObjectStack.begin(); It != m_ObjectStack.end(); ++It)
     {
         (*It)->Release();
     }

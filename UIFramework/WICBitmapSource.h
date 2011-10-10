@@ -14,7 +14,7 @@ class CWICBitmapSource : public CBitmapSourceBase
         __out IWICBitmapSource* GetWICBitmapSource(
 			);
 
-        __override virtual HRESULT GetSize( 
+        __override virtual __checkReturn HRESULT GetSize( 
 			__out SizeU* pSize 
 			);
 

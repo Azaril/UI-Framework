@@ -54,7 +54,7 @@ CAnimatable::ApplyAnimationClock(
 
     //TODO: Correctly handle hand-off behavior etc.
 
-    for(std::vector< CAnimationInfo* >::iterator It = m_Animations.begin(); It != m_Animations.end(); ++It)
+    for(vector< CAnimationInfo* >::iterator It = m_Animations.begin(); It != m_Animations.end(); ++It)
     {
         if((*It)->GetProperty() == pProperty && (*It)->GetClock() != pClock)
         {
