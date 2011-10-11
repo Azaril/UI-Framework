@@ -7,7 +7,7 @@ struct IResourceProvider
     DECLARE_ADDREF_RELEASE_INTERFACE();
 
     virtual __checkReturn HRESULT ReadResource(
-        __in_ecount(identiferLength) WCHAR* pIdentifier,
+        __in_ecount(identiferLength) const WCHAR* pIdentifier,
         UINT32 identifierLength,
         __deref_out IReadStream** ppStream
         ) = 0;

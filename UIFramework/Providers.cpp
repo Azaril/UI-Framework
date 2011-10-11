@@ -1,50 +1,71 @@
 #include "Providers.h"
 #include "ErrorChecking.h"
 #include "BindingManager.h"
+#include "ResourceProvider.h"
 
-CProviders::CProviders() : m_ClassResolver(NULL),
-                           m_TypeConverter(NULL),
-                           m_BindingManager(NULL)
+CProviders::CProviders(
+    ) 
+    : m_pClassResolver(NULL)
+    , m_pTypeConverter(NULL)
+    , m_pBindingManager(NULL)
+    , m_pResourceProvider(NULL)
 {
 }
 
 CProviders::~CProviders()
 {
-    ReleaseObject(m_ClassResolver);
-    ReleaseObject(m_TypeConverter);
-    ReleaseObject(m_BindingManager);
+    ReleaseObject(m_pClassResolver);
+    ReleaseObject(m_pTypeConverter);
+    ReleaseObject(m_pBindingManager);
+    ReleaseObject(m_pResourceProvider);
 }
 
-HRESULT CProviders::Initialize( CClassResolver* pClassResolver, CTypeConverter* pTypeConverter )
+__checkReturn HRESULT 
+CProviders::Initialize( 
+    __in CClassResolver* pClassResolver, 
+    __in CTypeConverter* pTypeConverter,
+    __in IResourceProvider* pResourceProvider
+    )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pClassResolver);
     IFCPTR(pTypeConverter);
 
-    m_ClassResolver = pClassResolver;
-    AddRefObject(m_ClassResolver);
+    SetObject(m_pClassResolver, pClassResolver);
+    SetObject(m_pTypeConverter, pTypeConverter);
+    SetObject(m_pResourceProvider, pResourceProvider);
 
-    m_TypeConverter = pTypeConverter;
-    AddRefObject(m_TypeConverter);
-
-    IFC(CBindingManager::Create(&m_BindingManager));
+    IFC(CBindingManager::Create(&m_pBindingManager));
 
 Cleanup:
     return hr;
 }
 
-CClassResolver* CProviders::GetClassResolver()
+__out CClassResolver* 
+CProviders::GetClassResolver(
+    )
 {
-    return m_ClassResolver;
+    return m_pClassResolver;
 }
 
-CTypeConverter* CProviders::GetTypeConverter()
+__out CTypeConverter*
+CProviders::GetTypeConverter(
+    )
 {
-    return m_TypeConverter;
+    return m_pTypeConverter;
 }
 
-CBindingManager* CProviders::GetBindingManager()
+__out CBindingManager* 
+CProviders::GetBindingManager(
+    )
 {
-    return m_BindingManager;
+    return m_pBindingManager;
+}
+
+__out IResourceProvider*
+CProviders::GetResourceProvider( 
+    )
+{
+    return m_pResourceProvider;
 }

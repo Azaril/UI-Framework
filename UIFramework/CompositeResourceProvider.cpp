@@ -39,7 +39,7 @@ CCompositeResourceProvider::AddResourceProvider(
 
 __checkReturn HRESULT
 CCompositeResourceProvider::ReadResource(
-    __in_ecount(identiferLength) WCHAR* pIdentifier,
+    __in_ecount(identiferLength) const WCHAR* pIdentifier,
     UINT32 identifierLength,
     __deref_out IReadStream** ppStream
     )

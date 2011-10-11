@@ -4,7 +4,7 @@
 #include "Factory.h"
 #include "Collections.h"
 
-class CCompositeResourceProvider : public CRefCountedObjectBase< IResourceProvider >
+class UIFRAMEWORK_API CCompositeResourceProvider : public CRefCountedObjectBase< IResourceProvider >
 {
     public:
         DECLARE_FACTORY( CCompositeResourceProvider );
@@ -14,7 +14,7 @@ class CCompositeResourceProvider : public CRefCountedObjectBase< IResourceProvid
             );
 
         __override virtual __checkReturn HRESULT ReadResource(
-            __in_ecount(identiferLength) WCHAR* pIdentifier,
+            __in_ecount(identiferLength) const WCHAR* pIdentifier,
             UINT32 identifierLength,
             __deref_out IReadStream** ppStream
             );

@@ -3,6 +3,16 @@
 #include "Types.h"
 #include "RefCounted.h"
 
+namespace SeekType
+{
+    enum Value
+    {
+        Begin,
+        Current,
+        End
+    };
+}
+
 struct IReadStream
 {
     DECLARE_ADDREF_RELEASE_INTERFACE();
@@ -12,7 +22,9 @@ struct IReadStream
         ) = 0;
 
     virtual __checkReturn HRESULT Seek(
-        UINT64 position
+        SeekType::Value seekType,
+        INT64 position,
+        __out_opt UINT64* pNewPosition
         ) =  0;
 
     virtual __checkReturn HRESULT Read(

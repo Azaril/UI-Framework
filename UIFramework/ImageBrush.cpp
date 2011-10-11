@@ -2,6 +2,7 @@
 #include "DelegatingPropertyInformation.h"
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
+#include "ResourceProvider.h"
 
 //
 // Properties
@@ -18,6 +19,7 @@ CImageBrush::~CImageBrush(
     )
 {
     ReleaseObject(m_Source);
+    ReleaseObject(m_pProviders);
 }
 
 __checkReturn HRESULT 
@@ -26,6 +28,8 @@ CImageBrush::Initialize(
     )
 {
     HRESULT hr = S_OK;
+
+    SetObject(m_pProviders, pProviders);
 
     return hr;
 }
@@ -225,6 +229,7 @@ CImageBrush::CreateBitmapFromSource(
     HRESULT hr = S_OK;
     CBitmapSource* pBitmapSource = NULL;
     CImagingProvider* pImagingProvider = NULL;
+    IReadStream* pResourceStream = NULL;
 
     IFCPTR(ppBitmapSource);
 
@@ -235,10 +240,13 @@ CImageBrush::CreateBitmapFromSource(
     else if(m_Source->IsTypeOf(TypeIndex::String))
     {
         CStringValue* pStringValue = (CStringValue*)m_Source;
+        IResourceProvider* pResourceProvider = m_pProviders->GetResourceProvider();
+
+        IFC(pResourceProvider->ReadResource(pStringValue->GetValue(), pStringValue->GetLength(), &pResourceStream));
 
         IFC(pGraphicsDevice->GetImagingProvider(&pImagingProvider));
 
-        IFC(pImagingProvider->LoadBitmapFromFile(pStringValue->GetValue(), &pBitmapSource));
+        IFC(pImagingProvider->LoadBitmapFromStream(pResourceStream, &pBitmapSource));
     }
     else if(m_Source->IsTypeOf(TypeIndex::BitmapSource))
     {
@@ -256,6 +264,7 @@ CImageBrush::CreateBitmapFromSource(
 Cleanup:
     ReleaseObject(pBitmapSource);
     ReleaseObject(pImagingProvider);
+    ReleaseObject(pResourceStream);
 
     return hr;
 }
@@ -286,7 +295,7 @@ CImageBrush::GetGraphicsBrush(
         }
     }
 
-    IFCPTR(pContext);
+    IFCPTR_NOTRACE(pContext);
 
     IFC(pContext->GetBitmapSource(&pBitmapSource));
 

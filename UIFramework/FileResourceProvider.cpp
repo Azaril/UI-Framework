@@ -22,7 +22,7 @@ CFileResourceProvider::Initialize(
 
 __override __checkReturn HRESULT
 CFileResourceProvider::ReadResource(
-    __in_ecount(identiferLength) WCHAR* pIdentifier,
+    __in_ecount(identiferLength) const WCHAR* pIdentifier,
     UINT32 identifierLength,
     __deref_out IReadStream** ppStream
     )

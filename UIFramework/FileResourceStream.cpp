@@ -25,9 +25,11 @@ CFileResourceStream::Initialize(
 
     m_pFile = pFile;
 
-    IFCEXPECT(_fseeki64(m_pFile, 0L, SEEK_END) == 0);
+    IFCEXPECT(_fseeki64(m_pFile, 0, SEEK_END) == 0);
 
     m_FileSize = _ftelli64(m_pFile);
+
+    IFCEXPECT(_fseeki64(m_pFile, 0, SEEK_SET) == 0);
 
 Cleanup:
     return hr;
@@ -47,12 +49,46 @@ CFileResourceStream::GetSize(
 
 __checkReturn HRESULT
 CFileResourceStream::Seek(
-    UINT64 position
+    SeekType::Value seekType,
+    INT64 position,
+    __out_opt UINT64* pNewPosition
     )
 {
     HRESULT hr = S_OK;
+    INT32 seekParam = SEEK_SET;
 
-    IFCEXPECT(_fseeki64(m_pFile, position, SEEK_SET) == 0);
+    switch (seekType)
+    {
+        case SeekType::Begin:
+            {
+                seekParam = SEEK_SET;
+                break;
+            }
+
+        case SeekType::Current:
+            {
+                seekParam = SEEK_CUR;
+                break;
+            }
+
+        case SeekType::End:
+            {
+                seekParam = SEEK_END;
+                break;
+            }
+
+        default:
+            {
+                IFC(E_UNEXPECTED);
+            }
+    }
+
+    IFCEXPECT(_fseeki64(m_pFile, position, seekParam) == 0);
+
+    if (pNewPosition != NULL)
+    {
+        *pNewPosition = _ftelli64(m_pFile);
+    }
 
 Cleanup:
     return hr;

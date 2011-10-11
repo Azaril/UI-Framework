@@ -12,12 +12,13 @@
 #include "Parser.h"
 #include "DynamicClassResolver.h"
 #include "BasicTypeConverter.h"
+#include "FileResourceProvider.h"
 
 #include <Windowsx.h>
 #include <strsafe.h>
 
-#define BUILD_D2D
-//#define BUILD_D3D9
+//#define BUILD_D2D
+#define BUILD_D3D9
 
 #if defined(BUILD_D2D)
 
@@ -79,6 +80,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CProviders* pProviders = NULL;
     CMouseController* pMouseController = NULL;
     CKeyboardController* pKeyboardController = NULL;
+    CFileResourceProvider* pFileResourceProvider = NULL;
 
 #if defined(BUILD_D2D) || defined(BUILD_D3D9)
 
@@ -127,7 +129,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     IFC(CreateBasicTypeConverter(&pTypeConverter));
 
-    IFC(CProviders::Create(pClassResolver, pTypeConverter, &pProviders));
+    IFC(CFileResourceProvider::Create(&pFileResourceProvider));
+
+    IFC(CProviders::Create(pClassResolver, pTypeConverter, pFileResourceProvider, &pProviders));
 
     //
     // Create Parser
@@ -254,6 +258,7 @@ Cleanup:
     ReleaseObject(pClassResolver);
     ReleaseObject(pTypeConverter);
     ReleaseObject(pParser);
+    ReleaseObject(pFileResourceProvider);
     ReleaseObject(pProviders);
 
     ReleaseObject(pGraphicsDevice);

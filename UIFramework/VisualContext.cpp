@@ -2,22 +2,10 @@
 
 CVisualAttachContext::CVisualAttachContext(
     )
-    : m_Parent(NULL)
-    , m_ChangeCallback(NULL)
-    , m_GraphicsDevice(NULL)
-    , m_TimeSource(NULL)
-{
-}
-
-CVisualAttachContext::CVisualAttachContext(
-    __in CVisual* pParent,
-    __in_opt OnValueChangeFunc ChangeFunc,
-    __in CTimeSource* pTimeSource
-    )
-    : m_Parent(pParent)
-    , m_ChangeCallback(ChangeFunc)
-    , m_TimeSource(pTimeSource)
-    , m_GraphicsDevice(NULL)    
+    : m_pParent(NULL)
+    , m_pChangeCallback(NULL)
+    , m_pGraphicsDevice(NULL)
+    , m_pTimeSource(NULL)
 {
 }
 
@@ -27,10 +15,10 @@ CVisualAttachContext::CVisualAttachContext(
     __in CTimeSource* pTimeSource,
     __in CGraphicsDevice* pGraphicsDevice
     )
-    : m_Parent(pParent)
-    , m_ChangeCallback(ChangeFunc)
-    , m_TimeSource(pTimeSource)
-    , m_GraphicsDevice(pGraphicsDevice)
+    : m_pParent(pParent)
+    , m_pChangeCallback(ChangeFunc)
+    , m_pTimeSource(pTimeSource)
+    , m_pGraphicsDevice(pGraphicsDevice)
 {
 }
 
@@ -38,37 +26,38 @@ __out_opt CVisual*
 CVisualAttachContext::GetParent(
     )
 {
-    return m_Parent;
+    return m_pParent;
 }
 
 __out_opt OnValueChangeFunc
 CVisualAttachContext::GetChangeCallback(
     )
 {
-    return m_ChangeCallback;
+    return m_pChangeCallback;
 }
 
 __out_opt CGraphicsDevice*
 CVisualAttachContext::GetGraphicsDevice(
     )
 {
-    return m_GraphicsDevice;
+    return m_pGraphicsDevice;
 }
 
 __out_opt CTimeSource*
 CVisualAttachContext::GetTimeSource(
     )
 {
-    return m_TimeSource;
+    return m_pTimeSource;
 }
 
 void
 CVisualAttachContext::Reset(
     )
 {
-    m_Parent = NULL;
-    m_ChangeCallback = NULL;
-    m_GraphicsDevice = NULL;
+    m_pParent = NULL;
+    m_pChangeCallback = NULL;
+    m_pGraphicsDevice = NULL;
+    m_pTimeSource = NULL;
 }
 
 CVisualDetachContext::CVisualDetachContext(

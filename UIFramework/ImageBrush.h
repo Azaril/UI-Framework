@@ -154,6 +154,7 @@ class CImageBrush : public CBrush
 
         CObjectWithType* m_Source;
         ContextCollection m_Contexts;
+        CProviders* m_pProviders;
 };
 
 template< >

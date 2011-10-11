@@ -820,6 +820,9 @@
     <ClCompile Include="CompositeResourceProvider.cpp">
       <Filter>Framework\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="COMReadStreamWrapper.cpp">
+      <Filter>Framework\Graphics\Imaging\WIC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1532,6 +1535,9 @@
     </ClInclude>
     <ClInclude Include="CompositeResourceProvider.h">
       <Filter>Framework\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="COMReadStreamWrapper.h">
+      <Filter>Framework\Graphics\Imaging\WIC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

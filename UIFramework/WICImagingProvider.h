@@ -33,6 +33,11 @@ class CWICImagingProvider : public CImagingProvider
 			__deref_out CBitmapSource** ppBitmapSource
 			);
 
+        __override virtual __checkReturn HRESULT LoadBitmapFromStream(
+            __in IReadStream* pStream,
+            __deref_out CBitmapSource** ppBitmapSource
+            );
+
     protected:
         CWICImagingProvider(
 			);

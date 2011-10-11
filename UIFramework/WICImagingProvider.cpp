@@ -1,4 +1,5 @@
 #include "WICImagingProvider.h"
+#include "COMReadStreamWrapper.h"
 
 EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_WICImagingFactory = { 0xcacaf262, 0x9370, 0x4615, { 0xa1, 0x3b,  0x9f,  0x55,  0x39,  0xda,  0x4c,  0xa } };
 EXTERN_C const GUID DECLSPEC_SELECTANY GUID_WICPixelFormat32bppPBGRA = { 0x6fddc324, 0x4e03, 0x4bfe, { 0xb1, 0x85, 0x3d, 0x77, 0x76, 0x8d, 0xc9, 0x10 } };
@@ -73,7 +74,6 @@ CWICImagingProvider::LoadBitmapFromDecoder(
     pWICBitmapSource = NULL;
 
 Cleanup:
-    ReleaseObject(pDecoder);
     ReleaseObject(pSource);
     ReleaseObject(pConverter);
     ReleaseObject(pWICBitmapSource);
@@ -103,6 +103,7 @@ CWICImagingProvider::LoadBitmapFromFile(
 
 Cleanup:
     ReleaseObject(pBitmapSource);
+    ReleaseObject(pDecoder);
 
     return hr;
 }
@@ -136,6 +137,37 @@ CWICImagingProvider::LoadBitmapFromMemory(
 
 Cleanup:
     ReleaseObject(pStream);
+    ReleaseObject(pBitmapSource);
+    ReleaseObject(pDecoder);
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CWICImagingProvider::LoadBitmapFromStream(
+    __in IReadStream* pStream,
+    __deref_out CBitmapSource** ppBitmapSource
+    )
+{
+    HRESULT hr = S_OK;
+    CCOMReadStreamWrapper* pCOMStream = NULL;
+    IWICBitmapDecoder* pDecoder = NULL;
+    CWICBitmapSource* pBitmapSource = NULL;
+
+    IFC(CCOMReadStreamWrapper::Create(pStream, &pCOMStream));
+
+    IFC(m_Factory->CreateDecoderFromStream(pCOMStream, NULL, WICDecodeMetadataCacheOnLoad, &pDecoder));
+
+    IFC(LoadBitmapFromDecoder(pDecoder, &pBitmapSource));
+
+    IFC(pBitmapSource->AssociateStream(pCOMStream));
+
+    *ppBitmapSource = pBitmapSource;
+    pBitmapSource = NULL;
+
+Cleanup:
+    ReleaseObject(pCOMStream);
+    ReleaseObject(pDecoder);
     ReleaseObject(pBitmapSource);
 
     return hr;

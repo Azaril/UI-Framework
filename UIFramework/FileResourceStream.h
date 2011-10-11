@@ -14,7 +14,9 @@ class CFileResourceStream : public CRefCountedObjectBase< IReadStream >
             );
 
         __override virtual __checkReturn HRESULT Seek(
-            UINT64 position
+            SeekType::Value seekType,
+            INT64 position,
+            __out_opt UINT64* pNewPosition
             );
 
         __override virtual __checkReturn HRESULT Read(
