@@ -379,7 +379,7 @@ SizeF ComputeScaleFactor(SizeF AvailableSize, SizeF ContentSize, Stretch::Value 
         {
             ScaleX = ScaleY;
         }
-        else if(ConstrainedHeight)
+        else if(!ConstrainedHeight)
         {
             ScaleY = ScaleX;
         }

@@ -41,7 +41,7 @@ void CButtonBase::OnMouseLeftButtonDown(CObjectWithType* pSender, CRoutedEventAr
 
     CContentControl::OnMouseLeftButtonDown(pSender, pRoutedEventArgs);
 
-    //TODO: Capture mouse.
+    IFC(CaptureMouse());
 
 Cleanup:
     ;
@@ -60,6 +60,8 @@ void CButtonBase::OnMouseLeftButtonUp(CObjectWithType* pSender, CRoutedEventArgs
 
         pRoutedEventArgs->SetHandled();
     }
+
+    IFC(ReleaseMouse());
 
 Cleanup:
     ;

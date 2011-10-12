@@ -104,14 +104,7 @@ HRESULT CBorder::SetBorderThickness(FLOAT BorderThickness)
 
     IFCEXPECT(BorderThickness >= 0);
 
-    //TODO: Implement.
-    IFC(E_FAIL);
-
-    //m_BorderThickness = BorderThickness;
-
-    //IFC(m_BorderVisual->SetStrokeThickness(BorderThickness));
-
-    //IFC(InvalidateMeasure());
+    IFC(SetValue(&CBorder::BorderThicknessProperty, BorderThickness));
 
 Cleanup:
     return hr;
@@ -131,8 +124,7 @@ HRESULT CBorder::SetPadding(const RectF& Padding)
 {
     HRESULT hr = S_OK;
 
-    //TODO: Implement.
-    IFC(E_FAIL);
+    IFC(SetValue(&CBorder::PaddingProperty, Padding));
 
 Cleanup:
     return hr;
@@ -142,8 +134,7 @@ HRESULT CBorder::SetCornerRadius(FLOAT Radius)
 {
     HRESULT hr = S_OK;
 
-    //TODO: Implement.
-    IFC(E_FAIL);
+    IFC(SetValue(&CBorder::CornerRadiusProperty, Radius));
 
 Cleanup:
     return hr;

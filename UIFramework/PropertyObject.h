@@ -200,6 +200,16 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
             __in CObjectWithType* pValue 
             );
 
+        __checkReturn HRESULT SetValue(
+            __in CProperty* pProperty,
+            const FLOAT& value
+            );
+
+        __checkReturn HRESULT SetValue(
+            __in CProperty* pProperty,
+            const RectF& value
+            );
+
         virtual __checkReturn HRESULT GetValue( 
             __in CProperty* pProperty, 
             __deref_out_opt CObjectWithType** ppValue 

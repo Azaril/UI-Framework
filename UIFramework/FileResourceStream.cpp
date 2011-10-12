@@ -26,11 +26,19 @@ CFileResourceStream::Initialize(
 
     m_pFile = pFile;
 
+#ifdef _WINDOWS
+    IFCEXPECT(_fseeki64(m_pFile, 0, SEEK_END) == 0);
+
+    m_FileSize = _ftelli64(m_pFile);
+
+    IFCEXPECT(_fseeki64(m_pFile, 0, SEEK_SET) == 0);
+#else
     IFCEXPECT(fseeko(m_pFile, 0, SEEK_END) == 0);
 
     m_FileSize = ftello(m_pFile);
 
     IFCEXPECT(fseeko(m_pFile, 0, SEEK_SET) == 0);
+#endif
 
 Cleanup:
     return hr;
@@ -86,12 +94,20 @@ CFileResourceStream::Seek(
 
     if (!(seekType == SeekType::Current && position == 0))
     {
+#ifdef _WINDOWS
+        IFCEXPECT(_fseeki64(m_pFile, position, seekParam) == 0);
+#else
         IFCEXPECT(fseeko(m_pFile, position, seekParam) == 0);
+#endif
     }
 
     if (pNewPosition != NULL)
     {
+#ifdef _WINDOWS
+        *pNewPosition = _ftelli64(m_pFile);
+#else
         *pNewPosition = ftello(m_pFile);
+#endif        
     }
 
 Cleanup:

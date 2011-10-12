@@ -58,6 +58,44 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
+CPropertyObject::SetValue(
+    __in CProperty* pProperty,
+    const FLOAT& value
+    )
+{
+    HRESULT hr = S_OK;
+    CFloatValue* pFloatValue = NULL;
+
+    IFC(CFloatValue::Create(value, &pFloatValue));
+
+    IFC(SetValue(pProperty, pFloatValue));
+
+Cleanup:
+    ReleaseObject(pFloatValue);
+
+    return hr;
+}
+
+__checkReturn HRESULT 
+CPropertyObject::SetValue(
+    __in CProperty* pProperty,
+    const RectF& value
+    )
+{
+    HRESULT hr = S_OK;
+    CRectFValue* pRectFValue = NULL;
+
+    IFC(CRectFValue::Create(value, &pRectFValue));
+
+    IFC(SetValue(pProperty, pRectFValue));
+
+Cleanup:
+    ReleaseObject(pRectFValue);
+
+    return hr;
+}
+
+__checkReturn HRESULT 
 CPropertyObject::SetValueReadOnly(
     __in CProperty* pProperty, 
     __in CObjectWithType* pValue

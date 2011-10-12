@@ -1,6 +1,9 @@
 #include "FileResourceProvider.h"
 #include "FileResourceStream.h"
+
+#ifndef _WINDOWS
 #include "StringConversion.h"
+#endif
 
 CFileResourceProvider::CFileResourceProvider(
     )
@@ -32,7 +35,7 @@ CFileResourceProvider::ReadResource(
     FILE* pFile = NULL;
     CFileResourceStream* pFileStream = NULL;
 
-#ifdef WIN32
+#ifdef _WINDOWS
     pFile = _wfsopen(pIdentifier, L"rb", _SH_DENYWR);
     IFCPTR(pFile);
 #else

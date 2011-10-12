@@ -73,7 +73,7 @@ CImageBrush::SetSource(
 {
     HRESULT hr = S_OK;
 
-    IFC(InternalSetSource(pSource));
+    IFC(SetValue(&CImageBrush::SourceProperty, pSource));
 
 Cleanup:
     return hr;
