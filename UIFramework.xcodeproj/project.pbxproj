@@ -417,6 +417,16 @@
 		3DA45C5814423C5C00D1BFF5 /* BitmapSourceBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DA45C5214423C5B00D1BFF5 /* BitmapSourceBase.h */; };
 		3DA45C5C144241B600D1BFF5 /* CGBitmapSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DA45C5B144241B500D1BFF5 /* CGBitmapSource.h */; };
 		3DA45C5E144243C600D1BFF5 /* CGBitmapSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DA45C5D144243C600D1BFF5 /* CGBitmapSource.cpp */; };
+		3DDF9BAC144413BD0000001D /* FileResourceProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DDF9BA8144413BD0000001D /* FileResourceProvider.cpp */; };
+		3DDF9BAD144413BD0000001D /* FileResourceProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDF9BA9144413BD0000001D /* FileResourceProvider.h */; };
+		3DDF9BAE144413BD0000001D /* FileResourceStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DDF9BAA144413BD0000001D /* FileResourceStream.cpp */; };
+		3DDF9BAF144413BD0000001D /* FileResourceStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDF9BAB144413BD0000001D /* FileResourceStream.h */; };
+		3DDF9BB3144415A20000001D /* CompositeResourceProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DDF9BB1144415A20000001D /* CompositeResourceProvider.cpp */; };
+		3DDF9BB4144415A20000001D /* CompositeResourceProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDF9BB2144415A20000001D /* CompositeResourceProvider.h */; };
+		3DDF9BB6144416EF0000001D /* StackHeapBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDF9BB5144416EE0000001D /* StackHeapBuffer.h */; };
+		3DDF9BB8144417960000001D /* StringConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDF9BB7144417950000001D /* StringConversion.h */; };
+		3DDF9BBA14441C800000001D /* BundleFileResourceProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDF9BB914441C800000001D /* BundleFileResourceProvider.h */; };
+		3DDF9BBC14441CF20000001D /* BundleFileResourceProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DDF9BBB14441CF10000001D /* BundleFileResourceProvider.cpp */; };
 		3DF3D0DE141BEAE500431CFF /* OpenGLES20GraphicsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0DD141BEAE500431CFF /* OpenGLES20GraphicsDevice.h */; };
 		3DF3D0E1141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DF3D0E0141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp */; };
 		3DF3D0E3141BF7B800431CFF /* OpenGLES20RenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF3D0E2141BF7B800431CFF /* OpenGLES20RenderTarget.h */; };
@@ -839,9 +849,18 @@
 		3DA45C5014423C5B00D1BFF5 /* BitmapBrushBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitmapBrushBase.h; sourceTree = "<group>"; };
 		3DA45C5114423C5B00D1BFF5 /* BitmapSourceBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BitmapSourceBase.cpp; sourceTree = "<group>"; };
 		3DA45C5214423C5B00D1BFF5 /* BitmapSourceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitmapSourceBase.h; sourceTree = "<group>"; };
-		3DA45C5914423D3E00D1BFF5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		3DA45C5B144241B500D1BFF5 /* CGBitmapSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGBitmapSource.h; sourceTree = "<group>"; };
 		3DA45C5D144243C600D1BFF5 /* CGBitmapSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGBitmapSource.cpp; sourceTree = "<group>"; };
+		3DDF9BA8144413BD0000001D /* FileResourceProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileResourceProvider.cpp; sourceTree = "<group>"; };
+		3DDF9BA9144413BD0000001D /* FileResourceProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileResourceProvider.h; sourceTree = "<group>"; };
+		3DDF9BAA144413BD0000001D /* FileResourceStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileResourceStream.cpp; sourceTree = "<group>"; };
+		3DDF9BAB144413BD0000001D /* FileResourceStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileResourceStream.h; sourceTree = "<group>"; };
+		3DDF9BB1144415A20000001D /* CompositeResourceProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeResourceProvider.cpp; sourceTree = "<group>"; };
+		3DDF9BB2144415A20000001D /* CompositeResourceProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompositeResourceProvider.h; sourceTree = "<group>"; };
+		3DDF9BB5144416EE0000001D /* StackHeapBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackHeapBuffer.h; sourceTree = "<group>"; };
+		3DDF9BB7144417950000001D /* StringConversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConversion.h; sourceTree = "<group>"; };
+		3DDF9BB914441C800000001D /* BundleFileResourceProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleFileResourceProvider.h; sourceTree = "<group>"; };
+		3DDF9BBB14441CF10000001D /* BundleFileResourceProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BundleFileResourceProvider.cpp; sourceTree = "<group>"; };
 		3DF3D0DD141BEAE500431CFF /* OpenGLES20GraphicsDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20GraphicsDevice.h; sourceTree = "<group>"; };
 		3DF3D0E0141BEDE500431CFF /* OpenGLES20GraphicsDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20GraphicsDevice.cpp; sourceTree = "<group>"; };
 		3DF3D0E2141BF7B800431CFF /* OpenGLES20RenderTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20RenderTarget.h; sourceTree = "<group>"; };
@@ -868,7 +887,6 @@
 		3D06B5BD1419D4870097C7D9 = {
 			isa = PBXGroup;
 			children = (
-				3DA45C5914423D3E00D1BFF5 /* CoreGraphics.framework */,
 				3D06B5CD1419D4880097C7D9 /* UIFramework */,
 				3D06B5CA1419D4880097C7D9 /* Frameworks */,
 				3D06B5C91419D4880097C7D9 /* Products */,
@@ -894,6 +912,12 @@
 		3D06B5CD1419D4880097C7D9 /* UIFramework */ = {
 			isa = PBXGroup;
 			children = (
+				3DDF9BB1144415A20000001D /* CompositeResourceProvider.cpp */,
+				3DDF9BB2144415A20000001D /* CompositeResourceProvider.h */,
+				3DDF9BA8144413BD0000001D /* FileResourceProvider.cpp */,
+				3DDF9BA9144413BD0000001D /* FileResourceProvider.h */,
+				3DDF9BAA144413BD0000001D /* FileResourceStream.cpp */,
+				3DDF9BAB144413BD0000001D /* FileResourceStream.h */,
 				3DA45C4D14423C5B00D1BFF5 /* BitmapBase.cpp */,
 				3DA45C4E14423C5B00D1BFF5 /* BitmapBase.h */,
 				3DA45C4F14423C5B00D1BFF5 /* BitmapBrushBase.cpp */,
@@ -1313,6 +1337,10 @@
 				3DA45C4B14423AB100D1BFF5 /* CGImagingProvider.cpp */,
 				3DA45C5B144241B500D1BFF5 /* CGBitmapSource.h */,
 				3DA45C5D144243C600D1BFF5 /* CGBitmapSource.cpp */,
+				3DDF9BB5144416EE0000001D /* StackHeapBuffer.h */,
+				3DDF9BB7144417950000001D /* StringConversion.h */,
+				3DDF9BB914441C800000001D /* BundleFileResourceProvider.h */,
+				3DDF9BBB14441CF10000001D /* BundleFileResourceProvider.cpp */,
 			);
 			path = UIFramework;
 			sourceTree = "<group>";
@@ -1541,6 +1569,12 @@
 				3DA45C5614423C5C00D1BFF5 /* BitmapBrushBase.h in Headers */,
 				3DA45C5814423C5C00D1BFF5 /* BitmapSourceBase.h in Headers */,
 				3DA45C5C144241B600D1BFF5 /* CGBitmapSource.h in Headers */,
+				3DDF9BAD144413BD0000001D /* FileResourceProvider.h in Headers */,
+				3DDF9BAF144413BD0000001D /* FileResourceStream.h in Headers */,
+				3DDF9BB4144415A20000001D /* CompositeResourceProvider.h in Headers */,
+				3DDF9BB6144416EF0000001D /* StackHeapBuffer.h in Headers */,
+				3DDF9BB8144417960000001D /* StringConversion.h in Headers */,
+				3DDF9BBA14441C800000001D /* BundleFileResourceProvider.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1792,6 +1826,10 @@
 				3DA45C5514423C5C00D1BFF5 /* BitmapBrushBase.cpp in Sources */,
 				3DA45C5714423C5C00D1BFF5 /* BitmapSourceBase.cpp in Sources */,
 				3DA45C5E144243C600D1BFF5 /* CGBitmapSource.cpp in Sources */,
+				3DDF9BAC144413BD0000001D /* FileResourceProvider.cpp in Sources */,
+				3DDF9BAE144413BD0000001D /* FileResourceStream.cpp in Sources */,
+				3DDF9BB3144415A20000001D /* CompositeResourceProvider.cpp in Sources */,
+				3DDF9BBC14441CF20000001D /* BundleFileResourceProvider.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

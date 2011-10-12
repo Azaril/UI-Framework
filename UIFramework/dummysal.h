@@ -12,6 +12,8 @@
 #define __out_z
 #define __out_opt
 #define __out_ecount(Count)
+#define __out_bcount(Count)
+#define __out_bcount_part(Count, To)
 
 #define __inout
 

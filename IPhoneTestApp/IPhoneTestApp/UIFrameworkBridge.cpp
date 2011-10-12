@@ -3,6 +3,9 @@
 #include "DynamicClassResolver.h"
 #include "Parser.h"
 #include "UIHost.h"
+#include "FileResourceProvider.h"
+#include "BundleFileResourceProvider.h"
+#include "CompositeResourceProvider.h"
 #include "OpenGLES20GraphicsDevice.h"
 #include "OpenGLES20RenderTarget.h"
 
@@ -15,12 +18,18 @@ UIFrameworkBridge::UIFrameworkBridge(
     , m_pGraphicsDevice(NULL)
     , m_pRenderTarget(NULL)
     , m_pUIHost(NULL)
+    , m_pFileResourceProvider(NULL)
+    , m_pBundleResourceProvider(NULL)
+    , m_pCompositeResourceProvider(NULL)
 {
 }
 
 UIFrameworkBridge::~UIFrameworkBridge(
     )
 {
+    ReleaseObject(m_pFileResourceProvider);
+    ReleaseObject(m_pBundleResourceProvider);
+    ReleaseObject(m_pCompositeResourceProvider);
     ReleaseObject(m_pClassResolver);
     ReleaseObject(m_pTypeConverter);
     ReleaseObject(m_pProviders);
@@ -42,7 +51,16 @@ UIFrameworkBridge::Initialize(
     
     IFC(CreateBasicTypeConverter(&m_pTypeConverter));
     
-    IFC(CProviders::Create(m_pClassResolver, m_pTypeConverter, &m_pProviders));
+    IFC(CFileResourceProvider::Create(&m_pFileResourceProvider));
+    
+    IFC(CBundleFileResourceProvider::Create(&m_pBundleResourceProvider));
+    
+    IFC(CCompositeResourceProvider::Create(&m_pCompositeResourceProvider));
+    
+    IFC(m_pCompositeResourceProvider->AddResourceProvider(m_pBundleResourceProvider));
+    IFC(m_pCompositeResourceProvider->AddResourceProvider(m_pFileResourceProvider));
+    
+    IFC(CProviders::Create(m_pClassResolver, m_pTypeConverter, m_pCompositeResourceProvider, &m_pProviders));
     
     IFC(CParser::Create(m_pProviders, &m_pParser));
     

@@ -26,6 +26,8 @@ typedef unsigned char BYTE;
 typedef long long LONGLONG;
 typedef unsigned long long ULONGLONG;
 typedef INT32 HRESULT;
+typedef long int INT64;
+typedef unsigned long int UINT64;
 
 #ifndef NULL
 #define NULL (0)

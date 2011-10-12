@@ -1,4 +1,5 @@
 #include "FileResourceStream.h"
+#include <stdio.h>
 
 CFileResourceStream::CFileResourceStream(
     )
@@ -25,11 +26,11 @@ CFileResourceStream::Initialize(
 
     m_pFile = pFile;
 
-    IFCEXPECT(_fseeki64(m_pFile, 0, SEEK_END) == 0);
+    IFCEXPECT(fseeko(m_pFile, 0, SEEK_END) == 0);
 
-    m_FileSize = _ftelli64(m_pFile);
+    m_FileSize = ftello(m_pFile);
 
-    IFCEXPECT(_fseeki64(m_pFile, 0, SEEK_SET) == 0);
+    IFCEXPECT(fseeko(m_pFile, 0, SEEK_SET) == 0);
 
 Cleanup:
     return hr;
@@ -83,11 +84,14 @@ CFileResourceStream::Seek(
             }
     }
 
-    IFCEXPECT(_fseeki64(m_pFile, position, seekParam) == 0);
+    if (!(seekType == SeekType::Current && position == 0))
+    {
+        IFCEXPECT(fseeko(m_pFile, position, seekParam) == 0);
+    }
 
     if (pNewPosition != NULL)
     {
-        *pNewPosition = _ftelli64(m_pFile);
+        *pNewPosition = ftello(m_pFile);
     }
 
 Cleanup:

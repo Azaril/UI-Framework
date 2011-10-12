@@ -1,98 +1,6 @@
 #include "LibXMLReader.h"
-
-#include <iconv.h>
-
-template< typename T, unsigned int Size >
-class ParseBuffer
-{
-    public:
-        ParseBuffer(
-            ) 
-            : m_UseInternalBuffer(TRUE)
-            , m_pHeapBuffer(NULL)
-            , m_HeapBufferSize(0)
-        {
-        }
-    
-        ~ParseBuffer(
-             )
-        {
-            delete [] m_pHeapBuffer;
-        }
-    
-        __checkReturn HRESULT EnsureBufferSize(
-        	size_t BufferSize
-        	)
-        {
-        	HRESULT hr = S_OK;
-
-        	if (BufferSize <= ARRAYSIZE(m_InternalBuffer))
-        	{
-        		m_UseInternalBuffer = TRUE;
-        	}
-        	else
-        	{
-        		m_UseInternalBuffer = FALSE;
-
-        		if (BufferSize > m_HeapBufferSize)
-        		{
-        			delete m_pHeapBuffer;
-        			m_pHeapBuffer = NULL;
-
-        			m_HeapBufferSize = 0;
-        		}
-
-        		if (m_pHeapBuffer == NULL)
-        		{
-        			m_pHeapBuffer = new T(BufferSize);
-                    IFCOOM(m_pHeapBuffer);
-
-        			m_HeapBufferSize = BufferSize;
-        		}
-        	}
-
-        Cleanup:
-        	return hr;
-        }
-
-        size_t GetBufferSize(
-        	)
-        {
-        	if(m_UseInternalBuffer)
-        	{
-        		return ARRAYSIZE(m_InternalBuffer);
-        	}
-        	else
-        	{
-        		return m_HeapBufferSize;
-        	}
-        }
-
-        size_t GetBufferByteSize(
-        	)
-        {
-        	return GetBufferSize() * sizeof(T);
-        }
-
-        __out T* GetBuffer(
-        	)
-    	{
-    		if (m_UseInternalBuffer)	
-    		{
-    			return m_InternalBuffer;
-    		}
-    		else
-    		{
-    			return m_pHeapBuffer;
-    		}
-    	}
-    
-    protected:
-        BOOL m_UseInternalBuffer;
-        T m_InternalBuffer[Size];
-        T* m_pHeapBuffer;
-        UINT32 m_HeapBufferSize;
-};
+#include "StackHeapBuffer.h"
+#include "StringConversion.h"
 
 CLibXMLReader::CLibXMLReader(
 	) 
@@ -121,42 +29,15 @@ CLibXMLReader::LoadFromFile(
 {
     HRESULT hr = S_OK;
     xmlTextReaderPtr pReader = NULL;
-    iconv_t Converter = NULL;
-    size_t ConversionResult = 0;  
-    ParseBuffer< CHAR, 2048 > ConvertedTextBuffer;
+    StackHeapBuffer< CHAR, 2048 > ConvertedTextBuffer;
     
     IFCPTR(pPath);
     IFCPTR(pCallback);
     
-    {
-        size_t PathTextLength = wcslen(pPath);
-        size_t ConvertedTextLength = 0;
-
-        IFC(ConvertedTextBuffer.EnsureBufferSize((PathTextLength * 2) + 1));
-
-        {
-            CHAR* pInputBuffer = (CHAR*)pPath;
-		    CHAR* pOutputBuffer = ConvertedTextBuffer.GetBuffer();  
-            size_t SourceTextBufferSize = PathTextLength * sizeof(WCHAR);
-		    size_t ConvertedTextBufferSize = ConvertedTextBuffer.GetBufferByteSize();  
-		    
-		    Converter = iconv_open("utf-8", "WCHAR_T");
-		       
-		    ConversionResult = iconv(Converter, &pInputBuffer, &SourceTextBufferSize, &pOutputBuffer, &ConvertedTextBufferSize);
-
-		    IFCEXPECT(ConversionResult != (size_t)-1);
-		    
-		    ConvertedTextLength = (ConvertedTextBuffer.GetBufferByteSize() - ConvertedTextBufferSize);
-		    
-		    IFCEXPECT(ConvertedTextLength < ConvertedTextBuffer.GetBufferSize() - 1);
-		    
-		    ConvertedTextBuffer.GetBuffer()[ConvertedTextLength] = L'\0';
-		    
-		    pReader = xmlNewTextReaderFilename(ConvertedTextBuffer.GetBuffer());
-		    
-		    IFC(ProcessReader(pReader, pCallback));
-		}
-    }
+    IFC(ConvertWCHARToUTF8(pPath, &ConvertedTextBuffer, NULL));
+    
+    pReader = xmlNewTextReaderFilename(ConvertedTextBuffer.GetBuffer());
+    IFCPTR(pReader);
     
     IFC(ProcessReader(pReader, pCallback));
     
@@ -164,11 +45,6 @@ Cleanup:
     if (pReader != NULL)
     {
         xmlFreeTextReader(pReader);
-    }
-    
-    if (Converter != NULL)
-    {
-        iconv_close(Converter);
     }
     
     return hr;
@@ -182,45 +58,23 @@ CLibXMLReader::LoadFromString(
 {
     HRESULT hr = S_OK;
     xmlTextReaderPtr pReader = NULL;
-    iconv_t Converter = NULL;
-    size_t ConversionResult = 0;  
-    ParseBuffer< CHAR, 2048 > ConvertedTextBuffer; 
+    StackHeapBuffer< CHAR, 2048 > ConvertedTextBuffer; 
     xmlParserInputBuffer* pBuffer = NULL;
+    UINT32 ConvertedTextLength = 0;
     
     IFCPTR(pText);
     IFCPTR(pCallback);
     
-    {
-        size_t TextLength = wcslen(pText);
-        size_t ConvertedTextLength = 0;
+    IFC(ConvertWCHARToUTF8(pText, &ConvertedTextBuffer, &ConvertedTextLength));
+    
+    //
+    // NOTE: Remove NULL terminator from string length.
+    //
+    pBuffer = xmlParserInputBufferCreateStatic(ConvertedTextBuffer.GetBuffer(), ConvertedTextLength - 1, XML_CHAR_ENCODING_UTF8);
+    IFCOOM(pBuffer);
 
-        IFC(ConvertedTextBuffer.EnsureBufferSize((TextLength * 2) + 1));
-
-        {
-            CHAR* pInputBuffer = (CHAR*)pText;
-		    CHAR* pOutputBuffer = ConvertedTextBuffer.GetBuffer();        
-            size_t SourceTextBufferSize = TextLength * sizeof(WCHAR);
-		    size_t ConvertedTextBufferSize = ConvertedTextBuffer.GetBufferByteSize();  
-		    
-		    Converter = iconv_open("utf-8", "WCHAR_T");
-		       
-		    ConversionResult = iconv(Converter, &pInputBuffer, &SourceTextBufferSize, &pOutputBuffer, &ConvertedTextBufferSize);
-
-		    IFCEXPECT(ConversionResult != (size_t)-1);
-		    
-		    ConvertedTextLength = (ConvertedTextBuffer.GetBufferByteSize() - ConvertedTextBufferSize);
-		    
-		    IFCEXPECT(ConvertedTextLength < ConvertedTextBuffer.GetBufferSize() - 1);
-		    
-		    ConvertedTextBuffer.GetBuffer()[ConvertedTextLength] = L'\0';
-        
-        	pBuffer = xmlParserInputBufferCreateMem(ConvertedTextBuffer.GetBuffer(), ConvertedTextLength, XML_CHAR_ENCODING_UTF8);
-        
-        	pReader = xmlNewTextReader(pBuffer, NULL);
-        
-        	IFC(ProcessReader(pReader, pCallback));
-        }
-    }
+    pReader = xmlNewTextReader(pBuffer, NULL);
+    IFCPTR(pReader);
     
     IFC(ProcessReader(pReader, pCallback));
     
@@ -235,11 +89,6 @@ Cleanup:
         delete pBuffer;
     }
     
-    if (Converter != NULL)
-    {
-        iconv_close(Converter);
-    }
-    
     return hr;
 }
 
@@ -250,17 +99,14 @@ CLibXMLReader::ProcessReader(
 	)
 {
     HRESULT hr = S_OK;
-    iconv_t Converter = NULL;
-    ParseBuffer< WCHAR, 2048 > ConversionBuffer;
-    ParseBuffer< WCHAR, 2048 > AttributeNameBuffer;
-    ParseBuffer< WCHAR, 2048 > AttributeValueBuffer;
-    ParseBuffer< WCHAR, 2048 > AttributePrefixBuffer;
-    ParseBuffer< WCHAR, 2048 > AttributeNamespaceUriBuffer;
+    StackHeapBuffer< WCHAR, 2048 > ConversionBuffer;
+    StackHeapBuffer< WCHAR, 2048 > AttributeNameBuffer;
+    StackHeapBuffer< WCHAR, 2048 > AttributeValueBuffer;
+    StackHeapBuffer< WCHAR, 2048 > AttributePrefixBuffer;
+    StackHeapBuffer< WCHAR, 2048 > AttributeNamespaceUriBuffer;
 
     IFCPTR(pReader);
     IFCPTR(pCallback);
-    
-    Converter = iconv_open("WCHAR_T", "utf-8");
 
     do
     {
@@ -273,8 +119,7 @@ CLibXMLReader::ProcessReader(
                     const xmlChar* pName = NULL;
                     size_t NameLength = 0;
                     BOOL EmptyElement = FALSE;
-                    size_t ConversionResult = 0;
-                    size_t ConvertedTextLength = 0;
+                    UINT32 ConvertedTextLength = 0;
 
                     EmptyElement = xmlTextReaderIsEmptyElement(pReader);
 
@@ -282,120 +127,60 @@ CLibXMLReader::ProcessReader(
                     
                     NameLength = xmlStrlen(pName);
                     
-                    IFC(ConversionBuffer.EnsureBufferSize(NameLength + 1));
+                    IFC(ConvertUTF8ToWCHAR((const CHAR*)pName, NameLength, &ConversionBuffer, &ConvertedTextLength));
                     
+                    IFC(RaiseElementStart(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));
+                    
+                    for (INT32 ContinueAttributes = xmlTextReaderMoveToFirstAttribute(pReader); ContinueAttributes == 1; ContinueAttributes = xmlTextReaderMoveToNextAttribute(pReader))
                     {
-                        CHAR* pInputBuffer = (CHAR*)pName;
-                        CHAR* pOutputBuffer = (CHAR*)ConversionBuffer.GetBuffer();
-                        size_t ConvertedTextBufferSize = ConversionBuffer.GetBufferByteSize();
-                                       
-                        ConversionResult = iconv(Converter, &pInputBuffer, &NameLength, &pOutputBuffer, &ConvertedTextBufferSize);
+                        const xmlChar* pAttributeName = xmlTextReaderConstLocalName(pReader);
+                        const xmlChar* pAttributeValue = xmlTextReaderConstValue(pReader);
+                        const xmlChar* pAttributePrefix = xmlTextReaderConstPrefix(pReader);
+                        const xmlChar* pAttributeNamespaceUri = xmlTextReaderConstNamespaceUri(pReader);
                         
-                        IFCEXPECT(ConversionResult != (size_t)-1);
+                        IFCPTR(pAttributeName);
+                        IFCPTR(pAttributeValue);
                         
-                        ConvertedTextLength = (ConversionBuffer.GetBufferByteSize() - ConvertedTextBufferSize) / sizeof(WCHAR);
-                        
-                        ConversionBuffer.GetBuffer()[ConvertedTextLength] = L'\0';                        
-                        
-                        IFC(RaiseElementStart(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));
-                        
-                        for (INT32 ContinueAttributes = xmlTextReaderMoveToFirstAttribute(pReader); ContinueAttributes == 1; ContinueAttributes = xmlTextReaderMoveToNextAttribute(pReader))
-                        {
-                            const xmlChar* pAttributeName = xmlTextReaderConstLocalName(pReader);
-                            const xmlChar* pAttributeValue = xmlTextReaderConstValue(pReader);
-                            const xmlChar* pAttributePrefix = xmlTextReaderConstPrefix(pReader);
-                            const xmlChar* pAttributeNamespaceUri = xmlTextReaderConstNamespaceUri(pReader);
+                        {   
+                            size_t AttributeNameLength = xmlStrlen(pAttributeName);
+                            size_t AttributeValueLength = xmlStrlen(pAttributeValue);
+                            size_t AttributePrefixLength = (pAttributePrefix != NULL) ? xmlStrlen(pAttributePrefix) : 0;
+                            size_t AttributeNamespaceUriLength = (pAttributeNamespaceUri != NULL) ? xmlStrlen(pAttributeNamespaceUri) : 0;
                             
-                            IFCPTR(pAttributeName);
-                            IFCPTR(pAttributeValue);
+                            UINT32 AttributeNameConvertedLength = 0;
+                            UINT32 AttributeValueConvertedLength = 0;
+                            UINT32 AttributePrefixConvertedLength = 0;
+                            UINT32 AttributeNamespaceUriConvertedLength = 0;
                             
-                            {   
-                                size_t AttributeNameLength = xmlStrlen(pAttributeName);
-                                size_t AttributeValueLength = xmlStrlen(pAttributeValue);
-                                size_t AttributePrefixLength = (pAttributePrefix != NULL) ? xmlStrlen(pAttributePrefix) : 0;
-                                size_t AttributeNamespaceUriLength = (pAttributeNamespaceUri != NULL) ? xmlStrlen(pAttributeNamespaceUri) : 0;
-                                
-                                size_t AttributeNameConvertedLength = 0;
-                                size_t AttributeValueConvertedLength = 0;
-                                size_t AttributePrefixConvertedLength = 0;
-                                size_t AttributeNamespaceUriConvertedLength = 0;
-                                
-                                IFC(AttributeNameBuffer.EnsureBufferSize(AttributeNameLength + 1));
-                                IFC(AttributeValueBuffer.EnsureBufferSize(AttributeValueLength + 1));
-                                IFC(AttributePrefixBuffer.EnsureBufferSize(AttributePrefixLength + 1));
-                                IFC(AttributeNamespaceUriBuffer.EnsureBufferSize(AttributeNamespaceUriLength + 1));
-                                
-                                {
-                                    CHAR* pAttributeTextInputBuffer = (CHAR*)pAttributeName;                                
-                                    CHAR* pAttributeTextOutBuffer = (CHAR*)AttributeNameBuffer.GetBuffer();
-                                    size_t InputBufferSize = AttributeNameLength;
-                                    size_t ConversionBufferSize = AttributeNameBuffer.GetBufferByteSize();
-                                    
-                                    ConversionResult = iconv(Converter, &pAttributeTextInputBuffer, &InputBufferSize, &pAttributeTextOutBuffer, &ConversionBufferSize);
-                                    
-                                    IFCEXPECT(ConversionResult != (size_t)-1);
-                                    
-                                    AttributeNameConvertedLength = (AttributeNameBuffer.GetBufferByteSize() - ConversionBufferSize) / sizeof(WCHAR);
-                                }
-                                
-                                AttributeNameBuffer.GetBuffer()[AttributeNameConvertedLength] = L'\0';
-                                
-                                {
-                                    CHAR* pAttributeTextInputBuffer = (CHAR*)pAttributeValue;                                
-                                    CHAR* pAttributeTextOutBuffer = (CHAR*)AttributeValueBuffer.GetBuffer();
-                                    size_t InputBufferSize = AttributeValueLength;
-                                    size_t ConversionBufferSize = AttributeValueBuffer.GetBufferByteSize();
-                                    
-                                    ConversionResult = iconv(Converter, &pAttributeTextInputBuffer, &InputBufferSize, &pAttributeTextOutBuffer, &ConversionBufferSize);
-                                    
-                                    IFCEXPECT(ConversionResult != (size_t)-1);
-                                    
-                                    AttributeValueConvertedLength = (AttributeValueBuffer.GetBufferByteSize() - ConversionBufferSize) / sizeof(WCHAR);
-                                }
-                                
-                                AttributeValueBuffer.GetBuffer()[AttributeValueConvertedLength] = L'\0';  
-                                
-                                if (pAttributePrefix != NULL)
-                                {
-                                    CHAR* pAttributeTextInputBuffer = (CHAR*)pAttributePrefix;                                
-                                    CHAR* pAttributeTextOutBuffer = (CHAR*)AttributePrefixBuffer.GetBuffer();
-                                    size_t InputBufferSize = AttributePrefixLength;
-                                    size_t ConversionBufferSize = AttributePrefixBuffer.GetBufferByteSize();
-                                    
-                                    ConversionResult = iconv(Converter, &pAttributeTextInputBuffer, &InputBufferSize, &pAttributeTextOutBuffer, &ConversionBufferSize);
-                                    
-                                    IFCEXPECT(ConversionResult != (size_t)-1);
-                                    
-                                    AttributePrefixConvertedLength = (AttributePrefixBuffer.GetBufferByteSize() - ConversionBufferSize) / sizeof(WCHAR);
-                                }
-                                
-                                AttributePrefixBuffer.GetBuffer()[AttributePrefixConvertedLength] = L'\0';  
-                                
-                                if (pAttributeNamespaceUri != NULL)
-                                {
-                                    CHAR* pAttributeTextInputBuffer = (CHAR*)pAttributeNamespaceUri;                                
-                                    CHAR* pAttributeTextOutBuffer = (CHAR*)AttributeNamespaceUriBuffer.GetBuffer();
-                                    size_t InputBufferSize = AttributeNamespaceUriLength;
-                                    size_t ConversionBufferSize = AttributeNamespaceUriBuffer.GetBufferByteSize();
-                                    
-                                    ConversionResult = iconv(Converter, &pAttributeTextInputBuffer, &InputBufferSize, &pAttributeTextOutBuffer, &ConversionBufferSize);
-                                    
-                                    IFCEXPECT(ConversionResult != (size_t)-1);
-                                    
-                                    AttributeNamespaceUriConvertedLength = (AttributeNamespaceUriBuffer.GetBufferByteSize() - ConversionBufferSize) / sizeof(WCHAR);
-                                }
-                                
-                                AttributeNamespaceUriBuffer.GetBuffer()[AttributeNamespaceUriConvertedLength] = L'\0';      
-                                
-                                IFC(RaiseAttribute(AttributeNameBuffer.GetBuffer(), AttributeNameConvertedLength, AttributeValueBuffer.GetBuffer(), AttributeValueConvertedLength, AttributePrefixBuffer.GetBuffer(), AttributePrefixConvertedLength, AttributeNamespaceUriBuffer.GetBuffer(), AttributeNamespaceUriConvertedLength, pCallback));
+                            IFC(ConvertUTF8ToWCHAR((const CHAR*)pAttributeName, AttributeNameLength, &AttributeNameBuffer, &AttributeNameConvertedLength));
+                            IFC(ConvertUTF8ToWCHAR((const CHAR*)pAttributeValue, AttributeValueLength, &AttributeValueBuffer, &AttributeValueConvertedLength));
+                            
+                            if (pAttributePrefix != NULL)
+                            {
+                                IFC(ConvertUTF8ToWCHAR((const CHAR*)pAttributePrefix, AttributePrefixLength, &AttributePrefixBuffer, &AttributePrefixConvertedLength));
                             }
+                            else
+                            {
+                                AttributePrefixBuffer.GetBuffer()[0] = L'\0';
+                            }
+                            
+                            if (pAttributeNamespaceUri != NULL)
+                            {
+                                IFC(ConvertUTF8ToWCHAR((const CHAR*)pAttributeNamespaceUri, AttributeNamespaceUriLength, &AttributeNamespaceUriBuffer, &AttributeNamespaceUriConvertedLength));
+                            }
+                            else
+                            {
+                                AttributeNamespaceUriBuffer.GetBuffer()[0] = L'\0';
+                            }
+                            
+                            IFC(RaiseAttribute(AttributeNameBuffer.GetBuffer(), AttributeNameConvertedLength, AttributeValueBuffer.GetBuffer(), AttributeValueConvertedLength, AttributePrefixBuffer.GetBuffer(), AttributePrefixConvertedLength, AttributeNamespaceUriBuffer.GetBuffer(), AttributeNamespaceUriConvertedLength, pCallback));
                         }
-                        
-                        if(EmptyElement)
-                        {
-                            IFC(RaiseElementEnd(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));
-                        }                        
                     }
+                    
+                    if(EmptyElement)
+                    {
+                        IFC(RaiseElementEnd(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));
+                    }                        
 
                     break;
                 }
@@ -404,33 +189,15 @@ CLibXMLReader::ProcessReader(
                 {
                     const xmlChar* pName = NULL;
                     size_t NameLength = 0;
-                    BOOL EmptyElement = FALSE;
-                    size_t ConversionResult = 0;
-                    size_t ConvertedTextLength = 0;
-                    
-                    EmptyElement = xmlTextReaderIsEmptyElement(pReader);
+                    UINT32 ConvertedTextLength = 0;
                     
                     pName = xmlTextReaderConstLocalName(pReader);
                     
                     NameLength = xmlStrlen(pName);
                     
-                    IFC(ConversionBuffer.EnsureBufferSize(NameLength + 1));
-                    
-                    {
-                        CHAR* pInputBuffer = (CHAR*)pName;
-                        CHAR* pOutputBuffer = (CHAR*)ConversionBuffer.GetBuffer();
-                        size_t ConvertedTextBufferSize = ConversionBuffer.GetBufferByteSize();
+                    IFC(ConvertUTF8ToWCHAR((const CHAR*)pName, NameLength, &ConversionBuffer, &ConvertedTextLength));
                         
-                        ConversionResult = iconv(Converter, &pInputBuffer, &NameLength, &pOutputBuffer, &ConvertedTextBufferSize);
-                        
-                        IFCEXPECT(ConversionResult != (size_t)-1);
-                        
-                        ConvertedTextLength = (ConversionBuffer.GetBufferByteSize() - ConvertedTextBufferSize) / sizeof(WCHAR);
-                        
-                        ConversionBuffer.GetBuffer()[ConvertedTextLength] = L'\0';    
-                        
-                        IFC(RaiseElementEnd(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));                        
-                    }
+                    IFC(RaiseElementEnd(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));
                     
                     break;
                 }
@@ -439,8 +206,7 @@ CLibXMLReader::ProcessReader(
                 {
                     const xmlChar* pValue = NULL;
                     size_t ValueLength = 0;
-                    size_t ConversionResult = 0;
-                    size_t ConvertedTextLength = 0;
+                    UINT32 ConvertedTextLength = 0;
                     
                     if (xmlTextReaderHasValue(pReader))
                     {
@@ -448,23 +214,9 @@ CLibXMLReader::ProcessReader(
                         
                         ValueLength = xmlStrlen(pValue);
                         
-                        IFC(ConversionBuffer.EnsureBufferSize(ValueLength + 1));
-                        
-                        {
-                            CHAR* pInputBuffer = (CHAR*)pValue;
-                            CHAR* pOutputBuffer = (CHAR*)ConversionBuffer.GetBuffer();
-                            size_t ConvertedTextBufferSize = ConversionBuffer.GetBufferByteSize();
+                        IFC(ConvertUTF8ToWCHAR((const CHAR*)pValue, ValueLength, &ConversionBuffer, &ConvertedTextLength));
                             
-                            ConversionResult = iconv(Converter, &pInputBuffer, &ValueLength, &pOutputBuffer, &ConvertedTextBufferSize);
-                            
-                            IFCEXPECT(ConversionResult != (size_t)-1);
-                            
-                            ConvertedTextLength = (ConversionBuffer.GetBufferByteSize() - ConvertedTextBufferSize) / sizeof(WCHAR);
-                            
-                            ConversionBuffer.GetBuffer()[ConvertedTextLength] = L'\0';    
-                            
-                            IFC(RaiseElementEnd(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));                        
-                        }
+                        IFC(RaiseElementEnd(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));                        
                     }
                     
                     break;
@@ -479,11 +231,6 @@ CLibXMLReader::ProcessReader(
     while(SUCCEEDED(hr));
 
 Cleanup:
-    if (Converter != NULL)
-    {
-        iconv_close(Converter);
-    }
-
     return hr;
 }
 

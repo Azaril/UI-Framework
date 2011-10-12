@@ -1,5 +1,6 @@
 #include "FileResourceProvider.h"
 #include "FileResourceStream.h"
+#include "StringConversion.h"
 
 CFileResourceProvider::CFileResourceProvider(
     )
@@ -31,8 +32,19 @@ CFileResourceProvider::ReadResource(
     FILE* pFile = NULL;
     CFileResourceStream* pFileStream = NULL;
 
+#ifdef WIN32
     pFile = _wfsopen(pIdentifier, L"rb", _SH_DENYWR);
     IFCPTR(pFile);
+#else
+    {
+        StackHeapBuffer<CHAR, 2048> stringBuffer;
+        
+        IFC(ConvertWCHARToUTF8(pIdentifier, &stringBuffer, NULL));
+        
+        pFile = fopen(stringBuffer.GetBuffer(), "rb");
+        IFCPTR(pFile);
+    }
+#endif
 
     IFC(CFileResourceStream::Create(pFile, &pFileStream));
 

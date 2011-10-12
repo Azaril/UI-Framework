@@ -100,6 +100,7 @@ CCGBitmapSource::LoadIntoTexture(
 
 	IFCPTR(pContext);
 
+    CGContextTranslateCTM(pContext, 0, 0);
 	CGContextClearRect(pContext, CGRectMake(0, 0, sourceSize.width, sourceSize.height));
 	CGContextDrawImage(pContext, CGRectMake(0, 0, sourceSize.width, sourceSize.height), m_pImage);
 

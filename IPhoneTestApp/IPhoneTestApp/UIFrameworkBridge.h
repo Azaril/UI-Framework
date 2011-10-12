@@ -9,6 +9,9 @@ class COpenGLES20GraphicsDevice;
 class COpenGLES20RenderBufferStorageAllocator;
 class COpenGLES20RenderTarget;
 class COpenGLES20Context;
+class CFileResourceProvider;
+class CBundleFileResourceProvider;
+class CCompositeResourceProvider;
 
 class UIFrameworkBridge
 {
@@ -39,6 +42,9 @@ public:
     CProviders* m_pProviders;
     CParser* m_pParser;
     CUIHost* m_pUIHost;
+    CFileResourceProvider* m_pFileResourceProvider;
+    CBundleFileResourceProvider* m_pBundleResourceProvider;
+    CCompositeResourceProvider* m_pCompositeResourceProvider;
     COpenGLES20GraphicsDevice* m_pGraphicsDevice;
     COpenGLES20RenderTarget* m_pRenderTarget;
 };

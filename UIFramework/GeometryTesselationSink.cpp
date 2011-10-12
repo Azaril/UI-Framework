@@ -27,6 +27,8 @@ CGeometryTesselationSink::~CGeometryTesselationSink(
 	}
 
 	delete [] m_ppVertexBuffers;
+    
+    delete [] m_pVertexCache;
 }
 
 __checkReturn HRESULT
