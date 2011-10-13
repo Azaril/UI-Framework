@@ -1,14 +1,14 @@
 #pragma once
 
-#include <d3d9.h>
+#include <d3d10.h>
 
 #include "RenderTarget.h"
 #include "TextureAllocator.h"
 #include "TextureAtlasPool.h"
 #include "RenderTargetBase.h"
-#include "D3D9VertexBuffer.h"
+#include "D3D10VertexBuffer.h"
 
-class UIFRAMEWORK_API CD3D9RenderTarget : public CRenderTargetBase
+class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase
 {
     public:
         /*
@@ -104,14 +104,15 @@ class UIFRAMEWORK_API CD3D9RenderTarget : public CRenderTargetBase
             */
 
     protected:
-        CD3D9RenderTarget(
+        CD3D10RenderTarget(
 			);
 
-        virtual ~CD3D9RenderTarget(
+        virtual ~CD3D10RenderTarget(
 			);
 
         __checkReturn HRESULT Initialize(
-            IDirect3DDevice9* pDevice
+            __in ID3D10Device* pDevice,
+            __in ID3D10RenderTargetView* pRenderTargetView
 			);
 
         __override virtual __checkReturn HRESULT BindTexture(
@@ -128,9 +129,14 @@ class UIFRAMEWORK_API CD3D9RenderTarget : public CRenderTargetBase
             __deref_out ITexture** ppTexture
             );
 
-        IDirect3DDevice9* m_pDevice;
-        CD3D9VertexBuffer* m_pVertexBuffers[2];
-        IDirect3DVertexDeclaration9* m_pVertexDeclaration;
-        IDirect3DPixelShader9* m_pPixelShader;
-        IDirect3DVertexShader9* m_pVertexShader;
+        ID3D10Device* m_pDevice;
+        CD3D10VertexBuffer* m_pVertexBuffers[2];
+        ID3D10VertexShader* m_pVertexShader;
+        ID3D10PixelShader* m_pPixelShader;
+        ID3D10InputLayout* m_pInputLayout;
+        ID3D10Buffer* m_pTransformBuffer;
+        ID3D10RasterizerState* m_pRasterizerState;
+
+    private:
+        ID3D10RenderTargetView* m_pRenderTargetView;
 };

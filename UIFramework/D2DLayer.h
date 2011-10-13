@@ -3,6 +3,8 @@
 #include "Layer.h"
 #include "Factory.h"
 
+#include <d2d1.h>
+
 class CD2DLayer : public CLayer
 {
     public:

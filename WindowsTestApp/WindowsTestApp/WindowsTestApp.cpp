@@ -18,7 +18,8 @@
 #include <strsafe.h>
 
 //#define BUILD_D2D
-#define BUILD_D3D9
+//#define BUILD_D3D9
+#define BUILD_D3D10
 
 #if defined(BUILD_D2D)
 
@@ -30,6 +31,11 @@
 
 #include "D3D9GraphicsDevice.h"
 #include "D3D9RenderTarget.h"
+
+#elif defined(BUILD_D3D10)
+
+#include "D3D10GraphicsDevice.h"
+#include "D3D10RenderTarget.h"
 
 #elif defined(BUILD_IRRLICHT)
 
@@ -59,6 +65,10 @@ CD2DHWNDRenderTarget* g_RenderTarget = NULL;
 
 CD3D9RenderTarget* g_RenderTarget = NULL;
 
+#elif defined(BUILD_D3D10)
+
+CD3D10RenderTarget* g_RenderTarget = NULL;
+
 #elif defined(BUILD_IRRLICHT)
 
 
@@ -82,7 +92,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CKeyboardController* pKeyboardController = NULL;
     CFileResourceProvider* pFileResourceProvider = NULL;
 
-#if defined(BUILD_D2D) || defined(BUILD_D3D9)
+#if defined(BUILD_D2D) || defined(BUILD_D3D9) || defined(BUILD_D3D10)
 
     HWND hWnd = NULL;
     MSG msg = { 0 };
@@ -99,6 +109,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     CD3D9GraphicsDevice* pGraphicsDevice = NULL;
     CD3D9HWNDRenderTarget* pRenderTarget = NULL;
+
+#elif defined(BUILD_D3D10)
+
+    CD3D10GraphicsDevice* pGraphicsDevice = NULL;
+    CD3D10HWNDRenderTarget* pRenderTarget = NULL;
 
 #elif defined(BUILD_IRRLICHT)
 
@@ -140,7 +155,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     IFC(pParser->LoadFromFile(L"c:\\testxml.xml", &pParsedRoot));
 
-#if defined(BUILD_D2D) || defined(BUILD_D3D9)
+#if defined(BUILD_D2D) || defined(BUILD_D3D9) || defined(BUILD_D3D10)
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -169,6 +184,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 #elif defined(BUILD_D3D9)
 
     IFC(CD3D9GraphicsDevice::Create(&pGraphicsDevice));
+
+    IFC(pGraphicsDevice->CreateHWNDRenderTarget(hWnd, &pRenderTarget));
+
+#elif defined(BUILD_D3D10)
+
+    IFC(CD3D10GraphicsDevice::Create(&pGraphicsDevice));
 
     IFC(pGraphicsDevice->CreateHWNDRenderTarget(hWnd, &pRenderTarget));
 
@@ -214,7 +235,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     //
     // Message pump
     //
-#if defined(BUILD_D2D) || defined(BUILD_D3D9)
+#if defined(BUILD_D2D) || defined(BUILD_D3D9) || defined(BUILD_D3D10)
 
     do
     {

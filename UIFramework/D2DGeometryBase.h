@@ -5,6 +5,8 @@
 
 #include <d2d1.h>
 
+#include "D2DUtilities.h"
+
 template< typename T >
 class CD2DGeometryBase : public T
 {
@@ -23,7 +25,7 @@ class CD2DGeometryBase : public T
 
             IFCPTR(pBounds);
 
-            IFC(m_Geometry->GetBounds(NULL, pBounds));
+            IFC(m_Geometry->GetBounds(NULL, RectFToD2DRectF(pBounds)));
 
         Cleanup:
             return hr;
@@ -38,7 +40,7 @@ class CD2DGeometryBase : public T
 
             IFCPTR(pBounds);
 
-            IFC(m_Geometry->GetBounds(&Transform, pBounds));
+            IFC(m_Geometry->GetBounds(Matrix3X2FToD2DMatrix3X2F(Transform), RectFToD2DRectF(pBounds)));
 
         Cleanup:
             return hr;
@@ -50,10 +52,11 @@ class CD2DGeometryBase : public T
 			)
         {
             HRESULT hr = S_OK;
+            Matrix3X2F identity = Matrix3X2F::Identity();
 
             IFCPTR(pContainsPoint);
 
-            IFC(m_Geometry->FillContainsPoint(LocalPoint, Matrix3X2F::Identity(), pContainsPoint));
+            IFC(m_Geometry->FillContainsPoint(Point2FTOD2DPoint2F(LocalPoint), Matrix3X2FToD2DMatrix3X2F(identity), pContainsPoint));
 
         Cleanup:
             return hr;

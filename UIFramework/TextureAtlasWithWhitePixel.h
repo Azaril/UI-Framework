@@ -56,6 +56,15 @@ class CTextureAtlasWithWhitePixel : public CTextureAtlas< ITextureAtlasWithWhite
 				        break;
 			        }
 
+                case PixelFormat::R8G8B8A8:
+                    {
+                        BYTE whitePixel[] = { 0xFF, 0xFF, 0xFF, 0xFF };
+
+                        IFC(m_pWhitePixel->SetData(whitePixel, sizeof(whitePixel), PixelFormat::GetLineSize(PixelFormat::R8G8B8A8, 1)));
+
+                        break;
+                    }
+
 		        default:
 			        {
 				        IFC(E_UNEXPECTED);

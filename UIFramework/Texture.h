@@ -8,7 +8,8 @@ namespace PixelFormat
     enum Value
     {
         Unknown,
-        B8G8R8A8
+        B8G8R8A8,
+        R8G8B8A8
     };
         
     inline UINT32 GetLineSize(
@@ -19,6 +20,7 @@ namespace PixelFormat
         switch (format)
         {
             case PixelFormat::B8G8R8A8:
+            case PixelFormat::R8G8B8A8:
                 return 4 * width;
                 
             default:

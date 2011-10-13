@@ -5,15 +5,7 @@
 #include "Point2U.h"
 #include "SizeU.h"
 
-#ifdef _WINDOWS
-#include <D2D1.h>
-#include <D2D1helper.h>
-#endif
-
 struct UIFRAMEWORK_API RectU
-#ifdef _WINDOWS
-    : D2D1_RECT_U
-#endif
 {
     RectU(
         )
@@ -61,12 +53,10 @@ struct UIFRAMEWORK_API RectU
         return Point2U(top, left);
     }
     
-#ifndef _WINDOWS
     UINT32 left;
     UINT32 top;
     UINT32 right;
     UINT32 bottom;
-#endif    
 };
 
 inline bool 

@@ -5,11 +5,6 @@
 #include "Point2F.h"
 #include "SizeF.h"
 
-#ifdef _WINDOWS
-#include <D2D1.h>
-#include <D2D1helper.h>
-#endif
-
 #pragma push_macro("min")
 #pragma push_macro("max")
 
@@ -17,9 +12,6 @@
 #undef max
 
 struct UIFRAMEWORK_API RectF
-#ifdef _WINDOWS
-    : D2D1_RECT_F
-#endif
 {
     RectF(
         )
@@ -86,12 +78,10 @@ struct UIFRAMEWORK_API RectF
         return Point2F(top, left);
     }    
     
-#ifndef _WINDOWS
     FLOAT left;
     FLOAT top;
     FLOAT right;
     FLOAT bottom;
-#endif    
 };
 
 inline bool 

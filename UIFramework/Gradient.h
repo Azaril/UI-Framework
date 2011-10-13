@@ -4,15 +4,7 @@
 #include "DataTypes.h"
 #include "ColorF.h"
 
-#ifdef _WINDOWS
-#include <D2D1.h>
-#include <D2D1helper.h>
-#endif
-
 struct UIFRAMEWORK_API GradientStop
-#ifdef _WINDOWS
-    : D2D1_GRADIENT_STOP
-#endif
 {
     GradientStop(
 		)
@@ -36,8 +28,6 @@ struct UIFRAMEWORK_API GradientStop
         return position < Other.position;
     }
     
-#ifndef _WINDOWS
     FLOAT position;
     ColorF color;
-#endif    
 };

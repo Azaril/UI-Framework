@@ -1,51 +1,45 @@
-#include "D3D9GraphicsDevice.h"
+#include "D3D10GraphicsDevice.h"
 #include "CoreGeometryProvider.h"
 #include "WICImagingProvider.h"
 
-typedef IDirect3D9* (WINAPI *Direct3DCreate9Func)(
-    UINT SDKVersion
-    );
-
-CD3D9GraphicsDevice::CD3D9GraphicsDevice(
+CD3D10GraphicsDevice::CD3D10GraphicsDevice(
     )
     : m_pTextProvider(NULL)
     , m_pImagingProvider(NULL)
     , m_pGeometryProvider(NULL)
-    , m_D3D9Module(NULL)
-    , m_pD3D(NULL)
+    , m_D3D10Module(NULL)
+    , m_pCreateDevice(NULL)
+    , m_pCreateDeviceAndSwapChain(NULL)
 {
 }
 
-CD3D9GraphicsDevice::~CD3D9GraphicsDevice(
+CD3D10GraphicsDevice::~CD3D10GraphicsDevice(
     )
 {
     ReleaseObject(m_pTextProvider);
     ReleaseObject(m_pImagingProvider);
     ReleaseObject(m_pGeometryProvider);
-    
-    ReleaseObject(m_pD3D);
 
-    if (m_D3D9Module != NULL)
+    if (m_D3D10Module != NULL)
     {
-        FreeLibrary(m_D3D9Module);
+        FreeLibrary(m_D3D10Module);
     }
 }
 
 __checkReturn HRESULT
-CD3D9GraphicsDevice::Initialize(
+CD3D10GraphicsDevice::Initialize(
     )
 {
     HRESULT hr = S_OK;
-    Direct3DCreate9Func CreateFunc = NULL;
 
-    m_D3D9Module = LoadLibrary(L"D3D9.dll");
-    IFCEXPECT(m_D3D9Module != NULL);
+    m_D3D10Module = LoadLibrary(L"D3D10.dll");
+    IFCEXPECT(m_D3D10Module != NULL);
 
-    CreateFunc = (Direct3DCreate9Func)GetProcAddress(m_D3D9Module, "Direct3DCreate9");
-    IFCEXPECT(CreateFunc != NULL);
+    m_pCreateDevice = (D3D10CreateDeviceFunc)GetProcAddress(m_D3D10Module, "D3D10CreateDevice");
+    IFCEXPECT(m_pCreateDevice != NULL);
 
-    m_pD3D = CreateFunc(D3D_SDK_VERSION);
-    IFCPTR(m_pD3D);
+    m_pCreateDeviceAndSwapChain = (D3D10CreateDeviceAndSwapChainFunc)GetProcAddress(m_D3D10Module, "D3D10CreateDeviceAndSwapChain");
+    IFCEXPECT(m_pCreateDeviceAndSwapChain != NULL);
 
     IFC(CreateTextProvider(&m_pTextProvider));
 
@@ -58,48 +52,39 @@ Cleanup:
 }
 
 __checkReturn HRESULT
-CD3D9GraphicsDevice::CreateHWNDRenderTarget(
+CD3D10GraphicsDevice::CreateHWNDRenderTarget(
     HWND Window,
-    __deref_out CD3D9HWNDRenderTarget** ppRenderTarget
+    __deref_out CD3D10HWNDRenderTarget** ppRenderTarget
     )
 {
     HRESULT hr = S_OK;
-    IDirect3DDevice9* pDevice = NULL;
-    CD3D9HWNDRenderTarget* pHWNDRenderTarget = NULL;
+    ID3D10Device* pDevice = NULL;
+    IDXGISwapChain* pSwapChain = NULL;
+    CD3D10HWNDRenderTarget* pHWNDRenderTarget = NULL;
 
     IFCEXPECT(Window != NULL);
     IFCPTR(ppRenderTarget);
 
     {
-        D3DPRESENT_PARAMETERS presentParameters = { };
+        DXGI_SWAP_CHAIN_DESC swapChainDescription = { };
 
-        presentParameters.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
-        presentParameters.EnableAutoDepthStencil = FALSE;
-
-        presentParameters.BackBufferCount = 0;
-        presentParameters.BackBufferFormat = D3DFMT_UNKNOWN;
-
-        presentParameters.BackBufferHeight = 0;
-        presentParameters.BackBufferWidth = 0;
-
-        presentParameters.MultiSampleType = D3DMULTISAMPLE_NONE;
-        presentParameters.MultiSampleQuality = 0;
-
-        presentParameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
-
-        presentParameters.hDeviceWindow = Window;
-        presentParameters.Windowed = TRUE;
-
-        presentParameters.Flags = 0;
-        presentParameters.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
-
-        if(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, Window, D3DCREATE_HARDWARE_VERTEXPROCESSING, &presentParameters, &pDevice)))
-        {
-            IFC(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, Window, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &presentParameters, &pDevice));
-        }
+        swapChainDescription.BufferCount = 1;
+        swapChainDescription.BufferDesc.Width = 0;
+        swapChainDescription.BufferDesc.Height = 0;
+        //TODO: Check what format to use here.
+        swapChainDescription.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        swapChainDescription.BufferDesc.RefreshRate.Numerator = 60;
+        swapChainDescription.BufferDesc.RefreshRate.Denominator = 1;
+        swapChainDescription.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        swapChainDescription.OutputWindow = Window;
+        swapChainDescription.SampleDesc.Count = 1;
+        swapChainDescription.SampleDesc.Quality = 0;
+        swapChainDescription.Windowed = TRUE;
+        
+        IFC(m_pCreateDeviceAndSwapChain(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, D3D10_CREATE_DEVICE_SINGLETHREADED, D3D10_SDK_VERSION, &swapChainDescription, &pSwapChain, &pDevice));
     }
 
-    IFC(CD3D9HWNDRenderTarget::Create(pDevice, &pHWNDRenderTarget));
+    IFC(CD3D10HWNDRenderTarget::Create(pDevice, pSwapChain, &pHWNDRenderTarget));
 
     *ppRenderTarget = pHWNDRenderTarget;
     pHWNDRenderTarget = NULL;
@@ -111,7 +96,7 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CD3D9GraphicsDevice::GetTextProvider(
+CD3D10GraphicsDevice::GetTextProvider(
     __deref_out CTextProvider** ppTextProvider
     )
 {
@@ -127,7 +112,7 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CD3D9GraphicsDevice::GetImagingProvider(
+CD3D10GraphicsDevice::GetImagingProvider(
     CImagingProvider** ppImagingProvider
     )
 {
@@ -143,7 +128,7 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CD3D9GraphicsDevice::GetGeometryProvider(
+CD3D10GraphicsDevice::GetGeometryProvider(
     CGeometryProvider** ppGeometryProvider
     )
 {
@@ -159,7 +144,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D9GraphicsDevice::CreateTextProvider(
+CD3D10GraphicsDevice::CreateTextProvider(
     __deref_out CTextProvider** ppTextProvider
     )
 {
@@ -184,7 +169,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D9GraphicsDevice::CreateImagingProvider(
+CD3D10GraphicsDevice::CreateImagingProvider(
     __deref_out CImagingProvider** ppImagingProvider
     )
 {
@@ -209,7 +194,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D9GraphicsDevice::CreateGeometryProvider(
+CD3D10GraphicsDevice::CreateGeometryProvider(
     __deref_out CGeometryProvider** ppGeometryProvider
     )
 {

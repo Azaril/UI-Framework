@@ -7,7 +7,6 @@ CD3D9HWNDRenderTarget::CD3D9HWNDRenderTarget(
 {
 }
 
-
 CD3D9HWNDRenderTarget::~CD3D9HWNDRenderTarget(
     )
 {

@@ -3,6 +3,8 @@
 #include "Factory.h"
 #include "GeometryProvider.h"
 
+#include <d2d1.h>
+
 class CD2DGeometryProvider : public CGeometryProvider
 {
     public:

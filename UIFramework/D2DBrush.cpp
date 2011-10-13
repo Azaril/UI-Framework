@@ -1,5 +1,6 @@
 #include "D2DBrush.h"
 #include "ErrorChecking.h"
+#include "D2DUtilities.h"
 
 CD2DBrush::CD2DBrush(
 	) 
@@ -55,7 +56,7 @@ CD2DBrush::SetTransform(
 {
     HRESULT hr = S_OK;
 
-    m_Brush->SetTransform(Transform);
+    m_Brush->SetTransform(Matrix3X2FToD2DMatrix3X2F(&Transform));
 
     return hr;
 }
@@ -65,5 +66,5 @@ CD2DBrush::GetTransform(
     Matrix3X2F& Transform
     ) const
 {
-    return m_Brush->GetTransform(&Transform);
+    return m_Brush->GetTransform(Matrix3X2FToD2DMatrix3X2F(&Transform));
 }

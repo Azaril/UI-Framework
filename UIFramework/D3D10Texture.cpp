@@ -1,18 +1,18 @@
-#include "D3D9Texture.h"
+#include "D3D10Texture.h"
 
 PixelFormat::Value 
-D3DFormatToPixelFormat(
-    D3DFORMAT format
+DXGIFormatToPixelFormat(
+    DXGI_FORMAT format
     )
 {
     switch(format)
     {
-        case D3DFMT_A8R8G8B8:
+        case DXGI_FORMAT_B8G8R8A8_UNORM:
             {
                 return PixelFormat::B8G8R8A8;
             }
 
-        case D3DFMT_A8B8G8R8:
+        case DXGI_FORMAT_R8G8B8A8_UNORM:
             {
                 return PixelFormat::R8G8B8A8;
             }
@@ -24,84 +24,100 @@ D3DFormatToPixelFormat(
     }
 }
 
-CD3D9Texture::CD3D9Texture(
+CD3D10Texture::CD3D10Texture(
     )
     : m_pTexture(NULL)
     , m_Width(0)
     , m_Height(0)
     , m_Format(PixelFormat::Unknown)
+    , m_pResourceView(NULL)
 {
 }
 
-CD3D9Texture::~CD3D9Texture(
+CD3D10Texture::~CD3D10Texture(
     )
 {
+    ReleaseObject(m_pResourceView);
     ReleaseObject(m_pTexture);
 }
 
 __checkReturn HRESULT
-CD3D9Texture::Initialize(
-    __in IDirect3DTexture9* pTexture
+CD3D10Texture::Initialize(
+    __in ID3D10Texture2D* pTexture
     )
 {
     HRESULT hr = S_OK;
-    D3DSURFACE_DESC surfaceDescription = { };
+    D3D10_TEXTURE2D_DESC textureDescription = { };
 
     SetObject(m_pTexture, pTexture);
 
-    IFC(m_pTexture->GetLevelDesc(0, &surfaceDescription));
+    m_pTexture->GetDesc(&textureDescription);
 
-    m_Width = surfaceDescription.Width;
-    m_Height = surfaceDescription.Height;
-    m_Format = D3DFormatToPixelFormat(surfaceDescription.Format);
+    m_Width = textureDescription.Width;
+    m_Height = textureDescription.Height;
+    m_Format = DXGIFormatToPixelFormat(textureDescription.Format);
 
-Cleanup:
     return hr;
 }
 
-__out IDirect3DTexture9*
-CD3D9Texture::GetD3DTexture( 
+__out ID3D10Texture2D*
+CD3D10Texture::GetD3DTexture( 
     )
 {
     return m_pTexture;
 }
 
+__out ID3D10ShaderResourceView* 
+CD3D10Texture::GetResourceView(
+    )
+{
+    return m_pResourceView;
+}
+
+void 
+CD3D10Texture::SetResourceView(
+    __in_opt ID3D10ShaderResourceView* pView
+    )
+{
+    ReplaceObject(m_pResourceView, pView);
+}
+
 __override UINT32 
-CD3D9Texture::GetWidth(
+CD3D10Texture::GetWidth(
     )
 {
     return m_Width;
 }
 
 __override UINT32 
-CD3D9Texture::GetHeight(
+CD3D10Texture::GetHeight(
     )
 {
     return m_Height;
 }
 
 __override PixelFormat::Value
-CD3D9Texture::GetPixelFormat(
+CD3D10Texture::GetPixelFormat(
     )
 {
     return m_Format;
 }
 
 __override __checkReturn HRESULT 
-CD3D9Texture::SetData(
+CD3D10Texture::SetData(
     __in_ecount(DataSize) BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
 {
     HRESULT hr = S_OK;
-    D3DLOCKED_RECT lockedRect = { };
+    D3D10_MAPPED_TEXTURE2D  mappedTexture = { };
 
-    IFC(m_pTexture->LockRect(0, &lockedRect, NULL, D3DLOCK_DISCARD));
+    IFC(m_pTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTexture));
 
     {
         BYTE* pSourceData = pData;
-        BYTE* pDestinationData = (BYTE*)lockedRect.pBits;
+        BYTE* pDestinationData = (BYTE*)mappedTexture.pData;
         UINT32 lineSize = PixelFormat::GetLineSize(m_Format, m_Width);
 
         for (UINT32 i = 0; i < m_Height; ++i)
@@ -109,18 +125,21 @@ CD3D9Texture::SetData(
             memcpy(pDestinationData, pSourceData, lineSize);
 
             pSourceData += Stride;
-            pDestinationData += lockedRect.Pitch;
+            pDestinationData += mappedTexture.RowPitch;
         }
     }
 
-    IFC(m_pTexture->UnlockRect(0));
-
 Cleanup:
+    if (mappedTexture.pData != NULL)
+    {
+        m_pTexture->Unmap(D3D10CalcSubresource(0, 0, 1));
+    }
+
     return hr;
 }
 
 __override __checkReturn HRESULT 
-CD3D9Texture::SetSubData(
+CD3D10Texture::SetSubData(
     const RectU& Region,
     __in_ecount(DataSize) BYTE* pData,
     UINT32 DataSize,
@@ -128,14 +147,13 @@ CD3D9Texture::SetSubData(
     )
 {
     HRESULT hr = S_OK;
-    D3DLOCKED_RECT lockedRect = { };
-    RECT targetRect = { Region.left, Region.top, Region.right, Region.bottom };
+    D3D10_MAPPED_TEXTURE2D  mappedTexture = { };
 
-    IFC(m_pTexture->LockRect(0, &lockedRect, &targetRect, 0));
+    IFC(m_pTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE, 0, &mappedTexture));
 
     {
         BYTE* pSourceData = pData;
-        BYTE* pDestinationData = (BYTE*)lockedRect.pBits;
+        BYTE* pDestinationData = (BYTE*)mappedTexture.pData;
         UINT32 regionLineSize = PixelFormat::GetLineSize(m_Format, Region.GetWidth());
 
         for (UINT32 i = 0; i < Region.GetHeight(); ++i)
@@ -143,12 +161,15 @@ CD3D9Texture::SetSubData(
             memcpy(pDestinationData, pSourceData, regionLineSize);
 
             pSourceData += Stride;
-            pDestinationData += lockedRect.Pitch;
+            pDestinationData += mappedTexture.RowPitch;
         }
     }
 
-    IFC(m_pTexture->UnlockRect(0));
-
 Cleanup:
+    if (mappedTexture.pData != NULL)
+    {
+        m_pTexture->Unmap(D3D10CalcSubresource(0, 0, 1));
+    }
+
     return hr;
 }

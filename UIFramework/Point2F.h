@@ -4,15 +4,7 @@
 #include "DataTypes.h"
 #include <math.h>
 
-#ifdef _WINDOWS
-#include <D2D1.h>
-#include <D2D1helper.h>
-#endif
-
 struct UIFRAMEWORK_API Point2F
-#ifdef _WINDOWS
-    : D2D1_POINT_2F
-#endif
 {
     Point2F(
         )
@@ -76,10 +68,8 @@ struct UIFRAMEWORK_API Point2F
         return *this / Magnitude();
     }
     
-#ifndef _WINDOWS
     FLOAT x;
     FLOAT y;
-#endif    
 };
 
 inline bool 

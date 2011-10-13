@@ -40,7 +40,7 @@ CD2DGeometryProvider::CreateRectangleGeometry(
 
     IFCPTR(ppRectangleGeometry);
 
-    IFC(m_pFactory->CreateRectangleGeometry(Rectangle, &pD2DRectangleGeometry));
+    IFC(m_pFactory->CreateRectangleGeometry(RectFToD2DRectF(&Rectangle), &pD2DRectangleGeometry));
 
     IFC(CD2DRectangleGeometry::Create(pD2DRectangleGeometry, &pGeometry));
 
@@ -64,7 +64,7 @@ CD2DGeometryProvider::CreateRoundedRectangleGeometry(
     HRESULT hr = S_OK;
     ID2D1RoundedRectangleGeometry* pD2DRoundedRectangleGeometry = NULL;
     CD2DRoundedRectangleGeometry* pGeometry = NULL;
-    D2D1_ROUNDED_RECT RoundedRect = { Rectangle, CornerRadius, CornerRadius };
+    D2D1_ROUNDED_RECT RoundedRect = { *RectFToD2DRectF(&Rectangle), CornerRadius, CornerRadius };
 
     IFCPTR(ppRoundedRectangleGeometry);
 

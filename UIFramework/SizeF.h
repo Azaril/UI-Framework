@@ -3,15 +3,7 @@
 #include "Defines.h"
 #include "DataTypes.h"
 
-#ifdef _WINDOWS
-#include <D2D1.h>
-#include <D2D1helper.h>
-#endif
-
 struct UIFRAMEWORK_API SizeF
-#ifdef _WINDOWS
-    : D2D1_SIZE_F
-#endif
 {
     SizeF(
         )
@@ -29,10 +21,8 @@ struct UIFRAMEWORK_API SizeF
         height = Height;
     }
     
-#ifndef _WINDOWS
     FLOAT width;
     FLOAT height;
-#endif    
 };
 
 inline bool 

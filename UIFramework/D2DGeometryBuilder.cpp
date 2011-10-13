@@ -1,52 +1,6 @@
 #include "D2DGeometryBuilder.h"
 #include "D2DPathGeometry.h"
-
-D2D1_FIGURE_BEGIN BeginFigureOptionsToD2DOptions(
-    BeginFigureOptions::Value Options
-    )
-{
-    if ((Options & BeginFigureOptions::Hollow) == BeginFigureOptions::Hollow)
-    {
-        return D2D1_FIGURE_BEGIN_HOLLOW;
-    }
-    else
-    {
-        return D2D1_FIGURE_BEGIN_FILLED;
-    }
-}
-
-D2D1_FIGURE_END EndFigureOptionsToD2DOptions(
-    EndFigureOptions::Value Options
-    )
-{
-    if ((Options & EndFigureOptions::Closed) == EndFigureOptions::Closed)
-    {
-        return D2D1_FIGURE_END_CLOSED;
-    }
-    else
-    {
-        return D2D1_FIGURE_END_OPEN;
-    }
-}
-
-D2D1_FILL_MODE FillModeToD2DFillMode(
-    FillMode::Value fillMode
-    )
-{
-    switch(fillMode)
-    {
-        case FillMode::Winding:
-            {
-                return D2D1_FILL_MODE_WINDING;
-            }
-
-        case FillMode::Alternate:
-        default:
-            {
-                return D2D1_FILL_MODE_ALTERNATE;
-            }
-    }
-}
+#include "D2DUtilities.h"
 
 CD2DGeometryBuilder::CD2DGeometryBuilder(
     )
@@ -136,7 +90,7 @@ CD2DGeometryBuilder::BeginFigure(
 
     IFCEXPECT(m_pGeometrySink != NULL);
 
-    m_pGeometrySink->BeginFigure(startPoint, BeginFigureOptionsToD2DOptions(options));
+    m_pGeometrySink->BeginFigure(*Point2FTOD2DPoint2F(&startPoint), BeginFigureOptionsToD2DOptions(options));
 
 Cleanup:
     return hr;
@@ -167,7 +121,7 @@ CD2DGeometryBuilder::AddLines(
 
     IFCEXPECT(m_pGeometrySink != NULL);
 
-    m_pGeometrySink->AddLines(pPoints, Points);
+    m_pGeometrySink->AddLines(Point2FTOD2DPoint2F(pPoints), Points);
 
 Cleanup:
     return hr;
@@ -183,7 +137,7 @@ CD2DGeometryBuilder::AddBeziers(
 
     IFCEXPECT(m_pGeometrySink != NULL);
 
-    m_pGeometrySink->AddBeziers(pBeziers, BezierCount);
+    m_pGeometrySink->AddBeziers(BezierSegmentToD2DBezierSegment(pBeziers), BezierCount);
 
 Cleanup:
     return hr;

@@ -3,15 +3,7 @@
 #include "Defines.h"
 #include "DataTypes.h"
 
-#ifdef _WINDOWS
-#include <D2D1.h>
-#include <D2D1helper.h>
-#endif
-
 struct UIFRAMEWORK_API Point2U
-#ifdef _WINDOWS
-    : D2D1_POINT_2U
-#endif
 {
     Point2U(
         )
@@ -29,10 +21,8 @@ struct UIFRAMEWORK_API Point2U
         y = Y;
     }
     
-#ifndef _WINDOWS
     UINT32 x;
     UINT32 y;
-#endif    
 };
 
 inline bool 

@@ -2,13 +2,13 @@
 #include "D3D9Texture.h"
 #include "TextureAtlasWithWhitePixel.h"
 
-#include "Shaders/D3D9/headers/ps_2_0.h"
-#include "Shaders/D3D9/headers/ps_3_0.h"
-#include "Shaders/D3D9/headers/ps_4_0.h"
+#include "Shaders/Direct3DHLSL/headers/ps_2_0.h"
+#include "Shaders/Direct3DHLSL/headers/ps_3_0.h"
+#include "Shaders/Direct3DHLSL/headers/ps_4_0.h"
 
-#include "Shaders/D3D9/headers/vs_2_0.h"
-#include "Shaders/D3D9/headers/vs_3_0.h"
-#include "Shaders/D3D9/headers/vs_4_0.h"
+#include "Shaders/Direct3DHLSL/headers/vs_2_0.h"
+#include "Shaders/Direct3DHLSL/headers/vs_3_0.h"
+#include "Shaders/Direct3DHLSL/headers/vs_4_0.h"
 
 CD3D9RenderTarget::CD3D9RenderTarget(
     )

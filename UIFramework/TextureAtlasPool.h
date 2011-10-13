@@ -36,7 +36,7 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
                 }
             }
 
-            IFC(CreateNewAtlas(Width, Height, &pNewAtlas));
+            IFC(CreateNewAtlas(Width + (AtlasType::Padding * 2), Height + (AtlasType::Padding * 2), &pNewAtlas));
             
             IFC(pNewAtlas->AllocateTexture(Width, Height, ppTexture));
 
@@ -117,24 +117,13 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
             HRESULT hr = S_OK;
             AtlasType* pNewAtlas = NULL;
             ITexture* pNewAtlasStorageTexture = NULL;
-            UINT32 targetWidth = m_MinimumHeight;
-            UINT32 targetHeight = m_MinimumWidth;
-            UINT32 inflatedWidth = Width + (AtlasType::Padding * 2);
-            UINT32 inflatedHeight = Height + (AtlasType::Padding * 2);
+            UINT32 inflatedWidth = std::max(NextPowerOfTwo(Width), m_MinimumWidth);
+            UINT32 inflatedHeight = std::max(NextPowerOfTwo(Height), m_MinimumHeight);
 
             IFCEXPECT(inflatedWidth <= m_MaximumWidth);
             IFCEXPECT(inflatedHeight <= m_MaximumHeight);
-
-            while ((inflatedWidth > targetWidth || inflatedHeight > targetHeight) && (targetWidth <= m_MaximumWidth && targetHeight <= m_MaximumHeight))
-            {
-                targetWidth = targetWidth << 1;
-                targetHeight = targetHeight << 1;
-            }
-
-            IFCEXPECT(targetWidth <= m_MaximumWidth);
-            IFCEXPECT(targetHeight <= m_MaximumHeight);
             
-            IFC(m_pTextureAllocator->AllocateTexture(targetWidth, targetHeight, &pNewAtlasStorageTexture));
+            IFC(m_pTextureAllocator->AllocateTexture(inflatedWidth, inflatedHeight, &pNewAtlasStorageTexture));
             
             IFC(AtlasType::Create(pNewAtlasStorageTexture, &pNewAtlas));
             

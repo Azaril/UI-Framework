@@ -4,15 +4,7 @@
 #include "DataTypes.h"
 #include "Colors.h"
 
-#ifdef _WINDOWS
-#include <D2D1.h>
-#include <D2D1helper.h>
-#endif
-
 struct UIFRAMEWORK_API ColorF
-#ifdef _WINDOWS
-    : D2D1_COLOR_F
-#endif
 {
     ColorF(
 		)
@@ -22,18 +14,6 @@ struct UIFRAMEWORK_API ColorF
         b = 0;
         a = 0;
     }
-
-#ifdef _WINDOWS
-    explicit ColorF(
-        const D2D1_COLOR_F& other
-        )
-    {
-        r = other.r;
-        g = other.g;
-        b = other.b;
-        a = other.a;        
-    }
-#endif
 
     ColorF(
 		FLOAT Red, 
@@ -75,12 +55,10 @@ struct UIFRAMEWORK_API ColorF
         return interoplatedColor;
     }
     
-#ifndef _WINDOWS
     FLOAT r;
     FLOAT g;
     FLOAT b;
     FLOAT a;
-#endif    
 };
 
 inline bool 

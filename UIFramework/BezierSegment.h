@@ -3,15 +3,7 @@
 #include "Defines.h"
 #include "Point2F.h"
 
-#ifdef _WINDOWS
-#include <D2D1.h>
-#include <D2D1helper.h>
-#endif
-
 struct UIFRAMEWORK_API BezierSegment
-#ifdef _WINDOWS
-    : D2D1_BEZIER_SEGMENT
-#endif
 {
     BezierSegment(
         const Point2F& bezierControlPoint1,
@@ -24,9 +16,7 @@ struct UIFRAMEWORK_API BezierSegment
         point3 = bezierEndPoint;
     }
     
-#ifndef _WINDOWS
     Point2F point1;
     Point2F point2;
     Point2F point3;
-#endif    
 };

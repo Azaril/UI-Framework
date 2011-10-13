@@ -948,8 +948,6 @@ HRESULT CUIElement::Arrange(RectF Bounds)
             Offset.width += Bounds.left + Margin.left;
             Offset.height += Bounds.top + Margin.top;
 
-            Matrix3X2F VisualTransform = Matrix3X2F::Translation(Offset);
-
             m_LayoutTransformOffset = Offset;
 
             m_ClipToLayoutBounds = NeedsClipBounds;

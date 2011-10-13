@@ -234,6 +234,7 @@ CRenderTargetBase::CreateLinearGradientBrush(
                 texelColor = ColorF::Interpolate(ColorF(pSortedGradientStops[fromColorIndex].color), ColorF(pSortedGradientStops[fromColorIndex + 1].color), interpolateVal);
             }
             
+            //TODO: Byte ordering seems wrong here...
             switch(format)
             {
                 case PixelFormat::B8G8R8A8:
@@ -245,6 +246,23 @@ CRenderTargetBase::CreateLinearGradientBrush(
                         ++pWriteOffset;
 
                         *pWriteOffset = (BYTE)(texelColor.b * 255.0f);
+                        ++pWriteOffset;
+
+                        *pWriteOffset = (BYTE)(texelColor.a * 255.0f);
+                        ++pWriteOffset;
+
+                        break;
+                    }
+
+                case PixelFormat::R8G8B8A8:
+                    {
+                        *pWriteOffset = (BYTE)(texelColor.b * 255.0f);
+                        ++pWriteOffset;
+
+                        *pWriteOffset = (BYTE)(texelColor.g * 255.0f);
+                        ++pWriteOffset;
+
+                        *pWriteOffset = (BYTE)(texelColor.r * 255.0f);
                         ++pWriteOffset;
 
                         *pWriteOffset = (BYTE)(texelColor.a * 255.0f);

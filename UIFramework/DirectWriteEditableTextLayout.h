@@ -5,6 +5,8 @@
 #include "TextProvider.h"
 #include <string>
 
+#include <dwrite.h>
+
 class CDirectWriteEditableTextLayout : public CEditableTextLayout
 {
     public:

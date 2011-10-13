@@ -134,6 +134,9 @@
     <Filter Include="Framework\Resources">
       <UniqueIdentifier>{9ea11eb8-3c79-4552-8763-491e93875648}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Graphics\D3D10">
+      <UniqueIdentifier>{1d4a8451-bbaf-4dde-8c10-e75acc2facd9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -822,6 +825,24 @@
     </ClCompile>
     <ClCompile Include="COMReadStreamWrapper.cpp">
       <Filter>Framework\Graphics\Imaging\WIC</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D10GraphicsDevice.cpp">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D10HWNDRenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D10RenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D10Texture.cpp">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D10VertexBuffer.cpp">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DUtilities.cpp">
+      <Filter>Framework\Graphics\D2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1538,6 +1559,24 @@
     </ClInclude>
     <ClInclude Include="COMReadStreamWrapper.h">
       <Filter>Framework\Graphics\Imaging\WIC</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D10GraphicsDevice.h">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D10HWNDRenderTarget.h">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D10RenderTarget.h">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D10Texture.h">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D10VertexBuffer.h">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DUtilities.h">
+      <Filter>Framework\Graphics\D2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

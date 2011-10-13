@@ -8,15 +8,7 @@
 
 #include <math.h>
 
-#ifdef _WINDOWS
-#include <D2D1.h>
-#include <D2D1helper.h>
-#endif
-
 struct UIFRAMEWORK_API Matrix3X2F
-#ifdef _WINDOWS
-    : D2D_MATRIX_3X2_F
-#endif
 {  
     inline Matrix3X2F operator*(
 		const Matrix3X2F& Other
@@ -269,14 +261,12 @@ struct UIFRAMEWORK_API Matrix3X2F
         return Result;
     }
 
-#ifndef _WINDOWS
     FLOAT _11;
     FLOAT _12;
     FLOAT _21;
     FLOAT _22;
     FLOAT _31;
     FLOAT _32;
-#endif
 };
 
 inline Point2F

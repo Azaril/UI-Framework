@@ -78,7 +78,7 @@ CD2DRenderTarget::SetTransform(
 {
     HRESULT hr = S_OK;
 
-    m_RenderTarget->SetTransform(Transform);
+    m_RenderTarget->SetTransform(Matrix3X2FToD2DMatrix3X2F(Transform));
 
     return hr;
 }
@@ -90,7 +90,7 @@ CD2DRenderTarget::Clear(
 {
     HRESULT hr = S_OK;
 
-    m_RenderTarget->Clear(Color);
+    m_RenderTarget->Clear(ColorFToD2DColorF(Color));
 
     return hr;
 }
@@ -107,7 +107,7 @@ CD2DRenderTarget::CreateSolidBrush(
 
     IFCPTR(ppBrush);
 
-    IFC(m_RenderTarget->CreateSolidColorBrush(Color, &pD2DSolidColorBrush));
+    IFC(m_RenderTarget->CreateSolidColorBrush(ColorFToD2DColorF(Color), &pD2DSolidColorBrush));
 
     IFC(CD2DSolidColorBrush::Create(pD2DSolidColorBrush, &pSolidBrush));
 
@@ -138,10 +138,10 @@ CD2DRenderTarget::CreateLinearGradientBrush(
 
     IFCPTR(ppBrush);
 
-    BrushProperties.startPoint = StartPoint;
-    BrushProperties.endPoint = EndPoint;
+    BrushProperties.startPoint = Point2FTOD2DPoint2F(StartPoint);
+    BrushProperties.endPoint = Point2FTOD2DPoint2F(EndPoint);
 
-    IFC(m_RenderTarget->CreateGradientStopCollection(pGradientStops, GradientStopCount, D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_CLAMP, &pD2DGradientStops));
+    IFC(m_RenderTarget->CreateGradientStopCollection(GradientStopToD2DGradientStop(pGradientStops), GradientStopCount, D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_CLAMP, &pD2DGradientStops));
 
     IFC(m_RenderTarget->CreateLinearGradientBrush(BrushProperties, pD2DGradientStops, &pD2DLinearGradientBrush));
 
@@ -200,7 +200,7 @@ CD2DRenderTarget::DrawRectangle(
 
     pD2DBrush = (CD2DBrush*)pBrush;
 
-    m_RenderTarget->DrawRectangle(Size, pD2DBrush->GetD2DBrush(), 0, NULL);
+    m_RenderTarget->DrawRectangle(RectFToD2DRectF(Size), pD2DBrush->GetD2DBrush(), 0, NULL);
 
 Cleanup:
     return hr;
@@ -219,7 +219,7 @@ CD2DRenderTarget::FillRectangle(
 
     pD2DBrush = (CD2DBrush*)pBrush;
 
-    m_RenderTarget->FillRectangle(Size, pD2DBrush->GetD2DBrush());
+    m_RenderTarget->FillRectangle(RectFToD2DRectF(Size), pD2DBrush->GetD2DBrush());
 
 Cleanup:
     return hr;
@@ -267,7 +267,7 @@ CD2DRenderTarget::RenderTextLayout(
             }
     }
 
-    m_RenderTarget->DrawTextLayout(Origin, pInternalTextLayout, pD2DBrush->GetD2DBrush());
+    m_RenderTarget->DrawTextLayout(Point2FTOD2DPoint2F(Origin), pInternalTextLayout, pD2DBrush->GetD2DBrush());
 
 Cleanup:
     ReleaseObject(pInternalTextLayout);
@@ -503,7 +503,7 @@ CD2DRenderTarget::PushLayer(
         IFC(UnwrapGeometry(pClippingGeometry, &pD2DClipGeometry));
     }
 
-    m_RenderTarget->PushLayer(D2D1::LayerParameters(ClippingRect, pD2DClipGeometry, D2D1_ANTIALIAS_MODE_PER_PRIMITIVE, D2D1::IdentityMatrix(), Opacity), pD2DLayer->GetLayer());
+    m_RenderTarget->PushLayer(D2D1::LayerParameters(RectFToD2DRectF(ClippingRect), pD2DClipGeometry, D2D1_ANTIALIAS_MODE_PER_PRIMITIVE, D2D1::IdentityMatrix(), Opacity), pD2DLayer->GetLayer());
 
 Cleanup:
     return hr;

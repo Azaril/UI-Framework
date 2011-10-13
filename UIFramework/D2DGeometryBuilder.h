@@ -3,6 +3,8 @@
 #include "GraphicsGeometryBuilder.h"
 #include "Factory.h"
 
+#include <d2d1.h>
+
 class CD2DPathGeometry;
 
 class CD2DGeometryBuilder : public CGraphicsGeometryBuilder
