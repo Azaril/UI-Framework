@@ -229,7 +229,7 @@ CRenderTargetBase::CreateLinearGradientBrush(
             }
             else
             {
-                FLOAT interpolateVal = (offset - pSortedGradientStops[fromColorIndex].position) / (pSortedGradientStops[fromColorIndex + 1].position -pSortedGradientStops[fromColorIndex].position);
+                FLOAT interpolateVal = (offset - pSortedGradientStops[fromColorIndex].position) / (pSortedGradientStops[fromColorIndex + 1].position - pSortedGradientStops[fromColorIndex].position);
                 
                 texelColor = ColorF::Interpolate(ColorF(pSortedGradientStops[fromColorIndex].color), ColorF(pSortedGradientStops[fromColorIndex + 1].color), interpolateVal);
             }
@@ -239,13 +239,13 @@ CRenderTargetBase::CreateLinearGradientBrush(
             {
                 case PixelFormat::B8G8R8A8:
                     {
-                        *pWriteOffset = (BYTE)(texelColor.r * 255.0f);
+                        *pWriteOffset = (BYTE)(texelColor.b * 255.0f);
                         ++pWriteOffset;
 
                         *pWriteOffset = (BYTE)(texelColor.g * 255.0f);
                         ++pWriteOffset;
 
-                        *pWriteOffset = (BYTE)(texelColor.b * 255.0f);
+                        *pWriteOffset = (BYTE)(texelColor.r * 255.0f);
                         ++pWriteOffset;
 
                         *pWriteOffset = (BYTE)(texelColor.a * 255.0f);
@@ -256,13 +256,13 @@ CRenderTargetBase::CreateLinearGradientBrush(
 
                 case PixelFormat::R8G8B8A8:
                     {
-                        *pWriteOffset = (BYTE)(texelColor.b * 255.0f);
+                        *pWriteOffset = (BYTE)(texelColor.r * 255.0f);
                         ++pWriteOffset;
 
                         *pWriteOffset = (BYTE)(texelColor.g * 255.0f);
                         ++pWriteOffset;
 
-                        *pWriteOffset = (BYTE)(texelColor.r * 255.0f);
+                        *pWriteOffset = (BYTE)(texelColor.b * 255.0f);
                         ++pWriteOffset;
 
                         *pWriteOffset = (BYTE)(texelColor.a * 255.0f);

@@ -56,15 +56,12 @@ CD3D10HWNDRenderTarget::BeginRendering(
     )
 {
     HRESULT hr = S_OK;
-    ID3D10Texture2D* pBackBuffer = NULL;
 
     m_pDevice->OMSetRenderTargets(1, &m_pBackBufferView, NULL);
 
     IFC(CD3D10RenderTarget::BeginRendering());
 
 Cleanup:
-    ReleaseObject(pBackBuffer);
-
     return hr;
 }
 

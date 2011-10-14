@@ -50,7 +50,7 @@ struct UIFRAMEWORK_API RectU
     inline Point2U GetTopLeft(
         ) const
     {
-        return Point2U(top, left);
+        return Point2U(left, top);
     }
     
     UINT32 left;

@@ -844,6 +844,12 @@
     <ClCompile Include="D2DUtilities.cpp">
       <Filter>Framework\Graphics\D2D</Filter>
     </ClCompile>
+    <ClCompile Include="StagingTextureCallback.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="StagingTextureWrapper.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1577,6 +1583,12 @@
     </ClInclude>
     <ClInclude Include="D2DUtilities.h">
       <Filter>Framework\Graphics\D2D</Filter>
+    </ClInclude>
+    <ClInclude Include="StagingTextureCallback.h">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="StagingTextureWrapper.h">
+      <Filter>Framework\Graphics\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

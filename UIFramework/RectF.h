@@ -75,7 +75,7 @@ struct UIFRAMEWORK_API RectF
     inline Point2F GetTopLeft(
         ) const
     {
-        return Point2F(top, left);
+        return Point2F(left, top);
     }    
     
     FLOAT left;
