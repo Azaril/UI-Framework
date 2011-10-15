@@ -153,7 +153,7 @@ CD3D10Texture::SetSubData(
 
     {
         BYTE* pSourceData = pData;
-        BYTE* pDestinationData = (BYTE*)mappedTexture.pData;
+        BYTE* pDestinationData = ((BYTE*)mappedTexture.pData) + (mappedTexture.RowPitch * Region.top) + PixelFormat::GetLineSize(m_Format, Region.left);
         UINT32 regionLineSize = PixelFormat::GetLineSize(m_Format, Region.GetWidth());
 
         for (UINT32 i = 0; i < Region.GetHeight(); ++i)

@@ -7,10 +7,11 @@
 #include "D3D9RenderTarget.h"
 #include "D3D9HWNDRenderTarget.h"
 
-class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice
+class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
+                                            public ITextureAllocator
 {
     public:
-        DECLARE_FACTORY( CD3D9GraphicsDevice );
+        DECLARE_FACTORY1( CD3D9GraphicsDevice, HWND );
 
         __checkReturn HRESULT CreateHWNDRenderTarget(
             HWND Window,
@@ -37,6 +38,7 @@ class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice
             );
 
         __checkReturn HRESULT Initialize(
+            HWND focusWindow
             );
 
         virtual __checkReturn HRESULT CreateTextProvider( 
@@ -51,10 +53,19 @@ class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice
             __deref_out CGeometryProvider** ppGeometryProvider
             );
 
+        __override virtual __checkReturn HRESULT AllocateTexture(
+            UINT32 Width,
+            UINT32 Height,
+            __deref_out ITexture** ppTexture
+            );
+
+        HWND m_FocusWindow;
         HMODULE m_D3D9Module;
         IDirect3D9* m_pD3D;
+        IDirect3DDevice9* m_pDevice;
 
         CTextProvider* m_pTextProvider;
         CImagingProvider* m_pImagingProvider;
         CGeometryProvider* m_pGeometryProvider;
+        CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* m_pTextureAtlasPool;
 };

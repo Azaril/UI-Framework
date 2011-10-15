@@ -4,31 +4,37 @@ CD3D9HWNDRenderTarget::CD3D9HWNDRenderTarget(
     )
     : m_Width(0)
     , m_Height(0)
+    , m_pSwapChain(NULL)
 {
 }
 
 CD3D9HWNDRenderTarget::~CD3D9HWNDRenderTarget(
     )
 {
+    ReleaseObject(m_pSwapChain);
 }
 
 __checkReturn HRESULT
 CD3D9HWNDRenderTarget::Initialize(
-    __in IDirect3DDevice9* pDevice
+    __in IDirect3DDevice9* pDevice,
+    __in IDirect3DSwapChain9* pSwapChain,
+    __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
     )
 {
     HRESULT hr = S_OK;
     IDirect3DSurface9* pBackBuffer = NULL;
     D3DSURFACE_DESC backbufferDescription = { };
 
-    IFC(pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer));
+    SetObject(m_pSwapChain, pSwapChain);
+
+    IFC(m_pSwapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer));
 
     IFC(pBackBuffer->GetDesc(&backbufferDescription));
 
     m_Width = backbufferDescription.Width;
     m_Height = backbufferDescription.Height;
 
-    IFC(CD3D9RenderTarget::Initialize(pDevice));
+    IFC(CD3D9RenderTarget::Initialize(pDevice, pTextureAtlasPool));
 
 Cleanup:
     ReleaseObject(pBackBuffer);
@@ -48,6 +54,11 @@ CD3D9HWNDRenderTarget::BeginRendering(
     )
 {
     HRESULT hr = S_OK;
+    IDirect3DSurface9* pBackBuffer = NULL;
+
+    IFC(m_pSwapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer));
+
+    IFC(m_pDevice->SetRenderTarget(0, pBackBuffer));
 
     IFC(CD3D9RenderTarget::BeginRendering());
 
@@ -63,7 +74,7 @@ CD3D9HWNDRenderTarget::EndRendering(
 
     IFC(CD3D9RenderTarget::EndRendering());
 
-    IFC(m_pDevice->Present(NULL, NULL, NULL, NULL));
+    IFC(m_pSwapChain->Present(NULL, NULL, NULL, NULL, NULL));
 
 Cleanup:
     return hr;

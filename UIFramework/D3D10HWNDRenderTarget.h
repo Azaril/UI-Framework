@@ -5,7 +5,7 @@
 class UIFRAMEWORK_API CD3D10HWNDRenderTarget : public CD3D10RenderTarget
 {
     public:
-        DECLARE_FACTORY2( CD3D10HWNDRenderTarget, ID3D10Device*, IDXGISwapChain* );
+        DECLARE_FACTORY3( CD3D10HWNDRenderTarget, ID3D10Device*, IDXGISwapChain*, CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* );
 
         __override virtual SizeF GetSize(
             );
@@ -25,7 +25,8 @@ class UIFRAMEWORK_API CD3D10HWNDRenderTarget : public CD3D10RenderTarget
 
         __checkReturn HRESULT Initialize(
             __in ID3D10Device* pDevice,
-            __in IDXGISwapChain* pSwapChain
+            __in IDXGISwapChain* pSwapChain,
+            __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
             );
 
         UINT32 m_Width;

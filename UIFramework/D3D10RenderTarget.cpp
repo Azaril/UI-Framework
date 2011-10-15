@@ -16,7 +16,6 @@ CD3D10RenderTarget::CD3D10RenderTarget(
     , m_pInputLayout(NULL)
     , m_pTransformBuffer(NULL)
     , m_pRasterizerState(NULL)
-    , m_pStagingTextureAtlasPool(NULL)
     , m_pSamplerState(NULL)
 {
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
@@ -34,7 +33,6 @@ CD3D10RenderTarget::~CD3D10RenderTarget(
     ReleaseObject(m_pVertexShader);
     ReleaseObject(m_pPixelShader);
     ReleaseObject(m_pInputLayout);
-    ReleaseObject(m_pStagingTextureAtlasPool);
 
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
     {
@@ -49,13 +47,13 @@ CD3D10RenderTarget::~CD3D10RenderTarget(
 __checkReturn HRESULT 
 CD3D10RenderTarget::Initialize(
     __in ID3D10Device* pDevice,
-    __in ID3D10RenderTargetView* pRenderTargetView
+    __in ID3D10RenderTargetView* pRenderTargetView,
+    __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
     )
 {
     HRESULT hr = S_OK;
     ID3D10Buffer* pD3DBuffer = NULL;
     CGeometryTesselationSink* pTesselationSink = NULL;
-    CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool = NULL;
     CTextureAtlasWithWhitePixel< 1 >* pFirstTextureAtlas = NULL;
 
     SetObject(m_pDevice, pDevice);
@@ -79,30 +77,6 @@ CD3D10RenderTarget::Initialize(
     }
 
     IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &pTesselationSink));
-
-    {
-        D3D10_TEXTURE2D_DESC textureDescription = { };
-
-        textureDescription.MipLevels = 1;
-        textureDescription.ArraySize = 1;
-        textureDescription.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        textureDescription.SampleDesc.Count = 1;
-        textureDescription.SampleDesc.Quality = 0;
-        textureDescription.Usage = D3D10_USAGE_STAGING;
-        textureDescription.BindFlags = 0;
-        textureDescription.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
-        textureDescription.MiscFlags = 0;
-
-        m_StagingTextureAllocator.Initialize(this, textureDescription);
-
-        //TODO: This need to be changed so that the atlas pool will check if the textures are in use, currently causes pipeline stalls
-        //      as textures that are currently being copied are trying to be mapped.
-        //TODO: Dynamically size this.
-        IFC(CTextureAtlasPool< StagingTextureAtlasType >::Create(4096, 4096, &m_StagingTextureAllocator, &m_pStagingTextureAtlasPool));
-    }
-
-    //TODO: Dynamically size this.
-    IFC(CTextureAtlasPool< RenderTextureAtlasType >::Create(4096, 4096, this, &pTextureAtlasPool));
 
     IFC(pTextureAtlasPool->GetOrCreateFirstTextureAtlas(&pFirstTextureAtlas));
 
@@ -169,7 +143,6 @@ CD3D10RenderTarget::Initialize(
 Cleanup:
     ReleaseObject(pD3DBuffer);
     ReleaseObject(pTesselationSink);
-    ReleaseObject(pTextureAtlasPool);
     ReleaseObject(pFirstTextureAtlas);
 
     return hr;
@@ -358,117 +331,6 @@ CD3D10RenderTarget::OnTesselatedGeometryBatch(
 }
 
 __override __checkReturn HRESULT 
-CD3D10RenderTarget::AllocateTexture(
-    UINT32 Width,
-    UINT32 Height,
-    __deref_out ITexture** ppTexture
-    )
-{
-    HRESULT hr = S_OK;
-    ID3D10Texture2D* pD3DTexture = NULL;
-    CD3D10Texture* pTexture = NULL;
-    CStagingTextureWrapper* pStagingTexture = NULL;
-
-    //
-    // Create rendering texture.
-    //
-    {
-        D3D10_TEXTURE2D_DESC textureDescription = { };
-
-        textureDescription.Width = Width;
-        textureDescription.Height = Height;
-        textureDescription.MipLevels = 1;
-        textureDescription.ArraySize = 1;
-        textureDescription.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        textureDescription.SampleDesc.Count = 1;
-        textureDescription.SampleDesc.Quality = 0;
-        textureDescription.Usage = D3D10_USAGE_DEFAULT;
-        textureDescription.BindFlags = D3D10_BIND_SHADER_RESOURCE;
-        textureDescription.CPUAccessFlags = 0;
-        textureDescription.MiscFlags = 0;
-
-        IFC(m_pDevice->CreateTexture2D(&textureDescription, NULL, &pD3DTexture));
-
-        IFC(CD3D10Texture::Create(pD3DTexture, &pTexture));
-    }
-
-    //
-    // Create staging buffer texture wrapper.
-    //
-    IFC(CStagingTextureWrapper::Create(m_pStagingTextureAtlasPool, this, pTexture, &pStagingTexture));
-
-    *ppTexture = pStagingTexture;
-    pStagingTexture = NULL;
-
-Cleanup:
-    ReleaseObject(pTexture);
-    ReleaseObject(pD3DTexture);
-
-    return hr;
-}
-
-__checkReturn HRESULT 
-CD3D10RenderTarget::AllocateTexture(
-    const D3D10_TEXTURE2D_DESC& textureDescription,
-    __deref_out ITexture** ppTexture
-    )
-{
-    HRESULT hr = S_OK;
-    ID3D10Texture2D* pD3DTexture = NULL;
-    CD3D10Texture* pTexture = NULL;
-
-    IFC(m_pDevice->CreateTexture2D(&textureDescription, NULL, &pD3DTexture));
-
-    IFC(CD3D10Texture::Create(pD3DTexture, &pTexture));
-
-    *ppTexture = pTexture;
-    pTexture = NULL;
-
-Cleanup:
-    ReleaseObject(pTexture);
-    ReleaseObject(pD3DTexture);
-
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CD3D10RenderTarget::AddUpdate(
-    __in ITexture* pSource,
-    const RectU& sourceRect,
-    __in ITexture* pDestination,
-    const Point2U& destOffset
-    )
-{
-    HRESULT hr = S_OK;
-    CTextureAtlasView* pSourceView = NULL;
-    CD3D10Texture* pSourceTexture = NULL;
-    CD3D10Texture* pDestinationTexture = NULL;
-
-    pSourceView = (CTextureAtlasView*)pSource;
-
-    pSourceTexture = (CD3D10Texture*)pSourceView->GetTexture();
-    pDestinationTexture = (CD3D10Texture*)pDestination;
-
-    {
-        const RectU& viewSourceRect = pSourceView->GetRect();
-
-        D3D10_BOX sourceBox = { };
-
-        sourceBox.left = viewSourceRect.left + sourceRect.left;
-        sourceBox.top = viewSourceRect.top + sourceRect.top;
-        sourceBox.right = viewSourceRect.left + sourceRect.right;
-        sourceBox.bottom = viewSourceRect.top + sourceRect.bottom;
-        sourceBox.front = 0;
-        sourceBox.back = 1;
-
-        //TODO: Batch texture updates.
-        m_pDevice->CopySubresourceRegion(pDestinationTexture->GetD3DTexture(), D3D10CalcSubresource(0, 0, 1), destOffset.x, destOffset.y, 0, pSourceTexture->GetD3DTexture(), D3D10CalcSubresource(0, 0, 1), &sourceBox);
-    }
-
-    return hr;
-}
-
-__override __checkReturn HRESULT 
 CD3D10RenderTarget::Clear( 
     const ColorF& Color 
     )
@@ -478,41 +340,5 @@ CD3D10RenderTarget::Clear(
 
     m_pDevice->ClearRenderTargetView(m_pRenderTargetView, clearColor);
 
-    return hr;
-}
-
-CD3D10RenderTarget::CRenderTextureAllocator::CRenderTextureAllocator(
-    )
-    : m_pRenderTarget(NULL)
-{
-    ZeroMemory(&m_TextureDescription, sizeof(m_TextureDescription));
-}
-
-void
-CD3D10RenderTarget::CRenderTextureAllocator::Initialize(
-    __in CD3D10RenderTarget* pRenderTarget,
-    const D3D10_TEXTURE2D_DESC& baseDescription
-    )
-{
-    m_pRenderTarget = pRenderTarget;
-    m_TextureDescription = baseDescription;
-}
-
-__override __checkReturn HRESULT 
-CD3D10RenderTarget::CRenderTextureAllocator::AllocateTexture(
-    UINT32 Width,
-    UINT32 Height,
-    __deref_out ITexture** ppTexture
-    )
-{
-    HRESULT hr = S_OK;
-    D3D10_TEXTURE2D_DESC textureDescription = m_TextureDescription;
-
-    textureDescription.Width = Width;
-    textureDescription.Height = Height;
-
-    IFC(m_pRenderTarget->AllocateTexture(textureDescription, ppTexture));
-
-Cleanup:
     return hr;
 }

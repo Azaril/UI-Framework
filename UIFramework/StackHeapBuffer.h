@@ -1,6 +1,6 @@
 #pragma once
 
-template< typename T, unsigned int Size >
+template< typename T, size_t Size >
 class StackHeapBuffer
 {
     public:
@@ -42,7 +42,7 @@ class StackHeapBuffer
 
         		if (m_pHeapBuffer == NULL)
         		{
-        			m_pHeapBuffer = new T(BufferSize);
+        			m_pHeapBuffer = new T[BufferSize];
                     IFCOOM(m_pHeapBuffer);
 
         			m_HeapBufferSize = BufferSize;

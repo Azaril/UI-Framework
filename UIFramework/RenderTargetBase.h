@@ -9,8 +9,7 @@
 #include "TextureAtlasWithWhitePixel.h"
 
 class UIFRAMEWORK_API CRenderTargetBase : public CRenderTarget,
-                                          protected ITesselationBatchCallback,
-                                          protected ITextureAllocator
+                                          protected ITesselationBatchCallback
 {
     public:
         __override virtual __checkReturn HRESULT BeginRendering(

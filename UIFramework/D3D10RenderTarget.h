@@ -9,8 +9,7 @@
 #include "D3D10VertexBuffer.h"
 #include "StagingTextureCallback.h"
 
-class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase,
-                                           private IStagingTextureCallback
+class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase
 {
     public:
         /*
@@ -114,7 +113,8 @@ class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase,
 
         __checkReturn HRESULT Initialize(
             __in ID3D10Device* pDevice,
-            __in ID3D10RenderTargetView* pRenderTargetView
+            __in ID3D10RenderTargetView* pRenderTargetView,
+            __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
 			);
 
         __override virtual __checkReturn HRESULT BindTexture(
@@ -125,24 +125,6 @@ class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase,
             __in IVertexBuffer* pVertexBuffer
             );
 
-        __override virtual __checkReturn HRESULT AllocateTexture(
-            UINT32 Width,
-            UINT32 Height,
-            __deref_out ITexture** ppTexture
-            );
-
-        __checkReturn HRESULT AllocateTexture(
-            const D3D10_TEXTURE2D_DESC& textureDescription,
-            __deref_out ITexture** ppTexture
-            );
-
-        __override virtual __checkReturn HRESULT AddUpdate(
-            __in ITexture* pSource,
-            const RectU& sourceRect,
-            __in ITexture* pDestination,
-            const Point2U& destOffset
-            );
-
         ID3D10Device* m_pDevice;
         CD3D10VertexBuffer* m_pVertexBuffers[2];
         ID3D10VertexShader* m_pVertexShader;
@@ -151,34 +133,6 @@ class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase,
         ID3D10Buffer* m_pTransformBuffer;
         ID3D10RasterizerState* m_pRasterizerState;
         ID3D10SamplerState* m_pSamplerState;
-        CTextureAtlasPool< CTextureAtlas< ITextureAtlas, 0 > >* m_pStagingTextureAtlasPool;
-
-        class CRenderTextureAllocator : public ITextureAllocator
-        {
-            public:
-                CRenderTextureAllocator(
-                    );
-
-                void Initialize(
-                    __in CD3D10RenderTarget* pRenderTarget,
-                    const D3D10_TEXTURE2D_DESC& baseDescription
-                    );
-
-                __override virtual __checkReturn HRESULT AllocateTexture(
-                    UINT32 Width,
-                    UINT32 Height,
-                    __deref_out ITexture** ppTexture
-                    );
-
-            protected:
-                CD3D10RenderTarget* m_pRenderTarget;
-                D3D10_TEXTURE2D_DESC m_TextureDescription;
-        };
-
-        CRenderTextureAllocator m_StagingTextureAllocator;
-
-        typedef CTextureAtlasWithWhitePixel< 1 > RenderTextureAtlasType;
-        typedef CTextureAtlas< ITextureAtlas, 0 > StagingTextureAtlasType;
 
     private:
         ID3D10RenderTargetView* m_pRenderTargetView;

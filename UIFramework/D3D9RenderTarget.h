@@ -111,7 +111,8 @@ class UIFRAMEWORK_API CD3D9RenderTarget : public CRenderTargetBase
 			);
 
         __checkReturn HRESULT Initialize(
-            IDirect3DDevice9* pDevice
+            __in IDirect3DDevice9* pDevice,
+            __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
 			);
 
         __override virtual __checkReturn HRESULT BindTexture(
@@ -120,12 +121,6 @@ class UIFRAMEWORK_API CD3D9RenderTarget : public CRenderTargetBase
 
         __override virtual __checkReturn HRESULT OnTesselatedGeometryBatch(
             __in IVertexBuffer* pVertexBuffer
-            );
-
-        __override virtual __checkReturn HRESULT AllocateTexture(
-            UINT32 Width,
-            UINT32 Height,
-            __deref_out ITexture** ppTexture
             );
 
         IDirect3DDevice9* m_pDevice;

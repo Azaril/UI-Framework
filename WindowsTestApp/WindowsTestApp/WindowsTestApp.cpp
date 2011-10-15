@@ -183,7 +183,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 #elif defined(BUILD_D3D9)
 
-    IFC(CD3D9GraphicsDevice::Create(&pGraphicsDevice));
+    IFC(CD3D9GraphicsDevice::Create(hWnd, &pGraphicsDevice));
 
     IFC(pGraphicsDevice->CreateHWNDRenderTarget(hWnd, &pRenderTarget));
 

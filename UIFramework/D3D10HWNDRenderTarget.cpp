@@ -21,7 +21,8 @@ CD3D10HWNDRenderTarget::~CD3D10HWNDRenderTarget(
 __checkReturn HRESULT
 CD3D10HWNDRenderTarget::Initialize(
     __in ID3D10Device* pDevice,
-    __in IDXGISwapChain* pSwapChain
+    __in IDXGISwapChain* pSwapChain,
+    __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
     )
 {
     HRESULT hr = S_OK;
@@ -38,7 +39,7 @@ CD3D10HWNDRenderTarget::Initialize(
 
     IFC(pDevice->CreateRenderTargetView(m_pBackBuffer, NULL, &m_pBackBufferView));
 
-    IFC(CD3D10RenderTarget::Initialize(pDevice, m_pBackBufferView));
+    IFC(CD3D10RenderTarget::Initialize(pDevice, m_pBackBufferView, pTextureAtlasPool));
 
 Cleanup:
     return hr;

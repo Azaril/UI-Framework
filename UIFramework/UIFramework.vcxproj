@@ -50,7 +50,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include;$(ProjectDir)\External\boost;$(ProjectDir)\External\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include;$(ProjectDir)\External\freetype\include;$(ProjectDir)\External\boost;$(ProjectDir)\External\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;NOMINMAX;_CRTDBG_MAP_ALLOC;_CRT_SECURE_NO_WARNINGS;UIFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -63,17 +63,18 @@
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\External\freetype\objs\win32\vc2010;$(DXSDK_DIR)\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>freetype246_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include;$(ProjectDir)\External\boost;$(ProjectDir)\External\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include;$(ProjectDir)\External\freetype\include;$(ProjectDir)\External\boost;$(ProjectDir)\External\Irrlicht\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;NOMINMAX;_CRT_SECURE_NO_WARNINGS;UIFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -86,7 +87,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\External\freetype\objs\win32\vc2010;$(DXSDK_DIR)\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -126,6 +127,11 @@
     <ClCompile Include="D3D10GraphicsDevice.cpp" />
     <ClCompile Include="D3D10HWNDRenderTarget.cpp" />
     <ClCompile Include="D3D10RenderTarget.cpp" />
+    <ClCompile Include="FreetypeFontFace.cpp" />
+    <ClCompile Include="FreeTypeTextFormat.cpp" />
+    <ClCompile Include="FreetypeTextLayout.cpp" />
+    <ClCompile Include="FreetypeTextLayoutMetics.cpp" />
+    <ClCompile Include="FreetypeTextProvider.cpp" />
     <ClCompile Include="StagingTextureWrapper.cpp" />
     <ClCompile Include="D3D10Texture.cpp" />
     <ClCompile Include="D3D10VertexBuffer.cpp" />
@@ -190,6 +196,7 @@
     <ClCompile Include="StagingTextureCallback.cpp" />
     <ClCompile Include="StaticTesselator.cpp" />
     <ClCompile Include="Storyboard.cpp" />
+    <ClCompile Include="TextLayoutEngine.cpp" />
     <ClCompile Include="TextureAtlas.cpp" />
     <ClCompile Include="TextureAtlasPool.cpp" />
     <ClCompile Include="TextureAtlasView.cpp" />
@@ -365,6 +372,11 @@
     <ClInclude Include="D3D10GraphicsDevice.h" />
     <ClInclude Include="D3D10HWNDRenderTarget.h" />
     <ClInclude Include="D3D10RenderTarget.h" />
+    <ClInclude Include="FreetypeFontFace.h" />
+    <ClInclude Include="FreeTypeTextFormat.h" />
+    <ClInclude Include="FreetypeTextLayout.h" />
+    <ClInclude Include="FreetypeTextLayoutMetics.h" />
+    <ClInclude Include="FreetypeTextProvider.h" />
     <ClInclude Include="StagingTextureWrapper.h" />
     <ClInclude Include="D3D10Texture.h" />
     <ClInclude Include="D3D10VertexBuffer.h" />
@@ -428,6 +440,7 @@
     <ClInclude Include="SourcedBinding.h" />
     <ClInclude Include="StagingTextureCallback.h" />
     <ClInclude Include="Storyboard.h" />
+    <ClInclude Include="TextLayoutEngine.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureAllocator.h" />
     <ClInclude Include="TextureAtlas.h" />

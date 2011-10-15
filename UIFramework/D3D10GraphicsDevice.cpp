@@ -1,6 +1,9 @@
 #include "D3D10GraphicsDevice.h"
 #include "CoreGeometryProvider.h"
 #include "WICImagingProvider.h"
+#include "D3D10Texture.h"
+#include "StagingTextureWrapper.h"
+#include "FreetypeTextProvider.h"
 
 CD3D10GraphicsDevice::CD3D10GraphicsDevice(
     )
@@ -9,7 +12,12 @@ CD3D10GraphicsDevice::CD3D10GraphicsDevice(
     , m_pGeometryProvider(NULL)
     , m_D3D10Module(NULL)
     , m_pCreateDevice(NULL)
-    , m_pCreateDeviceAndSwapChain(NULL)
+    , m_DXGIModule(NULL)
+    , m_pCreateDXGIFactory(NULL)
+    , m_pDevice(NULL)
+    , m_pStagingTextureAtlasPool(NULL)
+    , m_pTextureAtlasPool(NULL)
+    , m_pDXGIFactory(NULL)
 {
 }
 
@@ -20,9 +28,20 @@ CD3D10GraphicsDevice::~CD3D10GraphicsDevice(
     ReleaseObject(m_pImagingProvider);
     ReleaseObject(m_pGeometryProvider);
 
+    ReleaseObject(m_pTextureAtlasPool);
+    ReleaseObject(m_pStagingTextureAtlasPool);
+    ReleaseObject(m_pDevice);
+
+    ReleaseObject(m_pDXGIFactory);
+
     if (m_D3D10Module != NULL)
     {
         FreeLibrary(m_D3D10Module);
+    }
+
+    if (m_DXGIModule != NULL)
+    {
+        FreeLibrary(m_DXGIModule);
     }
 }
 
@@ -38,8 +57,39 @@ CD3D10GraphicsDevice::Initialize(
     m_pCreateDevice = (D3D10CreateDeviceFunc)GetProcAddress(m_D3D10Module, "D3D10CreateDevice");
     IFCEXPECT(m_pCreateDevice != NULL);
 
-    m_pCreateDeviceAndSwapChain = (D3D10CreateDeviceAndSwapChainFunc)GetProcAddress(m_D3D10Module, "D3D10CreateDeviceAndSwapChain");
-    IFCEXPECT(m_pCreateDeviceAndSwapChain != NULL);
+    m_DXGIModule = LoadLibrary(L"DXGI.dll");
+    IFCEXPECT(m_DXGIModule != NULL);
+
+    m_pCreateDXGIFactory = (CreateDXGIFactoryFunc)GetProcAddress(m_DXGIModule, "CreateDXGIFactory");
+    IFCEXPECT(m_pCreateDXGIFactory != NULL);
+
+    IFC(m_pCreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&m_pDXGIFactory));
+
+    IFC(m_pCreateDevice(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, D3D10_CREATE_DEVICE_SINGLETHREADED, D3D10_SDK_VERSION, &m_pDevice));
+
+    {
+        D3D10_TEXTURE2D_DESC textureDescription = { };
+
+        textureDescription.MipLevels = 1;
+        textureDescription.ArraySize = 1;
+        textureDescription.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        textureDescription.SampleDesc.Count = 1;
+        textureDescription.SampleDesc.Quality = 0;
+        textureDescription.Usage = D3D10_USAGE_STAGING;
+        textureDescription.BindFlags = 0;
+        textureDescription.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
+        textureDescription.MiscFlags = 0;
+
+        m_StagingTextureAllocator.Initialize(this, textureDescription);
+
+        //TODO: This need to be changed so that the atlas pool will check if the textures are in use, currently causes pipeline stalls
+        //      as textures that are currently being copied are trying to be mapped.
+        //TODO: Dynamically size this.
+        IFC(CTextureAtlasPool< StagingTextureAtlasType >::Create(4096, 4096, &m_StagingTextureAllocator, &m_pStagingTextureAtlasPool));
+    }
+
+    //TODO: Dynamically size this.
+    IFC(CTextureAtlasPool< RenderTextureAtlasType >::Create(4096, 4096, this, &m_pTextureAtlasPool));
 
     IFC(CreateTextProvider(&m_pTextProvider));
 
@@ -58,7 +108,6 @@ CD3D10GraphicsDevice::CreateHWNDRenderTarget(
     )
 {
     HRESULT hr = S_OK;
-    ID3D10Device* pDevice = NULL;
     IDXGISwapChain* pSwapChain = NULL;
     CD3D10HWNDRenderTarget* pHWNDRenderTarget = NULL;
 
@@ -80,17 +129,17 @@ CD3D10GraphicsDevice::CreateHWNDRenderTarget(
         swapChainDescription.SampleDesc.Count = 1;
         swapChainDescription.SampleDesc.Quality = 0;
         swapChainDescription.Windowed = TRUE;
-        
-        IFC(m_pCreateDeviceAndSwapChain(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, D3D10_CREATE_DEVICE_SINGLETHREADED, D3D10_SDK_VERSION, &swapChainDescription, &pSwapChain, &pDevice));
+
+        IFC(m_pDXGIFactory->CreateSwapChain(m_pDevice, &swapChainDescription, &pSwapChain));
     }
 
-    IFC(CD3D10HWNDRenderTarget::Create(pDevice, pSwapChain, &pHWNDRenderTarget));
+    IFC(CD3D10HWNDRenderTarget::Create(m_pDevice, pSwapChain, m_pTextureAtlasPool, &pHWNDRenderTarget));
 
     *ppRenderTarget = pHWNDRenderTarget;
     pHWNDRenderTarget = NULL;
 
 Cleanup:
-    ReleaseObject(pDevice);
+    ReleaseObject(pSwapChain);
 
     return hr;
 }
@@ -149,21 +198,21 @@ CD3D10GraphicsDevice::CreateTextProvider(
     )
 {
     HRESULT hr = S_OK;
-    // CDirectWriteTextProvider* pDirectWriteTextProvider = NULL;
+    CFreetypeTextProvider* pFreetypeTextProvider = NULL;
 
     IFCPTR(ppTextProvider);
 
-    // if(SUCCEEDED(CDirectWriteTextProvider::Create(&pDirectWriteTextProvider)))
-    // {
-    //     *ppTextProvider = pDirectWriteTextProvider;
-    //     pDirectWriteTextProvider = NULL;
-    //     goto Cleanup;
-    // }
+    if(SUCCEEDED(CFreetypeTextProvider::Create(m_pTextureAtlasPool, &pFreetypeTextProvider)))
+    {
+        *ppTextProvider = pFreetypeTextProvider;
+        pFreetypeTextProvider = NULL;
+        goto Cleanup;
+    }
 
-    //IFC(E_FAIL);
+    IFC(E_FAIL);
 
 Cleanup:
-    // ReleaseObject(pDirectWriteTextProvider);
+    ReleaseObject(pFreetypeTextProvider);
 
     return hr;
 }
@@ -215,5 +264,152 @@ CD3D10GraphicsDevice::CreateGeometryProvider(
 Cleanup:
     ReleaseObject(pCoreGeometryProvider);
 
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D10GraphicsDevice::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out ITexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    ID3D10Texture2D* pD3DTexture = NULL;
+    CD3D10Texture* pTexture = NULL;
+    CStagingTextureWrapper* pStagingTexture = NULL;
+
+    //
+    // Create rendering texture.
+    //
+    {
+        D3D10_TEXTURE2D_DESC textureDescription = { };
+
+        textureDescription.Width = Width;
+        textureDescription.Height = Height;
+        textureDescription.MipLevels = 1;
+        textureDescription.ArraySize = 1;
+        textureDescription.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        textureDescription.SampleDesc.Count = 1;
+        textureDescription.SampleDesc.Quality = 0;
+        textureDescription.Usage = D3D10_USAGE_DEFAULT;
+        textureDescription.BindFlags = D3D10_BIND_SHADER_RESOURCE;
+        textureDescription.CPUAccessFlags = 0;
+        textureDescription.MiscFlags = 0;
+
+        IFC(m_pDevice->CreateTexture2D(&textureDescription, NULL, &pD3DTexture));
+
+        IFC(CD3D10Texture::Create(pD3DTexture, &pTexture));
+    }
+
+    //
+    // Create staging buffer texture wrapper.
+    //
+    IFC(CStagingTextureWrapper::Create(m_pStagingTextureAtlasPool, this, pTexture, &pStagingTexture));
+
+    *ppTexture = pStagingTexture;
+    pStagingTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pTexture);
+    ReleaseObject(pD3DTexture);
+
+    return hr;
+}
+
+__checkReturn HRESULT 
+CD3D10GraphicsDevice::AllocateTexture(
+    const D3D10_TEXTURE2D_DESC& textureDescription,
+    __deref_out ITexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    ID3D10Texture2D* pD3DTexture = NULL;
+    CD3D10Texture* pTexture = NULL;
+
+    IFC(m_pDevice->CreateTexture2D(&textureDescription, NULL, &pD3DTexture));
+
+    IFC(CD3D10Texture::Create(pD3DTexture, &pTexture));
+
+    *ppTexture = pTexture;
+    pTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pTexture);
+    ReleaseObject(pD3DTexture);
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D10GraphicsDevice::AddUpdate(
+    __in ITexture* pSource,
+    const RectU& sourceRect,
+    __in ITexture* pDestination,
+    const Point2U& destOffset
+    )
+{
+    HRESULT hr = S_OK;
+    CTextureAtlasView* pSourceView = NULL;
+    CD3D10Texture* pSourceTexture = NULL;
+    CD3D10Texture* pDestinationTexture = NULL;
+
+    pSourceView = (CTextureAtlasView*)pSource;
+
+    pSourceTexture = (CD3D10Texture*)pSourceView->GetTexture();
+    pDestinationTexture = (CD3D10Texture*)pDestination;
+
+    {
+        const RectU& viewSourceRect = pSourceView->GetRect();
+
+        D3D10_BOX sourceBox = { };
+
+        sourceBox.left = viewSourceRect.left + sourceRect.left;
+        sourceBox.top = viewSourceRect.top + sourceRect.top;
+        sourceBox.right = viewSourceRect.left + sourceRect.right;
+        sourceBox.bottom = viewSourceRect.top + sourceRect.bottom;
+        sourceBox.front = 0;
+        sourceBox.back = 1;
+
+        //TODO: Batch texture updates.
+        m_pDevice->CopySubresourceRegion(pDestinationTexture->GetD3DTexture(), D3D10CalcSubresource(0, 0, 1), destOffset.x, destOffset.y, 0, pSourceTexture->GetD3DTexture(), D3D10CalcSubresource(0, 0, 1), &sourceBox);
+    }
+
+    return hr;
+}
+
+CD3D10GraphicsDevice::CRenderTextureAllocator::CRenderTextureAllocator(
+    )
+    : m_pGraphicsDevice(NULL)
+{
+    ZeroMemory(&m_TextureDescription, sizeof(m_TextureDescription));
+}
+
+void
+CD3D10GraphicsDevice::CRenderTextureAllocator::Initialize(
+    __in CD3D10GraphicsDevice* pGraphicsDevice,
+    const D3D10_TEXTURE2D_DESC& baseDescription
+    )
+{
+    m_pGraphicsDevice = pGraphicsDevice;
+    m_TextureDescription = baseDescription;
+}
+
+__override __checkReturn HRESULT 
+CD3D10GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out ITexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    D3D10_TEXTURE2D_DESC textureDescription = m_TextureDescription;
+
+    textureDescription.Width = Width;
+    textureDescription.Height = Height;
+
+    IFC(m_pGraphicsDevice->AllocateTexture(textureDescription, ppTexture));
+
+Cleanup:
     return hr;
 }

@@ -41,13 +41,13 @@ CD3D9RenderTarget::~CD3D9RenderTarget(
 
 __checkReturn HRESULT 
 CD3D9RenderTarget::Initialize(
-    __in IDirect3DDevice9* pDevice
+    __in IDirect3DDevice9* pDevice,
+    __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
     )
 {
     HRESULT hr = S_OK;
     IDirect3DVertexBuffer9* pD3DVertexBuffer = NULL;
     CGeometryTesselationSink* pTesselationSink = NULL;
-    CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool = NULL;
     CTextureAtlasWithWhitePixel< 1 >* pFirstTextureAtlas = NULL;
     D3DCAPS9 deviceCapabilites = { };
 
@@ -65,8 +65,6 @@ CD3D9RenderTarget::Initialize(
     IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &pTesselationSink));
 
     IFC(pDevice->GetDeviceCaps(&deviceCapabilites));
-
-    IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(deviceCapabilites.MaxTextureWidth, deviceCapabilites.MaxTextureWidth, this, &pTextureAtlasPool));
 
     IFC(pTextureAtlasPool->GetOrCreateFirstTextureAtlas(&pFirstTextureAtlas));
 
@@ -121,7 +119,6 @@ CD3D9RenderTarget::Initialize(
 Cleanup:
     ReleaseObject(pD3DVertexBuffer);
     ReleaseObject(pTesselationSink);
-    ReleaseObject(pTextureAtlasPool);
     ReleaseObject(pFirstTextureAtlas);
 
     return hr;
@@ -230,31 +227,6 @@ CD3D9RenderTarget::OnTesselatedGeometryBatch(
     IFC(m_pDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, pVertexBuffer->GetVertexCount() / 3));
 
 Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CD3D9RenderTarget::AllocateTexture(
-    UINT32 Width,
-    UINT32 Height,
-    __deref_out ITexture** ppTexture
-    )
-{
-    HRESULT hr = S_OK;
-    IDirect3DTexture9* pD3DTexture = NULL;
-    CD3D9Texture* pTexture = NULL;
-
-    IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));
-
-    IFC(CD3D9Texture::Create(pD3DTexture, &pTexture));
-
-    *ppTexture = pTexture;
-    pTexture = NULL;
-
-Cleanup:
-    ReleaseObject(pTexture);
-    ReleaseObject(pD3DTexture);
-
     return hr;
 }
 

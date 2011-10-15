@@ -1,6 +1,8 @@
 #include "D3D9GraphicsDevice.h"
 #include "CoreGeometryProvider.h"
 #include "WICImagingProvider.h"
+#include "FreetypeTextProvider.h"
+#include "D3D9Texture.h"
 
 typedef IDirect3D9* (WINAPI *Direct3DCreate9Func)(
     UINT SDKVersion
@@ -13,6 +15,9 @@ CD3D9GraphicsDevice::CD3D9GraphicsDevice(
     , m_pGeometryProvider(NULL)
     , m_D3D9Module(NULL)
     , m_pD3D(NULL)
+    , m_pDevice(NULL)
+    , m_FocusWindow(NULL)
+    , m_pTextureAtlasPool(NULL)
 {
 }
 
@@ -22,8 +27,11 @@ CD3D9GraphicsDevice::~CD3D9GraphicsDevice(
     ReleaseObject(m_pTextProvider);
     ReleaseObject(m_pImagingProvider);
     ReleaseObject(m_pGeometryProvider);
+
+    ReleaseObject(m_pTextureAtlasPool);
     
     ReleaseObject(m_pD3D);
+    ReleaseObject(m_pDevice);
 
     if (m_D3D9Module != NULL)
     {
@@ -33,10 +41,14 @@ CD3D9GraphicsDevice::~CD3D9GraphicsDevice(
 
 __checkReturn HRESULT
 CD3D9GraphicsDevice::Initialize(
+    HWND focusWindow
     )
 {
     HRESULT hr = S_OK;
     Direct3DCreate9Func CreateFunc = NULL;
+    D3DCAPS9 deviceCapabilites = { };
+
+    m_FocusWindow = focusWindow;
 
     m_D3D9Module = LoadLibrary(L"D3D9.dll");
     IFCEXPECT(m_D3D9Module != NULL);
@@ -46,6 +58,39 @@ CD3D9GraphicsDevice::Initialize(
 
     m_pD3D = CreateFunc(D3D_SDK_VERSION);
     IFCPTR(m_pD3D);
+
+    {
+        D3DPRESENT_PARAMETERS presentParameters = { };
+
+        presentParameters.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
+        presentParameters.EnableAutoDepthStencil = FALSE;
+
+        presentParameters.BackBufferCount = 0;
+        presentParameters.BackBufferFormat = D3DFMT_UNKNOWN;
+
+        presentParameters.BackBufferHeight = 0;
+        presentParameters.BackBufferWidth = 0;
+
+        presentParameters.MultiSampleType = D3DMULTISAMPLE_NONE;
+        presentParameters.MultiSampleQuality = 0;
+
+        presentParameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
+
+        presentParameters.hDeviceWindow = m_FocusWindow;
+        presentParameters.Windowed = TRUE;
+
+        presentParameters.Flags = 0;
+        presentParameters.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
+
+        if(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &presentParameters, &m_pDevice)))
+        {
+            IFC(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &presentParameters, &m_pDevice));
+        }
+    }
+
+    IFC(m_pDevice->GetDeviceCaps(&deviceCapabilites));
+
+    IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(deviceCapabilites.MaxTextureWidth, deviceCapabilites.MaxTextureWidth, this, &m_pTextureAtlasPool));
 
     IFC(CreateTextProvider(&m_pTextProvider));
 
@@ -66,10 +111,12 @@ CD3D9GraphicsDevice::CreateHWNDRenderTarget(
     HRESULT hr = S_OK;
     IDirect3DDevice9* pDevice = NULL;
     CD3D9HWNDRenderTarget* pHWNDRenderTarget = NULL;
+    IDirect3DSwapChain9* pSwapChain = NULL;
 
     IFCEXPECT(Window != NULL);
     IFCPTR(ppRenderTarget);
 
+    if (Window != m_FocusWindow)
     {
         D3DPRESENT_PARAMETERS presentParameters = { };
 
@@ -87,19 +134,20 @@ CD3D9GraphicsDevice::CreateHWNDRenderTarget(
 
         presentParameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
-        presentParameters.hDeviceWindow = Window;
+        presentParameters.hDeviceWindow = m_FocusWindow;
         presentParameters.Windowed = TRUE;
 
         presentParameters.Flags = 0;
         presentParameters.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-        if(FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, Window, D3DCREATE_HARDWARE_VERTEXPROCESSING, &presentParameters, &pDevice)))
-        {
-            IFC(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, Window, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &presentParameters, &pDevice));
-        }
+        IFC(m_pDevice->CreateAdditionalSwapChain(&presentParameters, &pSwapChain));
+    }
+    else
+    {
+        IFC(m_pDevice->GetSwapChain(0, &pSwapChain));
     }
 
-    IFC(CD3D9HWNDRenderTarget::Create(pDevice, &pHWNDRenderTarget));
+    IFC(CD3D9HWNDRenderTarget::Create(m_pDevice, pSwapChain, m_pTextureAtlasPool, &pHWNDRenderTarget));
 
     *ppRenderTarget = pHWNDRenderTarget;
     pHWNDRenderTarget = NULL;
@@ -164,21 +212,21 @@ CD3D9GraphicsDevice::CreateTextProvider(
     )
 {
     HRESULT hr = S_OK;
-    // CDirectWriteTextProvider* pDirectWriteTextProvider = NULL;
+    CFreetypeTextProvider* pFreetypeTextProvider = NULL;
 
     IFCPTR(ppTextProvider);
 
-    // if(SUCCEEDED(CDirectWriteTextProvider::Create(&pDirectWriteTextProvider)))
-    // {
-    //     *ppTextProvider = pDirectWriteTextProvider;
-    //     pDirectWriteTextProvider = NULL;
-    //     goto Cleanup;
-    // }
+    if(SUCCEEDED(CFreetypeTextProvider::Create(m_pTextureAtlasPool, &pFreetypeTextProvider)))
+    {
+        *ppTextProvider = pFreetypeTextProvider;
+        pFreetypeTextProvider = NULL;
+        goto Cleanup;
+    }
 
-    //IFC(E_FAIL);
+    IFC(E_FAIL);
 
 Cleanup:
-    // ReleaseObject(pDirectWriteTextProvider);
+    ReleaseObject(pFreetypeTextProvider);
 
     return hr;
 }
@@ -229,6 +277,31 @@ CD3D9GraphicsDevice::CreateGeometryProvider(
 
 Cleanup:
     ReleaseObject(pCoreGeometryProvider);
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D9GraphicsDevice::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out ITexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    IDirect3DTexture9* pD3DTexture = NULL;
+    CD3D9Texture* pTexture = NULL;
+
+    IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));
+
+    IFC(CD3D9Texture::Create(pD3DTexture, &pTexture));
+
+    *ppTexture = pTexture;
+    pTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pTexture);
+    ReleaseObject(pD3DTexture);
 
     return hr;
 }

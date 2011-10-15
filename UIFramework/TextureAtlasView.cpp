@@ -5,6 +5,7 @@ CTextureAtlasView::CTextureAtlasView(
     )
     : m_pNode(NULL)
     , m_pAtlas(NULL)
+    , m_pTexture(NULL)
 {
 }
 
