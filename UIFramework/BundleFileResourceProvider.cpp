@@ -78,19 +78,22 @@ CBundleFileResourceProvider::ReadResource(
 
 	IFCEXPECT(pFileNameStart != pDelimiter);
 
-    IFC(ConvertWCHARToUTF8(pFileNameStart, (pDelimiter - pFileNameStart), &stringBuffer, &stringSize));
+    hr = ConvertWCHARToUTF8< BYTE, 2048 >(pFileNameStart, (pDelimiter - pFileNameStart), &stringBuffer, &stringSize);
+    IFC(hr);
 
     pIdentifierName = CFStringCreateWithBytes(NULL, stringBuffer.GetBuffer(), stringSize, kCFStringEncodingUTF8, false);
     IFCPTR(pIdentifierName);
 
-    IFC(ConvertWCHARToUTF8(pDelimiter + 1, (pIdentifier + identifierLength) - (pDelimiter + 1), &stringBuffer, &stringSize));
+    hr = ConvertWCHARToUTF8< BYTE, 2048 >(pDelimiter + 1, (pIdentifier + identifierLength) - (pDelimiter + 1), &stringBuffer, &stringSize);
+    IFC(hr);
 
     pExtensionName = CFStringCreateWithBytes(NULL, stringBuffer.GetBuffer(), stringSize, kCFStringEncodingUTF8, false);
     IFCPTR(pExtensionName);
 
     if (pIdentifier != pFileNameStart)
     {
-        IFC(ConvertWCHARToUTF8(pIdentifier, (pFileNameStart - 1) - pIdentifier, &stringBuffer, &stringSize));
+        hr = ConvertWCHARToUTF8< BYTE, 2048 >(pIdentifier, (pFileNameStart - 1) - pIdentifier, &stringBuffer, &stringSize);
+        IFC(hr);
 
         pDirectoryPath = CFStringCreateWithBytes(NULL, stringBuffer.GetBuffer(), stringSize, kCFStringEncodingUTF8, false);
         IFCPTR(pDirectoryPath);

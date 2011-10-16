@@ -14,7 +14,8 @@
 #include "RenderTargetBase.h"
 #include "VertexBuffer.h"
 
-class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTargetBase
+class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTargetBase,
+                                                public ITextureAllocator
 {
     public:
     	DECLARE_FACTORY3( COpenGLES20RenderTarget, GLuint, GLuint, COpenGLES20Context* );

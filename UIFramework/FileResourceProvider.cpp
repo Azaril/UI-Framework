@@ -42,7 +42,8 @@ CFileResourceProvider::ReadResource(
     {
         StackHeapBuffer<CHAR, 2048> stringBuffer;
         
-        IFC(ConvertWCHARToUTF8(pIdentifier, &stringBuffer, NULL));
+        hr = ConvertWCHARToUTF8< CHAR, 2048 >(pIdentifier, &stringBuffer, NULL);
+        IFC(hr);
         
         pFile = fopen(stringBuffer.GetBuffer(), "rb");
         IFCPTR(pFile);

@@ -2,6 +2,9 @@
 #include "StackHeapBuffer.h"
 #include "StringConversion.h"
 
+typedef StackHeapBuffer< CHAR, 2048 > StackCharBuffer;
+typedef StackHeapBuffer< WCHAR, 2048 > StackWCharBuffer;
+
 CLibXMLReader::CLibXMLReader(
 	) 
 {
@@ -29,12 +32,13 @@ CLibXMLReader::LoadFromFile(
 {
     HRESULT hr = S_OK;
     xmlTextReaderPtr pReader = NULL;
-    StackHeapBuffer< CHAR, 2048 > ConvertedTextBuffer;
+    StackCharBuffer ConvertedTextBuffer;
     
     IFCPTR(pPath);
     IFCPTR(pCallback);
     
-    IFC(ConvertWCHARToUTF8(pPath, &ConvertedTextBuffer, NULL));
+    hr = ConvertWCHARToUTF8< StackCharBuffer::Type, StackCharBuffer::StackSize >(pPath, &ConvertedTextBuffer, (UINT32*)NULL);
+    IFC(hr);
     
     pReader = xmlNewTextReaderFilename(ConvertedTextBuffer.GetBuffer());
     IFCPTR(pReader);
@@ -58,14 +62,15 @@ CLibXMLReader::LoadFromString(
 {
     HRESULT hr = S_OK;
     xmlTextReaderPtr pReader = NULL;
-    StackHeapBuffer< CHAR, 2048 > ConvertedTextBuffer; 
+    StackCharBuffer ConvertedTextBuffer; 
     xmlParserInputBuffer* pBuffer = NULL;
     UINT32 ConvertedTextLength = 0;
     
     IFCPTR(pText);
     IFCPTR(pCallback);
     
-    IFC(ConvertWCHARToUTF8(pText, &ConvertedTextBuffer, &ConvertedTextLength));
+    hr = ConvertWCHARToUTF8< StackCharBuffer::Type, StackCharBuffer::StackSize >(pText, &ConvertedTextBuffer, &ConvertedTextLength);
+    IFC(hr);
     
     //
     // NOTE: Remove NULL terminator from string length.
@@ -99,11 +104,11 @@ CLibXMLReader::ProcessReader(
 	)
 {
     HRESULT hr = S_OK;
-    StackHeapBuffer< WCHAR, 2048 > ConversionBuffer;
-    StackHeapBuffer< WCHAR, 2048 > AttributeNameBuffer;
-    StackHeapBuffer< WCHAR, 2048 > AttributeValueBuffer;
-    StackHeapBuffer< WCHAR, 2048 > AttributePrefixBuffer;
-    StackHeapBuffer< WCHAR, 2048 > AttributeNamespaceUriBuffer;
+    StackWCharBuffer ConversionBuffer;
+    StackWCharBuffer AttributeNameBuffer;
+    StackWCharBuffer AttributeValueBuffer;
+    StackWCharBuffer AttributePrefixBuffer;
+    StackWCharBuffer AttributeNamespaceUriBuffer;
 
     IFCPTR(pReader);
     IFCPTR(pCallback);
@@ -127,7 +132,8 @@ CLibXMLReader::ProcessReader(
                     
                     NameLength = xmlStrlen(pName);
                     
-                    IFC(ConvertUTF8ToWCHAR((const CHAR*)pName, NameLength, &ConversionBuffer, &ConvertedTextLength));
+                    hr = ConvertUTF8ToWCHAR< StackWCharBuffer::Type, StackWCharBuffer::StackSize >((const CHAR*)pName, NameLength, &ConversionBuffer, &ConvertedTextLength);
+                    IFC(hr);                    
                     
                     IFC(RaiseElementStart(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));
                     
@@ -152,12 +158,16 @@ CLibXMLReader::ProcessReader(
                             UINT32 AttributePrefixConvertedLength = 0;
                             UINT32 AttributeNamespaceUriConvertedLength = 0;
                             
-                            IFC(ConvertUTF8ToWCHAR((const CHAR*)pAttributeName, AttributeNameLength, &AttributeNameBuffer, &AttributeNameConvertedLength));
-                            IFC(ConvertUTF8ToWCHAR((const CHAR*)pAttributeValue, AttributeValueLength, &AttributeValueBuffer, &AttributeValueConvertedLength));
+                            hr = ConvertUTF8ToWCHAR< StackWCharBuffer::Type, StackWCharBuffer::StackSize >((const CHAR*)pAttributeName, AttributeNameLength, &AttributeNameBuffer, &AttributeNameConvertedLength);
+                            IFC(hr); 
+                            
+                            hr = ConvertUTF8ToWCHAR< StackWCharBuffer::Type, StackWCharBuffer::StackSize >((const CHAR*)pAttributeValue, AttributeValueLength, &AttributeValueBuffer, &AttributeValueConvertedLength);
+                            IFC(hr);                             
                             
                             if (pAttributePrefix != NULL)
                             {
-                                IFC(ConvertUTF8ToWCHAR((const CHAR*)pAttributePrefix, AttributePrefixLength, &AttributePrefixBuffer, &AttributePrefixConvertedLength));
+                                hr = ConvertUTF8ToWCHAR< StackWCharBuffer::Type, StackWCharBuffer::StackSize >((const CHAR*)pAttributePrefix, AttributePrefixLength, &AttributePrefixBuffer, &AttributePrefixConvertedLength);
+                                IFC(hr);                                   
                             }
                             else
                             {
@@ -166,7 +176,8 @@ CLibXMLReader::ProcessReader(
                             
                             if (pAttributeNamespaceUri != NULL)
                             {
-                                IFC(ConvertUTF8ToWCHAR((const CHAR*)pAttributeNamespaceUri, AttributeNamespaceUriLength, &AttributeNamespaceUriBuffer, &AttributeNamespaceUriConvertedLength));
+                                hr = ConvertUTF8ToWCHAR< StackWCharBuffer::Type, StackWCharBuffer::StackSize >((const CHAR*)pAttributeNamespaceUri, AttributeNamespaceUriLength, &AttributeNamespaceUriBuffer, &AttributeNamespaceUriConvertedLength);
+                                IFC(hr);                               
                             }
                             else
                             {
@@ -195,8 +206,9 @@ CLibXMLReader::ProcessReader(
                     
                     NameLength = xmlStrlen(pName);
                     
-                    IFC(ConvertUTF8ToWCHAR((const CHAR*)pName, NameLength, &ConversionBuffer, &ConvertedTextLength));
-                        
+                    hr = ConvertUTF8ToWCHAR< StackWCharBuffer::Type, StackWCharBuffer::StackSize >((const CHAR*)pName, NameLength, &ConversionBuffer, &ConvertedTextLength);
+                    IFC(hr); 
+                    
                     IFC(RaiseElementEnd(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));
                     
                     break;
@@ -214,7 +226,8 @@ CLibXMLReader::ProcessReader(
                         
                         ValueLength = xmlStrlen(pValue);
                         
-                        IFC(ConvertUTF8ToWCHAR((const CHAR*)pValue, ValueLength, &ConversionBuffer, &ConvertedTextLength));
+                        hr = ConvertUTF8ToWCHAR< StackWCharBuffer::Type, StackWCharBuffer::StackSize >((const CHAR*)pValue, ValueLength, &ConversionBuffer, &ConvertedTextLength);
+                        IFC(hr);                         
                             
                         IFC(RaiseElementEnd(ConversionBuffer.GetBuffer(), ConvertedTextLength, pCallback));                        
                     }

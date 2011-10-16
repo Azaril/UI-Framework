@@ -8,25 +8,6 @@
 template< typename T, unsigned int V >
 __checkReturn HRESULT
 ConvertWCHARToUTF8(
-    __in_z const WCHAR* pSourceString,
-    __out StackHeapBuffer< T, V >* pBuffer,
-    __out_opt UINT32* pStringLength
-    )
-{
-    HRESULT hr = S_OK;
-    UINT32 stringLength = 0;
-
-    stringLength = wcslen(pSourceString);
-
-    IFC(ConvertWCHARToUTF8(pSourceString, stringLength, pBuffer, pStringLength));
-
-Cleanup:
-    return hr;
-}
-
-template< typename T, unsigned int V >
-__checkReturn HRESULT
-ConvertWCHARToUTF8(
     __in_ecount(stringLength) const WCHAR* pSourceString,
     UINT32 stringLength,
     __out StackHeapBuffer< T, V >* pBuffer,
@@ -73,6 +54,26 @@ Cleanup:
         iconv_close(Converter);
     }
     
+    return hr;
+}
+
+template< typename T, unsigned int V >
+__checkReturn HRESULT
+ConvertWCHARToUTF8(
+                   __in_z const WCHAR* pSourceString,
+                   __out StackHeapBuffer< T, V >* pBuffer,
+                   __out_opt UINT32* pStringLength
+                   )
+{
+    HRESULT hr = S_OK;
+    UINT32 stringLength = 0;
+    
+    stringLength = wcslen(pSourceString);
+    
+    hr = ConvertWCHARToUTF8< T, V >(pSourceString, stringLength, pBuffer, pStringLength);
+    IFC(hr);
+    
+Cleanup:
     return hr;
 }
 

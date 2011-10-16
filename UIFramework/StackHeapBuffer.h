@@ -4,6 +4,9 @@ template< typename T, size_t Size >
 class StackHeapBuffer
 {
     public:
+        static const size_t StackSize = Size;
+        typedef T Type;
+
         StackHeapBuffer(
             ) 
             : m_UseInternalBuffer(TRUE)
