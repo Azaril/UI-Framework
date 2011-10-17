@@ -386,6 +386,26 @@
 		3D42B64714302F5600E76CE6 /* Storyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B63D14302F5500E76CE6 /* Storyboard.h */; };
 		3D42B64814302F5600E76CE6 /* TriggerAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D42B63E14302F5500E76CE6 /* TriggerAction.cpp */; };
 		3D42B64914302F5600E76CE6 /* TriggerAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D42B63F14302F5600E76CE6 /* TriggerAction.h */; };
+		3D51F7FD144B8C0D003BD760 /* FreetypeFontFace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7E9144B8C09003BD760 /* FreetypeFontFace.cpp */; };
+		3D51F7FE144B8C0D003BD760 /* FreetypeFontFace.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7EA144B8C09003BD760 /* FreetypeFontFace.h */; };
+		3D51F7FF144B8C0D003BD760 /* FreetypeTextFormat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7EB144B8C0A003BD760 /* FreetypeTextFormat.cpp */; };
+		3D51F800144B8C0D003BD760 /* FreetypeTextFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7EC144B8C0A003BD760 /* FreetypeTextFormat.h */; };
+		3D51F801144B8C0D003BD760 /* FreetypeTextLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7ED144B8C0A003BD760 /* FreetypeTextLayout.cpp */; };
+		3D51F802144B8C0D003BD760 /* FreetypeTextLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7EE144B8C0A003BD760 /* FreetypeTextLayout.h */; };
+		3D51F803144B8C0D003BD760 /* FreetypeTextLayoutMetics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7EF144B8C0A003BD760 /* FreetypeTextLayoutMetics.cpp */; };
+		3D51F804144B8C0D003BD760 /* FreetypeTextLayoutMetics.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7F0144B8C0B003BD760 /* FreetypeTextLayoutMetics.h */; };
+		3D51F805144B8C0D003BD760 /* FreetypeTextProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7F1144B8C0B003BD760 /* FreetypeTextProvider.cpp */; };
+		3D51F806144B8C0D003BD760 /* FreetypeTextProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7F2144B8C0B003BD760 /* FreetypeTextProvider.h */; };
+		3D51F807144B8C0D003BD760 /* ReadStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7F3144B8C0B003BD760 /* ReadStream.cpp */; };
+		3D51F808144B8C0D003BD760 /* ReadStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7F4144B8C0B003BD760 /* ReadStream.h */; };
+		3D51F809144B8C0D003BD760 /* ResourceProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7F5144B8C0C003BD760 /* ResourceProvider.cpp */; };
+		3D51F80A144B8C0D003BD760 /* ResourceProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7F6144B8C0C003BD760 /* ResourceProvider.h */; };
+		3D51F80B144B8C0D003BD760 /* StagingTextureCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7F7144B8C0C003BD760 /* StagingTextureCallback.cpp */; };
+		3D51F80C144B8C0D003BD760 /* StagingTextureCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7F8144B8C0C003BD760 /* StagingTextureCallback.h */; };
+		3D51F80D144B8C0D003BD760 /* StagingTextureWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7F9144B8C0C003BD760 /* StagingTextureWrapper.cpp */; };
+		3D51F80E144B8C0D003BD760 /* StagingTextureWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7FA144B8C0D003BD760 /* StagingTextureWrapper.h */; };
+		3D51F80F144B8C0D003BD760 /* TextLayoutEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7FB144B8C0D003BD760 /* TextLayoutEngine.cpp */; };
+		3D51F810144B8C0D003BD760 /* TextLayoutEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7FC144B8C0D003BD760 /* TextLayoutEngine.h */; };
 		3D556AAC14418AF80089CCDA /* GeometryTesselationSink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556A9F14418AF70089CCDA /* GeometryTesselationSink.cpp */; };
 		3D556AAD14418AF80089CCDA /* GeometryTesselationSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AA014418AF70089CCDA /* GeometryTesselationSink.h */; };
 		3D556AAE14418AF80089CCDA /* GraphicsBrushBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556AA114418AF70089CCDA /* GraphicsBrushBase.cpp */; };
@@ -820,6 +840,26 @@
 		3D42B63D14302F5500E76CE6 /* Storyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storyboard.h; sourceTree = "<group>"; };
 		3D42B63E14302F5500E76CE6 /* TriggerAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TriggerAction.cpp; sourceTree = "<group>"; };
 		3D42B63F14302F5600E76CE6 /* TriggerAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriggerAction.h; sourceTree = "<group>"; };
+		3D51F7E9144B8C09003BD760 /* FreetypeFontFace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreetypeFontFace.cpp; sourceTree = "<group>"; };
+		3D51F7EA144B8C09003BD760 /* FreetypeFontFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeFontFace.h; sourceTree = "<group>"; };
+		3D51F7EB144B8C0A003BD760 /* FreetypeTextFormat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreetypeTextFormat.cpp; sourceTree = "<group>"; };
+		3D51F7EC144B8C0A003BD760 /* FreetypeTextFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeTextFormat.h; sourceTree = "<group>"; };
+		3D51F7ED144B8C0A003BD760 /* FreetypeTextLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreetypeTextLayout.cpp; sourceTree = "<group>"; };
+		3D51F7EE144B8C0A003BD760 /* FreetypeTextLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeTextLayout.h; sourceTree = "<group>"; };
+		3D51F7EF144B8C0A003BD760 /* FreetypeTextLayoutMetics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreetypeTextLayoutMetics.cpp; sourceTree = "<group>"; };
+		3D51F7F0144B8C0B003BD760 /* FreetypeTextLayoutMetics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeTextLayoutMetics.h; sourceTree = "<group>"; };
+		3D51F7F1144B8C0B003BD760 /* FreetypeTextProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreetypeTextProvider.cpp; sourceTree = "<group>"; };
+		3D51F7F2144B8C0B003BD760 /* FreetypeTextProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeTextProvider.h; sourceTree = "<group>"; };
+		3D51F7F3144B8C0B003BD760 /* ReadStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReadStream.cpp; sourceTree = "<group>"; };
+		3D51F7F4144B8C0B003BD760 /* ReadStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadStream.h; sourceTree = "<group>"; };
+		3D51F7F5144B8C0C003BD760 /* ResourceProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResourceProvider.cpp; sourceTree = "<group>"; };
+		3D51F7F6144B8C0C003BD760 /* ResourceProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceProvider.h; sourceTree = "<group>"; };
+		3D51F7F7144B8C0C003BD760 /* StagingTextureCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StagingTextureCallback.cpp; sourceTree = "<group>"; };
+		3D51F7F8144B8C0C003BD760 /* StagingTextureCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StagingTextureCallback.h; sourceTree = "<group>"; };
+		3D51F7F9144B8C0C003BD760 /* StagingTextureWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StagingTextureWrapper.cpp; sourceTree = "<group>"; };
+		3D51F7FA144B8C0D003BD760 /* StagingTextureWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StagingTextureWrapper.h; sourceTree = "<group>"; };
+		3D51F7FB144B8C0D003BD760 /* TextLayoutEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextLayoutEngine.cpp; sourceTree = "<group>"; };
+		3D51F7FC144B8C0D003BD760 /* TextLayoutEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextLayoutEngine.h; sourceTree = "<group>"; };
 		3D556A9F14418AF70089CCDA /* GeometryTesselationSink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeometryTesselationSink.cpp; sourceTree = "<group>"; };
 		3D556AA014418AF70089CCDA /* GeometryTesselationSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeometryTesselationSink.h; sourceTree = "<group>"; };
 		3D556AA114418AF70089CCDA /* GraphicsBrushBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsBrushBase.cpp; sourceTree = "<group>"; };
@@ -912,6 +952,26 @@
 		3D06B5CD1419D4880097C7D9 /* UIFramework */ = {
 			isa = PBXGroup;
 			children = (
+				3D51F7E9144B8C09003BD760 /* FreetypeFontFace.cpp */,
+				3D51F7EA144B8C09003BD760 /* FreetypeFontFace.h */,
+				3D51F7EB144B8C0A003BD760 /* FreetypeTextFormat.cpp */,
+				3D51F7EC144B8C0A003BD760 /* FreetypeTextFormat.h */,
+				3D51F7ED144B8C0A003BD760 /* FreetypeTextLayout.cpp */,
+				3D51F7EE144B8C0A003BD760 /* FreetypeTextLayout.h */,
+				3D51F7EF144B8C0A003BD760 /* FreetypeTextLayoutMetics.cpp */,
+				3D51F7F0144B8C0B003BD760 /* FreetypeTextLayoutMetics.h */,
+				3D51F7F1144B8C0B003BD760 /* FreetypeTextProvider.cpp */,
+				3D51F7F2144B8C0B003BD760 /* FreetypeTextProvider.h */,
+				3D51F7F3144B8C0B003BD760 /* ReadStream.cpp */,
+				3D51F7F4144B8C0B003BD760 /* ReadStream.h */,
+				3D51F7F5144B8C0C003BD760 /* ResourceProvider.cpp */,
+				3D51F7F6144B8C0C003BD760 /* ResourceProvider.h */,
+				3D51F7F7144B8C0C003BD760 /* StagingTextureCallback.cpp */,
+				3D51F7F8144B8C0C003BD760 /* StagingTextureCallback.h */,
+				3D51F7F9144B8C0C003BD760 /* StagingTextureWrapper.cpp */,
+				3D51F7FA144B8C0D003BD760 /* StagingTextureWrapper.h */,
+				3D51F7FB144B8C0D003BD760 /* TextLayoutEngine.cpp */,
+				3D51F7FC144B8C0D003BD760 /* TextLayoutEngine.h */,
 				3DDF9BB1144415A20000001D /* CompositeResourceProvider.cpp */,
 				3DDF9BB2144415A20000001D /* CompositeResourceProvider.h */,
 				3DDF9BA8144413BD0000001D /* FileResourceProvider.cpp */,
@@ -1575,6 +1635,16 @@
 				3DDF9BB6144416EF0000001D /* StackHeapBuffer.h in Headers */,
 				3DDF9BB8144417960000001D /* StringConversion.h in Headers */,
 				3DDF9BBA14441C800000001D /* BundleFileResourceProvider.h in Headers */,
+				3D51F7FE144B8C0D003BD760 /* FreetypeFontFace.h in Headers */,
+				3D51F800144B8C0D003BD760 /* FreetypeTextFormat.h in Headers */,
+				3D51F802144B8C0D003BD760 /* FreetypeTextLayout.h in Headers */,
+				3D51F804144B8C0D003BD760 /* FreetypeTextLayoutMetics.h in Headers */,
+				3D51F806144B8C0D003BD760 /* FreetypeTextProvider.h in Headers */,
+				3D51F808144B8C0D003BD760 /* ReadStream.h in Headers */,
+				3D51F80A144B8C0D003BD760 /* ResourceProvider.h in Headers */,
+				3D51F80C144B8C0D003BD760 /* StagingTextureCallback.h in Headers */,
+				3D51F80E144B8C0D003BD760 /* StagingTextureWrapper.h in Headers */,
+				3D51F810144B8C0D003BD760 /* TextLayoutEngine.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1830,6 +1900,16 @@
 				3DDF9BAE144413BD0000001D /* FileResourceStream.cpp in Sources */,
 				3DDF9BB3144415A20000001D /* CompositeResourceProvider.cpp in Sources */,
 				3DDF9BBC14441CF20000001D /* BundleFileResourceProvider.cpp in Sources */,
+				3D51F7FD144B8C0D003BD760 /* FreetypeFontFace.cpp in Sources */,
+				3D51F7FF144B8C0D003BD760 /* FreetypeTextFormat.cpp in Sources */,
+				3D51F801144B8C0D003BD760 /* FreetypeTextLayout.cpp in Sources */,
+				3D51F803144B8C0D003BD760 /* FreetypeTextLayoutMetics.cpp in Sources */,
+				3D51F805144B8C0D003BD760 /* FreetypeTextProvider.cpp in Sources */,
+				3D51F807144B8C0D003BD760 /* ReadStream.cpp in Sources */,
+				3D51F809144B8C0D003BD760 /* ResourceProvider.cpp in Sources */,
+				3D51F80B144B8C0D003BD760 /* StagingTextureCallback.cpp in Sources */,
+				3D51F80D144B8C0D003BD760 /* StagingTextureWrapper.cpp in Sources */,
+				3D51F80F144B8C0D003BD760 /* TextLayoutEngine.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1859,6 +1939,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SDKROOT)/usr/include/libxml2",
 					"$(SRCROOT)/UIFramework/External/boost",
+					"$(SRCROOT)/UIFramework/External/freetype/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "";
@@ -1881,6 +1962,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SDKROOT)/usr/include/libxml2",
 					"$(SRCROOT)/UIFramework/External/boost",
+					"$(SRCROOT)/UIFramework/External/freetype/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "";
@@ -1897,6 +1979,10 @@
 				GCC_PREFIX_HEADER = "";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = "";
 				GCC_WARN_UNUSED_VARIABLE = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/UIFramework/External/Freetype/objs\"",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1911,6 +1997,10 @@
 				GCC_PREFIX_HEADER = "";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = "";
 				GCC_WARN_UNUSED_VARIABLE = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/UIFramework/External/Freetype/objs\"",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

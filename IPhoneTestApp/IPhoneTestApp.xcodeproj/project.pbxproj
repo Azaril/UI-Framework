@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D51F7E8144B8AD0003BD760 /* EAGLContextBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7E7144B8AD0003BD760 /* EAGLContextBridge.mm */; };
 		3D846EEF141A0F7F00AC9C7D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846EEE141A0F7F00AC9C7D /* UIKit.framework */; };
 		3D846EF1141A0F7F00AC9C7D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846EF0141A0F7F00AC9C7D /* Foundation.framework */; };
 		3D846EF3141A0F7F00AC9C7D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846EF2141A0F7F00AC9C7D /* CoreGraphics.framework */; };
@@ -46,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3D51F7E7144B8AD0003BD760 /* EAGLContextBridge.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLContextBridge.mm; sourceTree = "<group>"; };
 		3D846EEA141A0F7F00AC9C7D /* IPhoneTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IPhoneTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D846EEE141A0F7F00AC9C7D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3D846EF0141A0F7F00AC9C7D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -143,6 +145,7 @@
 				3DF3D0E8141C02E900431CFF /* EAGLLayerStorageAllocator.h */,
 				3DF3D0EB141C058600431CFF /* EAGLLayerStorageAllocator.mm */,
 				3D846F28141A22A500AC9C7D /* EAGLContextBridge.h */,
+				3D51F7E7144B8AD0003BD760 /* EAGLContextBridge.mm */,
 				3D846F29141A242100AC9C7D /* EAGLContextBridgeGLES20.h */,
 				3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */,
 				3D846F11141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib */,
@@ -256,6 +259,7 @@
 				3D846F27141A133400AC9C7D /* UIFrameworkBridge.cpp in Sources */,
 				3D846F2B141A257900AC9C7D /* EAGLContextBridgeGLES20.mm in Sources */,
 				3DF3D0EC141C058600431CFF /* EAGLLayerStorageAllocator.mm in Sources */,
+				3D51F7E8144B8AD0003BD760 /* EAGLContextBridge.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,6 +359,10 @@
 				GCC_PREFIX_HEADER = "IPhoneTestApp/IPhoneTestApp-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "IPhoneTestApp/IPhoneTestApp-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../UIFramework/External/Freetype/objs\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
@@ -368,6 +376,10 @@
 				GCC_PREFIX_HEADER = "IPhoneTestApp/IPhoneTestApp-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "IPhoneTestApp/IPhoneTestApp-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../UIFramework/External/Freetype/objs\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;

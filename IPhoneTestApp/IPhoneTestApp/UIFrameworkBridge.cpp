@@ -64,9 +64,9 @@ UIFrameworkBridge::Initialize(
     
     IFC(CParser::Create(m_pProviders, &m_pParser));
     
-    IFC(COpenGLES20GraphicsDevice::Create(&m_pGraphicsDevice));
+    IFC(COpenGLES20GraphicsDevice::Create(pContext, &m_pGraphicsDevice));
     
-    IFC(m_pGraphicsDevice->CreateRenderTarget(pAllocator, pContext, &m_pRenderTarget));
+    IFC(m_pGraphicsDevice->CreateRenderTarget(pAllocator, &m_pRenderTarget));
     
     IFC(CUIHost::Create(m_pGraphicsDevice, m_pRenderTarget, m_pProviders, &m_pUIHost));
     

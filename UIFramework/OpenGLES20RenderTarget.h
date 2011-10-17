@@ -14,11 +14,10 @@
 #include "RenderTargetBase.h"
 #include "VertexBuffer.h"
 
-class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTargetBase,
-                                                public ITextureAllocator
+class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTargetBase
 {
     public:
-    	DECLARE_FACTORY3( COpenGLES20RenderTarget, GLuint, GLuint, COpenGLES20Context* );
+    	DECLARE_FACTORY4( COpenGLES20RenderTarget, GLuint, GLuint, COpenGLES20Context*, CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* );
     
         GLuint GetRenderBuffer(
             );
@@ -46,7 +45,8 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTargetBase,
         __checkReturn HRESULT Initialize(
 			__in GLuint RenderBuffer,
 			__in GLuint FrameBuffer,
-			__in_opt COpenGLES20Context* pContext
+			__in_opt COpenGLES20Context* pContext,
+            __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
 			);
 
 		__override __checkReturn HRESULT ApplyContext(
@@ -60,18 +60,6 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTargetBase,
     
         __checkReturn HRESULT LinkProgram(
             GLuint Program
-            );
-    
-        __override __checkReturn HRESULT AllocateTexture(
-            UINT32 Width,
-            UINT32 Height,
-            __deref_out ITexture** ppTexture
-            );
-    
-        __checkReturn HRESULT CreateTexture(
-            UINT32 Width,
-            UINT32 Height,
-            __deref_out COpenGLES20Texture** ppTexture
             );
     
         __override __checkReturn HRESULT OnTesselatedGeometryBatch(

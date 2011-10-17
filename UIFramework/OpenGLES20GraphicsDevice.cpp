@@ -2,12 +2,15 @@
 #include "OpenGLES20RenderTarget.h"
 #include "CoreGeometryProvider.h"
 #include "CGImagingProvider.h"
+#include "FreetypeTextProvider.h"
 
 COpenGLES20GraphicsDevice::COpenGLES20GraphicsDevice(
     )
     : m_pTextProvider(NULL)
     , m_pImagingProvider(NULL)
     , m_pGeometryProvider(NULL)
+    , m_pContext(NULL)
+    , m_pTextureAtlasPool(NULL)
 {
 }
 
@@ -17,13 +20,22 @@ COpenGLES20GraphicsDevice::~COpenGLES20GraphicsDevice(
 	ReleaseObject(m_pTextProvider);
 	ReleaseObject(m_pImagingProvider);
     ReleaseObject(m_pGeometryProvider);
+    ReleaseObject(m_pContext);
 }
 
 __checkReturn HRESULT
 COpenGLES20GraphicsDevice::Initialize(
+    __in_opt COpenGLES20Context* pContext
     )
 {
     HRESULT hr = S_OK;
+    
+    SetObject(m_pContext, pContext);
+    
+    if (m_pContext != NULL)
+    {
+        IFC(m_pContext->Apply());
+    }
 
     IFC(CreateTextProvider(&m_pTextProvider));
 
@@ -31,14 +43,21 @@ COpenGLES20GraphicsDevice::Initialize(
 
     IFC(CreateGeometryProvider(&m_pGeometryProvider));
     
+    {
+        GLint maxTextureSize = 0;
+        
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+        
+        IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(maxTextureSize, maxTextureSize, this, &m_pTextureAtlasPool));
+    }    
+    
 Cleanup:
     return hr;
 }
 
 __checkReturn HRESULT
 COpenGLES20GraphicsDevice::CreateRenderTarget(
-	__in COpenGLES20RenderBufferStorageAllocator* pAllocator,
-	__in_opt COpenGLES20Context* pContext,
+    __in COpenGLES20RenderBufferStorageAllocator* pAllocator,
     __deref_out COpenGLES20RenderTarget** ppRenderTarget
 	)
 {
@@ -47,9 +66,9 @@ COpenGLES20GraphicsDevice::CreateRenderTarget(
 	GLuint FrameBuffer = 0;
 	COpenGLES20RenderTarget* pRenderTarget = NULL;
 
-	if (pContext != NULL)
+	if (m_pContext != NULL)
 	{
-		IFCEXPECT(pContext->Apply());
+		IFCEXPECT(m_pContext->Apply());
 	}
 
 	glGenRenderbuffers(1, &RenderBuffer);
@@ -61,7 +80,7 @@ COpenGLES20GraphicsDevice::CreateRenderTarget(
 	glBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, RenderBuffer);
 
-	IFC(COpenGLES20RenderTarget::Create(RenderBuffer, FrameBuffer, pContext, &pRenderTarget));
+	IFC(COpenGLES20RenderTarget::Create(RenderBuffer, FrameBuffer, m_pContext, m_pTextureAtlasPool, &pRenderTarget));
 
 	RenderBuffer = 0;
 	FrameBuffer = 0;
@@ -139,21 +158,21 @@ COpenGLES20GraphicsDevice::CreateTextProvider(
 	)
 {
     HRESULT hr = S_OK;
-    // CDirectWriteTextProvider* pDirectWriteTextProvider = NULL;
+    CFreetypeTextProvider* pFreetypeTextProvider = NULL;
 
     IFCPTR(ppTextProvider);
 
-    // if(SUCCEEDED(CDirectWriteTextProvider::Create(&pDirectWriteTextProvider)))
-    // {
-    //     *ppTextProvider = pDirectWriteTextProvider;
-    //     pDirectWriteTextProvider = NULL;
-    //     goto Cleanup;
-    // }
+    if(SUCCEEDED(CFreetypeTextProvider::Create(m_pTextureAtlasPool, &pFreetypeTextProvider)))
+    {
+        *ppTextProvider = pFreetypeTextProvider;
+        pFreetypeTextProvider = NULL;
+        goto Cleanup;
+    }
 
-    //IFC(E_FAIL);
+    IFC(E_FAIL);
 
 Cleanup:
-    // ReleaseObject(pDirectWriteTextProvider);
+    ReleaseObject(pFreetypeTextProvider);
 
     return hr;
 }
@@ -203,5 +222,88 @@ COpenGLES20GraphicsDevice::CreateGeometryProvider(
 Cleanup:
     ReleaseObject(pCoreGeometryProvider);
 
+    return hr;
+}
+
+__override __checkReturn HRESULT
+COpenGLES20GraphicsDevice::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out ITexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    COpenGLES20Texture* pOpenGLESTexture = NULL;
+    
+    IFC(CreateTexture(Width, Height, &pOpenGLESTexture));
+    
+    *ppTexture = pOpenGLESTexture;
+    pOpenGLESTexture = NULL;
+    
+Cleanup:
+    ReleaseObject(pOpenGLESTexture);
+    
+    return hr;
+}
+
+__checkReturn HRESULT
+COpenGLES20GraphicsDevice::CreateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out COpenGLES20Texture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    GLuint textureID = 0;
+    COpenGLES20Texture* pOpenGLESTexture = NULL;
+    
+    if (m_pContext != NULL)
+    {
+        IFC(m_pContext->Apply());
+    }
+    
+    glGenTextures(1, &textureID);
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);    
+    
+    IFC(COpenGLES20Texture::Create(textureID, Width, Height, PixelFormat::B8G8R8A8, &pOpenGLESTexture));
+    
+    textureID = 0;
+    
+    //TODO: Move this to atlas texture, handle gutters.
+    {
+        UINT32 stride = PixelFormat::GetLineSize(PixelFormat::B8G8R8A8, Width);
+        UINT32 dataSize = stride * Height;
+        BYTE* pData = new BYTE[dataSize];
+        
+        for(UINT32 i = 0; i < dataSize; ++i)
+        {
+            pData[i] = 0xFF;
+        }
+        
+        pOpenGLESTexture->SetData(pData, dataSize, stride);
+        
+        delete [] pData;
+    }
+    
+    *ppTexture = pOpenGLESTexture;
+    pOpenGLESTexture = NULL;
+    
+Cleanup:
+    if (textureID != 0)
+    {
+        glDeleteTextures(1, &textureID);
+    }
+    
+    ReleaseObject(pOpenGLESTexture);
+    
     return hr;
 }

@@ -6,17 +6,20 @@
 #include "GraphicsDevice.h"
 #include "OpenGLES20Context.h"
 #include "OpenGLES20RenderBufferStorageAllocator.h"
+#include "OpenGLES20Texture.h"
+#include "TextureAtlasPool.h"
+#include "TextureAtlasWithWhitePixel.h"
 
 class COpenGLES20RenderTarget;
 
-class COpenGLES20GraphicsDevice : public CGraphicsDevice
+class COpenGLES20GraphicsDevice : public CGraphicsDevice,
+                                  public ITextureAllocator
 {
 	public:
-		DECLARE_FACTORY( COpenGLES20GraphicsDevice );
+		DECLARE_FACTORY1( COpenGLES20GraphicsDevice, COpenGLES20Context* );
 
 		__checkReturn HRESULT CreateRenderTarget(
 			__in COpenGLES20RenderBufferStorageAllocator* pAllocator,
-			__in_opt COpenGLES20Context* pContext,
 			__deref_out COpenGLES20RenderTarget** ppRenderTarget
 			);
 
@@ -40,6 +43,7 @@ class COpenGLES20GraphicsDevice : public CGraphicsDevice
 			);
     
         __checkReturn HRESULT Initialize(
+            __in_opt COpenGLES20Context* pContext
             );
 
         virtual __checkReturn HRESULT CreateTextProvider( 
@@ -53,7 +57,22 @@ class COpenGLES20GraphicsDevice : public CGraphicsDevice
         virtual __checkReturn HRESULT CreateGeometryProvider(
             __deref_out CGeometryProvider** ppGeometryProvider
             );
+    
+        __override virtual __checkReturn HRESULT AllocateTexture(
+            UINT32 Width,
+            UINT32 Height,
+            __deref_out ITexture** ppTexture
+            );
 
+        __checkReturn HRESULT CreateTexture(
+            UINT32 Width,
+            UINT32 Height,
+            __deref_out COpenGLES20Texture** ppTexture
+            );    
+
+        COpenGLES20Context* m_pContext;
+        CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* m_pTextureAtlasPool;
+    
         CTextProvider* m_pTextProvider;
         CImagingProvider* m_pImagingProvider;
         CGeometryProvider* m_pGeometryProvider;

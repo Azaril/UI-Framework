@@ -98,7 +98,8 @@ __checkReturn HRESULT
 COpenGLES20RenderTarget::Initialize(
 	__in GLuint RenderBuffer,
 	__in GLuint FrameBuffer,
-	__in_opt COpenGLES20Context* pContext
+	__in_opt COpenGLES20Context* pContext,
+    __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
 	)
 {
     HRESULT hr = S_OK;
@@ -106,7 +107,6 @@ COpenGLES20RenderTarget::Initialize(
     GLuint vertexShader = 0;
     GLuint fragmentShader = 0;
     CGeometryTesselationSink* pTesselationSink = NULL;
-    CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool = NULL;
     CTextureAtlasWithWhitePixel< 1 >* pFirstTextureAtlas = NULL;
 
 	m_RenderBuffer = RenderBuffer;
@@ -157,14 +157,6 @@ COpenGLES20RenderTarget::Initialize(
     m_BrushTextureUniform = glGetUniformLocation(m_ShaderProgram, "brushTexture"); 
     
     IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &pTesselationSink));
-    
-    {
-        GLint maxTextureSize = 0;
-        
-        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
-
-        IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(maxTextureSize, maxTextureSize, this, &pTextureAtlasPool));
-    }
     
     IFC(pTextureAtlasPool->GetOrCreateFirstTextureAtlas(&pFirstTextureAtlas));
     
@@ -401,86 +393,6 @@ COpenGLES20RenderTarget::Clear(
     glClearColor(Color.r, Color.g, Color.b, Color.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    return hr;
-}
-
-__override __checkReturn HRESULT
-COpenGLES20RenderTarget::AllocateTexture(
-    UINT32 Width,
-    UINT32 Height,
-    __deref_out ITexture** ppTexture
-    )
-{
-    HRESULT hr = S_OK;
-    COpenGLES20Texture* pOpenGLESTexture = NULL;
-    
-    IFC(CreateTexture(Width, Height, &pOpenGLESTexture));
-    
-    *ppTexture = pOpenGLESTexture;
-    pOpenGLESTexture = NULL;
-    
-Cleanup:
-    ReleaseObject(pOpenGLESTexture);
-    
-    return hr;
-}
-
-__checkReturn HRESULT
-COpenGLES20RenderTarget::CreateTexture(
-    UINT32 Width,
-    UINT32 Height,
-    __deref_out COpenGLES20Texture** ppTexture
-    )
-{
-    HRESULT hr = S_OK;
-    GLuint textureID = 0;
-    COpenGLES20Texture* pOpenGLESTexture = NULL;
-    
-    IFC(ApplyContext());
-    
-    glGenTextures(1, &textureID);
-    
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);    
-    
-    IFC(COpenGLES20Texture::Create(textureID, Width, Height, PixelFormat::B8G8R8A8, &pOpenGLESTexture));
-    
-    textureID = 0;
-    
-    //TODO: Move this to atlas texture, handle gutters.
-    {
-        UINT32 stride = PixelFormat::GetLineSize(PixelFormat::B8G8R8A8, Width);
-        UINT32 dataSize = stride * Height;
-        BYTE* pData = new BYTE[dataSize];
-        
-        for(UINT32 i = 0; i < dataSize; ++i)
-        {
-            pData[i] = 0xFF;
-        }
-        
-        pOpenGLESTexture->SetData(pData, dataSize, stride);
-        
-        delete [] pData;
-    }
-    
-    *ppTexture = pOpenGLESTexture;
-    pOpenGLESTexture = NULL;
-    
-Cleanup:
-    if (textureID != 0)
-    {
-        glDeleteTextures(1, &textureID);
-    }
-    
-    ReleaseObject(pOpenGLESTexture);
-    
     return hr;
 }
 

@@ -72,7 +72,11 @@ L"</Canvas>\n";
 
 - (void)dealloc
 {
-    delete contextBridge;
+    if (contextBridge != NULL)
+    {
+        contextBridge->Release();
+    }
+    
     delete storageAllocator;
     
     // Tear down context.
