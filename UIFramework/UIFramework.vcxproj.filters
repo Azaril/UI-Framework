@@ -140,6 +140,9 @@
     <Filter Include="Framework\Text\Core">
       <UniqueIdentifier>{22afb1d2-0db4-4e40-901a-e862e34c6f5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Text\Core\Layout">
+      <UniqueIdentifier>{168ab37b-fa12-4b14-891f-eef2ec39a181}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -869,6 +872,18 @@
       <Filter>Framework\Text\Core</Filter>
     </ClCompile>
     <ClCompile Include="TextLayoutEngine.cpp">
+      <Filter>Framework\Text\Core\Layout</Filter>
+    </ClCompile>
+    <ClCompile Include="GlyphData.cpp">
+      <Filter>Framework\Text\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GlyphMetrics.cpp">
+      <Filter>Framework\Text\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="GlyphRun.cpp">
+      <Filter>Framework\Text\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLayoutBase.cpp">
       <Filter>Framework\Text\Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1627,6 +1642,18 @@
       <Filter>Framework\Text\Core</Filter>
     </ClInclude>
     <ClInclude Include="TextLayoutEngine.h">
+      <Filter>Framework\Text\Core\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="TextLayoutBase.h">
+      <Filter>Framework\Text\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GlyphData.h">
+      <Filter>Framework\Text\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GlyphMetrics.h">
+      <Filter>Framework\Text\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GlyphRun.h">
       <Filter>Framework\Text\Core</Filter>
     </ClInclude>
   </ItemGroup>

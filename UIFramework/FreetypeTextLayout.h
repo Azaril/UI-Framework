@@ -3,13 +3,15 @@
 #include "Factory.h"
 #include "RefCounted.h"
 #include "TextLayout.h"
+#include "TextLayoutBase.h"
 #include "FreetypeTextFormat.h"
 #include "FreetypeTextLayoutMetics.h"
 #include "TextLayoutEngine.h"
 #include "TextureAllocator.h"
 
-class CFreetypeTextLayout : public CTextLayout,
-                            private ITextLayoutCallback
+class CFreetypeTextLayout : public CTextLayoutBase,
+                            private ITextLayoutCallback,
+                            private ITextLayoutEngineRenderCallback
 {
     public:
         DECLARE_FACTORY4( CFreetypeTextLayout, const WCHAR*, UINT32, CFreetypeTextFormat*, const SizeF& );
@@ -20,6 +22,11 @@ class CFreetypeTextLayout : public CTextLayout,
 
         __override virtual __checkReturn HRESULT GetMetrics(
             __deref_out CTextLayoutMetrics** ppMetrics 
+            );
+
+        __override virtual __checkReturn HRESULT Render(
+            __in ITextLayoutRenderCallback* pCallback,
+            __in_opt void* pContext
             );
 
     protected:
@@ -42,14 +49,19 @@ class CFreetypeTextLayout : public CTextLayout,
         __checkReturn HRESULT EnsureLayout(
             );
 
-        __override virtual __checkReturn HRESULT BeginGlyphQueries(
+        __override virtual __checkReturn HRESULT GetGlyphMetrics(
+            UINT32 glyph,
+            __deref_out const GlyphMetrics** ppGlyphMetrics
             );
 
-        __override virtual __checkReturn HRESULT GetGlyph(
-            WCHAR glyph
+        __override virtual __checkReturn HRESULT SetBounds(
+            const RectF& bounds
             );
 
-        __override virtual __checkReturn HRESULT EndGlyphQueries(
+        __override virtual __checkReturn HRESULT RenderGlyphRun(
+            UINT32 glyph,
+            __in GlyphRun* pGlyphRun,
+            __in_opt void* pContext
             );
 
         CFreetypeTextFormat* m_pTextFormat;
@@ -57,5 +69,6 @@ class CFreetypeTextLayout : public CTextLayout,
         BOOL m_LayoutValid;
         CFreetypeTextLayoutMetics* m_pLayoutMetrics;
         CTextLayoutEngine* m_pLayoutEngine;
+        RectF m_Bounds;
 };
 

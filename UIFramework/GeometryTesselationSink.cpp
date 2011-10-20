@@ -9,6 +9,8 @@ CGeometryTesselationSink::CGeometryTesselationSink(
     , m_Transform(Matrix3X2F::Identity())
     , m_BrushTransform(Matrix3X2F::Identity())
     , m_NeedsBrushTransform(FALSE)
+    , m_MaskTransform(Matrix3X2F::Identity())
+    , m_NeedsMaskTransform(FALSE)
     , m_pVertexCache(NULL)
     , m_VertexCacheSize(0)
     , m_pCacheWriteOffset(NULL)
@@ -88,18 +90,21 @@ CGeometryTesselationSink::AddTriangle(
 	m_pCacheWriteOffset->Position = m_Transform.TransformPoint(point1);
     m_pCacheWriteOffset->Color = m_DiffuseColor;
     m_pCacheWriteOffset->TextureCoordinates = m_NeedsBrushTransform ? m_BrushTransform.TransformPoint(point1) : Point2F(0.0f, 0.0f);
+    m_pCacheWriteOffset->MaskCoordinates = m_NeedsMaskTransform ? m_MaskTransform.TransformPoint(point1) : Point2F(0.0f, 0.0f);
 
 	++m_pCacheWriteOffset;
 
 	m_pCacheWriteOffset->Position = m_Transform.TransformPoint(point2);
     m_pCacheWriteOffset->Color = m_DiffuseColor;
     m_pCacheWriteOffset->TextureCoordinates = m_NeedsBrushTransform ? m_BrushTransform.TransformPoint(point2) : Point2F(0.0f, 0.0f);
+    m_pCacheWriteOffset->MaskCoordinates = m_NeedsMaskTransform ? m_MaskTransform.TransformPoint(point2) : Point2F(0.0f, 0.0f);
 
 	++m_pCacheWriteOffset;
 
 	m_pCacheWriteOffset->Position = m_Transform.TransformPoint(point3);
     m_pCacheWriteOffset->Color = m_DiffuseColor;
     m_pCacheWriteOffset->TextureCoordinates = m_NeedsBrushTransform ? m_BrushTransform.TransformPoint(point3) : Point2F(0.0f, 0.0f);
+    m_pCacheWriteOffset->MaskCoordinates = m_NeedsMaskTransform ? m_MaskTransform.TransformPoint(point3) : Point2F(0.0f, 0.0f);
 
 	++m_pCacheWriteOffset;
 
@@ -199,6 +204,27 @@ CGeometryTesselationSink::SetBrushTransform(
     else
     {
         m_NeedsBrushTransform = FALSE;
+    }
+
+    return hr;
+}
+
+__checkReturn HRESULT
+CGeometryTesselationSink::SetMaskTransform(
+    __in_opt const Matrix3X2F* pTransform
+    )
+{
+    HRESULT hr = S_OK;
+
+    if (pTransform != NULL)
+    {
+        m_MaskTransform = *pTransform;
+
+        m_NeedsMaskTransform = TRUE;
+    }
+    else
+    {
+        m_NeedsMaskTransform = FALSE;
     }
 
     return hr;

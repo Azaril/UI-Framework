@@ -132,6 +132,9 @@
     <ClCompile Include="FreetypeTextLayout.cpp" />
     <ClCompile Include="FreetypeTextLayoutMetics.cpp" />
     <ClCompile Include="FreetypeTextProvider.cpp" />
+    <ClCompile Include="GlyphData.cpp" />
+    <ClCompile Include="GlyphMetrics.cpp" />
+    <ClCompile Include="GlyphRun.cpp" />
     <ClCompile Include="StagingTextureWrapper.cpp" />
     <ClCompile Include="D3D10Texture.cpp" />
     <ClCompile Include="D3D10VertexBuffer.cpp" />
@@ -196,6 +199,7 @@
     <ClCompile Include="StagingTextureCallback.cpp" />
     <ClCompile Include="StaticTesselator.cpp" />
     <ClCompile Include="Storyboard.cpp" />
+    <ClCompile Include="TextLayoutBase.cpp" />
     <ClCompile Include="TextLayoutEngine.cpp" />
     <ClCompile Include="TextureAtlas.cpp" />
     <ClCompile Include="TextureAtlasPool.cpp" />
@@ -377,6 +381,9 @@
     <ClInclude Include="FreetypeTextLayout.h" />
     <ClInclude Include="FreetypeTextLayoutMetics.h" />
     <ClInclude Include="FreetypeTextProvider.h" />
+    <ClInclude Include="GlyphData.h" />
+    <ClInclude Include="GlyphMetrics.h" />
+    <ClInclude Include="GlyphRun.h" />
     <ClInclude Include="StagingTextureWrapper.h" />
     <ClInclude Include="D3D10Texture.h" />
     <ClInclude Include="D3D10VertexBuffer.h" />
@@ -440,6 +447,7 @@
     <ClInclude Include="SourcedBinding.h" />
     <ClInclude Include="StagingTextureCallback.h" />
     <ClInclude Include="Storyboard.h" />
+    <ClInclude Include="TextLayoutBase.h" />
     <ClInclude Include="TextLayoutEngine.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureAllocator.h" />

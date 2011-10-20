@@ -17,6 +17,7 @@ CD3D10RenderTarget::CD3D10RenderTarget(
     , m_pTransformBuffer(NULL)
     , m_pRasterizerState(NULL)
     , m_pSamplerState(NULL)
+    , m_pBlendState(NULL)
 {
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
     {
@@ -27,6 +28,7 @@ CD3D10RenderTarget::CD3D10RenderTarget(
 CD3D10RenderTarget::~CD3D10RenderTarget( 
     )
 {
+    ReleaseObject(m_pBlendState);
     ReleaseObject(m_pSamplerState);
     ReleaseObject(m_pRasterizerState);
     ReleaseObject(m_pTransformBuffer);
@@ -91,7 +93,8 @@ CD3D10RenderTarget::Initialize(
         {
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, RENDERVERTEX_POSITION_OFFSET, D3D10_INPUT_PER_VERTEX_DATA, 0 },
             { "TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, RENDERVERTEX_COLOR_OFFSET, D3D10_INPUT_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 0, RENDERVERTEX_TEXCOORDS_OFFSET, D3D10_INPUT_PER_VERTEX_DATA, 0 }
+            { "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 0, RENDERVERTEX_TEXCOORDS_OFFSET, D3D10_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 3, DXGI_FORMAT_R32G32_FLOAT, 0, RENDERVERTEX_MASKCOORDS_OFFSET, D3D10_INPUT_PER_VERTEX_DATA, 0 }
         };
 
         IFC(m_pDevice->CreateInputLayout(renderVertexDescription, ARRAYSIZE(renderVertexDescription), g_vs_4_0, ARRAYSIZE(g_vs_4_0), &m_pInputLayout));
@@ -138,6 +141,25 @@ CD3D10RenderTarget::Initialize(
         samplerDescription.MaxLOD = D3D10_FLOAT32_MAX;
 
         IFC(m_pDevice->CreateSamplerState(&samplerDescription, &m_pSamplerState));
+    }
+
+    {
+        D3D10_BLEND_DESC blendDescription = { };
+
+        blendDescription.AlphaToCoverageEnable = FALSE;
+        blendDescription.BlendEnable[0] = TRUE;
+        
+        blendDescription.SrcBlend =  D3D10_BLEND_SRC_ALPHA;
+        blendDescription.DestBlend = D3D10_BLEND_INV_SRC_ALPHA;
+        blendDescription.BlendOp = D3D10_BLEND_OP_ADD;
+
+        blendDescription.SrcBlendAlpha = D3D10_BLEND_ZERO;
+        blendDescription.DestBlendAlpha = D3D10_BLEND_ZERO;
+        blendDescription.BlendOpAlpha = D3D10_BLEND_OP_ADD;
+
+        blendDescription.RenderTargetWriteMask[0] = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+        IFC(m_pDevice->CreateBlendState(&blendDescription, &m_pBlendState));
     }
 
 Cleanup:
@@ -236,6 +258,15 @@ CD3D10RenderTarget::BeginRendering(
     m_pDevice->PSSetSamplers(0, 1, &m_pSamplerState);
 
     //
+    // Set blend state.
+    //
+    {
+        FLOAT blendFactor = 0.0f;
+
+        m_pDevice->OMSetBlendState(m_pBlendState, &blendFactor, 0xFFFFFFFF);
+    }
+
+    //
     // Set primitive rendering type.
     //
     m_pDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -300,6 +331,52 @@ CD3D10RenderTarget::BindTexture(
     }
 
     m_pDevice->PSSetShaderResources(0, 1, &pShaderResourceView);
+
+Cleanup:
+    ReleaseObject(pNewResourceView);
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D10RenderTarget::BindMask(
+    __in ITexture* pTexture
+    )
+{
+    HRESULT hr = S_OK;
+    ID3D10ShaderResourceView* pShaderResourceView = NULL;
+    ID3D10ShaderResourceView* pNewResourceView = NULL;
+    CStagingTextureWrapper* pTextureWrapper = NULL;
+    CD3D10Texture* pD3DTexture = NULL;
+
+    pTextureWrapper = (CStagingTextureWrapper*)pTexture;
+    pD3DTexture = (CD3D10Texture*)pTextureWrapper->GetTargetTexture();
+
+    pShaderResourceView = pD3DTexture->GetResourceView();
+
+    if (pShaderResourceView == NULL)
+    {
+        D3D10_TEXTURE2D_DESC textureDescription = { };
+
+        ID3D10Texture2D* pTexture2D = pD3DTexture->GetD3DTexture();
+
+        pTexture2D->GetDesc(&textureDescription);
+
+        D3D10_SHADER_RESOURCE_VIEW_DESC resourceViewDescription = { };
+
+        resourceViewDescription.ViewDimension = D3D10_SRV_DIMENSION_TEXTURE2D;
+        resourceViewDescription.Format = textureDescription.Format;
+        resourceViewDescription.Texture2D.MipLevels = textureDescription.MipLevels;
+        resourceViewDescription.Texture2D.MostDetailedMip = textureDescription.MipLevels - 1;
+
+        IFC(m_pDevice->CreateShaderResourceView(pTexture2D, &resourceViewDescription, &pNewResourceView));
+
+        pD3DTexture->SetResourceView(pNewResourceView);
+
+        pShaderResourceView = pNewResourceView;
+    }
+
+    m_pDevice->PSSetShaderResources(1, 1, &pShaderResourceView);
 
 Cleanup:
     ReleaseObject(pNewResourceView);

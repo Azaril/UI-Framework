@@ -227,7 +227,6 @@ Cleanup:
 
 __checkReturn HRESULT 
 CD2DRenderTarget::RenderTextLayout(
-	const Point2F& Origin, 
 	__in const CTextLayout* pTextLayout, 
 	__in const CGraphicsBrush* pBrush
 	)
@@ -267,7 +266,11 @@ CD2DRenderTarget::RenderTextLayout(
             }
     }
 
-    m_RenderTarget->DrawTextLayout(Point2FTOD2DPoint2F(Origin), pInternalTextLayout, pD2DBrush->GetD2DBrush());
+    {
+        D2D1_POINT_2F origin = { 0.0f, 0.0f };
+
+        m_RenderTarget->DrawTextLayout(origin, pInternalTextLayout, pD2DBrush->GetD2DBrush());
+    }
 
 Cleanup:
     ReleaseObject(pInternalTextLayout);

@@ -8,6 +8,7 @@
 #include "BitmapSourceBase.h"
 #include "BitmapBase.h"
 #include "BitmapBrushBase.h"
+#include "TextLayoutBase.h"
 #include <algorithm>
 
 CRenderTargetBase::CRenderTargetBase(
@@ -16,6 +17,7 @@ CRenderTargetBase::CRenderTargetBase(
     , m_pTesselationSink(NULL)
     , m_pTextureAtlasPool(NULL)
     , m_pLastRenderedTextureAtlas(NULL)
+    , m_pLastRenderedMaskAtlas(NULL)
     , m_pDefaultWhitePixelTexture(NULL)
 {
 }
@@ -27,6 +29,7 @@ CRenderTargetBase::~CRenderTargetBase(
     
     ReleaseObject(m_pDefaultWhitePixelTexture);
     ReleaseObject(m_pLastRenderedTextureAtlas);
+    ReleaseObject(m_pLastRenderedMaskAtlas);
     
     ReleaseObject(m_pTesselationSink);
     
@@ -65,6 +68,7 @@ CRenderTargetBase::BeginRendering(
     HRESULT hr = S_OK;
 
     ReplaceObject(m_pLastRenderedTextureAtlas, (ITextureAtlasWithWhitePixel*)NULL);
+    ReplaceObject(m_pLastRenderedMaskAtlas, (ITextureAtlasWithWhitePixel*)NULL);
 
     IFC(ApplyContext());
 
@@ -81,6 +85,7 @@ CRenderTargetBase::EndRendering(
     IFC(Flush());
    
     ReplaceObject(m_pLastRenderedTextureAtlas, (ITextureAtlasWithWhitePixel*)NULL);
+    ReplaceObject(m_pLastRenderedMaskAtlas, (ITextureAtlasWithWhitePixel*)NULL);
 
 Cleanup:
     return hr;
@@ -335,6 +340,7 @@ CRenderTargetBase::DrawRectangle(
     IFC(m_pTesselationSink->SetTransform(m_Transform));
     
     IFC(ApplyBrush((const CGraphicsBrushBase*)pBrush));
+    IFC(ApplyMask(NULL));
     
     //TODO: This should probably have stroke width...
     IFC(StaticTesselator::TesselateRectangleStroke(Size, 1.0f, m_pTesselationSink));
@@ -354,6 +360,7 @@ CRenderTargetBase::FillRectangle(
     IFC(m_pTesselationSink->SetTransform(m_Transform));
     
     IFC(ApplyBrush((const CGraphicsBrushBase*)pBrush));
+    IFC(ApplyMask(NULL));
     
     IFC(StaticTesselator::TesselateRectangle(Size, m_pTesselationSink));
     
@@ -363,51 +370,52 @@ Cleanup:
 
 __checkReturn HRESULT 
 CRenderTargetBase::RenderTextLayout(
-	const Point2F& Origin, 
 	__in const CTextLayout* pTextLayout, 
 	__in const CGraphicsBrush* pBrush
 	)
 {
     HRESULT hr = S_OK;
-//     CD2DBrush* pD2DBrush = NULL;
-//     IDWriteTextLayout* pInternalTextLayout = NULL;
+    CTextLayoutBase* pBaseLayout = NULL;
+    const CGraphicsBrushBase* pGraphicsBrush = NULL;
 
-//     IFCPTR(pTextLayout);
-//     IFCPTR(pBrush);
+    pGraphicsBrush = (const CGraphicsBrushBase*)pBrush;
 
-//     pD2DBrush = (CD2DBrush*)pBrush;
+    IFC(ApplyBrush(pGraphicsBrush));
 
-//     switch(pTextLayout->GetType())
-//     {
-//         case TypeIndex::TextLayout:
-//             {
-//                 CDirectWriteTextLayout* pDWLayout = (CDirectWriteTextLayout*)pTextLayout;
+    pBaseLayout = (CTextLayoutBase*)pTextLayout;
 
-//                 IFC(pDWLayout->GetDirectWriteTextLayout(&pInternalTextLayout))
+    m_pTesselationSink->SetTransform(m_Transform);
 
-//                 break;
-//             }
+    IFC(pBaseLayout->Render(this, (void*)pBrush));
 
-//         case TypeIndex::EditableTextLayout:
-//             {
-//                 CDirectWriteEditableTextLayout* pDWLayout = (CDirectWriteEditableTextLayout*)pTextLayout;
+Cleanup:
+    return hr;
+}
 
-//                 IFC(pDWLayout->GetDirectWriteTextLayout(&pInternalTextLayout))
+__override __checkReturn HRESULT 
+CRenderTargetBase::RenderGlyphRun(
+    __in ITexture* pTexture,
+    __in GlyphRun* pGlyphRun,
+    __in_opt void* pContext
+    )
+{
+    HRESULT hr = S_OK;
 
-//                 break;
-//             }
+    IFC(ApplyMask(pTexture));
 
-//         default:
-//             {
-//                 IFC(E_UNEXPECTED);
-//             }
-//     }
+    {
+        SizeF textureSize((FLOAT)pTexture->GetWidth(), (FLOAT)pTexture->GetHeight());
+        RectF unitRect(0.0f, 0.0f, 1.0f, 1.0f);
 
-//     m_RenderTarget->DrawTextLayout(Origin, pInternalTextLayout, pD2DBrush->GetD2DBrush());
+        for (list< GlyphData >::iterator it = pGlyphRun->GlyphData.begin(); it != pGlyphRun->GlyphData.end(); ++it)
+        {
+            m_pTesselationSink->SetTransform(Matrix3X2F::Scale(textureSize.width, textureSize.height) * Matrix3X2F::Translation(it->Position.x, it->Position.y) * m_Transform);
 
-// Cleanup:
-//     ReleaseObject(pInternalTextLayout);
+            IFC(StaticTesselator::TesselateRectangle(unitRect, m_pTesselationSink));
+        }
+    }
 
+Cleanup:
     return hr;
 }
 
@@ -500,6 +508,7 @@ CRenderTargetBase::FillGeometry(
     IFC(m_pTesselationSink->SetTransform(m_Transform));
     
     IFC(ApplyBrush((const CGraphicsBrushBase*)pBrush));
+    IFC(ApplyMask(NULL));
     
     IFC(pCoreGeometry->TesselateFill(m_pTesselationSink)); 
 
@@ -542,6 +551,7 @@ CRenderTargetBase::DrawGeometry(
     IFC(m_pTesselationSink->SetTransform(m_Transform));
     
     IFC(ApplyBrush((const CGraphicsBrushBase*)pBrush));
+    IFC(ApplyMask(NULL));
     
     IFC(pCoreGeometry->TesselateStroke(StrokeThickness, m_pTesselationSink)); 
     
@@ -611,30 +621,90 @@ CRenderTargetBase::PopLayer(
 }
 
 __checkReturn HRESULT
+CRenderTargetBase::ApplyMask(
+    __in_opt ITexture* pMask
+    )   
+{
+    HRESULT hr = S_OK;
+    CTextureAtlasView* pMaskView = NULL;
+    Matrix3X2F maskTextureToBrushTransform;
+
+    pMaskView = (CTextureAtlasView*)pMask;
+
+    if (pMaskView == NULL)
+    {
+        if (m_pLastRenderedMaskAtlas != NULL)
+        {
+            pMaskView = (CTextureAtlasView*)m_pLastRenderedMaskAtlas->GetWhitePixelTexture();
+        }
+        else
+        {
+            pMaskView = m_pDefaultWhitePixelTexture;
+        }
+    }
+
+    {
+        ITexture* pMaskTexture = pMaskView->GetTexture();
+        ITexture* pPreviousMask = (m_pLastRenderedMaskAtlas != NULL) ? m_pLastRenderedMaskAtlas->GetTexture() : NULL;
+
+        if (pMaskTexture != pPreviousMask)
+        {
+            IFC(Flush())
+
+            IFC(BindMask(pMaskTexture));
+        }
+
+        SetObject(m_pLastRenderedMaskAtlas, (ITextureAtlasWithWhitePixel*)pMaskView->GetAtlas());
+
+        {
+            const RectU& viewBounds = pMaskView->GetRect();
+            const FLOAT textureWidth = (FLOAT)pMaskTexture->GetWidth();
+            const FLOAT textureHeight = (FLOAT)pMaskTexture->GetHeight();
+
+            const FLOAT left = (viewBounds.left / textureWidth) + (0.5f / textureWidth);
+            const FLOAT right = (viewBounds.right / textureWidth) - (0.5f / textureWidth);
+            const FLOAT top = (viewBounds.top / textureHeight) + (0.5f / textureHeight);
+            const FLOAT bottom = (viewBounds.bottom / textureHeight) - (0.5f / textureHeight);
+
+            //
+            // Scale from [0, 1] range to texture view UV range.
+            //
+            maskTextureToBrushTransform = Matrix3X2F::Scale(SizeF(right - left, bottom - top)) * Matrix3X2F::Translation(left, top);
+        }
+    }
+
+    IFC(m_pTesselationSink->SetMaskTransform(&maskTextureToBrushTransform));
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT
 CRenderTargetBase::ApplyBrush(
     __in const CGraphicsBrushBase* pBrush
     )
 {
     HRESULT hr = S_OK;
-    CTextureAtlasView* pView = NULL;
+    CTextureAtlasView* pTextureView = NULL;
     Matrix3X2F textureToBrushTransform;
     
-    pView = (CTextureAtlasView*)pBrush->GetTexture();
+    pTextureView = (CTextureAtlasView*)pBrush->GetTexture();
     
-    if (pView == NULL)
+    if (pTextureView == NULL)
     {
         if (m_pLastRenderedTextureAtlas != NULL)
         {
-            pView = (CTextureAtlasView*)m_pLastRenderedTextureAtlas->GetWhitePixelTexture();
+            pTextureView = (CTextureAtlasView*)m_pLastRenderedTextureAtlas->GetWhitePixelTexture();
         }
         else
         {
-            pView = m_pDefaultWhitePixelTexture;
+            pTextureView = m_pDefaultWhitePixelTexture;
         }
     }
     
     {
-        ITexture* pTexture = pView->GetTexture();
+        ITexture* pTexture = pTextureView->GetTexture();
+
         ITexture* pPreviousTexture = (m_pLastRenderedTextureAtlas != NULL) ? m_pLastRenderedTextureAtlas->GetTexture() : NULL;
    
         //
@@ -642,18 +712,15 @@ CRenderTargetBase::ApplyBrush(
         //
         if (pTexture != pPreviousTexture)
         {
-            if (pPreviousTexture != NULL)
-            {
-                IFC(Flush());
-            }
+            IFC(Flush());
 
             IFC(BindTexture(pTexture));
         }
         
-        SetObject(m_pLastRenderedTextureAtlas, (ITextureAtlasWithWhitePixel*)pView->GetAtlas());
+        SetObject(m_pLastRenderedTextureAtlas, (ITextureAtlasWithWhitePixel*)pTextureView->GetAtlas());
         
         {
-            const RectU& viewBounds = pView->GetRect();
+            const RectU& viewBounds = pTextureView->GetRect();
             const FLOAT textureWidth = (FLOAT)pTexture->GetWidth();
             const FLOAT textureHeight = (FLOAT)pTexture->GetHeight();
             
@@ -665,11 +732,11 @@ CRenderTargetBase::ApplyBrush(
             //
             // Scale from [0, 1] range to texture view UV range.
             //
-            textureToBrushTransform = Matrix3X2F::Scale(SizeF(right - left, bottom - top), Point2F(left, top));
+            textureToBrushTransform = Matrix3X2F::Scale(SizeF(right - left, bottom - top)) * Matrix3X2F::Translation(left, top);
         }
     }
     
-    IFC(ApplyBrushToTesselationSink(textureToBrushTransform, pBrush));    
+        IFC(ApplyBrushToTesselationSink(textureToBrushTransform, pBrush));    
     
 Cleanup:
     return hr;

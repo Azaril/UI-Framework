@@ -10,6 +10,8 @@ CTextVisual::CTextVisual(
     : m_ForegroundBrush(NULL)
     , m_ForegroundGraphicsBrush(NULL)
     , m_TextLayout(NULL)
+    , m_ForegroundBrushTransform(Matrix3X2F::Identity())
+    , m_UpdateBrushTransform(TRUE)
 {
 }
 
@@ -74,6 +76,8 @@ CTextVisual::SetForegroundBrushInternal(
         IFC(AddVisualResource(m_ForegroundBrush, &INSTANCE_CHANGE_CALLBACK( CTextVisual, OnForegroundBrushChanged )));        
     }
 
+    m_UpdateBrushTransform = TRUE;
+
 Cleanup:
     return hr;
 }
@@ -91,6 +95,8 @@ CTextVisual::SetTextLayout(
 
     AddRefObject(m_TextLayout);
 
+    m_UpdateBrushTransform = TRUE;
+
     return hr;
 }
 
@@ -101,6 +107,7 @@ CTextVisual::PreRender(
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
+    CTextLayoutMetrics* pLayoutMetrics = NULL;
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
@@ -119,11 +126,46 @@ CTextVisual::PreRender(
         {
             IFC(pRenderTarget->GetDefaultBrush(DefaultBrush::TextForeground, &m_ForegroundGraphicsBrush));
         }
+
+        if (m_ForegroundGraphicsBrush != NULL)
+        {
+            m_UpdateBrushTransform = TRUE;
+        }
+    }
+
+    //TODO: Remove this and get change notifications from layout?
+    m_UpdateBrushTransform = TRUE; 
+
+    if(m_UpdateBrushTransform && m_ForegroundGraphicsBrush != NULL)
+    {
+        RectF textBounds;
+
+        IFC(m_TextLayout->GetMetrics(&pLayoutMetrics));
+
+        IFC(pLayoutMetrics->GetBounds(&textBounds));
+
+        {
+            RectF brushBounds;
+
+            IFC(m_ForegroundGraphicsBrush->GetBounds(brushBounds));
+
+            {
+                FLOAT TextWidth = textBounds.GetWidth();
+                FLOAT TextHeight = textBounds.GetHeight();
+
+                //TODO: Allow brush transforms?
+                m_ForegroundBrushTransform = Matrix3X2F::Scale(TextWidth / brushBounds.GetWidth(), TextHeight / brushBounds.GetHeight()) * Matrix3X2F::Translation(textBounds.left, textBounds.top);
+            }
+        }
+
+        m_UpdateBrushTransform = FALSE;
     }
 
     IFC(CVisual::PreRender(Context));
 
 Cleanup:
+    ReleaseObject(pLayoutMetrics);
+
     return hr;
 }
 
@@ -131,7 +173,6 @@ HRESULT CTextVisual::RenderTransformed(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
-    Point2F TextOrigin;
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
@@ -139,8 +180,10 @@ HRESULT CTextVisual::RenderTransformed(CRenderContext& Context)
     IFC(CVisual::RenderTransformed(Context));
 
     if(m_TextLayout != NULL && m_ForegroundGraphicsBrush != NULL)
-    {
-        IFC(pRenderTarget->RenderTextLayout(TextOrigin, m_TextLayout, m_ForegroundGraphicsBrush));  
+    {       
+        IFC(m_ForegroundGraphicsBrush->SetTransform(m_ForegroundBrushTransform));
+
+        IFC(pRenderTarget->RenderTextLayout(m_TextLayout, m_ForegroundGraphicsBrush));  
     }
 
 Cleanup:

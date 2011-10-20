@@ -21,14 +21,16 @@
     dcl_texcoord v0
     dcl_texcoord1 v1
     dcl_texcoord2 v2
+    dcl_texcoord3 v3
     mul r0, v0.y, c1
     mad r0, c0, v0.x, r0
     add r0, r0, c2
     add oPos, r0, c3
     mov oT0, v1
     mov oT1.xy, v2
+    mov oT2.xy, v3
 
-// approximately 6 instruction slots used
+// approximately 7 instruction slots used
 #endif
 
 const BYTE g_vs_2_0[] =
@@ -63,6 +65,8 @@ const BYTE g_vs_2_0[] =
       1, 128,   1,   0,  15, 144, 
      31,   0,   0,   2,   5,   0, 
       2, 128,   2,   0,  15, 144, 
+     31,   0,   0,   2,   5,   0, 
+      3, 128,   3,   0,  15, 144, 
       5,   0,   0,   3,   0,   0, 
      15, 128,   0,   0,  85, 144, 
       1,   0, 228, 160,   4,   0, 
@@ -78,5 +82,7 @@ const BYTE g_vs_2_0[] =
       0,   0,  15, 224,   1,   0, 
     228, 144,   1,   0,   0,   2, 
       1,   0,   3, 224,   2,   0, 
+    228, 144,   1,   0,   0,   2, 
+      2,   0,   3, 224,   3,   0, 
     228, 144, 255, 255,   0,   0
 };

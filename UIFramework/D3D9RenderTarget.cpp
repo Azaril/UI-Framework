@@ -76,6 +76,7 @@ CD3D9RenderTarget::Initialize(
             { 0, RENDERVERTEX_POSITION_OFFSET, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0  },
             { 0, RENDERVERTEX_COLOR_OFFSET, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 },
             { 0, RENDERVERTEX_TEXCOORDS_OFFSET, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 2 },
+            { 0, RENDERVERTEX_MASKCOORDS_OFFSET, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3 },
             D3DDECL_END()
         };
 
@@ -176,6 +177,10 @@ CD3D9RenderTarget::BeginRendering(
 
     IFC(m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE));
 
+    IFC(m_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE));
+    IFC(m_pDevice->SetRenderState(D3DRS_SRCBLEND , D3DBLEND_SRCALPHA));
+    IFC(m_pDevice->SetRenderState(D3DRS_DESTBLEND , D3DBLEND_INVSRCALPHA));
+
     IFC(m_pDevice->BeginScene());
 
 Cleanup:
@@ -207,6 +212,22 @@ CD3D9RenderTarget::BindTexture(
     pD3DTexture = (CD3D9Texture*)pTexture;
 
     IFC(m_pDevice->SetTexture(0, pD3DTexture->GetD3DTexture()));
+
+Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D9RenderTarget::BindMask(
+    __in ITexture* pTexture
+    )
+{
+    HRESULT hr = S_OK;
+    CD3D9Texture* pD3DTexture = NULL;
+
+    pD3DTexture = (CD3D9Texture*)pTexture;
+
+    IFC(m_pDevice->SetTexture(1, pD3DTexture->GetD3DTexture()));
 
 Cleanup:
     return hr;

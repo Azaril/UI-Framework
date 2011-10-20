@@ -119,6 +119,10 @@ class UIFRAMEWORK_API CD3D9RenderTarget : public CRenderTargetBase
             __in ITexture* pTexture
             );
 
+        __override virtual __checkReturn HRESULT BindMask(
+            __in ITexture* pTexture
+            );
+
         __override virtual __checkReturn HRESULT OnTesselatedGeometryBatch(
             __in IVertexBuffer* pVertexBuffer
             );

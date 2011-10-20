@@ -50,6 +50,7 @@ CD3D10GraphicsDevice::Initialize(
     )
 {
     HRESULT hr = S_OK;
+    IDXGIAdapter* pAdapter = NULL;
 
     m_D3D10Module = LoadLibrary(L"D3D10.dll");
     IFCEXPECT(m_D3D10Module != NULL);
@@ -65,7 +66,10 @@ CD3D10GraphicsDevice::Initialize(
 
     IFC(m_pCreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&m_pDXGIFactory));
 
-    IFC(m_pCreateDevice(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, D3D10_CREATE_DEVICE_SINGLETHREADED, D3D10_SDK_VERSION, &m_pDevice));
+    //TODO: Pick the correct adapter.
+    IFC(m_pDXGIFactory->EnumAdapters(0, &pAdapter));
+
+    IFC(m_pCreateDevice(pAdapter, D3D10_DRIVER_TYPE_HARDWARE, NULL, D3D10_CREATE_DEVICE_SINGLETHREADED, D3D10_SDK_VERSION, &m_pDevice));
 
     {
         D3D10_TEXTURE2D_DESC textureDescription = { };
@@ -98,6 +102,8 @@ CD3D10GraphicsDevice::Initialize(
     IFC(CreateGeometryProvider(&m_pGeometryProvider));
 
 Cleanup:
+    ReleaseObject(pAdapter);
+
     return hr;
 }
 

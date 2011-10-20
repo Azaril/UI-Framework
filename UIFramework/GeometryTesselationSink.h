@@ -21,7 +21,7 @@ class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink 
 	        const Point2F& point1,
 	        const Point2F& point2,
 	        const Point2F& point3
-	        );    	
+	        );    	  
     
         __checkReturn HRESULT Flush(
             );
@@ -35,6 +35,10 @@ class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink 
             );
     
         __checkReturn HRESULT SetBrushTransform(
+            __in_opt const Matrix3X2F* pTransform
+            );
+
+        __checkReturn HRESULT SetMaskTransform(
             __in_opt const Matrix3X2F* pTransform
             );
 
@@ -71,4 +75,6 @@ class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink 
         Matrix3X2F m_Transform;
         BOOL m_NeedsBrushTransform;
         Matrix3X2F m_BrushTransform;
+        BOOL m_NeedsMaskTransform;
+        Matrix3X2F m_MaskTransform;
 };

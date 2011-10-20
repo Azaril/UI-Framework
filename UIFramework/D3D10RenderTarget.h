@@ -121,6 +121,10 @@ class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase
             __in ITexture* pTexture
             );
 
+        __override virtual __checkReturn HRESULT BindMask(
+            __in ITexture* pTexture
+            );
+
         __override virtual __checkReturn HRESULT OnTesselatedGeometryBatch(
             __in IVertexBuffer* pVertexBuffer
             );
@@ -133,6 +137,7 @@ class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase
         ID3D10Buffer* m_pTransformBuffer;
         ID3D10RasterizerState* m_pRasterizerState;
         ID3D10SamplerState* m_pSamplerState;
+        ID3D10BlendState* m_pBlendState;
 
     private:
         ID3D10RenderTargetView* m_pRenderTargetView;

@@ -7,9 +7,12 @@
 #include "GraphicsBrushBase.h"
 #include "GeometryTesselationSink.h"
 #include "TextureAtlasWithWhitePixel.h"
+#include "GlyphRun.h"
+#include "TextLayoutBase.h"
 
 class UIFRAMEWORK_API CRenderTargetBase : public CRenderTarget,
-                                          protected ITesselationBatchCallback
+                                          protected ITesselationBatchCallback,
+                                          protected ITextLayoutRenderCallback
 {
     public:
         __override virtual __checkReturn HRESULT BeginRendering(
@@ -51,7 +54,6 @@ class UIFRAMEWORK_API CRenderTargetBase : public CRenderTarget,
 			);
 
         __override virtual __checkReturn HRESULT RenderTextLayout( 
-			const Point2F& Origin, 
 			__in const CTextLayout* pTextLayout, 
 			__in const CGraphicsBrush* pBrush 
 			);
@@ -113,6 +115,10 @@ class UIFRAMEWORK_API CRenderTargetBase : public CRenderTarget,
             __in const CGraphicsBrushBase* pBrush
             );
 
+        __checkReturn HRESULT ApplyMask(
+            __in_opt ITexture* pMask
+            );
+
         virtual __checkReturn HRESULT ApplyContext(
             );
 
@@ -120,12 +126,23 @@ class UIFRAMEWORK_API CRenderTargetBase : public CRenderTarget,
             __in ITexture* pTexture
             ) = 0;
 
+        virtual __checkReturn HRESULT BindMask(
+            __in ITexture* pTexture
+            ) = 0;
+
         __checkReturn HRESULT Flush(
+            );
+
+        __override virtual __checkReturn HRESULT RenderGlyphRun(
+            __in ITexture* pTexture,
+            __in GlyphRun* pGlyphRun,
+            __in_opt void* pContext
             );
 
         Matrix3X2F m_Transform;
         CGeometryTesselationSink* m_pTesselationSink;
         ITextureAtlasPool* m_pTextureAtlasPool;
         ITextureAtlasWithWhitePixel* m_pLastRenderedTextureAtlas;
+        ITextureAtlasWithWhitePixel* m_pLastRenderedMaskAtlas;
         CTextureAtlasView* m_pDefaultWhitePixelTexture;
 };

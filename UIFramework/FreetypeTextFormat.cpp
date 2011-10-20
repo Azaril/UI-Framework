@@ -12,6 +12,19 @@ CFreetypeTextFormat::~CFreetypeTextFormat(
     )
 {
     ReleaseObject(m_pFontFace);
+
+    for (map< UINT32, ITexture* >::iterator it = m_GlyphTextures.begin(); it != m_GlyphTextures.end(); ++it)
+    {
+        if (it->second != NULL)
+        {
+            it->second->Release();
+        }
+    }
+
+    for (map< UINT32, GlyphMetrics* >::iterator it = m_GlyphMetrics.begin(); it != m_GlyphMetrics.end(); ++it)
+    {
+        delete it->second;
+    }
 }
 
 __checkReturn HRESULT 
@@ -32,42 +45,69 @@ CFreetypeTextFormat::Initialize(
 }
 
 __checkReturn HRESULT
-CFreetypeTextFormat::BeginQuery( 
+CFreetypeTextFormat::GetGlyphTexture(
+    const UINT32 glyph,
+    __deref_out_opt ITexture** ppTexture
     )
 {
     HRESULT hr = S_OK;
+    ITexture* pNewTexture = NULL;
+    ITexture* pTexture = NULL;
 
-    IFC(m_pFontFace->SetFontSize(m_fontSize));
+    map< UINT32, ITexture* >::iterator it = m_GlyphTextures.find(glyph);
+
+    if (it != m_GlyphTextures.end())
+    {
+        pTexture = it->second;
+    }
+    else
+    {
+        IFC(m_pFontFace->LoadIntoTexture(glyph, m_fontSize, m_pTextureAllocator, &pNewTexture));
+
+        m_GlyphTextures.insert(std::make_pair(glyph, pNewTexture));
+
+        pTexture = pNewTexture;
+        pNewTexture = NULL;
+    }
+
+    SetObject(*ppTexture, pTexture);
 
 Cleanup:
-    return hr;
-}
-
-__checkReturn HRESULT
-CFreetypeTextFormat::EndQuery(
-    )
-{
-    HRESULT hr = S_OK;
+    ReleaseObject(pNewTexture);
 
     return hr;
 }
 
 __checkReturn HRESULT
-CFreetypeTextFormat::LoadGlyph( 
-    const WCHAR glyph
+CFreetypeTextFormat::GetGlyphMetics(
+    const UINT32 glyph,
+    __deref_out const GlyphMetrics** ppGlyphMetrics
     )
 {
     HRESULT hr = S_OK;
+    GlyphMetrics* pMetrics = NULL;
 
-    IFC(m_pFontFace->LoadGlyph(glyph));
+    map< UINT32, GlyphMetrics* >::const_iterator it = m_GlyphMetrics.find(glyph);
 
-    //HACK: Testing hack!
+    if (it != m_GlyphMetrics.end())
     {
-        ITexture* pTexture = NULL;
+        *ppGlyphMetrics = it->second;
+    }
+    else
+    {
+        pMetrics = new GlyphMetrics();
+        IFCOOM(pMetrics);
 
-        IFC(m_pFontFace->LoadIntoTexture(m_pTextureAllocator, &pTexture));
+        IFC(m_pFontFace->GetGlyphMetrics(glyph, m_fontSize, pMetrics));
+
+        m_GlyphMetrics.insert(std::make_pair(glyph, pMetrics));
+
+        *ppGlyphMetrics = pMetrics;
+        pMetrics = NULL;
     }
 
 Cleanup:
+    delete pMetrics;
+
     return hr;
 }

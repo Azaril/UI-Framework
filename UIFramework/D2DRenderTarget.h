@@ -54,7 +54,6 @@ class UIFRAMEWORK_API CD2DRenderTarget : public CRenderTarget
 			);
 
         __override virtual __checkReturn HRESULT RenderTextLayout( 
-			const Point2F& Origin, 
 			__in const CTextLayout* pTextLayout, 
 			__in const CGraphicsBrush* pBrush 
 			);

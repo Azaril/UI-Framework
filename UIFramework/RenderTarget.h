@@ -68,7 +68,6 @@ class UIFRAMEWORK_API CRenderTarget : public CRefCountedObject
 			) = 0;
 
         virtual __checkReturn HRESULT RenderTextLayout( 
-			const Point2F& Origin, 
 			__in const CTextLayout* pTextLayout, 
 			__in const CGraphicsBrush* pBrush 
 			) = 0;

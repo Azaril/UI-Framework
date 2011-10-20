@@ -37,7 +37,6 @@ Cleanup:
     return hr;
 }
 
-
 __override __checkReturn HRESULT 
 CFreetypeTextLayout::SetMaxSize(
     const SizeF& Size 
@@ -91,46 +90,83 @@ CFreetypeTextLayout::EnsureLayout(
 
     IFC(m_pLayoutEngine->Layout(m_Size));
 
-    //TODO: Implement!
-    IFC(CFreetypeTextLayoutMetics::Create(MakeRect(m_Size), &m_pLayoutMetrics));
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CFreetypeTextLayout::BeginGlyphQueries(
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFC(m_pTextFormat->BeginQuery());
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CFreetypeTextLayout::EndGlyphQueries(
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFC(m_pTextFormat->EndQuery());
+    IFC(CFreetypeTextLayoutMetics::Create(m_Bounds, &m_pLayoutMetrics));
 
 Cleanup:
     return hr;
 }
 
 __override __checkReturn HRESULT 
-CFreetypeTextLayout::GetGlyph(
-    WCHAR glyph
+CFreetypeTextLayout::GetGlyphMetrics(
+    UINT32 glyph,
+    __deref_out const GlyphMetrics** ppGlyphMetrics
     )
 {
     HRESULT hr = S_OK;
 
-    IFC(m_pTextFormat->LoadGlyph(glyph));
+    IFC(m_pTextFormat->GetGlyphMetics(glyph, ppGlyphMetrics));
 
 Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT
+CFreetypeTextLayout::SetBounds(
+    const RectF& bounds
+    )
+{
+    HRESULT hr = S_OK;
+
+    m_Bounds = bounds;
+
+    return hr;
+}
+
+struct RenderContext
+{
+    ITextLayoutRenderCallback* Callback;
+    void* Context;
+};
+
+__checkReturn HRESULT
+CFreetypeTextLayout::Render(
+    __in ITextLayoutRenderCallback* pCallback,
+    __in_opt void* pContext
+    )
+{
+    HRESULT hr = S_OK;
+
+    {
+        RenderContext context = { pCallback, pContext };
+
+        IFC(m_pLayoutEngine->Render(this, &context));
+    }
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT
+CFreetypeTextLayout::RenderGlyphRun( 
+    UINT32 glyph, 
+    __in GlyphRun* pGlyphRun,
+    __in_opt void* pContext
+    )
+{
+    HRESULT hr = S_OK;
+    ITexture* pGlyphTexture = NULL;
+
+    IFC(m_pTextFormat->GetGlyphTexture(glyph, &pGlyphTexture));
+
+    if (pGlyphTexture != NULL)
+    {
+        RenderContext* pRenderContext = (RenderContext*)pContext;
+
+        IFC(pRenderContext->Callback->RenderGlyphRun(pGlyphTexture, pGlyphRun, pRenderContext->Context));
+    }
+
+Cleanup:
+    ReleaseObject(pGlyphTexture);
+
     return hr;
 }

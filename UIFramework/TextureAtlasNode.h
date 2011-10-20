@@ -141,6 +141,10 @@ class CTextureAtlasNode : private ITextureAtlasNode
                     IFC(m_pLeftChild->Allocate(pAtlas, Size, ppView));
                 }
             }
+            else
+            {
+                IFC_NOTRACE(E_FAIL);
+            }
 
         Cleanup:
             ReleaseObject(pNewView);
