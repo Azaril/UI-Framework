@@ -8,7 +8,7 @@
 #include "D3D9HWNDRenderTarget.h"
 
 class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
-                                            public ITextureAllocator
+                                            public IBatchUpdateTextureAllocator
 {
     public:
         DECLARE_FACTORY1( CD3D9GraphicsDevice, HWND );
@@ -57,6 +57,12 @@ class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
             UINT32 Width,
             UINT32 Height,
             __deref_out ITexture** ppTexture
+            );
+
+        __override virtual __checkReturn HRESULT AllocateTexture(
+            UINT32 Width,
+            UINT32 Height,
+            __deref_out IBatchUpdateTexture** ppTexture
             );
 
         HWND m_FocusWindow;

@@ -5,6 +5,7 @@
 #include "Factory.h"
 #include "TextureAtlasView.h"
 #include "TextureAtlasNode.h"
+#include "ColorUtilities.h"
 
 struct ITextureAtlas : public ITextureAllocator
 {
@@ -18,11 +19,14 @@ template< typename Base, UINT32 texturePadding >
 class CTextureAtlas : public CRefCountedObjectBase< Base >
 {
     public:
-        DECLARE_FACTORY1( CTextureAtlas, ITexture* );
+        DECLARE_FACTORY1( CTextureAtlas, IBatchUpdateTexture* );
+
+        typedef IBatchUpdateTexture TextureInterface;
+        typedef IBatchUpdateTextureAllocator TextureAllocatorInterface;
 
         static const UINT32 Padding = texturePadding;
 
-        __override __checkReturn HRESULT AllocateTexture(
+        __override virtual __checkReturn HRESULT AllocateTexture(
             UINT32 Width,
             UINT32 Height,
             __deref_out ITexture** ppTexture        
@@ -38,6 +42,32 @@ class CTextureAtlas : public CRefCountedObjectBase< Base >
             const SizeU inflatedSize(Width + (texturePadding * 2), Height + (texturePadding * 2));
 
             IFC_NOTRACE(m_pRootNode->Allocate(this, inflatedSize, &pAtlasView));
+
+#pragma warning(push)
+#pragma warning(disable: 4127)
+            if (texturePadding > 0)
+#pragma warning(pop)
+            {
+                const RectU& viewRegion = pAtlasView->GetRect();
+
+                const RectU regions[] =
+                {
+                    // Top
+                    RectU(viewRegion.left - texturePadding, viewRegion.top - texturePadding, viewRegion.right + texturePadding, viewRegion.top),
+                    // Bottom
+                    RectU(viewRegion.left - texturePadding, viewRegion.bottom, viewRegion.right + texturePadding, viewRegion.bottom + texturePadding),
+                    // Left
+                    RectU(viewRegion.left - texturePadding, viewRegion.top, viewRegion.left, viewRegion.bottom),
+                    // Right
+                    RectU(viewRegion.right, viewRegion.top, viewRegion.right + texturePadding, viewRegion.bottom)
+                };
+
+                {
+                    ColorF whiteGutterColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+                    IFC(ColorUtilities::FillTextureWithColor(m_pTexture, regions, ARRAYSIZE(regions), whiteGutterColor));
+                }
+            }
 
             *ppTexture = pAtlasView;
             pAtlasView = NULL;
@@ -71,7 +101,7 @@ class CTextureAtlas : public CRefCountedObjectBase< Base >
         }
 
         __checkReturn HRESULT Initialize(
-        	__in ITexture* pTexture
+        	__in IBatchUpdateTexture* pTexture
         	)
         {
             HRESULT hr = S_OK;
@@ -86,6 +116,6 @@ class CTextureAtlas : public CRefCountedObjectBase< Base >
             return hr;            
         }
 
-        ITexture* m_pTexture;
+        IBatchUpdateTexture* m_pTexture;
         CTextureAtlasNode< texturePadding >* m_pRootNode;
 };

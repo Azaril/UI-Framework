@@ -904,6 +904,9 @@
     <ClCompile Include="FontDescription.cpp">
       <Filter>Framework\Text</Filter>
     </ClCompile>
+    <ClCompile Include="ColorUtilities.cpp">
+      <Filter>Framework\Graphics\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1691,6 +1694,9 @@
     </ClInclude>
     <ClInclude Include="FontDescription.h">
       <Filter>Framework\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorUtilities.h">
+      <Filter>Framework\Graphics\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -149,6 +149,8 @@ CD3D10Texture::SetSubData(
     HRESULT hr = S_OK;
     D3D10_MAPPED_TEXTURE2D  mappedTexture = { };
 
+    //TODO: Validate data size.
+
     IFC(m_pTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE, 0, &mappedTexture));
 
     {
@@ -161,6 +163,46 @@ CD3D10Texture::SetSubData(
             memcpy(pDestinationData, pSourceData, regionLineSize);
 
             pSourceData += Stride;
+            pDestinationData += mappedTexture.RowPitch;
+        }
+    }
+
+Cleanup:
+    if (mappedTexture.pData != NULL)
+    {
+        m_pTexture->Unmap(D3D10CalcSubresource(0, 0, 1));
+    }
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D10Texture::SetMultipleSubData(
+    __in_ecount(RegionCount) const RectU* pRegions,
+    __in_ecount(RegionCount) BYTE** ppData,
+    __in_ecount(RegionCount) UINT32* pDataSizes,
+    __in_ecount(RegionCount) INT32* pStrides,
+    UINT32 RegionCount
+    )
+{
+    HRESULT hr = S_OK;
+    D3D10_MAPPED_TEXTURE2D  mappedTexture = { };
+
+    //TODO: Validate data size.
+
+    IFC(m_pTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE, 0, &mappedTexture));
+
+    for (UINT32 i = 0; i < RegionCount; ++i)
+    {
+        BYTE* pSourceData = ppData[i];
+        BYTE* pDestinationData = ((BYTE*)mappedTexture.pData) + (mappedTexture.RowPitch * pRegions[i].top) + PixelFormat::GetLineSize(m_Format, pRegions[i].left);
+        UINT32 regionLineSize = PixelFormat::GetLineSize(m_Format, pRegions[i].GetWidth());
+
+        for (UINT32 i = 0; i < pRegions[i].GetHeight(); ++i)
+        {
+            memcpy(pDestinationData, pSourceData, regionLineSize);
+
+            pSourceData += pStrides[i];
             pDestinationData += mappedTexture.RowPitch;
         }
     }

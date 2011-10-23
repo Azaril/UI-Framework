@@ -278,22 +278,6 @@ COpenGLES20GraphicsDevice::CreateTexture(
     
     textureID = 0;
     
-    //TODO: Move this to atlas texture, handle gutters.
-    {
-        UINT32 stride = PixelFormat::GetLineSize(PixelFormat::B8G8R8A8, Width);
-        UINT32 dataSize = stride * Height;
-        BYTE* pData = new BYTE[dataSize];
-        
-        for(UINT32 i = 0; i < dataSize; ++i)
-        {
-            pData[i] = 0xFF;
-        }
-        
-        pOpenGLESTexture->SetData(pData, dataSize, stride);
-        
-        delete [] pData;
-    }
-    
     *ppTexture = pOpenGLESTexture;
     pOpenGLESTexture = NULL;
     

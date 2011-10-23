@@ -305,3 +305,28 @@ Cleanup:
 
     return hr;
 }
+
+__override __checkReturn HRESULT 
+CD3D9GraphicsDevice::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out IBatchUpdateTexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    IDirect3DTexture9* pD3DTexture = NULL;
+    CD3D9Texture* pTexture = NULL;
+
+    IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));
+
+    IFC(CD3D9Texture::Create(pD3DTexture, &pTexture));
+
+    *ppTexture = pTexture;
+    pTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pTexture);
+    ReleaseObject(pD3DTexture);
+
+    return hr;
+}

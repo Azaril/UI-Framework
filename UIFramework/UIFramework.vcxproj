@@ -109,6 +109,7 @@
     <ClCompile Include="BitmapBrushBase.cpp" />
     <ClCompile Include="BitmapSourceBase.cpp" />
     <ClCompile Include="Collections.cpp" />
+    <ClCompile Include="ColorUtilities.cpp" />
     <ClCompile Include="CompositeResourceProvider.cpp" />
     <ClCompile Include="COMReadStreamWrapper.cpp" />
     <ClCompile Include="CoreFigureBuilder.cpp" />
@@ -364,6 +365,7 @@
     <ClInclude Include="BitmapBrushBase.h" />
     <ClInclude Include="BitmapSourceBase.h" />
     <ClInclude Include="Collections.h" />
+    <ClInclude Include="ColorUtilities.h" />
     <ClInclude Include="CompositeResourceProvider.h" />
     <ClInclude Include="COMReadStreamWrapper.h" />
     <ClInclude Include="CoreFigureBuilder.h" />

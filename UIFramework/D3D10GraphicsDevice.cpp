@@ -273,11 +273,53 @@ Cleanup:
     return hr;
 }
 
-__override __checkReturn HRESULT 
+__checkReturn HRESULT 
 CD3D10GraphicsDevice::AllocateTexture(
     UINT32 Width,
     UINT32 Height,
     __deref_out ITexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    CStagingTextureWrapper* pStagingTexture = NULL;
+
+    IFC(CreateTexture(Width, Height, &pStagingTexture));
+
+    *ppTexture = pStagingTexture;
+    pStagingTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pStagingTexture);
+
+    return hr;
+}
+
+__checkReturn HRESULT 
+CD3D10GraphicsDevice::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out IBatchUpdateTexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    CStagingTextureWrapper* pStagingTexture = NULL;
+
+    IFC(CreateTexture(Width, Height, &pStagingTexture));
+
+    *ppTexture = pStagingTexture;
+    pStagingTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pStagingTexture);
+
+    return hr;
+}
+
+__checkReturn HRESULT 
+CD3D10GraphicsDevice::CreateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out CStagingTextureWrapper** ppTexture
     )
 {
     HRESULT hr = S_OK;
@@ -326,7 +368,7 @@ Cleanup:
 __checkReturn HRESULT 
 CD3D10GraphicsDevice::AllocateTexture(
     const D3D10_TEXTURE2D_DESC& textureDescription,
-    __deref_out ITexture** ppTexture
+    __deref_out CD3D10Texture** ppTexture
     )
 {
     HRESULT hr = S_OK;
@@ -410,12 +452,43 @@ CD3D10GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
 {
     HRESULT hr = S_OK;
     D3D10_TEXTURE2D_DESC textureDescription = m_TextureDescription;
+    CD3D10Texture* pNewTexture = NULL;
 
     textureDescription.Width = Width;
     textureDescription.Height = Height;
 
-    IFC(m_pGraphicsDevice->AllocateTexture(textureDescription, ppTexture));
+    IFC(m_pGraphicsDevice->AllocateTexture(textureDescription, &pNewTexture));
+
+    *ppTexture = pNewTexture;
+    pNewTexture = NULL;
 
 Cleanup:
+    ReleaseObject(pNewTexture);
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D10GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out IBatchUpdateTexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    D3D10_TEXTURE2D_DESC textureDescription = m_TextureDescription;
+    CD3D10Texture* pNewTexture = NULL;
+
+    textureDescription.Width = Width;
+    textureDescription.Height = Height;
+
+    IFC(m_pGraphicsDevice->AllocateTexture(textureDescription, &pNewTexture));
+
+    *ppTexture = pNewTexture;
+    pNewTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pNewTexture);
+
     return hr;
 }

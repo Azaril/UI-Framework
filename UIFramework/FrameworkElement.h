@@ -184,7 +184,7 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
     private:
         CUIElementCollection* m_Children;
 
-        class CChildrenSubscriber : public CUIElementCollection::SubscriberType
+        class UIFRAMEWORK_API CChildrenSubscriber : public CUIElementCollection::SubscriberType
         {
             public:
                 CChildrenSubscriber( CFrameworkElement& This ) : m_This(This)
@@ -206,7 +206,7 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
 
         } m_ChildrenSubscriber;
 
-        class CStyleCallback : public IStyleCallback
+        class UIFRAMEWORK_API CStyleCallback : public IStyleCallback
         {
             public:
                 CStyleCallback( CFrameworkElement& This ) : m_This(This)

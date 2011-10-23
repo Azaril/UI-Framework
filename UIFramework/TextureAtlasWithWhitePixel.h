@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TextureAtlas.h"
+#include "TextureAtlas.h"
 
 struct ITextureAtlasWithWhitePixel : public ITextureAtlas
 {
@@ -14,7 +15,7 @@ class CTextureAtlasWithWhitePixel : public CTextureAtlas< ITextureAtlasWithWhite
     typedef CTextureAtlas< ITextureAtlasWithWhitePixel, Padding > BaseAtlasType;
 
     public:
-        DECLARE_FACTORY1( CTextureAtlasWithWhitePixel, ITexture* );
+        DECLARE_FACTORY1( CTextureAtlasWithWhitePixel, IBatchUpdateTexture* );
    
         __override __out ITexture* GetWhitePixelTexture(
             )
@@ -36,7 +37,7 @@ class CTextureAtlasWithWhitePixel : public CTextureAtlas< ITextureAtlasWithWhite
         }
     
         __checkReturn HRESULT Initialize(
-            __in ITexture* pTexture
+            __in IBatchUpdateTexture* pTexture
             )
         {
             HRESULT hr = S_OK;
@@ -45,31 +46,11 @@ class CTextureAtlasWithWhitePixel : public CTextureAtlas< ITextureAtlasWithWhite
 
 	        IFC(BaseAtlasType::AllocateTexture(1, 1, &m_pWhitePixel));
 
-	        switch (m_pWhitePixel->GetPixelFormat())
-	        {
-		        case PixelFormat::B8G8R8A8:
-			        {
-				        BYTE whitePixel[] = { 0xFF, 0xFF, 0xFF, 0xFF };
+            {
+                ColorF whitePixelColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-				        IFC(m_pWhitePixel->SetData(whitePixel, sizeof(whitePixel), PixelFormat::GetLineSize(PixelFormat::B8G8R8A8, 1)));
-
-				        break;
-			        }
-
-                case PixelFormat::R8G8B8A8:
-                    {
-                        BYTE whitePixel[] = { 0xFF, 0xFF, 0xFF, 0xFF };
-
-                        IFC(m_pWhitePixel->SetData(whitePixel, sizeof(whitePixel), PixelFormat::GetLineSize(PixelFormat::R8G8B8A8, 1)));
-
-                        break;
-                    }
-
-		        default:
-			        {
-				        IFC(E_UNEXPECTED);
-			        }
-	        }
+                IFC(ColorUtilities::FillTextureWithColor(m_pWhitePixel, whitePixelColor));
+            }
 
         Cleanup:
 	        return hr;

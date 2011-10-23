@@ -66,6 +66,18 @@ CStagingTextureWrapper::SetData(
     )
 {
     HRESULT hr = S_OK;
+    ITexture* pStagingTexture = NULL;
+    UINT32 width = GetWidth();
+    UINT32 height = GetHeight();
+
+    IFC(m_pAllocator->AllocateTexture(width, height, &pStagingTexture));
+
+    IFC(pStagingTexture->SetData(pData, DataSize, Stride));
+
+    IFC(m_pCallback->AddUpdate(pStagingTexture, MakeRect(SizeU(width, height)), m_pTargetTexture, Point2U(0, 0)));
+
+Cleanup:
+    ReleaseObject(pStagingTexture);
 
     return hr;
 }
@@ -92,5 +104,26 @@ CStagingTextureWrapper::SetSubData(
 Cleanup:
     ReleaseObject(pStagingTexture);
 
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CStagingTextureWrapper::SetMultipleSubData(
+    const RectU* pRegions,
+    __in_ecount(RegionCount) BYTE** ppData,
+    UINT32* pDataSizes,
+    INT32* pStrides,
+    UINT32 RegionCount
+    )
+{
+    HRESULT hr = S_OK;
+
+    //TODO: Is this optimal, is one lock better?
+    for (UINT32 i = 0; i < RegionCount; ++i)
+    {
+        IFC(SetSubData(pRegions[i], ppData[i], pDataSizes[i], pStrides[i]));
+    }
+
+Cleanup:
     return hr;
 }

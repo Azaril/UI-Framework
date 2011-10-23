@@ -14,7 +14,7 @@ template< typename AtlasType >
 class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
 {
     public:
-        DECLARE_FACTORY3( CTextureAtlasPool, UINT32, UINT32, ITextureAllocator* );
+        DECLARE_FACTORY3( CTextureAtlasPool, UINT32, UINT32, typename AtlasType::TextureAllocatorInterface* );
     
         __override __checkReturn HRESULT AllocateTexture(
             UINT32 Width,
@@ -24,24 +24,32 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
         {
             HRESULT hr = S_OK;
             AtlasType* pNewAtlas = NULL;
+            ITexture* pNewTexture = NULL;
 
             //TODO: Implement a better algorithm here, this will get slow as more textures get allocated and fragmentation happens.
             for (typename vector< AtlasType* >::reverse_iterator it = m_Textures.rbegin(); it != m_Textures.rend(); ++it)
             {
                 AtlasType* pAtlas = (*it);
 
-                if(SUCCEEDED(pAtlas->AllocateTexture(Width, Height, ppTexture)))
+                if(SUCCEEDED(pAtlas->AllocateTexture(Width, Height, &pNewTexture)))
                 {
-                    goto Cleanup;
+                    break;
                 }
             }
 
-            IFC(CreateNewAtlas(Width + (AtlasType::Padding * 2), Height + (AtlasType::Padding * 2), &pNewAtlas));
+            if (pNewTexture == NULL)
+            {
+                IFC(CreateNewAtlas(Width + (AtlasType::Padding * 2), Height + (AtlasType::Padding * 2), &pNewAtlas));
             
-            IFC(pNewAtlas->AllocateTexture(Width, Height, ppTexture));
+                IFC(pNewAtlas->AllocateTexture(Width, Height, &pNewTexture));
+            }
+
+            *ppTexture = pNewTexture;
+            pNewTexture = NULL;
 
         Cleanup:
             ReleaseObject(pNewAtlas);
+            ReleaseObject(pNewTexture);
 
             return hr;        
         }
@@ -88,7 +96,7 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
         __checkReturn HRESULT Initialize(
             UINT32 MaximumWidth,
             UINT32 MaximumHeight,
-            __in ITextureAllocator* pAllocator
+            __in IBatchUpdateTextureAllocator* pAllocator
             )
         {
             HRESULT hr = S_OK;
@@ -116,7 +124,7 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
         {
             HRESULT hr = S_OK;
             AtlasType* pNewAtlas = NULL;
-            ITexture* pNewAtlasStorageTexture = NULL;
+            AtlasType::TextureInterface* pNewAtlasStorageTexture = NULL;
             UINT32 inflatedWidth = std::max(NextPowerOfTwo(Width), m_MinimumWidth);
             UINT32 inflatedHeight = std::max(NextPowerOfTwo(Height), m_MinimumHeight);
 
@@ -156,7 +164,7 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
             return val;
         }
     
-        ITextureAllocator* m_pTextureAllocator;
+        typename AtlasType::TextureAllocatorInterface* m_pTextureAllocator;
         UINT32 m_MinimumWidth;
         UINT32 m_MinimumHeight;
         UINT32 m_MaximumWidth;

@@ -5,7 +5,7 @@
 #include "Factory.h"
 #include "StagingTextureCallback.h"
 
-class CStagingTextureWrapper : public CRefCountedObjectBase< ITexture >
+class CStagingTextureWrapper : public CRefCountedObjectBase< IBatchUpdateTexture >
 {
     public:
         DECLARE_FACTORY3( CStagingTextureWrapper, ITextureAllocator*, IStagingTextureCallback*, ITexture* );
@@ -33,6 +33,14 @@ class CStagingTextureWrapper : public CRefCountedObjectBase< ITexture >
             __in_ecount(DataSize) BYTE* pData,
             UINT32 DataSize,
             INT32 Stride
+            );
+
+        virtual __checkReturn HRESULT SetMultipleSubData(
+            const RectU* pRegions,
+            __in_ecount(RegionCount) BYTE** ppData,
+            UINT32* pDataSizes,
+            INT32* pStrides,
+            UINT32 RegionCount
             );
 
     protected:

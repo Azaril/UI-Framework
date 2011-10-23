@@ -6,6 +6,9 @@
 #include "GraphicsDevice.h"
 #include "D3D10RenderTarget.h"
 #include "D3D10HWNDRenderTarget.h"
+#include "StagingTextureWrapper.h"
+
+class CD3D10Texture;
 
 typedef HRESULT (WINAPI *D3D10CreateDeviceFunc)(
     __in IDXGIAdapter* pAdapter,
@@ -21,16 +24,8 @@ typedef HRESULT (WINAPI* CreateDXGIFactoryFunc)(
     __deref_out void** ppFactory
     );
 
-/*
-typedef HRESULT (WINAPI *CreateSwapChainFunc)(
-    __in IUnknown* pDevice,
-    __in DXGI_SWAP_CHAIN_DESC* pDesc,
-    __deref_out IDXGISwapChain** ppSwapChain
-    );
-    */
-
 class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
-                                             public ITextureAllocator,
+                                             public IBatchUpdateTextureAllocator,
                                              private IStagingTextureCallback
 {
     public:
@@ -81,9 +76,21 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
             __deref_out ITexture** ppTexture
             );
 
+        __override virtual __checkReturn HRESULT AllocateTexture(
+            UINT32 Width,
+            UINT32 Height,
+            __deref_out IBatchUpdateTexture** ppTexture
+            );
+
+        __checkReturn HRESULT CreateTexture(
+            UINT32 Width,
+            UINT32 Height,
+            __deref_out CStagingTextureWrapper** ppTexture
+            );
+
         __checkReturn HRESULT AllocateTexture(
             const D3D10_TEXTURE2D_DESC& textureDescription,
-            __deref_out ITexture** ppTexture
+            __deref_out CD3D10Texture** ppTexture
             );
 
         __override virtual __checkReturn HRESULT AddUpdate(
@@ -112,7 +119,7 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
         CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* m_pTextureAtlasPool;
         CTextureAtlasPool< CTextureAtlas< ITextureAtlas, 0 > >* m_pStagingTextureAtlasPool;
 
-        class CRenderTextureAllocator : public ITextureAllocator
+        class UIFRAMEWORK_API CRenderTextureAllocator : public IBatchUpdateTextureAllocator
         {
         public:
             CRenderTextureAllocator(
@@ -127,6 +134,12 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
                 UINT32 Width,
                 UINT32 Height,
                 __deref_out ITexture** ppTexture
+                );
+
+            __override virtual __checkReturn HRESULT AllocateTexture(
+                UINT32 Width,
+                UINT32 Height,
+                __deref_out IBatchUpdateTexture** ppTexture
                 );
 
         protected:

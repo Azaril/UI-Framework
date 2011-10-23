@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ErrorChecking.h"
+
 template< typename T, size_t Size >
 class StackHeapBuffer
 {

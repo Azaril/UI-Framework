@@ -55,3 +55,14 @@ struct ITexture
         INT32 Stride
         ) = 0;
 };
+
+struct IBatchUpdateTexture : public ITexture
+{
+    virtual __checkReturn HRESULT SetMultipleSubData(
+        __in_ecount(RegionCount) const RectU* pRegions,
+        __in_ecount(RegionCount) BYTE** ppData,
+        __in_ecount(RegionCount) UINT32* pDataSizes,
+        __in_ecount(RegionCount) INT32* pStrides,
+        UINT32 RegionCount
+        ) = 0;
+};
