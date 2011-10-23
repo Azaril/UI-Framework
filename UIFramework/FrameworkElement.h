@@ -34,6 +34,10 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
+        virtual HRESULT Measure( SizeF Size );
+
+        virtual HRESULT Arrange( RectF Bounds );
+
         void SetAutomaticNamescopeParticipation( BOOL Participate );
 
         HRESULT RegisterInNamescope( CNamescope* pNamescope, CStringValue** ppRegisteredName );
@@ -110,6 +114,9 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
 
             return hr;
         }
+
+        __override virtual __out_opt const CFontDescription* GetEffectiveFontDescription(
+            );
 
         //
         // Properties

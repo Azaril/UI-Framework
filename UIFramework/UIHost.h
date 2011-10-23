@@ -13,22 +13,44 @@
 class UIFRAMEWORK_API CUIHost : public CRefCountedObject
 {
     public:
-        DECLARE_FACTORY3( CUIHost, CGraphicsDevice*, CRenderTarget*, CProviders* );
+        DECLARE_FACTORY4( CUIHost, CGraphicsDevice*, CRenderTarget*, CProviders*, const CFontDescription* );
 
-        virtual HRESULT GetRootElement( CRootUIElement** ppElement );
+        __checkReturn HRESULT GetRootElement( 
+            __deref_out CRootUIElement** ppElement 
+            );
 
-        HRESULT Render();
+        __checkReturn HRESULT Render(
+            );
 
-        HRESULT GetMouseController( CMouseController** ppController );
-        HRESULT GetKeyboardController( CKeyboardController** ppController );
-        HRESULT GetTimeController( CTimeController** ppController );
-        HRESULT GetFocusManager( CFocusManager** ppFocusManager );
+        __checkReturn HRESULT GetMouseController(
+            __deref_out CMouseController** ppController 
+            );
+
+        __checkReturn HRESULT GetKeyboardController( 
+            __deref_out CKeyboardController** ppController 
+            );
+
+        __checkReturn HRESULT GetTimeController( 
+            __deref_out CTimeController** ppController 
+            );
+
+        __checkReturn HRESULT GetFocusManager( 
+            __deref_out CFocusManager** ppFocusManager
+            );
 
     protected:
-        CUIHost();
-        virtual ~CUIHost();
+        CUIHost(
+            );
 
-        HRESULT Initialize( CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CProviders* pProviders );
+        virtual ~CUIHost(
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in CGraphicsDevice* pGraphicsDevice,
+            __in CRenderTarget* pRenderTarget,
+            __in CProviders* pProviders, 
+            __in const CFontDescription* pDefaultFont 
+            );
 
         CTime m_Time;
         CRenderTarget* m_RenderTarget;

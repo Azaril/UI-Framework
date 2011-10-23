@@ -74,7 +74,7 @@ HRESULT CControl::OnAttach(CUIAttachContext& Context)
 
     IFC(CFrameworkElement::OnAttach(Context));
 
-    IFC(EnsureTemplate());
+    m_TemplateDirty = TRUE;
 
 Cleanup:
     return hr;
@@ -94,13 +94,39 @@ Cleanup:
     return hr;
 }
 
+HRESULT 
+CControl::Measure( SizeF Size )
+{
+    HRESULT hr = S_OK;
+
+    IFC(EnsureTemplate());
+
+    IFC(CFrameworkElement::Measure(Size));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT 
+CControl::Arrange( RectF Bounds )
+{
+    HRESULT hr = S_OK;
+
+    IFC(EnsureTemplate());
+
+    IFC(CFrameworkElement::Arrange(Bounds));
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CControl::OnTemplateChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;
 
     m_TemplateDirty = TRUE;
 
-    IFC(EnsureTemplate());
+    IFC(InvalidateMeasure());
 
 Cleanup:
     return hr;
@@ -151,6 +177,8 @@ HRESULT CControl::EnsureTemplate()
 {
     HRESULT hr = S_OK;
     CControlTemplate* pTemplate = NULL;
+
+    IFC(EnsureStyle());
 
     if(m_TemplateDirty)
     {

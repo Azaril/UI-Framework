@@ -3,18 +3,15 @@
 #include "TextFormat.h"
 #include "TextLayout.h"
 #include "EditableTextLayout.h"
+#include "FontDescription.h"
+#include "ResourceProvider.h"
 
 class CTextProvider : public CRefCountedObject
 {
     public:
         virtual __checkReturn HRESULT CreateFormat( 
-			__in_z const WCHAR* pFontName, 
-			FLOAT FontSize, 
-			__in_z const WCHAR* pLocaleName, 
-			__deref_out CTextFormat** ppTextFormat 
-			) = 0;
-
-        virtual __checkReturn HRESULT GetDefaultFormat(
+			__in const CFontDescription* pFontDescription,
+            __in IResourceProvider* pResourceProvider,
 			__deref_out CTextFormat** ppTextFormat 
 			) = 0;
 

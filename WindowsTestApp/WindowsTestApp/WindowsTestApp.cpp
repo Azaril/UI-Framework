@@ -146,6 +146,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     IFC(CFileResourceProvider::Create(&pFileResourceProvider));
 
+    {
+        WCHAR modulePath[MAX_PATH + 1] = { };
+        
+        IFCEXPECT(GetModuleFileName(NULL, modulePath, ARRAYSIZE(modulePath)) > 0);
+
+        IFC(PathRemoveFileSpec(modulePath));
+
+        IFC(pFileResourceProvider->AddSearchPath(modulePath, wcslen(modulePath)));
+    }
+
     IFC(CProviders::Create(pClassResolver, pTypeConverter, pFileResourceProvider, &pProviders));
 
     //
@@ -216,7 +226,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     g_RenderTarget = pRenderTarget;
 
-    IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, pProviders, &pUIHost));
+    {
+        CFontDescription defaultFont(L"Opificio.ttf", 32, L"en-us");
+
+        IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, pProviders, &defaultFont, &pUIHost));
+    }
 
     g_UIHost = pUIHost;
 

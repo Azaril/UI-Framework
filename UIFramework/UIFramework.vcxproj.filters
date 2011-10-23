@@ -901,6 +901,9 @@
     <ClCompile Include="TextLayoutEngineMetrics.cpp">
       <Filter>Framework\Text\Core\Layout</Filter>
     </ClCompile>
+    <ClCompile Include="FontDescription.cpp">
+      <Filter>Framework\Text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1685,6 +1688,9 @@
     </ClInclude>
     <ClInclude Include="TextLayoutEngineMetrics.h">
       <Filter>Framework\Text\Core\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="FontDescription.h">
+      <Filter>Framework\Text</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

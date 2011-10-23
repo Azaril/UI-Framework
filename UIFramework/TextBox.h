@@ -39,6 +39,13 @@ class CTextBox : public CControl
         virtual HRESULT PostTemplateApplied();
         virtual HRESULT PreTemplateRevoked();
 
+        __checkReturn HRESULT EnsureTextLayout(
+            );
+
+        __checkReturn HRESULT GetTextLayout(
+            __deref_out CEditableTextLayout** ppTextLayout
+            );
+
         //
         // Property Change Handlers
         //

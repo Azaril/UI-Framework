@@ -14,6 +14,11 @@ class UIFRAMEWORK_API CFileResourceProvider : public CRefCountedObjectBase< IRes
             __deref_out IReadStream** ppStream
             );
 
+        __checkReturn HRESULT AddSearchPath(
+            __in_ecount(PathLength) const WCHAR* pPath,
+            UINT32 PathLength
+            );
+
     protected:
         CFileResourceProvider(
             );
@@ -23,4 +28,6 @@ class UIFRAMEWORK_API CFileResourceProvider : public CRefCountedObjectBase< IRes
 
         __checkReturn HRESULT Initialize(
             );
+
+        list< std::wstring > m_SearchPaths;
 };

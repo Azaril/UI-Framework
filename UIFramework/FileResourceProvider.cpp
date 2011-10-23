@@ -21,6 +21,21 @@ CFileResourceProvider::Initialize(
 {
     HRESULT hr = S_OK;
 
+    m_SearchPaths.push_back(L"");
+
+    return hr;
+}
+
+__checkReturn HRESULT 
+CFileResourceProvider::AddSearchPath(
+    __in_ecount(PathLength) const WCHAR* pPath,
+    UINT32 PathLength
+    )
+{
+    HRESULT hr = S_OK;
+
+    m_SearchPaths.push_back(std::wstring(pPath, PathLength));
+
     return hr;
 }
 
@@ -35,20 +50,33 @@ CFileResourceProvider::ReadResource(
     FILE* pFile = NULL;
     CFileResourceStream* pFileStream = NULL;
 
-#ifdef _WINDOWS
-    pFile = _wfsopen(pIdentifier, L"rb", _SH_DENYWR);
-    IFCPTR(pFile);
-#else
+    for (list< std::wstring >::iterator it = m_SearchPaths.begin(); pFile == NULL && it != m_SearchPaths.end(); ++it)
     {
-        StackHeapBuffer<CHAR, 2048> stringBuffer;
-        
-        hr = ConvertWCHARToUTF8< CHAR, 2048 >(pIdentifier, &stringBuffer, NULL);
-        IFC(hr);
-        
-        pFile = fopen(stringBuffer.GetBuffer(), "rb");
-        IFCPTR(pFile);
-    }
+        std::wstring combinedPath = *it;
+
+        if (!combinedPath.empty())
+        {
+            combinedPath.append(L"/");
+        }
+
+        combinedPath.append(pIdentifier, identifierLength);
+
+#ifdef _WINDOWS
+        pFile = _wfsopen(combinedPath.c_str(), L"rb", _SH_DENYWR);
+#else
+        {
+            StackHeapBuffer<CHAR, 2048> stringBuffer;
+
+            hr = ConvertWCHARToUTF8< CHAR, 2048 >(combinedPath.c_str(), combinedPath.length(), &stringBuffer, NULL);
+            IFC(hr);
+
+            pFile = fopen(stringBuffer.GetBuffer(), "rb");
+            IFCPTR(pFile);
+        }
 #endif
+    }
+
+    IFCPTR(pFile);
 
     IFC(CFileResourceStream::Create(pFile, &pFileStream));
 

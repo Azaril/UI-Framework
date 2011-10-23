@@ -11,6 +11,10 @@ class CControl : public CFrameworkElement
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
+        virtual HRESULT Measure( SizeF Size );
+
+        virtual HRESULT Arrange( RectF Bounds );
+
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 

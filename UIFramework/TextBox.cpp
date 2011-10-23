@@ -55,23 +55,10 @@ HRESULT CTextBox::OnAttach(CUIAttachContext& Context)
     HRESULT hr = S_OK;
     CTextProvider* pTextProvider = NULL;
     CTextFormat* pTextFormat = NULL;
-    SizeF InitialSize;
-
-    IFC(m_VisualContext.GetGraphicsDevice()->GetTextProvider(&pTextProvider));
-
-    if(m_TextFormat == NULL)
-    {
-        IFC(pTextProvider->GetDefaultFormat(&pTextFormat));
-    }
-    else
-    {
-        //TODO: Add handler for text format changing etc.
-        SetObject(pTextFormat, m_TextFormat);
-    }
-
-    IFC(pTextProvider->CreateEditableTextLayout(pTextFormat, InitialSize, &m_TextLayout));
 
     IFC(CControl::OnAttach(Context));
+
+    IFC(EnsureTextLayout());
 
 Cleanup:
     ReleaseObject(pTextProvider);
@@ -92,9 +79,53 @@ Cleanup:
     return hr;
 }
 
+__checkReturn HRESULT
+CTextBox::EnsureTextLayout(
+    )
+{
+    HRESULT hr = S_OK;
+    CTextProvider* pTextProvider = NULL;
+    SizeF InitialSize;
+
+    if(m_TextLayout == NULL)
+    {
+        IFC(m_VisualContext.GetGraphicsDevice()->GetTextProvider(&pTextProvider));
+
+        if(m_TextFormat == NULL)
+        {
+            const CFontDescription* pFontDescription = GetEffectiveFontDescription();
+
+            //TODO: Handle font description changes.
+            IFC(pTextProvider->CreateFormat(pFontDescription, GetProviders()->GetResourceProvider(), &m_TextFormat));
+        }
+
+        IFC(pTextProvider->CreateEditableTextLayout(m_TextFormat, InitialSize, &m_TextLayout));
+    }
+
+Cleanup:
+    ReleaseObject(pTextProvider);
+
+    return hr;
+}
+
+HRESULT CTextBox::GetTextLayout(
+    CEditableTextLayout** ppLayout
+    )
+{
+    HRESULT hr = S_OK;
+    
+    IFC(EnsureTextLayout());
+
+    SetObject(*ppLayout, m_TextLayout);
+
+Cleanup:
+    return hr;
+}
+
 HRESULT CTextBox::PostTemplateApplied()
 {
     HRESULT hr = S_OK;
+    CEditableTextLayout* pTextLayout = NULL;
 
     IFC(CControl::PostTemplateApplied());
 
@@ -102,15 +133,19 @@ HRESULT CTextBox::PostTemplateApplied()
 
     IFCPTR(m_TextHostControl);
 
-    IFC(CTextHost::Create(GetProviders(), m_TextLayout, &m_TextHost));
+    IFC(GetTextLayout(&pTextLayout));
+
+    IFC(CTextHost::Create(GetProviders(), pTextLayout, &m_TextHost));
 
     IFC(m_TextHostControl->SetContent(m_TextHost));
 
     IFC(m_TextEditor->SetTextHost(this));
 
-    IFC(m_TextEditor->SetTextLayout(m_TextLayout));
+    IFC(m_TextEditor->SetTextLayout(pTextLayout));
 
 Cleanup:
+    ReleaseObject(pTextLayout);
+
     return hr;
 }
 

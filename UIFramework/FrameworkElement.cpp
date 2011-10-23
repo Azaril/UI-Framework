@@ -99,8 +99,6 @@ HRESULT CFrameworkElement::OnAttach(CUIAttachContext& Context)
 
     m_StyleDirty = TRUE;
 
-    IFC(EnsureStyle());
-
 Cleanup:
     ReleaseObject(pName);
 
@@ -138,6 +136,32 @@ HRESULT CFrameworkElement::OnDetach(CUIDetachContext& Context)
 Cleanup:
     ReleaseObject(m_RegisteredName);
 
+    return hr;
+}
+
+HRESULT 
+CFrameworkElement::Measure( SizeF Size )
+{
+    HRESULT hr = S_OK;
+
+    IFC(EnsureStyle());
+
+    IFC(CUIElement::Measure(Size));
+
+Cleanup:
+    return hr;
+}
+
+HRESULT 
+CFrameworkElement::Arrange( RectF Bounds )
+{
+    HRESULT hr = S_OK;
+
+    IFC(EnsureStyle());
+
+    IFC(CUIElement::Arrange(Bounds));
+
+Cleanup:
     return hr;
 }
 
@@ -317,6 +341,20 @@ Cleanup:
     ReleaseObject(pNameValue);
 
     return hr;
+}
+
+__out const CFontDescription*
+CFrameworkElement::GetEffectiveFontDescription(
+    )
+{
+    const CFontDescription* pDescription = NULL;
+
+    if (IsAttached())
+    {
+        pDescription = GetParent()->GetEffectiveFontDescription();
+    }
+
+    return pDescription;
 }
 
 HRESULT CFrameworkElement::OnNameChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)

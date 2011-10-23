@@ -334,6 +334,13 @@ Cleanup:
     return hr;
 }
 
+__out const CFontDescription*
+CUIElement::GetEffectiveFontDescription(
+    )
+{
+    return NULL;
+}
+
 HRESULT CUIElement::GetClippingRectangle(RectF* pClippingRect)
 {
     HRESULT hr = S_OK;

@@ -1,17 +1,22 @@
 #include "RootUIElement.h"
 
-CRootUIElement::CRootUIElement() : m_Child(NULL),
-                                   m_Namescope(NULL),
-                                   m_Providers(NULL)
+CRootUIElement::CRootUIElement(
+    ) 
+    : m_Child(NULL)
+    , m_Namescope(NULL)
 {
 }
 
-CRootUIElement::~CRootUIElement()
+CRootUIElement::~CRootUIElement(
+    )
 {
     Finalize();
 }
 
-HRESULT CRootUIElement::Initialize(CProviders* pProviders)
+__checkReturn HRESULT 
+CRootUIElement::Initialize(
+    __in CProviders* pProviders
+    )
 {
     HRESULT hr = S_OK;
 
@@ -21,14 +26,18 @@ HRESULT CRootUIElement::Initialize(CProviders* pProviders)
 
     IFC(CNamescope::Create(&m_Namescope));
 
-    m_Providers = pProviders;
-    AddRefObject(m_Providers);
-
 Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::SetContext(CGraphicsDevice* pGraphicsDevice, CRenderTarget* pRenderTarget, CTimeSource* pTimeSource, CStaticTreeData* pTreeData)
+__checkReturn HRESULT 
+CRootUIElement::SetContext(
+    __in CGraphicsDevice* pGraphicsDevice,
+    __in CRenderTarget* pRenderTarget, 
+    __in CTimeSource* pTimeSource, 
+    __in const CFontDescription* pDefaultFont,
+    __in CStaticTreeData* pTreeData    
+    )
 {
     HRESULT hr = S_OK;
 
@@ -37,6 +46,8 @@ HRESULT CRootUIElement::SetContext(CGraphicsDevice* pGraphicsDevice, CRenderTarg
     IFCPTR(pTreeData);
 
     IFCEXPECT(!IsAttached());
+
+    m_FontDescription = *pDefaultFont;
 
     {
         CVisualAttachContext VisualContext(NULL, NULL, pTimeSource, pGraphicsDevice);
@@ -54,7 +65,9 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::Finalize()
+__checkReturn HRESULT
+CRootUIElement::Finalize(
+    )
 {
     HRESULT hr = S_OK;
 
@@ -73,12 +86,14 @@ HRESULT CRootUIElement::Finalize()
 Cleanup:
     ReleaseObject(m_Child);
     ReleaseObject(m_Namescope);
-    ReleaseObject(m_Providers);
 
     return hr;
 }
 
-HRESULT CRootUIElement::SetChild(CUIElement* pChild)
+__checkReturn HRESULT 
+CRootUIElement::SetChild(
+    __in_opt CUIElement* pChild
+    )
 {
     HRESULT hr = S_OK;
 
@@ -102,7 +117,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::PreRenderInternal(CPreRenderContext& Context)
+__override __checkReturn HRESULT 
+CRootUIElement::PreRenderInternal(
+    CPreRenderContext& Context
+    )
 {
     HRESULT hr = S_OK;
 
@@ -114,7 +132,8 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::RenderRoot(CRenderContext& Context)
+__override __checkReturn HRESULT
+CRootUIElement::RenderRoot(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
@@ -135,7 +154,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CRootUIElement::MeasureInternal(
+    SizeF AvailableSize, 
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
 
@@ -150,7 +173,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__checkReturn HRESULT 
+CRootUIElement::ArrangeInternal(
+    SizeF AvailableSize,
+    SizeF& UsedSize
+    )
 {
     HRESULT hr = S_OK;
 
@@ -165,7 +192,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CRootUIElement::HitTest(Point2F LocalPoint, CHitTestResult** ppHitTestResult)
+__checkReturn HRESULT
+CRootUIElement::HitTest(
+    Point2F LocalPoint, 
+    __deref_out_opt CHitTestResult** ppHitTestResult
+    )
 {
     HRESULT hr = S_OK;
     SizeF FinalSize = GetFinalSize();
@@ -179,23 +210,38 @@ Cleanup:
     return hr;
 }
 
+__out const CFontDescription*
+CRootUIElement::GetEffectiveFontDescription(
+    )
+{
+    return &m_FontDescription;
+}
+
 //
 // CRootUIElement
 //
 extern "C" UIFRAMEWORK_API
-TypeIndex::Value CRootUIElement_TypeIndex()
+TypeIndex::Value 
+CRootUIElement_TypeIndex(
+    )
 {
     return TypeIndex::RootUIElement;
 }
 
 extern "C" UIFRAMEWORK_API
-CFrameworkElement* CRootUIElement_CastTo_CFrameworkElement(CRootUIElement* pElement)
+__out CFrameworkElement* 
+CRootUIElement_CastTo_CFrameworkElement(
+    __in CRootUIElement* pElement
+    )
 {
     return pElement;
 }
 
 extern "C" UIFRAMEWORK_API
-CRootUIElement* CObjectWithType_CastTo_CRootUIElement(CObjectWithType* pObject)
+__out_opt CRootUIElement* 
+CObjectWithType_CastTo_CRootUIElement(
+    __in CObjectWithType* pObject
+    )
 {
     return (pObject->IsTypeOf(TypeIndex::RootUIElement)) ? (CRootUIElement*)pObject : NULL;
 }

@@ -85,7 +85,6 @@ HRESULT CTextBlock::GetTextLayout(CTextLayout** ppLayout)
     HRESULT hr = S_OK;
     CTextProvider* pTextProvider = NULL;
     CStringValue* pText = NULL;
-    CTextFormat* pTextFormat = NULL;
 
     IFCPTR(ppLayout);
 
@@ -97,21 +96,19 @@ HRESULT CTextBlock::GetTextLayout(CTextLayout** ppLayout)
 
         if(m_TextFormat == NULL)
         {
-            IFC(pTextProvider->GetDefaultFormat(&pTextFormat));
-        }
-        else
-        {
-            pTextFormat = m_TextFormat;
-            AddRefObject(m_TextFormat);
+            const CFontDescription* pFontDescription = GetEffectiveFontDescription();
+
+            //TODO: Handle font description changes.
+            IFC(pTextProvider->CreateFormat(pFontDescription, GetProviders()->GetResourceProvider(), &m_TextFormat));
         }
 
         if(pText != NULL)
         {
-            IFC(pTextProvider->CreateTextLayout(pText->GetValue(), wcslen(pText->GetValue()), pTextFormat, GetDesiredSize(), &m_TextLayout));
+            IFC(pTextProvider->CreateTextLayout(pText->GetValue(), wcslen(pText->GetValue()), m_TextFormat, GetDesiredSize(), &m_TextLayout));
         }
         else
         {
-            IFC(pTextProvider->CreateTextLayout(NULL, 0, pTextFormat, GetDesiredSize(), &m_TextLayout));
+            IFC(pTextProvider->CreateTextLayout(NULL, 0, m_TextFormat, GetDesiredSize(), &m_TextLayout));
         }
 
         IFC(m_TextVisual->SetTextLayout(m_TextLayout));
@@ -122,7 +119,6 @@ HRESULT CTextBlock::GetTextLayout(CTextLayout** ppLayout)
 
 Cleanup:
     ReleaseObject(pText);
-    ReleaseObject(pTextFormat);
     ReleaseObject(pTextProvider);
 
     return hr;

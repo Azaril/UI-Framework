@@ -10,7 +10,6 @@
 CFreetypeTextProvider::CFreetypeTextProvider(
     )
     : m_pLibrary(NULL)
-    , m_pDefaultFormat(NULL)
     , m_pTextureAllocator(NULL)
 {
 }
@@ -18,14 +17,11 @@ CFreetypeTextProvider::CFreetypeTextProvider(
 CFreetypeTextProvider::~CFreetypeTextProvider(
     )
 {
-    ReleaseObject(m_pDefaultFormat);
-
     if (m_pLibrary != NULL)
     {
         FT_Done_FreeType(m_pLibrary);
     }
 }
-
 
 __checkReturn HRESULT
 CFreetypeTextProvider::Initialize( 
@@ -38,17 +34,14 @@ CFreetypeTextProvider::Initialize(
 
     IFCEXPECT(FT_Init_FreeType(&m_pLibrary) == 0);
 
-    IFC(CreateFormat(L"Arial", 20, L"en-us", &m_pDefaultFormat));
-
 Cleanup:
     return hr;
 }
 
 __override __checkReturn HRESULT 
 CFreetypeTextProvider::CreateFormat(
-    __in_z const WCHAR* pFontName,
-    FLOAT FontSize, 
-    __in_z const WCHAR* pLocaleName,
+    __in const CFontDescription* pFontDescription,
+    __in IResourceProvider* pResourceProvider,
     __deref_out CTextFormat** ppTextFormat 
     )
 {
@@ -59,19 +52,10 @@ CFreetypeTextProvider::CreateFormat(
     CFreetypeFontFace* pFreetypeFontFace = NULL;
     CFreetypeTextFormat* pFreetypeTextFormat = NULL;
     FT_Stream pFTStream = NULL;
+    
+    //TODO: Cache lookup before loading from file.
 
-    //HACK: Remove this and load from stream provided.
-    {
-        FILE* pFile = fopen("c:\\temp\\segoeui.ttf", "rb");
-        CFileResourceStream* pFileStream = NULL;
-
-        IFC(CFileResourceStream::Create(pFile, &pFileStream));
-
-        pReadStream = pFileStream;
-        pFileStream = NULL;
-    }
-
-    AddRefObject(pReadStream);
+    IFC(pResourceProvider->ReadResource(pFontDescription->GetFontName(), wcslen(pFontDescription->GetFontName()), &pReadStream));
 
     IFC(pReadStream->GetSize(&streamSize));
 
@@ -104,7 +88,7 @@ CFreetypeTextProvider::CreateFormat(
     IFC(CFreetypeFontFace::Create(pFontFace, &pFreetypeFontFace));
 
     //TODO: Cache text format as it will contain textures of glyphs.
-    IFC(CFreetypeTextFormat::Create(pFreetypeFontFace, FontSize, m_pTextureAllocator, &pFreetypeTextFormat));
+    IFC(CFreetypeTextFormat::Create(pFreetypeFontFace, pFontDescription->GetFontSize(), m_pTextureAllocator, &pFreetypeTextFormat));
 
     *ppTextFormat = pFreetypeTextFormat;
     pFreetypeTextFormat = NULL;
@@ -117,18 +101,6 @@ Cleanup:
     ReleaseObject(pFreetypeTextFormat);
 
     FT_Done_Face(pFontFace);
-
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CFreetypeTextProvider::GetDefaultFormat( 
-    __deref_out CTextFormat** ppTextFormat 
-    )
-{
-    HRESULT hr = S_OK;
-
-    SetObject(*ppTextFormat, m_pDefaultFormat);
 
     return hr;
 }

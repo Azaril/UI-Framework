@@ -16,6 +16,7 @@
 #include "BasicTypes.h"
 #include "StaticPropertyInformation.h"
 #include "Animatable.h"
+#include "FontDescription.h"
 
 class CUIElement;
 class CNamescope;
@@ -316,6 +317,9 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         virtual HRESULT SetBinding( CProperty* pProperty, CBindingBase* pBinding );
 
         virtual HRESULT EnsureLoaded();
+
+        virtual __out_opt const CFontDescription* GetEffectiveFontDescription(
+            );
 
         //
         // Properties

@@ -19,13 +19,8 @@ class CFreetypeTextProvider : public CTextProvider
             );
 
         __override virtual __checkReturn HRESULT CreateFormat(
-            __in_z const WCHAR* pFontName,
-            FLOAT FontSize, 
-            __in_z const WCHAR* pLocaleName,
-            __deref_out CTextFormat** ppTextFormat 
-            );
-
-        __override virtual __checkReturn HRESULT GetDefaultFormat( 
+            __in const CFontDescription* pFontDescription,
+            __in IResourceProvider* pResourceProvider,
             __deref_out CTextFormat** ppTextFormat 
             );
 
@@ -60,7 +55,6 @@ class CFreetypeTextProvider : public CTextProvider
             );
 
         FT_Library m_pLibrary;
-        CTextFormat* m_pDefaultFormat;
         ITextureAllocator* m_pTextureAllocator;
 };
 
