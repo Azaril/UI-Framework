@@ -72,6 +72,10 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTargetBase
         __override virtual __checkReturn HRESULT BindTexture(
             __in ITexture* pTexture
             );
+    
+        __override virtual __checkReturn HRESULT BindMask(
+            __in ITexture* pTexture
+            );
 
 		GLuint m_RenderBuffer;
 		GLuint m_FrameBuffer;
@@ -83,6 +87,8 @@ class UIFRAMEWORK_API COpenGLES20RenderTarget : public CRenderTargetBase
         GLint m_PositionAttribute;
         GLint m_ColorAttribute;
         GLint m_TextureCoordsAttribute;
+        GLint m_MaskCoordsAttribute;
         GLint m_TransformUniform;
         GLint m_BrushTextureUniform;
+        GLint m_MaskTextureUniform;
 };

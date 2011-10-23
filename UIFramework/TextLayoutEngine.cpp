@@ -161,7 +161,7 @@ CTextLayoutEngine::EnsureLayout(
 
                     IFC(GetGlyphRun(glyph, &pGlyphRun));
 
-                    pGlyphRun->GlyphData.push_back(data);
+                    pGlyphRun->Glyphs.push_back(data);
                 }
 
                 currentPosition.x += pMetrics->Advance.x;

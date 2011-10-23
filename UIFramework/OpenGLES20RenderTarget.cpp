@@ -13,9 +13,11 @@ const char g_VertexShaderSource[] =
 "attribute vec2 position;\n"
 "attribute vec4 color;\n"
 "attribute vec2 textureCoords;\n"
+"attribute vec2 maskCoords;\n"
 "\n"
 "varying vec4 colorVarying;\n"
 "varying vec2 textureCoordsVarying;\n"
+"varying vec2 maskCoordsVarying;\n"
 "\n"
 "uniform mat4 transform;\n"
 "\n"
@@ -29,6 +31,7 @@ const char g_VertexShaderSource[] =
 "colorVarying = color;\n"
 "\n"
 "textureCoordsVarying = textureCoords;\n"
+"maskCoordsVarying = maskCoords;\n"
 "}\n"
 "\n";
 
@@ -37,12 +40,14 @@ const UINT32 g_VertexShaderSourceLength = ARRAYSIZE(g_VertexShaderSource);
 const char g_PixelShaderSource[] =
 "varying lowp vec4 colorVarying;\n"
 "varying lowp vec2 textureCoordsVarying;\n"
+"varying lowp vec2 maskCoordsVarying;\n"
 "\n"
 "uniform sampler2D brushTexture;\n"
+"uniform sampler2D maskTexture;\n"
 "\n"
 "void main()\n"
 "{\n"
-"gl_FragColor = colorVarying * texture2D(brushTexture, textureCoordsVarying);\n"
+"gl_FragColor = colorVarying * texture2D(brushTexture, textureCoordsVarying) * texture2D(maskTexture, maskCoordsVarying);\n"
 "}\n"
 "\r\n";
 
@@ -59,8 +64,10 @@ COpenGLES20RenderTarget::COpenGLES20RenderTarget(
     , m_PositionAttribute(-1)
     , m_ColorAttribute(-1)
     , m_TextureCoordsAttribute(-1)
+    , m_MaskCoordsAttribute(-1)
     , m_TransformUniform(-1)
     , m_BrushTextureUniform(-1)
+    , m_MaskTextureUniform(-1)
 {
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
     {
@@ -152,9 +159,11 @@ COpenGLES20RenderTarget::Initialize(
     m_PositionAttribute = glGetAttribLocation(m_ShaderProgram, "position");
     m_ColorAttribute = glGetAttribLocation(m_ShaderProgram, "color");
     m_TextureCoordsAttribute = glGetAttribLocation(m_ShaderProgram, "textureCoords");    
+    m_MaskCoordsAttribute = glGetAttribLocation(m_ShaderProgram, "maskCoords");
     
     m_TransformUniform = glGetUniformLocation(m_ShaderProgram, "transform");
     m_BrushTextureUniform = glGetUniformLocation(m_ShaderProgram, "brushTexture"); 
+    m_MaskTextureUniform = glGetUniformLocation(m_ShaderProgram, "maskTexture");
     
     IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &pTesselationSink));
     
@@ -465,6 +474,23 @@ COpenGLES20RenderTarget::BindTexture(
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, pOpenGLESTexture->GetTextureID());
     glUniform1i(m_BrushTextureUniform, 0);
+    
+    return hr;
+}
+
+__override __checkReturn HRESULT
+COpenGLES20RenderTarget::BindMask(
+    __in ITexture* pTexture
+    )
+{
+    HRESULT hr = S_OK;
+    COpenGLES20Texture* pOpenGLESTexture = NULL;
+    
+    pOpenGLESTexture = (COpenGLES20Texture*)pTexture;
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, pOpenGLESTexture->GetTextureID());
+    glUniform1i(m_MaskTextureUniform, 0);
     
     return hr;
 }

@@ -5,5 +5,5 @@
 
 struct GlyphRun
 {
-    list< GlyphData > GlyphData;
+    list< GlyphData > Glyphs;
 };

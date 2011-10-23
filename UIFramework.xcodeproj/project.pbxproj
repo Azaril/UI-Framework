@@ -365,6 +365,26 @@
 		3D07DEF0141D882F00130174 /* ShapeBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DEC8141D882F00130174 /* ShapeBuilder.h */; };
 		3D07DEF1141D882F00130174 /* ShapeData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D07DEC9141D882F00130174 /* ShapeData.cpp */; };
 		3D07DEF2141D882F00130174 /* ShapeData.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D07DECA141D882F00130174 /* ShapeData.h */; };
+		3D27E6911453AC3C00761CCE /* EditableTextLayoutBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E67D1453AC3C00761CCE /* EditableTextLayoutBase.cpp */; };
+		3D27E6921453AC3C00761CCE /* EditableTextLayoutBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E67E1453AC3C00761CCE /* EditableTextLayoutBase.h */; };
+		3D27E6931453AC3C00761CCE /* FontMetrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E67F1453AC3C00761CCE /* FontMetrics.cpp */; };
+		3D27E6941453AC3C00761CCE /* FontMetrics.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E6801453AC3C00761CCE /* FontMetrics.h */; };
+		3D27E6951453AC3C00761CCE /* GlyphData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E6811453AC3C00761CCE /* GlyphData.cpp */; };
+		3D27E6961453AC3C00761CCE /* GlyphData.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E6821453AC3C00761CCE /* GlyphData.h */; };
+		3D27E6971453AC3C00761CCE /* GlyphMetrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E6831453AC3C00761CCE /* GlyphMetrics.cpp */; };
+		3D27E6981453AC3C00761CCE /* GlyphMetrics.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E6841453AC3C00761CCE /* GlyphMetrics.h */; };
+		3D27E6991453AC3C00761CCE /* GlyphRun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E6851453AC3C00761CCE /* GlyphRun.cpp */; };
+		3D27E69A1453AC3C00761CCE /* GlyphRun.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E6861453AC3C00761CCE /* GlyphRun.h */; };
+		3D27E69B1453AC3C00761CCE /* Point2I.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E6871453AC3C00761CCE /* Point2I.cpp */; };
+		3D27E69C1453AC3C00761CCE /* Point2I.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E6881453AC3C00761CCE /* Point2I.h */; };
+		3D27E69D1453AC3C00761CCE /* TextLayoutBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E6891453AC3C00761CCE /* TextLayoutBase.cpp */; };
+		3D27E69E1453AC3C00761CCE /* TextLayoutBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E68A1453AC3C00761CCE /* TextLayoutBase.h */; };
+		3D27E69F1453AC3C00761CCE /* TextLayoutBaseCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E68B1453AC3C00761CCE /* TextLayoutBaseCommon.cpp */; };
+		3D27E6A01453AC3C00761CCE /* TextLayoutBaseCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E68C1453AC3C00761CCE /* TextLayoutBaseCommon.h */; };
+		3D27E6A11453AC3C00761CCE /* TextLayoutEngineMetrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E68D1453AC3C00761CCE /* TextLayoutEngineMetrics.cpp */; };
+		3D27E6A21453AC3C00761CCE /* TextLayoutEngineMetrics.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E68E1453AC3C00761CCE /* TextLayoutEngineMetrics.h */; };
+		3D27E6A31453AC3C00761CCE /* TypeOperators.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D27E68F1453AC3C00761CCE /* TypeOperators.cpp */; };
+		3D27E6A41453AC3C00761CCE /* TypeOperators.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D27E6901453AC3C00761CCE /* TypeOperators.h */; };
 		3D4071E61439834800C65589 /* TextureAtlasView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D4071E51439834800C65589 /* TextureAtlasView.h */; };
 		3D4071E9143983CF00C65589 /* TextureAtlasView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D4071E8143983CE00C65589 /* TextureAtlasView.cpp */; };
 		3D4071EB1439842B00C65589 /* TextureAtlasNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D4071EA1439842B00C65589 /* TextureAtlasNode.h */; };
@@ -392,8 +412,6 @@
 		3D51F800144B8C0D003BD760 /* FreetypeTextFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7EC144B8C0A003BD760 /* FreetypeTextFormat.h */; };
 		3D51F801144B8C0D003BD760 /* FreetypeTextLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7ED144B8C0A003BD760 /* FreetypeTextLayout.cpp */; };
 		3D51F802144B8C0D003BD760 /* FreetypeTextLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7EE144B8C0A003BD760 /* FreetypeTextLayout.h */; };
-		3D51F803144B8C0D003BD760 /* FreetypeTextLayoutMetics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7EF144B8C0A003BD760 /* FreetypeTextLayoutMetics.cpp */; };
-		3D51F804144B8C0D003BD760 /* FreetypeTextLayoutMetics.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7F0144B8C0B003BD760 /* FreetypeTextLayoutMetics.h */; };
 		3D51F805144B8C0D003BD760 /* FreetypeTextProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7F1144B8C0B003BD760 /* FreetypeTextProvider.cpp */; };
 		3D51F806144B8C0D003BD760 /* FreetypeTextProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D51F7F2144B8C0B003BD760 /* FreetypeTextProvider.h */; };
 		3D51F807144B8C0D003BD760 /* ReadStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7F3144B8C0B003BD760 /* ReadStream.cpp */; };
@@ -819,6 +837,26 @@
 		3D07DEC8141D882F00130174 /* ShapeBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeBuilder.h; sourceTree = "<group>"; };
 		3D07DEC9141D882F00130174 /* ShapeData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeData.cpp; sourceTree = "<group>"; };
 		3D07DECA141D882F00130174 /* ShapeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeData.h; sourceTree = "<group>"; };
+		3D27E67D1453AC3C00761CCE /* EditableTextLayoutBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditableTextLayoutBase.cpp; sourceTree = "<group>"; };
+		3D27E67E1453AC3C00761CCE /* EditableTextLayoutBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTextLayoutBase.h; sourceTree = "<group>"; };
+		3D27E67F1453AC3C00761CCE /* FontMetrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FontMetrics.cpp; sourceTree = "<group>"; };
+		3D27E6801453AC3C00761CCE /* FontMetrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontMetrics.h; sourceTree = "<group>"; };
+		3D27E6811453AC3C00761CCE /* GlyphData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlyphData.cpp; sourceTree = "<group>"; };
+		3D27E6821453AC3C00761CCE /* GlyphData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlyphData.h; sourceTree = "<group>"; };
+		3D27E6831453AC3C00761CCE /* GlyphMetrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlyphMetrics.cpp; sourceTree = "<group>"; };
+		3D27E6841453AC3C00761CCE /* GlyphMetrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlyphMetrics.h; sourceTree = "<group>"; };
+		3D27E6851453AC3C00761CCE /* GlyphRun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlyphRun.cpp; sourceTree = "<group>"; };
+		3D27E6861453AC3C00761CCE /* GlyphRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlyphRun.h; sourceTree = "<group>"; };
+		3D27E6871453AC3C00761CCE /* Point2I.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Point2I.cpp; sourceTree = "<group>"; };
+		3D27E6881453AC3C00761CCE /* Point2I.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Point2I.h; sourceTree = "<group>"; };
+		3D27E6891453AC3C00761CCE /* TextLayoutBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextLayoutBase.cpp; sourceTree = "<group>"; };
+		3D27E68A1453AC3C00761CCE /* TextLayoutBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextLayoutBase.h; sourceTree = "<group>"; };
+		3D27E68B1453AC3C00761CCE /* TextLayoutBaseCommon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextLayoutBaseCommon.cpp; sourceTree = "<group>"; };
+		3D27E68C1453AC3C00761CCE /* TextLayoutBaseCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextLayoutBaseCommon.h; sourceTree = "<group>"; };
+		3D27E68D1453AC3C00761CCE /* TextLayoutEngineMetrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextLayoutEngineMetrics.cpp; sourceTree = "<group>"; };
+		3D27E68E1453AC3C00761CCE /* TextLayoutEngineMetrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextLayoutEngineMetrics.h; sourceTree = "<group>"; };
+		3D27E68F1453AC3C00761CCE /* TypeOperators.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TypeOperators.cpp; sourceTree = "<group>"; };
+		3D27E6901453AC3C00761CCE /* TypeOperators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeOperators.h; sourceTree = "<group>"; };
 		3D4071E51439834800C65589 /* TextureAtlasView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasView.h; sourceTree = "<group>"; };
 		3D4071E8143983CE00C65589 /* TextureAtlasView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlasView.cpp; sourceTree = "<group>"; };
 		3D4071EA1439842B00C65589 /* TextureAtlasNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasNode.h; sourceTree = "<group>"; };
@@ -846,8 +884,6 @@
 		3D51F7EC144B8C0A003BD760 /* FreetypeTextFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeTextFormat.h; sourceTree = "<group>"; };
 		3D51F7ED144B8C0A003BD760 /* FreetypeTextLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreetypeTextLayout.cpp; sourceTree = "<group>"; };
 		3D51F7EE144B8C0A003BD760 /* FreetypeTextLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeTextLayout.h; sourceTree = "<group>"; };
-		3D51F7EF144B8C0A003BD760 /* FreetypeTextLayoutMetics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreetypeTextLayoutMetics.cpp; sourceTree = "<group>"; };
-		3D51F7F0144B8C0B003BD760 /* FreetypeTextLayoutMetics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeTextLayoutMetics.h; sourceTree = "<group>"; };
 		3D51F7F1144B8C0B003BD760 /* FreetypeTextProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreetypeTextProvider.cpp; sourceTree = "<group>"; };
 		3D51F7F2144B8C0B003BD760 /* FreetypeTextProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeTextProvider.h; sourceTree = "<group>"; };
 		3D51F7F3144B8C0B003BD760 /* ReadStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReadStream.cpp; sourceTree = "<group>"; };
@@ -952,14 +988,32 @@
 		3D06B5CD1419D4880097C7D9 /* UIFramework */ = {
 			isa = PBXGroup;
 			children = (
+				3D27E67D1453AC3C00761CCE /* EditableTextLayoutBase.cpp */,
+				3D27E67E1453AC3C00761CCE /* EditableTextLayoutBase.h */,
+				3D27E67F1453AC3C00761CCE /* FontMetrics.cpp */,
+				3D27E6801453AC3C00761CCE /* FontMetrics.h */,
+				3D27E6811453AC3C00761CCE /* GlyphData.cpp */,
+				3D27E6821453AC3C00761CCE /* GlyphData.h */,
+				3D27E6831453AC3C00761CCE /* GlyphMetrics.cpp */,
+				3D27E6841453AC3C00761CCE /* GlyphMetrics.h */,
+				3D27E6851453AC3C00761CCE /* GlyphRun.cpp */,
+				3D27E6861453AC3C00761CCE /* GlyphRun.h */,
+				3D27E6871453AC3C00761CCE /* Point2I.cpp */,
+				3D27E6881453AC3C00761CCE /* Point2I.h */,
+				3D27E6891453AC3C00761CCE /* TextLayoutBase.cpp */,
+				3D27E68A1453AC3C00761CCE /* TextLayoutBase.h */,
+				3D27E68B1453AC3C00761CCE /* TextLayoutBaseCommon.cpp */,
+				3D27E68C1453AC3C00761CCE /* TextLayoutBaseCommon.h */,
+				3D27E68D1453AC3C00761CCE /* TextLayoutEngineMetrics.cpp */,
+				3D27E68E1453AC3C00761CCE /* TextLayoutEngineMetrics.h */,
+				3D27E68F1453AC3C00761CCE /* TypeOperators.cpp */,
+				3D27E6901453AC3C00761CCE /* TypeOperators.h */,
 				3D51F7E9144B8C09003BD760 /* FreetypeFontFace.cpp */,
 				3D51F7EA144B8C09003BD760 /* FreetypeFontFace.h */,
 				3D51F7EB144B8C0A003BD760 /* FreetypeTextFormat.cpp */,
 				3D51F7EC144B8C0A003BD760 /* FreetypeTextFormat.h */,
 				3D51F7ED144B8C0A003BD760 /* FreetypeTextLayout.cpp */,
 				3D51F7EE144B8C0A003BD760 /* FreetypeTextLayout.h */,
-				3D51F7EF144B8C0A003BD760 /* FreetypeTextLayoutMetics.cpp */,
-				3D51F7F0144B8C0B003BD760 /* FreetypeTextLayoutMetics.h */,
 				3D51F7F1144B8C0B003BD760 /* FreetypeTextProvider.cpp */,
 				3D51F7F2144B8C0B003BD760 /* FreetypeTextProvider.h */,
 				3D51F7F3144B8C0B003BD760 /* ReadStream.cpp */,
@@ -1638,13 +1692,22 @@
 				3D51F7FE144B8C0D003BD760 /* FreetypeFontFace.h in Headers */,
 				3D51F800144B8C0D003BD760 /* FreetypeTextFormat.h in Headers */,
 				3D51F802144B8C0D003BD760 /* FreetypeTextLayout.h in Headers */,
-				3D51F804144B8C0D003BD760 /* FreetypeTextLayoutMetics.h in Headers */,
 				3D51F806144B8C0D003BD760 /* FreetypeTextProvider.h in Headers */,
 				3D51F808144B8C0D003BD760 /* ReadStream.h in Headers */,
 				3D51F80A144B8C0D003BD760 /* ResourceProvider.h in Headers */,
 				3D51F80C144B8C0D003BD760 /* StagingTextureCallback.h in Headers */,
 				3D51F80E144B8C0D003BD760 /* StagingTextureWrapper.h in Headers */,
 				3D51F810144B8C0D003BD760 /* TextLayoutEngine.h in Headers */,
+				3D27E6921453AC3C00761CCE /* EditableTextLayoutBase.h in Headers */,
+				3D27E6941453AC3C00761CCE /* FontMetrics.h in Headers */,
+				3D27E6961453AC3C00761CCE /* GlyphData.h in Headers */,
+				3D27E6981453AC3C00761CCE /* GlyphMetrics.h in Headers */,
+				3D27E69A1453AC3C00761CCE /* GlyphRun.h in Headers */,
+				3D27E69C1453AC3C00761CCE /* Point2I.h in Headers */,
+				3D27E69E1453AC3C00761CCE /* TextLayoutBase.h in Headers */,
+				3D27E6A01453AC3C00761CCE /* TextLayoutBaseCommon.h in Headers */,
+				3D27E6A21453AC3C00761CCE /* TextLayoutEngineMetrics.h in Headers */,
+				3D27E6A41453AC3C00761CCE /* TypeOperators.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1903,13 +1966,22 @@
 				3D51F7FD144B8C0D003BD760 /* FreetypeFontFace.cpp in Sources */,
 				3D51F7FF144B8C0D003BD760 /* FreetypeTextFormat.cpp in Sources */,
 				3D51F801144B8C0D003BD760 /* FreetypeTextLayout.cpp in Sources */,
-				3D51F803144B8C0D003BD760 /* FreetypeTextLayoutMetics.cpp in Sources */,
 				3D51F805144B8C0D003BD760 /* FreetypeTextProvider.cpp in Sources */,
 				3D51F807144B8C0D003BD760 /* ReadStream.cpp in Sources */,
 				3D51F809144B8C0D003BD760 /* ResourceProvider.cpp in Sources */,
 				3D51F80B144B8C0D003BD760 /* StagingTextureCallback.cpp in Sources */,
 				3D51F80D144B8C0D003BD760 /* StagingTextureWrapper.cpp in Sources */,
 				3D51F80F144B8C0D003BD760 /* TextLayoutEngine.cpp in Sources */,
+				3D27E6911453AC3C00761CCE /* EditableTextLayoutBase.cpp in Sources */,
+				3D27E6931453AC3C00761CCE /* FontMetrics.cpp in Sources */,
+				3D27E6951453AC3C00761CCE /* GlyphData.cpp in Sources */,
+				3D27E6971453AC3C00761CCE /* GlyphMetrics.cpp in Sources */,
+				3D27E6991453AC3C00761CCE /* GlyphRun.cpp in Sources */,
+				3D27E69B1453AC3C00761CCE /* Point2I.cpp in Sources */,
+				3D27E69D1453AC3C00761CCE /* TextLayoutBase.cpp in Sources */,
+				3D27E69F1453AC3C00761CCE /* TextLayoutBaseCommon.cpp in Sources */,
+				3D27E6A11453AC3C00761CCE /* TextLayoutEngineMetrics.cpp in Sources */,
+				3D27E6A31453AC3C00761CCE /* TypeOperators.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

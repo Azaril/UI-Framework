@@ -59,7 +59,7 @@ CFreetypeFontFace::SetFontSize(
     )
 {
     HRESULT hr = S_OK;
-    FLOAT realFontSize = std::fabsf(fontSize);
+    FLOAT realFontSize = fabsf(fontSize);
 
     if (m_CurrentFontSize != realFontSize)
     {

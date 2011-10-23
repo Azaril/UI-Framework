@@ -425,7 +425,7 @@ CRenderTargetBase::RenderGlyphRun(
     {
         SizeF textureSize((FLOAT)pTexture->GetWidth(), (FLOAT)pTexture->GetHeight());
 
-        for (list< GlyphData >::iterator it = pGlyphRun->GlyphData.begin(); it != pGlyphRun->GlyphData.end(); ++it)
+        for (list< GlyphData >::iterator it = pGlyphRun->Glyphs.begin(); it != pGlyphRun->Glyphs.end(); ++it)
         {
             RectF glyphRect = MakeRect(Point2F(it->Position.x, it->Position.y), textureSize);
 
