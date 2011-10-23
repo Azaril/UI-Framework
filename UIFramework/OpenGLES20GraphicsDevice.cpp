@@ -36,12 +36,6 @@ COpenGLES20GraphicsDevice::Initialize(
     {
         IFC(m_pContext->Apply());
     }
-
-    IFC(CreateTextProvider(&m_pTextProvider));
-
-    IFC(CreateImagingProvider(&m_pImagingProvider));
-
-    IFC(CreateGeometryProvider(&m_pGeometryProvider));
     
     {
         GLint maxTextureSize = 0;
@@ -49,7 +43,13 @@ COpenGLES20GraphicsDevice::Initialize(
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
         
         IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(maxTextureSize, maxTextureSize, this, &m_pTextureAtlasPool));
-    }    
+    }
+    
+    IFC(CreateTextProvider(&m_pTextProvider));
+    
+    IFC(CreateImagingProvider(&m_pImagingProvider));
+    
+    IFC(CreateGeometryProvider(&m_pGeometryProvider));    
     
 Cleanup:
     return hr;

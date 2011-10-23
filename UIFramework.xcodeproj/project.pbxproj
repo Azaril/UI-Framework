@@ -445,6 +445,8 @@
 		3D9B192314258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D9B192214258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp */; };
 		3D9B19251425904700EE37A3 /* StaticTesselator.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9B19241425904600EE37A3 /* StaticTesselator.h */; };
 		3D9B1927142591DC00EE37A3 /* StaticTesselator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D9B1926142591DC00EE37A3 /* StaticTesselator.cpp */; };
+		3D9BADEB1453F7A3003CE576 /* FontDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D9BADE91453F7A3003CE576 /* FontDescription.cpp */; };
+		3D9BADEC1453F7A3003CE576 /* FontDescription.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9BADEA1453F7A3003CE576 /* FontDescription.h */; };
 		3DA45C49144239BB00D1BFF5 /* CGImagingProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DA45C48144239BB00D1BFF5 /* CGImagingProvider.h */; };
 		3DA45C4C14423AB100D1BFF5 /* CGImagingProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DA45C4B14423AB100D1BFF5 /* CGImagingProvider.cpp */; };
 		3DA45C5314423C5C00D1BFF5 /* BitmapBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DA45C4D14423C5B00D1BFF5 /* BitmapBase.cpp */; };
@@ -934,6 +936,8 @@
 		3D9B192214258D2F00EE37A3 /* OpenGLES20VertexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20VertexBuffer.cpp; sourceTree = "<group>"; };
 		3D9B19241425904600EE37A3 /* StaticTesselator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticTesselator.h; sourceTree = "<group>"; };
 		3D9B1926142591DC00EE37A3 /* StaticTesselator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StaticTesselator.cpp; sourceTree = "<group>"; };
+		3D9BADE91453F7A3003CE576 /* FontDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FontDescription.cpp; sourceTree = "<group>"; };
+		3D9BADEA1453F7A3003CE576 /* FontDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontDescription.h; sourceTree = "<group>"; };
 		3DA45C48144239BB00D1BFF5 /* CGImagingProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGImagingProvider.h; sourceTree = "<group>"; };
 		3DA45C4B14423AB100D1BFF5 /* CGImagingProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGImagingProvider.cpp; sourceTree = "<group>"; };
 		3DA45C4D14423C5B00D1BFF5 /* BitmapBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BitmapBase.cpp; sourceTree = "<group>"; };
@@ -1007,6 +1011,8 @@
 		3D06B5CD1419D4880097C7D9 /* UIFramework */ = {
 			isa = PBXGroup;
 			children = (
+				3D9BADE91453F7A3003CE576 /* FontDescription.cpp */,
+				3D9BADEA1453F7A3003CE576 /* FontDescription.h */,
 				3D27E67D1453AC3C00761CCE /* EditableTextLayoutBase.cpp */,
 				3D27E67E1453AC3C00761CCE /* EditableTextLayoutBase.h */,
 				3D27E67F1453AC3C00761CCE /* FontMetrics.cpp */,
@@ -1735,6 +1741,7 @@
 				3D27E6A01453AC3C00761CCE /* TextLayoutBaseCommon.h in Headers */,
 				3D27E6A21453AC3C00761CCE /* TextLayoutEngineMetrics.h in Headers */,
 				3D27E6A41453AC3C00761CCE /* TypeOperators.h in Headers */,
+				3D9BADEC1453F7A3003CE576 /* FontDescription.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2026,6 +2033,7 @@
 				3D27E69F1453AC3C00761CCE /* TextLayoutBaseCommon.cpp in Sources */,
 				3D27E6A11453AC3C00761CCE /* TextLayoutEngineMetrics.cpp in Sources */,
 				3D27E6A31453AC3C00761CCE /* TypeOperators.cpp in Sources */,
+				3D9BADEB1453F7A3003CE576 /* FontDescription.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

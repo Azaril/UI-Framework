@@ -430,8 +430,6 @@ CRenderTargetBase::RenderGlyphRun(
             RectF glyphRect = MakeRect(Point2F(it->Position.x, it->Position.y), textureSize);
 
             IFC(m_pTesselationSink->AddRectangleWithUnitMask(glyphRect));
-
-            IFC(StaticTesselator::TesselateRectangle(glyphRect, m_pTesselationSink));
         }
     }
 

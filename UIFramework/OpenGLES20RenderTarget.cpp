@@ -9,6 +9,34 @@
 #include "TextureAtlasWithWhitePixel.h"
 #include <algorithm>
 
+#define REQUIRED_TEXTURE_UNITS 2
+
+#ifdef DEBUG
+
+#define GL_DEBUG_OUT(res) logging::DebugOut(L"%ls(%u): OpenGL Error 0x%X\n", __WFILE__, __LINE__, res);
+
+#define IFCGL() \
+do \
+{ \
+    GLenum glErrorCode = glGetError(); \
+    if (glErrorCode != GL_NO_ERROR) \
+    { \
+        do \
+        { \
+            GL_DEBUG_OUT(glErrorCode); \
+            glErrorCode = glGetError(); \
+        } \
+        while (glErrorCode != GL_NO_ERROR); \
+        goto Cleanup; \
+    } \
+} while(FALSE, FALSE) \
+
+#else
+
+#define IFCGL()
+
+#endif
+
 const char g_VertexShaderSource[] =
 "attribute vec2 position;\n"
 "attribute vec4 color;\n"
@@ -122,6 +150,14 @@ COpenGLES20RenderTarget::Initialize(
 	m_pContext = pContext;
 
 	IFC(ApplyContext());
+    
+    {
+        GLint textureUnits;
+        
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnits);
+        
+        IFCEXPECT(textureUnits >= REQUIRED_TEXTURE_UNITS);
+    }
 
 	glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBuffer);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &m_Width);
@@ -171,6 +207,8 @@ COpenGLES20RenderTarget::Initialize(
     
     IFC(CRenderTargetBase::Initialize(pTesselationSink, pTextureAtlasPool, (CTextureAtlasView*)pFirstTextureAtlas->GetWhitePixelTexture()));
     
+    IFCGL();
+    
 Cleanup:
     ReleaseObject(pTesselationSink);
     ReleaseObject(pTextureAtlasPool);
@@ -193,7 +231,7 @@ Cleanup:
     {
         glDeleteShader(fragmentShader);
     }
-
+    
     return hr;
 }
 
@@ -238,13 +276,15 @@ COpenGLES20RenderTarget::CreateShader(
 
     *pShader = shader;
     shader = 0;
+    
+    IFCGL();
 
 Cleanup:
     if (shader != 0)
     {
         glDeleteShader(shader);
     }
-    
+
 #ifdef DEBUG
     delete [] pLog;
 #endif    
@@ -284,6 +324,8 @@ COpenGLES20RenderTarget::LinkProgram(
 #endif        
     
     IFCEXPECT(linkStatus != GL_FALSE);
+    
+    IFCGL();
     
 Cleanup:
 #ifdef DEBUG
@@ -330,6 +372,8 @@ COpenGLES20RenderTarget::BeginRendering(
     FLOAT projectionMatrix[16] = { };
 
     IFC(CRenderTargetBase::BeginRendering());
+    
+    glUseProgram(m_ShaderProgram);    
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer);
     
@@ -376,6 +420,13 @@ COpenGLES20RenderTarget::BeginRendering(
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
+    //
+    // Disable culling
+    //
+    glDisable(GL_CULL_FACE);
+    
+    IFCGL();    
+    
 Cleanup:
     return hr;
 }
@@ -401,7 +452,10 @@ COpenGLES20RenderTarget::Clear(
 
     glClearColor(Color.r, Color.g, Color.b, Color.a);
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    IFCGL();
 
+Cleanup:
     return hr;
 }
 
@@ -434,8 +488,6 @@ COpenGLES20RenderTarget::OnTesselatedGeometryBatch(
     {
         IFC(pBuffer->Bind(GL_ARRAY_BUFFER));
         
-        glUseProgram(m_ShaderProgram);
-        
         if (m_PositionAttribute != -1)
         {
             glVertexAttribPointer(m_PositionAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_POSITION_OFFSET);
@@ -454,8 +506,16 @@ COpenGLES20RenderTarget::OnTesselatedGeometryBatch(
             glEnableVertexAttribArray(m_TextureCoordsAttribute);
         }
         
+        if (m_MaskCoordsAttribute != -1)
+        {
+            glVertexAttribPointer(m_MaskCoordsAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex), (const GLvoid*)RENDERVERTEX_MASKCOORDS_OFFSET);
+            glEnableVertexAttribArray(m_MaskCoordsAttribute);
+        }        
+        
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     }
+    
+    IFCGL();
     
 Cleanup:
     return hr;
@@ -472,9 +532,15 @@ COpenGLES20RenderTarget::BindTexture(
     pOpenGLESTexture = (COpenGLES20Texture*)pTexture;
     
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, pOpenGLESTexture->GetTextureID());
-    glUniform1i(m_BrushTextureUniform, 0);
+    IFCGL();
     
+    glBindTexture(GL_TEXTURE_2D, pOpenGLESTexture->GetTextureID());
+    IFCGL();
+    
+    glUniform1i(m_BrushTextureUniform, 0);
+    IFCGL();
+    
+Cleanup:
     return hr;
 }
 
@@ -489,8 +555,14 @@ COpenGLES20RenderTarget::BindMask(
     pOpenGLESTexture = (COpenGLES20Texture*)pTexture;
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, pOpenGLESTexture->GetTextureID());
-    glUniform1i(m_MaskTextureUniform, 0);
+    IFCGL();
     
+    glBindTexture(GL_TEXTURE_2D, pOpenGLESTexture->GetTextureID());
+    IFCGL();
+    
+    glUniform1i(m_MaskTextureUniform, 1);
+    IFCGL();
+    
+Cleanup:
     return hr;
 }

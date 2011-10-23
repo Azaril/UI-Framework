@@ -68,7 +68,11 @@ UIFrameworkBridge::Initialize(
     
     IFC(m_pGraphicsDevice->CreateRenderTarget(pAllocator, &m_pRenderTarget));
     
-    IFC(CUIHost::Create(m_pGraphicsDevice, m_pRenderTarget, m_pProviders, &m_pUIHost));
+    {
+        CFontDescription defaultFont(L"Opificio.ttf", 32, L"en-us");
+        
+        IFC(CUIHost::Create(m_pGraphicsDevice, m_pRenderTarget, m_pProviders, &defaultFont, &m_pUIHost));
+    }
     
 Cleanup:
     return SUCCEEDED(hr);

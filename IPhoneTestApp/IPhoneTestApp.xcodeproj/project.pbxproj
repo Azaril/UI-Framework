@@ -23,8 +23,9 @@
 		3D846F24141A114600AC9C7D /* libUIFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846F21141A0FBF00AC9C7D /* libUIFramework.a */; };
 		3D846F27141A133400AC9C7D /* UIFrameworkBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F26141A133400AC9C7D /* UIFrameworkBridge.cpp */; };
 		3D846F2B141A257900AC9C7D /* EAGLContextBridgeGLES20.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */; };
+		3D9BADE71453F6B3003CE576 /* Opificio.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D9BADE51453F6B3003CE576 /* Opificio.ttf */; };
+		3D9BADE81453F6B3003CE576 /* testimg.png in Resources */ = {isa = PBXBuildFile; fileRef = 3D9BADE61453F6B3003CE576 /* testimg.png */; };
 		3DCC871D1453C1D700026FD8 /* libFreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DCC871C1453C1D700026FD8 /* libFreetype.a */; };
-		3DDF9BC0144561580000001D /* testimg.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF9BBF144561580000001D /* testimg.png */; };
 		3DF3D0EC141C058600431CFF /* EAGLLayerStorageAllocator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3DF3D0EB141C058600431CFF /* EAGLLayerStorageAllocator.mm */; };
 		3DF3D100141C3D2E00431CFF /* libxml2.2.7.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DF3D0FF141C3D2D00431CFF /* libxml2.2.7.3.dylib */; };
 		3DF3D102141C3D7300431CFF /* libiconv.2.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DF3D101141C3D7300431CFF /* libiconv.2.4.0.dylib */; };
@@ -73,8 +74,9 @@
 		3D846F28141A22A500AC9C7D /* EAGLContextBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLContextBridge.h; sourceTree = "<group>"; };
 		3D846F29141A242100AC9C7D /* EAGLContextBridgeGLES20.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLContextBridgeGLES20.h; sourceTree = "<group>"; };
 		3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLContextBridgeGLES20.mm; sourceTree = "<group>"; };
-		3DCC871C1453C1D700026FD8 /* libFreetype.a */ = {isa = PBXFileReference; lastKnownFileType = file; name = libFreetype.a; path = "../UIFramework/External/freetype/build/Release-iphoneos/libFreetype.a"; sourceTree = "<group>"; };
-		3DDF9BBF144561580000001D /* testimg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testimg.png; sourceTree = "<group>"; };
+		3D9BADE51453F6B3003CE576 /* Opificio.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Opificio.ttf; path = ../../TestResources/Opificio.ttf; sourceTree = "<group>"; };
+		3D9BADE61453F6B3003CE576 /* testimg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = testimg.png; path = ../../TestResources/testimg.png; sourceTree = "<group>"; };
+		3DCC871C1453C1D700026FD8 /* libFreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFreetype.a; path = "../UIFramework/External/freetype/build/Release-iphoneos/libFreetype.a"; sourceTree = "<group>"; };
 		3DF3D0E8141C02E900431CFF /* EAGLLayerStorageAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLLayerStorageAllocator.h; sourceTree = "<group>"; };
 		3DF3D0EB141C058600431CFF /* EAGLLayerStorageAllocator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLLayerStorageAllocator.mm; sourceTree = "<group>"; };
 		3DF3D0FF141C3D2D00431CFF /* libxml2.2.7.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.7.3.dylib; path = usr/lib/libxml2.2.7.3.dylib; sourceTree = SDKROOT; };
@@ -161,7 +163,8 @@
 		3D846EF9141A0F7F00AC9C7D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				3DDF9BBF144561580000001D /* testimg.png */,
+				3D9BADE51453F6B3003CE576 /* Opificio.ttf */,
+				3D9BADE61453F6B3003CE576 /* testimg.png */,
 				3D846EFA141A0F7F00AC9C7D /* IPhoneTestApp-Info.plist */,
 				3D846EFB141A0F7F00AC9C7D /* InfoPlist.strings */,
 				3D846EFE141A0F7F00AC9C7D /* main.m */,
@@ -245,7 +248,8 @@
 				3D846EFD141A0F7F00AC9C7D /* InfoPlist.strings in Resources */,
 				3D846F06141A0F7F00AC9C7D /* MainWindow.xib in Resources */,
 				3D846F13141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib in Resources */,
-				3DDF9BC0144561580000001D /* testimg.png in Resources */,
+				3D9BADE71453F6B3003CE576 /* Opificio.ttf in Resources */,
+				3D9BADE81453F6B3003CE576 /* testimg.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
