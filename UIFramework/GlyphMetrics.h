@@ -4,7 +4,8 @@
 
 struct GlyphMetrics
 {
-    Point2U Offset;
+    Point2I HorizontalBearing;
+    Point2I VerticalBearing;
     Point2U Size;
     Point2U Advance;
 };

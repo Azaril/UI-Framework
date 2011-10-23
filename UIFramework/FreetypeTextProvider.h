@@ -38,6 +38,7 @@ class CFreetypeTextProvider : public CTextProvider
             );
 
         __override virtual __checkReturn HRESULT CreateEditableTextLayout(
+            __in CTextFormat* pTextFormat,
             const SizeF& Size, 
             __deref_out CEditableTextLayout** ppEditableTextLayout 
             );

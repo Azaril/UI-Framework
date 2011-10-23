@@ -7,11 +7,17 @@
 #include "RefCounted.h"
 #include "TextureAllocator.h"
 #include "GlyphMetrics.h"
+#include "FontMetrics.h"
 
 class CFreetypeFontFace : public CRefCountedObject
 {
     public:
         DECLARE_FACTORY1( CFreetypeFontFace, FT_Face );
+
+        __checkReturn HRESULT GetFontMetrics(
+            const FLOAT& fontSize,
+            __out FontMetrics* pFontMetrics
+            );
 
         __checkReturn HRESULT GetGlyphMetrics(
             const UINT32 glyph,

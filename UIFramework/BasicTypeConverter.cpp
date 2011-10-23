@@ -525,7 +525,7 @@ ConvertStringToRectF(
         {
             case RectFParseState::BeforeNumber:
                 {
-                    if(iswdigit(Token) || Token == L'.')
+                    if(iswdigit(Token) || Token == L'.' || Token == L'-')
                     {
                         ParseState = RectFParseState::InNumber;
                     }
@@ -561,6 +561,16 @@ ConvertStringToRectF(
 
                         ++pParsePoint;
                     }
+                    else if(Token == L'-')
+                    {
+                        IFCEXPECT(ValueBufferIndex == 0);
+
+                        IFCEXPECT(ValueBufferIndex < ARRAYSIZE(ValueBuffer));
+
+                        ValueBuffer[ValueBufferIndex++] = Token;
+
+                        ++pParsePoint;
+                    }
                     else if(Token == L'.')
                     {
                         IFCEXPECT(!GotSeperator);
@@ -587,7 +597,7 @@ ConvertStringToRectF(
 
             case RectFParseState::AfterNumber:
                 {
-                    if(iswdigit(Token) || Token == L'.')
+                    if(iswdigit(Token) || Token == L'.' || Token == L'-')
                     {
                         IFC(E_UNEXPECTED);
                     }

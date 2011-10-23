@@ -10,7 +10,7 @@
 class CDirectWriteEditableTextLayout : public CEditableTextLayout
 {
     public:
-        DECLARE_FACTORY2( CDirectWriteEditableTextLayout, CTextProvider*, const SizeF& );
+        DECLARE_FACTORY3( CDirectWriteEditableTextLayout, CTextProvider*, CTextFormat*, const SizeF& );
 
         __checkReturn HRESULT GetDirectWriteTextLayout(
 			__deref_out IDWriteTextLayout** ppLayout 
@@ -49,7 +49,9 @@ class CDirectWriteEditableTextLayout : public CEditableTextLayout
 			UINT32 Length 
 			);
 
-        __override virtual const WCHAR* GetText(
+        __override virtual __checkReturn HRESULT GetText(
+            __deref_out_ecount(*pTextLength) const WCHAR** ppText,
+            __out UINT32* pTextLength
 			);
 
     protected:
@@ -61,6 +63,7 @@ class CDirectWriteEditableTextLayout : public CEditableTextLayout
 
         __checkReturn HRESULT Initialize( 
 			__in CTextProvider* pTextProvider,
+            __in CTextFormat* pFormat,
 			const SizeF& MaxSize 
 			);
 

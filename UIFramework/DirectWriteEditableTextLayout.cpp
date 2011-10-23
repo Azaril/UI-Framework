@@ -22,6 +22,7 @@ CDirectWriteEditableTextLayout::~CDirectWriteEditableTextLayout(
 __checkReturn HRESULT 
 CDirectWriteEditableTextLayout::Initialize(
 	__in CTextProvider* pTextProvider, 
+    __in CTextFormat* pFormat,
 	const SizeF &Size
 	)
 {
@@ -29,8 +30,8 @@ CDirectWriteEditableTextLayout::Initialize(
 
     IFCPTR(pTextProvider);
 
-    m_TextProvider = pTextProvider;
-    AddRefObject(m_TextProvider);
+    SetObject(m_TextFormat, pFormat);
+    SetObject(m_TextProvider, pTextProvider);
 
     IFC(SetMaxSize(Size));
 
@@ -146,16 +147,6 @@ CDirectWriteEditableTextLayout::EnsureLayout(
     HRESULT hr = S_OK;
     CTextFormat* pTextFormat = NULL;
 
-    if(m_TextFormat)
-    {
-        pTextFormat = m_TextFormat;
-        AddRefObject(pTextFormat);
-    }
-    else
-    {
-        IFC(m_TextProvider->GetDefaultFormat(&pTextFormat));
-    }
-
     if(m_TextLayout == NULL)
     {
         IFC(m_TextProvider->CreateTextLayout(m_Text.c_str(), m_Text.length(), pTextFormat, m_MaxSize, &m_TextLayout));
@@ -223,9 +214,16 @@ Cleanup:
     return hr;
 }
 
-__override __out const WCHAR* 
+__override __checkReturn HRESULT
 CDirectWriteEditableTextLayout::GetText(
+    __deref_out_ecount(*pTextLength) const WCHAR** ppText,
+    __out UINT32* pTextLength
 	)
 {
-    return m_Text.c_str();
+    HRESULT hr = S_OK;
+
+    *ppText = m_Text.c_str();
+    *pTextLength = m_Text.length();
+
+    return hr;
 }

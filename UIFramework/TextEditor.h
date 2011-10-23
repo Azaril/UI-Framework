@@ -21,7 +21,9 @@ class CTextEditor : public CRefCountedObject
 			UINT32 TextLength 
 			);
 
-        __out_opt const WCHAR* GetText(
+        __checkReturn HRESULT GetText(
+            __deref_out_ecount(*pTextLength) const WCHAR** ppText,
+            __out UINT32* pTextLength
 			);
 
         void SetAcceptsEnter( 

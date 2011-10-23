@@ -3,8 +3,8 @@
 CTextLayoutEngine::CTextLayoutEngine(
     )
     : m_pCallback(NULL)
-    , m_pText(NULL)
-    , m_TextLength(0)
+    , m_LayoutDirty(TRUE)
+    , m_pLayoutMetrics(NULL)
 {
 }
 
@@ -13,13 +13,11 @@ CTextLayoutEngine::~CTextLayoutEngine(
 {
     ClearGlyphRuns();
 
-    delete [] m_pText;
+    ReleaseObject(m_pLayoutMetrics);
 }
 
 __checkReturn HRESULT
 CTextLayoutEngine::Initialize(
-    __in_ecount(characterCount) const WCHAR* pText,
-    UINT32 characterCount,
     __in ITextLayoutCallback* pCallback
     )
 {
@@ -27,59 +25,155 @@ CTextLayoutEngine::Initialize(
 
     m_pCallback = pCallback;
 
-    m_TextLength = characterCount;
+    return hr;
+}
 
-    m_pText = new WCHAR[m_TextLength];
-    IFCOOM(m_pText);
+__checkReturn HRESULT
+CTextLayoutEngine::SetText(
+    __in_ecount_opt(TextLength) const WCHAR* pText, 
+    UINT32 TextLength
+    )
+{
+    HRESULT hr = S_OK;
 
-    memcpy(m_pText, pText, m_TextLength * sizeof(WCHAR));
+    //TODO: Make this more efficient.
+    ClearGlyphRuns();
+
+    m_Text.assign(pText, TextLength);
+
+    IFC(InvalidateLayout());
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CTextLayoutEngine::InsertText(
+    UINT32 Position, 
+    __in_ecount(TextLength) const WCHAR* pText,
+    UINT32 TextLength
+    )
+{
+    HRESULT hr = S_OK;
+
+    m_Text.insert(Position, pText, TextLength);
+
+    IFC(InvalidateLayout());
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CTextLayoutEngine::RemoveText( 
+    UINT32 Position, 
+    UINT32 Length 
+    )
+{
+    HRESULT hr = S_OK;
+
+    m_Text.erase(Position, Length);
+
+    IFC(InvalidateLayout());
 
 Cleanup:
     return hr;
 }
 
 __checkReturn HRESULT
-CTextLayoutEngine::Layout(
-    const SizeF& maxSize
+CTextLayoutEngine::GetText(
+    __deref_out_ecount(*pTextLength) const WCHAR** ppText,
+    __out UINT32* pTextLength    
     )
 {
     HRESULT hr = S_OK;
-    Point2U currentPosition;
+
+    *ppText = m_Text.c_str();
+    *pTextLength = m_Text.length();
+
+    return hr;
+}
+
+__checkReturn HRESULT
+CTextLayoutEngine::InvalidateLayout(
+    )
+{
+    HRESULT hr = S_OK;
+
+    m_LayoutDirty = TRUE;
+
+    return hr;
+}
+
+__checkReturn HRESULT
+CTextLayoutEngine::EnsureLayout(
+    )
+{
+    HRESULT hr = S_OK;
+    Point2I currentPosition;
+    Point2I linePosition;
     RectU bounds;
+    const FontMetrics* pFontMetrics = NULL;
 
-    ClearGlyphRuns();
-
-    for (UINT32 i = 0; i < m_TextLength; ++i)
+    if (m_LayoutDirty)
     {
-        const GlyphMetrics* pMetrics = NULL;
+        ClearGlyphRuns();
 
-        IFC(m_pCallback->GetGlyphMetrics(m_pText[i], &pMetrics));
+        IFC(m_pCallback->GetFontMetrics(&pFontMetrics));
 
+        linePosition.y += pFontMetrics->Asecender;
+        currentPosition = linePosition;
+
+        bounds.bottom += pFontMetrics->Height >> 6;
+
+        for (UINT32 i = 0; i < m_Text.length(); ++i)
         {
-            GlyphData data;
+            const GlyphMetrics* pMetrics = NULL;
+            const UINT32 glyph = m_Text[i];
 
-            Point2U renderPosition = currentPosition + pMetrics->Offset;
-            Point2U bottomRight = currentPosition + pMetrics->Offset + pMetrics->Size;
+            if (m_Text[i] == L'\n')
+            {
+                linePosition.y += pFontMetrics->Height;
 
-            bounds.right = std::max(bottomRight.x, bounds.right);
-            bounds.bottom = std::max(bottomRight.y, bounds.bottom);
+                currentPosition = linePosition;
+            }
+            else
+            {
+                IFC(m_pCallback->GetGlyphMetrics(glyph, &pMetrics));
 
-            data.Position.x = renderPosition.x  / 64.0f;
-            data.Position.y = renderPosition.y  / 64.0f;
+                {
+                    GlyphData data;
 
-            GlyphRun* pGlyphRun = NULL;
+                    Point2I renderPosition = currentPosition;
 
-            IFC(GetGlyphRun(m_pText[i], &pGlyphRun));
+                    renderPosition.y -= pMetrics->HorizontalBearing.y;
+                    renderPosition.x += pMetrics->HorizontalBearing.x;
 
-            pGlyphRun->GlyphData.push_back(data);
+                    Point2I bottomRight = renderPosition + pMetrics->Size;
+
+                    bounds.right = std::max((UINT32)bottomRight.x, bounds.right);
+                    bounds.bottom = std::max((UINT32)bottomRight.y, bounds.bottom);
+
+                    data.Position.x = renderPosition.x / 64.0f;
+                    data.Position.y = renderPosition.y / 64.0f;
+
+                    GlyphRun* pGlyphRun = NULL;
+
+                    IFC(GetGlyphRun(glyph, &pGlyphRun));
+
+                    pGlyphRun->GlyphData.push_back(data);
+                }
+
+                currentPosition.x += pMetrics->Advance.x;
+            }
         }
 
-        currentPosition.x += pMetrics->Advance.x;
-        //TODO: Enable vertical layout.
-        //currentPosition.x += pMetrics->Advance.y;
-    }
+        ReleaseObject(m_pLayoutMetrics);
 
-    IFC(m_pCallback->SetBounds(RectF(bounds.left / 64.0f, bounds.top / 64.0f, bounds.right / 64.0f, bounds.bottom / 64.0f)));
+        IFC(CTextLayoutEngineMetrics::Create(RectF(bounds.left / 64.0f, bounds.top / 64.0f, bounds.right / 64.0f, bounds.bottom / 64.0f), &m_pLayoutMetrics));
+
+        m_LayoutDirty = FALSE;
+    }
 
 Cleanup:
     return hr;
@@ -115,6 +209,39 @@ Cleanup:
     return hr;
 }
 
+__checkReturn HRESULT
+CTextLayoutEngine::SetMaxSize(
+    const SizeF& size
+    )
+{
+    HRESULT hr = S_OK;
+
+    if (m_LayoutSize != size)
+    {
+        m_LayoutSize = size;
+
+        IFC(InvalidateLayout());
+    }
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT
+CTextLayoutEngine::GetMetrics( 
+    __deref_out CTextLayoutMetrics** ppMetrics
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(EnsureLayout());
+
+    SetObject(*ppMetrics, m_pLayoutMetrics);
+
+Cleanup:
+    return hr;
+}
+
 void
 CTextLayoutEngine::ClearGlyphRuns(
     )
@@ -134,6 +261,8 @@ CTextLayoutEngine::Render(
     )
 {
     HRESULT hr = S_OK;
+
+    IFC(EnsureLayout());
 
     for (map< UINT32, GlyphRun* >::iterator it = m_GlyphRuns.begin(); it != m_GlyphRuns.end(); ++it)
     {

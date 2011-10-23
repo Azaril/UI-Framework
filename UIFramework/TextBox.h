@@ -49,6 +49,7 @@ class CTextBox : public CControl
         HRESULT OnAcceptsReturnChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
         CEditableTextLayout* m_TextLayout;
+        CTextFormat* m_TextFormat;
         CTextEditor* m_TextEditor;
         CTextHost* m_TextHost;
         CContentPresenter* m_TextHostControl;

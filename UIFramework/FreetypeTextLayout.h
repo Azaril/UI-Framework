@@ -5,11 +5,11 @@
 #include "TextLayout.h"
 #include "TextLayoutBase.h"
 #include "FreetypeTextFormat.h"
-#include "FreetypeTextLayoutMetics.h"
 #include "TextLayoutEngine.h"
 #include "TextureAllocator.h"
+#include "EditableTextLayoutBase.h"
 
-class CFreetypeTextLayout : public CTextLayoutBase,
+class CFreetypeTextLayout : public CEditableTextLayoutBase,
                             private ITextLayoutCallback,
                             private ITextLayoutEngineRenderCallback
 {
@@ -27,6 +27,36 @@ class CFreetypeTextLayout : public CTextLayoutBase,
         __override virtual __checkReturn HRESULT Render(
             __in ITextLayoutRenderCallback* pCallback,
             __in_opt void* pContext
+            );
+
+        __override virtual UINT32 GetStartPosition(
+            );
+
+        __override virtual UINT32 GetEndPosition(
+            );
+
+        __override virtual __checkReturn HRESULT SetText( 
+            __in_ecount_opt(TextLength) const WCHAR* pText, 
+            UINT32 TextLength 
+            );
+
+        __override virtual __checkReturn HRESULT ClearText(
+            );
+
+        __override virtual __checkReturn HRESULT InsertText(
+            UINT32 Position, 
+            __in_ecount(TextLength) const WCHAR* pText,
+            UINT32 TextLength
+            );
+
+        __override virtual __checkReturn HRESULT RemoveText( 
+            UINT32 Position, 
+            UINT32 Length 
+            );
+
+        __override virtual __checkReturn HRESULT GetText(
+            __deref_out_ecount(*pTextLength) const WCHAR** ppText,
+            __out UINT32* pTextLength
             );
 
     protected:
@@ -49,13 +79,13 @@ class CFreetypeTextLayout : public CTextLayoutBase,
         __checkReturn HRESULT EnsureLayout(
             );
 
+        __override virtual __checkReturn HRESULT GetFontMetrics(
+            __deref_out const FontMetrics** ppFontMetrics
+            );
+
         __override virtual __checkReturn HRESULT GetGlyphMetrics(
             UINT32 glyph,
             __deref_out const GlyphMetrics** ppGlyphMetrics
-            );
-
-        __override virtual __checkReturn HRESULT SetBounds(
-            const RectF& bounds
             );
 
         __override virtual __checkReturn HRESULT RenderGlyphRun(
@@ -67,7 +97,6 @@ class CFreetypeTextLayout : public CTextLayoutBase,
         CFreetypeTextFormat* m_pTextFormat;
         SizeF m_Size;
         BOOL m_LayoutValid;
-        CFreetypeTextLayoutMetics* m_pLayoutMetrics;
         CTextLayoutEngine* m_pLayoutEngine;
         RectF m_Bounds;
 };

@@ -5,6 +5,7 @@ CFreetypeTextFormat::CFreetypeTextFormat(
     : m_pFontFace(NULL)
     , m_fontSize(0)
     , m_pTextureAllocator(NULL)
+    , m_HaveFontMetrics(FALSE)
 {
 }
 
@@ -75,6 +76,26 @@ CFreetypeTextFormat::GetGlyphTexture(
 Cleanup:
     ReleaseObject(pNewTexture);
 
+    return hr;
+}
+
+__checkReturn HRESULT
+CFreetypeTextFormat::GetFontMetrics(
+    __deref_out const FontMetrics** ppFontMetrics
+    )
+{
+    HRESULT hr = S_OK;
+
+    if (!m_HaveFontMetrics)
+    {
+        IFC(m_pFontFace->GetFontMetrics(m_fontSize, &m_FontMetrics));
+
+        m_HaveFontMetrics = TRUE;
+    }
+
+    *ppFontMetrics = &m_FontMetrics;
+
+Cleanup:
     return hr;
 }
 

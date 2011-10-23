@@ -868,9 +868,6 @@
     <ClCompile Include="FreetypeTextLayout.cpp">
       <Filter>Framework\Text\Core</Filter>
     </ClCompile>
-    <ClCompile Include="FreetypeTextLayoutMetics.cpp">
-      <Filter>Framework\Text\Core</Filter>
-    </ClCompile>
     <ClCompile Include="TextLayoutEngine.cpp">
       <Filter>Framework\Text\Core\Layout</Filter>
     </ClCompile>
@@ -885,6 +882,24 @@
     </ClCompile>
     <ClCompile Include="TextLayoutBase.cpp">
       <Filter>Framework\Text\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="FontMetrics.cpp">
+      <Filter>Framework\Text\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2I.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeOperators.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLayoutBaseCommon.cpp">
+      <Filter>Framework\Text\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="EditableTextLayoutBase.cpp">
+      <Filter>Framework\Text\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLayoutEngineMetrics.cpp">
+      <Filter>Framework\Text\Core\Layout</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1638,9 +1653,6 @@
     <ClInclude Include="FreetypeTextLayout.h">
       <Filter>Framework\Text\Core</Filter>
     </ClInclude>
-    <ClInclude Include="FreetypeTextLayoutMetics.h">
-      <Filter>Framework\Text\Core</Filter>
-    </ClInclude>
     <ClInclude Include="TextLayoutEngine.h">
       <Filter>Framework\Text\Core\Layout</Filter>
     </ClInclude>
@@ -1655,6 +1667,24 @@
     </ClInclude>
     <ClInclude Include="GlyphRun.h">
       <Filter>Framework\Text\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="FontMetrics.h">
+      <Filter>Framework\Text\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2I.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeOperators.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="TextLayoutBaseCommon.h">
+      <Filter>Framework\Text\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="EditableTextLayoutBase.h">
+      <Filter>Framework\Text\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="TextLayoutEngineMetrics.h">
+      <Filter>Framework\Text\Core\Layout</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

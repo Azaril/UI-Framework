@@ -42,11 +42,13 @@ _wtof(
 #include "SizeU.h"
 #include "SizeF.h"
 #include "ColorF.h"
+#include "Point2I.h"
 #include "Point2U.h"
 #include "Point2F.h"
 #include "Matrix3X2F.h"
 #include "Gradient.h"
 #include "BezierSegment.h"
+#include "TypeOperators.h"
 
 #ifndef ARRAYSIZE
 #define ARRAYSIZE(a) (sizeof(a)/sizeof(a[0]))

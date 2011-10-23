@@ -24,12 +24,14 @@ CTextBox::CTextBox() : m_TextEditor(NULL),
                        m_TextLayout(NULL),
                        m_TextHostControl(NULL),
                        m_TextHost(NULL),
+                       m_TextFormat(NULL),
                        m_AcceptsReturn(this, &CTextBox::AcceptsReturnProperty)
 {
 }
 
 CTextBox::~CTextBox()
 {
+    ReleaseObject(m_TextFormat);
     ReleaseObject(m_TextEditor);
     ReleaseObject(m_TextLayout);
     ReleaseObject(m_TextHostControl);
@@ -52,16 +54,28 @@ HRESULT CTextBox::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
     CTextProvider* pTextProvider = NULL;
+    CTextFormat* pTextFormat = NULL;
     SizeF InitialSize;
 
     IFC(m_VisualContext.GetGraphicsDevice()->GetTextProvider(&pTextProvider));
 
-    IFC(pTextProvider->CreateEditableTextLayout(InitialSize, &m_TextLayout));
+    if(m_TextFormat == NULL)
+    {
+        IFC(pTextProvider->GetDefaultFormat(&pTextFormat));
+    }
+    else
+    {
+        //TODO: Add handler for text format changing etc.
+        SetObject(pTextFormat, m_TextFormat);
+    }
+
+    IFC(pTextProvider->CreateEditableTextLayout(pTextFormat, InitialSize, &m_TextLayout));
 
     IFC(CControl::OnAttach(Context));
 
 Cleanup:
     ReleaseObject(pTextProvider);
+    ReleaseObject(pTextFormat);
 
     return hr;
 }
@@ -249,7 +263,12 @@ HRESULT CTextBox::GetValueInternal(CProperty* pProperty, CObjectWithType** ppVal
 
     if(pProperty == &CTextBox::TextProperty)
     {
-        IFC(CStringValue::Create(m_TextEditor->GetText(), &pText));
+        const WCHAR* pContainedText = NULL;
+        UINT32 textLength = 0;
+
+        IFC(m_TextEditor->GetText(&pContainedText, &textLength));
+
+        IFC(CStringValue::Create(pContainedText, textLength, &pText));
         
         *ppValue = pText;
         pText = NULL;

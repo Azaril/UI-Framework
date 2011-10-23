@@ -111,9 +111,7 @@ HRESULT CTextBlock::GetTextLayout(CTextLayout** ppLayout)
         }
         else
         {
-            const WCHAR Empty[] = L"";
-
-            IFC(pTextProvider->CreateTextLayout(Empty, ARRAYSIZE(Empty), pTextFormat, GetDesiredSize(), &m_TextLayout));
+            IFC(pTextProvider->CreateTextLayout(NULL, 0, pTextFormat, GetDesiredSize(), &m_TextLayout));
         }
 
         IFC(m_TextVisual->SetTextLayout(m_TextLayout));

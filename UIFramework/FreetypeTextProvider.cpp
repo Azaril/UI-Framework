@@ -38,7 +38,7 @@ CFreetypeTextProvider::Initialize(
 
     IFCEXPECT(FT_Init_FreeType(&m_pLibrary) == 0);
 
-    IFC(CreateFormat(L"Arial", 12, L"en-us", &m_pDefaultFormat));
+    IFC(CreateFormat(L"Arial", 20, L"en-us", &m_pDefaultFormat));
 
 Cleanup:
     return hr;
@@ -161,11 +161,24 @@ Cleanup:
 
 __override __checkReturn HRESULT 
 CFreetypeTextProvider::CreateEditableTextLayout(
+    __in CTextFormat* pTextFormat, 
     const SizeF& Size, 
     __deref_out CEditableTextLayout** ppEditableTextLayout 
     )
 {
     HRESULT hr = S_OK;
+    CFreetypeTextFormat* pFreetypeTextFormat = NULL;
+    CFreetypeTextLayout* pFreetypeTextLayout = NULL;
+
+    pFreetypeTextFormat = (CFreetypeTextFormat*)pTextFormat;
+
+    IFC(CFreetypeTextLayout::Create(NULL, 0, pFreetypeTextFormat, Size, &pFreetypeTextLayout));
+
+    *ppEditableTextLayout = pFreetypeTextLayout;
+    pFreetypeTextLayout = NULL;
+
+Cleanup:
+    ReleaseObject(pFreetypeTextLayout);
 
     return hr;
 }

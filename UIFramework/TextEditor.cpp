@@ -67,7 +67,12 @@ CTextEditor::SetTextLayout(
 
     if(m_Layout)
     {
-        m_TextHolder.assign(m_Layout->GetText());
+        const WCHAR* pText = NULL;
+        UINT32 textLength = 0;
+
+        IFC(m_Layout->GetText(&pText, &textLength));
+
+        m_TextHolder.assign(pText, textLength);
 
         ReleaseObject(m_Layout);
     }
@@ -110,16 +115,26 @@ Cleanup:
     return hr;
 }
 
-__out_opt const WCHAR* 
+__checkReturn HRESULT
 CTextEditor::GetText(
+    __deref_out_ecount(*pTextLength) const WCHAR** ppText,
+    __out UINT32* pTextLength
 	)
 {
+    HRESULT hr = S_OK;
+
     if(m_Layout)
     {
-        return m_Layout->GetText();
+        IFC(m_Layout->GetText(ppText, pTextLength));
+    }
+    else
+    {
+        *ppText = NULL;
+        *pTextLength = 0;
     }
 
-    return NULL;
+Cleanup:
+    return hr;
 }
 
 void 

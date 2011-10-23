@@ -1,17 +1,17 @@
-#include "FreetypeTextLayoutMetics.h"
+#include "TextLayoutEngineMetrics.h"
 
-CFreetypeTextLayoutMetics::CFreetypeTextLayoutMetics(
+CTextLayoutEngineMetrics::CTextLayoutEngineMetrics(
     )
 {
 }
 
-CFreetypeTextLayoutMetics::~CFreetypeTextLayoutMetics(
+CTextLayoutEngineMetrics::~CTextLayoutEngineMetrics(
     )
 {
 }
 
 __checkReturn HRESULT
-CFreetypeTextLayoutMetics::Initialize(
+CTextLayoutEngineMetrics::Initialize(
     const RectF& bounds
     )
 {
@@ -23,7 +23,7 @@ CFreetypeTextLayoutMetics::Initialize(
 }
 
 __override __checkReturn HRESULT 
-CFreetypeTextLayoutMetics::GetBounds(
+CTextLayoutEngineMetrics::GetBounds(
     __out RectF* pBounds
     )
 {

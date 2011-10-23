@@ -4,7 +4,6 @@ CFreetypeTextLayout::CFreetypeTextLayout(
     )
     : m_pTextFormat(NULL)
     , m_LayoutValid(FALSE)
-    , m_pLayoutMetrics(NULL)
     , m_pLayoutEngine(NULL)
 {
 }
@@ -14,7 +13,6 @@ CFreetypeTextLayout::~CFreetypeTextLayout(
 {
     ReleaseObject(m_pLayoutEngine);
     ReleaseObject(m_pTextFormat);
-    ReleaseObject(m_pLayoutMetrics);
 }
 
 __checkReturn HRESULT 
@@ -29,7 +27,9 @@ CFreetypeTextLayout::Initialize(
 
     SetObject(m_pTextFormat, pTextFormat);
 
-    IFC(CTextLayoutEngine::Create(pText, characterCount, this, &m_pLayoutEngine));
+    IFC(CTextLayoutEngine::Create(this, &m_pLayoutEngine));
+
+    IFC(m_pLayoutEngine->SetText(pText, characterCount));
 
     IFC(SetMaxSize(size));
 
@@ -44,13 +44,9 @@ CFreetypeTextLayout::SetMaxSize(
 {
     HRESULT hr = S_OK;
 
-    if (m_Size != Size)
-    {
-        m_Size = Size;
+    IFC(m_pLayoutEngine->SetMaxSize(Size));
 
-        InvalidateLayout();
-    }
-
+Cleanup:
     return hr;
 }
 
@@ -61,36 +57,20 @@ CFreetypeTextLayout::GetMetrics(
 {
     HRESULT hr = S_OK;
 
-    IFC(EnsureLayout());
-
-    SetObject(*ppMetrics, m_pLayoutMetrics);
+    IFC(m_pLayoutEngine->GetMetrics(ppMetrics));
 
 Cleanup:
     return hr;
 }
 
-__checkReturn HRESULT
-CFreetypeTextLayout::InvalidateLayout(
+__override __checkReturn HRESULT 
+CFreetypeTextLayout::GetFontMetrics(
+    __deref_out const FontMetrics** ppFontMetrics
     )
 {
     HRESULT hr = S_OK;
 
-    m_LayoutValid = FALSE;
-
-    ReleaseObject(m_pLayoutMetrics);
-
-    return hr;
-}
-
-__checkReturn HRESULT
-CFreetypeTextLayout::EnsureLayout(
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFC(m_pLayoutEngine->Layout(m_Size));
-
-    IFC(CFreetypeTextLayoutMetics::Create(m_Bounds, &m_pLayoutMetrics));
+    IFC(m_pTextFormat->GetFontMetrics(ppFontMetrics));
 
 Cleanup:
     return hr;
@@ -107,18 +87,6 @@ CFreetypeTextLayout::GetGlyphMetrics(
     IFC(m_pTextFormat->GetGlyphMetics(glyph, ppGlyphMetrics));
 
 Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CFreetypeTextLayout::SetBounds(
-    const RectF& bounds
-    )
-{
-    HRESULT hr = S_OK;
-
-    m_Bounds = bounds;
-
     return hr;
 }
 
@@ -168,5 +136,92 @@ CFreetypeTextLayout::RenderGlyphRun(
 Cleanup:
     ReleaseObject(pGlyphTexture);
 
+    return hr;
+}
+
+__override UINT32
+CFreetypeTextLayout::GetStartPosition(
+    )
+{
+    HRESULT hr = S_OK;
+
+    return hr;
+}
+
+__override UINT32 
+CFreetypeTextLayout::GetEndPosition(
+    )
+{
+    HRESULT hr = S_OK;
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CFreetypeTextLayout::SetText( 
+    __in_ecount_opt(TextLength) const WCHAR* pText, 
+    UINT32 TextLength 
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_pLayoutEngine->SetText(pText, TextLength));
+
+Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT
+CFreetypeTextLayout::ClearText(
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_pLayoutEngine->SetText(NULL, 0));
+
+Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CFreetypeTextLayout::InsertText(
+    UINT32 Position, 
+    __in_ecount(TextLength) const WCHAR* pText,
+    UINT32 TextLength
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_pLayoutEngine->InsertText(Position, pText, TextLength));
+
+Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT
+CFreetypeTextLayout::RemoveText( 
+    UINT32 Position, 
+    UINT32 Length 
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_pLayoutEngine->RemoveText(Position, Length));
+
+Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT
+CFreetypeTextLayout::GetText(
+    __deref_out_ecount(*pTextLength) const WCHAR** ppText,
+    __out UINT32* pTextLength
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_pLayoutEngine->GetText(ppText, pTextLength));
+
+Cleanup:
     return hr;
 }

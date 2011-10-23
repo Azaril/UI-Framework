@@ -62,7 +62,7 @@ __checkReturn HRESULT TesselateRectangleStroke(
     Point2F InnerTopLeft = Point2F(rect.left + halfStrokeWidth, rect.top + halfStrokeWidth);
     Point2F InnerTopRight = Point2F(rect.right - halfStrokeWidth, rect.top + halfStrokeWidth);
     Point2F InnerBottomLeft = Point2F(rect.left + halfStrokeWidth, rect.bottom - halfStrokeWidth);
-    Point2F InnerBottomRight = Point2F(rect.right - halfStrokeWidth , rect.bottom - halfStrokeWidth);            
+    Point2F InnerBottomRight = Point2F(rect.right - halfStrokeWidth , rect.bottom - halfStrokeWidth);   
     
     //
     // Top trapezoid.

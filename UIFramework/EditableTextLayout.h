@@ -32,5 +32,8 @@ class CEditableTextLayout : public CTextLayout
 			UINT32 Length 
 			) = 0;
 
-        virtual __out const WCHAR* GetText() = 0;
+        virtual __checkReturn HRESULT GetText(
+            __deref_out_ecount(*pTextLength) const WCHAR** ppText,
+            __out UINT32* pTextLength
+            ) = 0;
 };

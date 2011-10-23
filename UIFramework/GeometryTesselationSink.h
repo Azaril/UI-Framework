@@ -21,7 +21,11 @@ class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink 
 	        const Point2F& point1,
 	        const Point2F& point2,
 	        const Point2F& point3
-	        );    	  
+	        );    	
+
+        __override virtual __checkReturn HRESULT AddRectangleWithUnitMask(
+            const RectF& rect
+            );    	
     
         __checkReturn HRESULT Flush(
             );
@@ -63,6 +67,15 @@ class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink 
     
         size_t GetUsedVertexBufferCount(
             );    
+
+        inline void AddTrianglePointInternal(
+            const Point2F& point
+            );
+
+        inline void AddTrianglePointWithMaskInternal(
+            const Point2F& point,
+            const Point2F& mask
+            );
 
     	ITesselationBatchCallback* m_pCallback;
         IVertexBuffer** m_ppVertexBuffers;

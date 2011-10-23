@@ -132,16 +132,20 @@ Cleanup:
 
 __override __checkReturn HRESULT 
 CDirectWriteTextProvider::CreateEditableTextLayout(
+    __in CTextFormat* pTextFormat, 
 	const SizeF& Size, 
 	__deref_out CEditableTextLayout** ppEditableTextLayout
 	)
 {
     HRESULT hr = S_OK;
+    CDirectWriteTextFormat* pDirectWriteTextFormat = NULL;
     CDirectWriteEditableTextLayout* pDirectWriteEditableTextLayout = NULL;
 
     IFCPTR(ppEditableTextLayout);
 
-    IFC(CDirectWriteEditableTextLayout::Create(this, Size, &pDirectWriteEditableTextLayout));
+    pDirectWriteTextFormat = (CDirectWriteTextFormat*)pTextFormat;
+
+    IFC(CDirectWriteEditableTextLayout::Create(this, pDirectWriteTextFormat, Size, &pDirectWriteEditableTextLayout));
 
     *ppEditableTextLayout = pDirectWriteEditableTextLayout;
     pDirectWriteEditableTextLayout = NULL;

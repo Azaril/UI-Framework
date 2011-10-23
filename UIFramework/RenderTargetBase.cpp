@@ -9,6 +9,7 @@
 #include "BitmapBase.h"
 #include "BitmapBrushBase.h"
 #include "TextLayoutBase.h"
+#include "EditableTextLayoutBase.h"
 #include <algorithm>
 
 CRenderTargetBase::CRenderTargetBase(
@@ -375,14 +376,32 @@ CRenderTargetBase::RenderTextLayout(
 	)
 {
     HRESULT hr = S_OK;
-    CTextLayoutBase* pBaseLayout = NULL;
+    CTextLayoutBaseCommon* pBaseLayout = NULL;
     const CGraphicsBrushBase* pGraphicsBrush = NULL;
 
     pGraphicsBrush = (const CGraphicsBrushBase*)pBrush;
 
     IFC(ApplyBrush(pGraphicsBrush));
 
-    pBaseLayout = (CTextLayoutBase*)pTextLayout;
+    switch(pTextLayout->GetType())
+    {
+        case TypeIndex::EditableTextLayout:
+            {
+                pBaseLayout = (CEditableTextLayoutBase*)pTextLayout;
+                break;
+            }
+
+        case TypeIndex::TextLayout:
+            {
+                pBaseLayout = (CTextLayoutBase*)pTextLayout;
+                break;
+            }
+
+        default:
+            {
+                IFC(E_UNEXPECTED);
+            }
+    }
 
     m_pTesselationSink->SetTransform(m_Transform);
 
@@ -405,13 +424,14 @@ CRenderTargetBase::RenderGlyphRun(
 
     {
         SizeF textureSize((FLOAT)pTexture->GetWidth(), (FLOAT)pTexture->GetHeight());
-        RectF unitRect(0.0f, 0.0f, 1.0f, 1.0f);
 
         for (list< GlyphData >::iterator it = pGlyphRun->GlyphData.begin(); it != pGlyphRun->GlyphData.end(); ++it)
         {
-            m_pTesselationSink->SetTransform(Matrix3X2F::Scale(textureSize.width, textureSize.height) * Matrix3X2F::Translation(it->Position.x, it->Position.y) * m_Transform);
+            RectF glyphRect = MakeRect(Point2F(it->Position.x, it->Position.y), textureSize);
 
-            IFC(StaticTesselator::TesselateRectangle(unitRect, m_pTesselationSink));
+            IFC(m_pTesselationSink->AddRectangleWithUnitMask(glyphRect));
+
+            IFC(StaticTesselator::TesselateRectangle(glyphRect, m_pTesselationSink));
         }
     }
 
@@ -736,7 +756,7 @@ CRenderTargetBase::ApplyBrush(
         }
     }
     
-        IFC(ApplyBrushToTesselationSink(textureToBrushTransform, pBrush));    
+    IFC(ApplyBrushToTesselationSink(textureToBrushTransform, pBrush));    
     
 Cleanup:
     return hr;

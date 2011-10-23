@@ -87,26 +87,72 @@ CGeometryTesselationSink::AddTriangle(
 		IFC(FlushVertexCache());
 	}
 
-	m_pCacheWriteOffset->Position = m_Transform.TransformPoint(point1);
+    AddTrianglePointInternal(point1);
+    AddTrianglePointInternal(point2);
+    AddTrianglePointInternal(point3);
+
+Cleanup:
+	return hr;
+}
+
+inline void
+CGeometryTesselationSink::AddTrianglePointInternal(
+    const Point2F& point
+    )
+{
+    m_pCacheWriteOffset->Position = m_Transform.TransformPoint(point);
     m_pCacheWriteOffset->Color = m_DiffuseColor;
-    m_pCacheWriteOffset->TextureCoordinates = m_NeedsBrushTransform ? m_BrushTransform.TransformPoint(point1) : Point2F(0.0f, 0.0f);
-    m_pCacheWriteOffset->MaskCoordinates = m_NeedsMaskTransform ? m_MaskTransform.TransformPoint(point1) : Point2F(0.0f, 0.0f);
+    m_pCacheWriteOffset->TextureCoordinates = m_NeedsBrushTransform ? m_BrushTransform.TransformPoint(point) : Point2F(0.0f, 0.0f);
+    m_pCacheWriteOffset->MaskCoordinates = m_NeedsMaskTransform ? m_MaskTransform.TransformPoint(point) : Point2F(0.0f, 0.0f);
 
-	++m_pCacheWriteOffset;
+    ++m_pCacheWriteOffset;
+}
 
-	m_pCacheWriteOffset->Position = m_Transform.TransformPoint(point2);
+inline void
+CGeometryTesselationSink::AddTrianglePointWithMaskInternal(
+    const Point2F& point,
+    const Point2F& mask
+    )
+{
+    m_pCacheWriteOffset->Position = m_Transform.TransformPoint(point);
     m_pCacheWriteOffset->Color = m_DiffuseColor;
-    m_pCacheWriteOffset->TextureCoordinates = m_NeedsBrushTransform ? m_BrushTransform.TransformPoint(point2) : Point2F(0.0f, 0.0f);
-    m_pCacheWriteOffset->MaskCoordinates = m_NeedsMaskTransform ? m_MaskTransform.TransformPoint(point2) : Point2F(0.0f, 0.0f);
+    m_pCacheWriteOffset->TextureCoordinates = m_NeedsBrushTransform ? m_BrushTransform.TransformPoint(point) : Point2F(0.0f, 0.0f);
+    m_pCacheWriteOffset->MaskCoordinates = m_NeedsMaskTransform ? m_MaskTransform.TransformPoint(mask) : Point2F(0.0f, 0.0f);
 
-	++m_pCacheWriteOffset;
+    ++m_pCacheWriteOffset;
+}
 
-	m_pCacheWriteOffset->Position = m_Transform.TransformPoint(point3);
-    m_pCacheWriteOffset->Color = m_DiffuseColor;
-    m_pCacheWriteOffset->TextureCoordinates = m_NeedsBrushTransform ? m_BrushTransform.TransformPoint(point3) : Point2F(0.0f, 0.0f);
-    m_pCacheWriteOffset->MaskCoordinates = m_NeedsMaskTransform ? m_MaskTransform.TransformPoint(point3) : Point2F(0.0f, 0.0f);
+__checkReturn HRESULT
+CGeometryTesselationSink::AddRectangleWithUnitMask(
+    const RectF& rect
+	)
+{
+	HRESULT hr = S_OK;
 
-	++m_pCacheWriteOffset;
+	if (GetAvailableVertexBufferCount() < 6)
+	{
+		IFC(FlushVertexCache());
+	}
+
+    {
+        Point2F TopLeft = Point2F(rect.left, rect.top);
+        Point2F TopRight = Point2F(rect.right, rect.top);
+        Point2F BottomLeft = Point2F(rect.left, rect.bottom);
+        Point2F BottomRight = Point2F(rect.right, rect.bottom);  
+
+        Point2F TopLeftMask = Point2F(0.0f, 0.0f);
+        Point2F TopRightMask = Point2F(1.0f, 0.0f);
+        Point2F BottomLeftMask = Point2F(0.0f, 1.0f);
+        Point2F BottomRightMask = Point2F(1.0f, 1.0f);
+
+        AddTrianglePointWithMaskInternal(TopLeft, TopLeftMask);
+        AddTrianglePointWithMaskInternal(TopRight, TopRightMask);
+        AddTrianglePointWithMaskInternal(BottomLeft, BottomLeftMask);
+
+        AddTrianglePointWithMaskInternal(BottomLeft, BottomLeftMask);
+        AddTrianglePointWithMaskInternal(TopRight, TopRightMask);
+        AddTrianglePointWithMaskInternal(BottomRight, BottomRightMask);
+    }
 
 Cleanup:
 	return hr;

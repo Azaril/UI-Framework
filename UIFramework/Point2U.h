@@ -35,7 +35,7 @@ operator==(
 }
 
 inline bool 
-    operator!=(
+operator!=(
     const Point2U& Val1,
     const Point2U& Val2 
     )
@@ -44,10 +44,19 @@ inline bool
 }
 
 inline Point2U 
-    operator+(
+operator+(
     const Point2U& Val1,
     const Point2U& Val2 
     )
 {
     return Point2U(Val1.x + Val2.x, Val1.y + Val2.y);
+}
+
+inline Point2U 
+operator-(
+    const Point2U& Val1,
+    const Point2U& Val2 
+    )
+{
+    return Point2U(Val1.x - Val2.x, Val1.y - Val2.y);
 }

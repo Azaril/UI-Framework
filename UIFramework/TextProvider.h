@@ -27,6 +27,7 @@ class CTextProvider : public CRefCountedObject
 			) = 0;
 
         virtual __checkReturn HRESULT CreateEditableTextLayout( 
+            __in CTextFormat* pTextFormat, 
 			const SizeF& Size, 
 			__deref_out CEditableTextLayout** ppEditableTextLayout 
 			) = 0;

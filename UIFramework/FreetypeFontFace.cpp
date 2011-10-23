@@ -73,6 +73,24 @@ Cleanup:
     return hr;
 }
 
+__checkReturn HRESULT
+CFreetypeFontFace::GetFontMetrics(
+    const FLOAT& fontSize,
+    __out FontMetrics* pFontMetrics
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(SetFontSize(fontSize));
+
+    pFontMetrics->Height = m_pFontFace->size->metrics.height;
+    pFontMetrics->Asecender = m_pFontFace->size->metrics.ascender;
+    pFontMetrics->Descender = m_pFontFace->size->metrics.descender;
+
+Cleanup:
+    return hr;
+}
+
 __checkReturn HRESULT 
 CFreetypeFontFace::GetGlyphMetrics(
     const UINT32 glyph,
@@ -88,14 +106,17 @@ CFreetypeFontFace::GetGlyphMetrics(
 
     pGlyphSlot = m_pFontFace->glyph;
 
-    pGlyphMetrics->Advance.x = pGlyphSlot->advance.x;
-    pGlyphMetrics->Advance.y = pGlyphSlot->advance.y;
+    pGlyphMetrics->Advance.x = pGlyphSlot->metrics.horiAdvance;
+    pGlyphMetrics->Advance.y = pGlyphSlot->metrics.vertAdvance;
     
-    pGlyphMetrics->Offset.x = pGlyphSlot->bitmap_left;
-    pGlyphMetrics->Offset.y = pGlyphSlot->bitmap_top;
+    pGlyphMetrics->HorizontalBearing.x = pGlyphSlot->metrics.horiBearingX;
+    pGlyphMetrics->HorizontalBearing.y = pGlyphSlot->metrics.horiBearingY;
 
-    pGlyphMetrics->Size.x = pGlyphSlot->bitmap.width;
-    pGlyphMetrics->Size.y = pGlyphSlot->bitmap.rows;
+    pGlyphMetrics->VerticalBearing.x = pGlyphSlot->metrics.vertBearingX;
+    pGlyphMetrics->VerticalBearing.y = pGlyphSlot->metrics.vertBearingY;
+
+    pGlyphMetrics->Size.x = pGlyphSlot->metrics.width;
+    pGlyphMetrics->Size.y = pGlyphSlot->metrics.height;
 
 Cleanup:
     return hr;

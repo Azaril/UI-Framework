@@ -4,16 +4,18 @@
 #include "RefCounted.h"
 #include "GlyphMetrics.h"
 #include "GlyphRun.h"
+#include "FontMetrics.h"
+#include "TextLayoutEngineMetrics.h"
 
 struct ITextLayoutCallback
 {
+    virtual __checkReturn HRESULT GetFontMetrics(
+        __deref_out const FontMetrics** ppFontMetrics
+        ) = 0;
+
     virtual __checkReturn HRESULT GetGlyphMetrics(
         UINT32 glyph,
         __deref_out const GlyphMetrics** ppGlyphMetrics
-        ) = 0;
-
-    virtual __checkReturn HRESULT SetBounds(
-        const RectF& bounds
         ) = 0;
 };
 
@@ -29,15 +31,40 @@ struct ITextLayoutEngineRenderCallback
 class CTextLayoutEngine : public CRefCountedObject
 {
     public:
-        DECLARE_FACTORY3( CTextLayoutEngine, const WCHAR*, UINT32, ITextLayoutCallback* );
+        DECLARE_FACTORY1( CTextLayoutEngine, ITextLayoutCallback* );
 
-        __checkReturn HRESULT Layout(
-            const SizeF& maxSize
+        __checkReturn HRESULT SetMaxSize(
+            const SizeF& size
+            );
+
+        __checkReturn HRESULT SetText(
+            __in_ecount_opt(TextLength) const WCHAR* pText, 
+            UINT32 TextLength
+            );
+
+        __checkReturn HRESULT GetText(
+            __deref_out_ecount(*pTextLength) const WCHAR** ppText,
+            __out UINT32* pTextLength
+            );
+
+        __checkReturn HRESULT InsertText(
+            UINT32 Position, 
+            __in_ecount(TextLength) const WCHAR* pText,
+            UINT32 TextLength
+            );
+
+        __checkReturn HRESULT RemoveText( 
+            UINT32 Position, 
+            UINT32 Length 
             );
 
         __checkReturn HRESULT Render(
             __in ITextLayoutEngineRenderCallback* pCallback,
             __in_opt void* pContext
+            );
+
+        __override virtual __checkReturn HRESULT GetMetrics(
+            __deref_out CTextLayoutMetrics** ppMetrics 
             );
 
     protected:
@@ -48,8 +75,6 @@ class CTextLayoutEngine : public CRefCountedObject
             );
 
         __checkReturn HRESULT Initialize(
-            __in_ecount(characterCount) const WCHAR* pText,
-            UINT32 characterCount,
             __in ITextLayoutCallback* pCallback
             );
 
@@ -62,9 +87,17 @@ class CTextLayoutEngine : public CRefCountedObject
         ClearGlyphRuns(
             );
 
+        __checkReturn HRESULT EnsureLayout(
+            );
+
+        __checkReturn HRESULT InvalidateLayout(
+            );
+
         ITextLayoutCallback* m_pCallback;
-        WCHAR* m_pText;
-        UINT32 m_TextLength;
+        std::wstring m_Text;
+        SizeF m_LayoutSize;
         map< UINT32, GlyphRun* > m_GlyphRuns;
+        BOOL m_LayoutDirty;
+        CTextLayoutEngineMetrics* m_pLayoutMetrics;
 };
 
