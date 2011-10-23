@@ -12,3 +12,10 @@ WindowsTestApp/ipch/*
 *.vcxproj.user
 *.sdf
 *.suo
+
+# Mac files
+.DS_Store
+
+# XCode files
+xcuserdata/
+project.xcworkspace/
