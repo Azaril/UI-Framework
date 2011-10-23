@@ -158,7 +158,6 @@ COpenGLES20GraphicsDevice::CreateTextProvider(
 	)
 {
     HRESULT hr = S_OK;
-    /*
     CFreetypeTextProvider* pFreetypeTextProvider = NULL;
 
     IFCPTR(ppTextProvider);
@@ -174,7 +173,6 @@ COpenGLES20GraphicsDevice::CreateTextProvider(
 
 Cleanup:
     ReleaseObject(pFreetypeTextProvider);
-     */
 
     return hr;
 }

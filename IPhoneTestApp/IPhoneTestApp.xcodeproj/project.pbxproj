@@ -23,6 +23,7 @@
 		3D846F24141A114600AC9C7D /* libUIFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846F21141A0FBF00AC9C7D /* libUIFramework.a */; };
 		3D846F27141A133400AC9C7D /* UIFrameworkBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F26141A133400AC9C7D /* UIFrameworkBridge.cpp */; };
 		3D846F2B141A257900AC9C7D /* EAGLContextBridgeGLES20.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */; };
+		3DCC871D1453C1D700026FD8 /* libFreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DCC871C1453C1D700026FD8 /* libFreetype.a */; };
 		3DDF9BC0144561580000001D /* testimg.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF9BBF144561580000001D /* testimg.png */; };
 		3DF3D0EC141C058600431CFF /* EAGLLayerStorageAllocator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3DF3D0EB141C058600431CFF /* EAGLLayerStorageAllocator.mm */; };
 		3DF3D100141C3D2E00431CFF /* libxml2.2.7.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DF3D0FF141C3D2D00431CFF /* libxml2.2.7.3.dylib */; };
@@ -72,6 +73,7 @@
 		3D846F28141A22A500AC9C7D /* EAGLContextBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLContextBridge.h; sourceTree = "<group>"; };
 		3D846F29141A242100AC9C7D /* EAGLContextBridgeGLES20.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLContextBridgeGLES20.h; sourceTree = "<group>"; };
 		3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLContextBridgeGLES20.mm; sourceTree = "<group>"; };
+		3DCC871C1453C1D700026FD8 /* libFreetype.a */ = {isa = PBXFileReference; lastKnownFileType = file; name = libFreetype.a; path = "../UIFramework/External/freetype/build/Release-iphoneos/libFreetype.a"; sourceTree = "<group>"; };
 		3DDF9BBF144561580000001D /* testimg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testimg.png; sourceTree = "<group>"; };
 		3DF3D0E8141C02E900431CFF /* EAGLLayerStorageAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLLayerStorageAllocator.h; sourceTree = "<group>"; };
 		3DF3D0EB141C058600431CFF /* EAGLLayerStorageAllocator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLLayerStorageAllocator.mm; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DCC871D1453C1D700026FD8 /* libFreetype.a in Frameworks */,
 				3DF3D102141C3D7300431CFF /* libiconv.2.4.0.dylib in Frameworks */,
 				3DF3D100141C3D2E00431CFF /* libxml2.2.7.3.dylib in Frameworks */,
 				3D846F24141A114600AC9C7D /* libUIFramework.a in Frameworks */,
@@ -101,6 +104,7 @@
 		3D846EDF141A0F7F00AC9C7D = {
 			isa = PBXGroup;
 			children = (
+				3DCC871C1453C1D700026FD8 /* libFreetype.a */,
 				3DF3D101141C3D7300431CFF /* libiconv.2.4.0.dylib */,
 				3DF3D0FF141C3D2D00431CFF /* libxml2.2.7.3.dylib */,
 				3D846F19141A0FBE00AC9C7D /* UIFramework.xcodeproj */,

@@ -476,6 +476,23 @@
 		3DF92EEF1419FD3500628C4D /* SystemValues.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DF92EEE1419FD3100628C4D /* SystemValues.h */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		3DCC870A1453C0B700026FD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DCC87061453C0B500026FD8 /* Freetype.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3DF4AC271453B31B00F8918C;
+			remoteInfo = Freetype;
+		};
+		3DCC870D1453C0D400026FD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DCC87061453C0B500026FD8 /* Freetype.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 3DF4AC261453B31B00F8918C;
+			remoteInfo = Freetype;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		3D06B5C81419D4880097C7D9 /* libUIFramework.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libUIFramework.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D06B5CB1419D4880097C7D9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -927,6 +944,7 @@
 		3DA45C5214423C5B00D1BFF5 /* BitmapSourceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitmapSourceBase.h; sourceTree = "<group>"; };
 		3DA45C5B144241B500D1BFF5 /* CGBitmapSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGBitmapSource.h; sourceTree = "<group>"; };
 		3DA45C5D144243C600D1BFF5 /* CGBitmapSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGBitmapSource.cpp; sourceTree = "<group>"; };
+		3DCC87061453C0B500026FD8 /* Freetype.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Freetype.xcodeproj; path = UIFramework/External/freetype/Freetype.xcodeproj; sourceTree = "<group>"; };
 		3DDF9BA8144413BD0000001D /* FileResourceProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileResourceProvider.cpp; sourceTree = "<group>"; };
 		3DDF9BA9144413BD0000001D /* FileResourceProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileResourceProvider.h; sourceTree = "<group>"; };
 		3DDF9BAA144413BD0000001D /* FileResourceStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileResourceStream.cpp; sourceTree = "<group>"; };
@@ -963,6 +981,7 @@
 		3D06B5BD1419D4870097C7D9 = {
 			isa = PBXGroup;
 			children = (
+				3DCC87061453C0B500026FD8 /* Freetype.xcodeproj */,
 				3D06B5CD1419D4880097C7D9 /* UIFramework */,
 				3D06B5CA1419D4880097C7D9 /* Frameworks */,
 				3D06B5C91419D4880097C7D9 /* Products */,
@@ -1459,6 +1478,14 @@
 			path = UIFramework;
 			sourceTree = "<group>";
 		};
+		3DCC87071453C0B500026FD8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3DCC870B1453C0B700026FD8 /* libFreetype.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1725,6 +1752,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3DCC870E1453C0D400026FD8 /* PBXTargetDependency */,
 			);
 			name = UIFramework;
 			productName = UIFramework;
@@ -1746,12 +1774,28 @@
 			mainGroup = 3D06B5BD1419D4870097C7D9;
 			productRefGroup = 3D06B5C91419D4880097C7D9 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 3DCC87071453C0B500026FD8 /* Products */;
+					ProjectRef = 3DCC87061453C0B500026FD8 /* Freetype.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				3D06B5C71419D4880097C7D9 /* UIFramework */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		3DCC870B1453C0B700026FD8 /* libFreetype.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libFreetype.a;
+			remoteRef = 3DCC870A1453C0B700026FD8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3D06B5C41419D4880097C7D9 /* Sources */ = {
@@ -1986,6 +2030,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3DCC870E1453C0D400026FD8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Freetype;
+			targetProxy = 3DCC870D1453C0D400026FD8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3D06B5D31419D4880097C7D9 /* Debug */ = {
