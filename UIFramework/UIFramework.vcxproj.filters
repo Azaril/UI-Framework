@@ -100,10 +100,6 @@
     <Filter Include="Application">
       <UniqueIdentifier>{9d388cf6-ae21-4fe1-9225-679266369298}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Application\Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
-    </Filter>
     <Filter Include="Framework\UI\Visuals\Elements\Controls\Range">
       <UniqueIdentifier>{026601eb-d6e4-4efc-a130-230356d06edf}</UniqueIdentifier>
     </Filter>
@@ -1374,15 +1370,6 @@
     <ClInclude Include="Types.h">
       <Filter>Framework\Types</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Application</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Application</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Application</Filter>
-    </ClInclude>
     <ClInclude Include="Defines.h">
       <Filter>Application</Filter>
     </ClInclude>
@@ -1710,18 +1697,5 @@
     <ClInclude Include="EndianUtil.h">
       <Filter>Framework\Utility</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="small.ico">
-      <Filter>Application\Resource Files</Filter>
-    </None>
-    <None Include="UIFramework.ico">
-      <Filter>Application\Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="UIFramework.rc">
-      <Filter>Application\Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>
