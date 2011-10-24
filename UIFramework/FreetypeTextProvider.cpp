@@ -4,9 +4,6 @@
 #include "FreetypeTextFormat.h"
 #include "FreetypeTextLayout.h"
 
-//TODO: Remove file stream reliance in text provider (add load from stream).
-#include "FileResourceStream.h"
-
 CFreetypeTextProvider::CFreetypeTextProvider(
     )
     : m_pLibrary(NULL)
@@ -17,6 +14,11 @@ CFreetypeTextProvider::CFreetypeTextProvider(
 CFreetypeTextProvider::~CFreetypeTextProvider(
     )
 {
+    for (vector< CRegisteredFont* >::iterator it = m_RegisteredFonts.begin(); it != m_RegisteredFonts.end(); ++it)
+    {
+        (*it)->Release();
+    }
+
     if (m_pLibrary != NULL)
     {
         FT_Done_FreeType(m_pLibrary);
@@ -41,54 +43,119 @@ Cleanup:
 __override __checkReturn HRESULT 
 CFreetypeTextProvider::CreateFormat(
     __in const CFontDescription* pFontDescription,
-    __in IResourceProvider* pResourceProvider,
     __deref_out CTextFormat** ppTextFormat 
     )
 {
     HRESULT hr = S_OK;
-    FT_Face pFontFace = NULL;
+    FT_Face pFreetypeFontFace = NULL;
     IReadStream* pReadStream = NULL;
     UINT64 streamSize = 0;       
-    CFreetypeFontFace* pFreetypeFontFace = NULL;
+    CFreetypeFontFace* pNewFontFace = NULL;
     CFreetypeTextFormat* pFreetypeTextFormat = NULL;
     FT_Stream pFTStream = NULL;
-    
-    //TODO: Cache lookup before loading from file.
 
-    IFC(pResourceProvider->ReadResource(pFontDescription->GetFontName(), wcslen(pFontDescription->GetFontName()), &pReadStream));
-
-    IFC(pReadStream->GetSize(&streamSize));
-
-    pFTStream = new FT_StreamRec_();
-    IFCOOM(pFTStream);
-
+    for (vector< CRegisteredFont* >::iterator it = m_RegisteredFonts.begin(); it != m_RegisteredFonts.end(); ++it)
     {
-        FT_Open_Args openArgs = { };
-
-        pFTStream->descriptor.pointer = pReadStream;
-        pFTStream->base = 0;
-        pFTStream->pos = 0;
-        pFTStream->size = (unsigned long)streamSize;
-        pFTStream->read = FreeTypeStreamRead;
-        pFTStream->close = FreeTypeStreamClose;;
-
-        openArgs.flags = FT_OPEN_STREAM;
-        openArgs.stream = pFTStream;
-
-        IFCEXPECT(FT_Open_Face(m_pLibrary, &openArgs, 0, &pFontFace) == 0);
+        CFreetypeFontFace* pFontFace = (*it)->GetFontFace();
 
         //
-        // Transfer ownership of stream.
+        // Load the font face if it has not yet been loaded.
         //
-        pFTStream = NULL;
-        pReadStream = NULL;
+        if (pFontFace == NULL)
+        {
+            const WCHAR* pIdentifier = NULL;
+            UINT32 IdentifierLength = 0;
+
+            IResourceProvider* pResourceProvider = (*it)->GetResourceProvider();
+
+            (*it)->GetIdentifier(&pIdentifier, &IdentifierLength);
+
+            IFC(pResourceProvider->ReadResource(pIdentifier, IdentifierLength, &pReadStream));
+
+            IFC(pReadStream->GetSize(&streamSize));
+
+            pFTStream = new FT_StreamRec_();
+            IFCOOM(pFTStream);
+
+            {
+                FT_Open_Args openArgs = { };
+
+                pFTStream->descriptor.pointer = pReadStream;
+                pFTStream->base = 0;
+                pFTStream->pos = 0;
+                pFTStream->size = (unsigned long)streamSize;
+                pFTStream->read = FreeTypeStreamRead;
+                pFTStream->close = FreeTypeStreamClose;;
+
+                openArgs.flags = FT_OPEN_STREAM;
+                openArgs.stream = pFTStream;
+
+                IFCEXPECT(FT_Open_Face(m_pLibrary, &openArgs, 0, &pFreetypeFontFace) == 0);
+
+                //
+                // Transfer ownership of stream.
+                //
+                pFTStream = NULL;
+                pReadStream = NULL;
+            }
+
+            IFC(CFreetypeFontFace::Create(pFreetypeFontFace, &pNewFontFace));
+
+            //
+            // Cache the font face.
+            //
+            (*it)->SetFontFace(pNewFontFace);
+
+            //
+            // Keep a weak reference to the font face.
+            //
+            pFontFace = pNewFontFace;
+
+            //
+            // Clean up font loading resources.
+            // 
+            ReleaseObject(pReadStream);
+            ReleaseObject(pNewFontFace);
+
+            FT_Done_Face(pFreetypeFontFace);
+            pFreetypeFontFace = NULL;
+
+            delete pFTStream;
+        }
+
+
+        {
+            BOOL matchesDescription = FALSE;
+
+            //
+            // Search family names in font face for a match.
+            //
+            const WCHAR** ppFamilyNames = NULL;
+            UINT32 familyNameCount = 0;
+
+            IFC(pFontFace->GetFamilyNames(&ppFamilyNames, &familyNameCount));
+
+            for (UINT32 i = 0; i < familyNameCount && !matchesDescription; ++i)
+            {
+                if (wcscmp(ppFamilyNames[i], pFontDescription->GetFontName()) == 0)
+                {
+                    matchesDescription = TRUE;
+
+                    break;
+                }
+            }
+
+            //
+            // If this font matches the description then get or create a new format.
+            //
+            if (matchesDescription)
+            {
+                IFC(pFontFace->GetOrCreateFormat(pFontDescription, m_pTextureAllocator, &pFreetypeTextFormat));
+
+                break;
+            }
+        }
     }
-
-    //TODO: Cache font face so it can be shared by different text formats.
-    IFC(CFreetypeFontFace::Create(pFontFace, &pFreetypeFontFace));
-
-    //TODO: Cache text format as it will contain textures of glyphs.
-    IFC(CFreetypeTextFormat::Create(pFreetypeFontFace, pFontDescription->GetFontSize(), m_pTextureAllocator, &pFreetypeTextFormat));
 
     *ppTextFormat = pFreetypeTextFormat;
     pFreetypeTextFormat = NULL;
@@ -97,10 +164,10 @@ Cleanup:
     delete pFTStream;
 
     ReleaseObject(pReadStream);
-    ReleaseObject(pFreetypeFontFace);
+    ReleaseObject(pNewFontFace);
     ReleaseObject(pFreetypeTextFormat);
 
-    FT_Done_Face(pFontFace);
+    FT_Done_Face(pFreetypeFontFace);
 
     return hr;
 }
@@ -202,4 +269,88 @@ CFreetypeTextProvider::FreeTypeStreamClose(
     ReleaseObject(pReadStream);
 
     delete pStream;
+}
+
+__override __checkReturn HRESULT 
+CFreetypeTextProvider::RegisterFont(
+    __in IResourceProvider* pResourceProvider,
+    __in_ecount(IdentifierLength) const WCHAR* pIdentifier,
+    UINT32 IdentifierLength
+    )
+{
+    HRESULT hr = S_OK;
+    CRegisteredFont* pRegisteredFont = NULL;
+
+    IFC(CRegisteredFont::Create(pResourceProvider, pIdentifier, IdentifierLength, &pRegisteredFont));
+
+    m_RegisteredFonts.push_back(pRegisteredFont);
+
+    pRegisteredFont = NULL;
+
+Cleanup:
+    ReleaseObject(pRegisteredFont);
+
+    return hr;
+}
+
+CRegisteredFont::CRegisteredFont(
+    )
+    : m_pResourceProvider(NULL)
+    , m_pFontFace(NULL)
+{
+}
+
+CRegisteredFont::~CRegisteredFont( 
+    )
+{
+    ReleaseObject(m_pResourceProvider);
+    ReleaseObject(m_pFontFace);
+}
+
+__checkReturn HRESULT
+CRegisteredFont::Initialize(
+    __in IResourceProvider* pResourceProvider,
+    __in_ecount(IdentifierLength) const WCHAR* pIdentifier,
+    UINT32 IdentifierLength
+    )
+{
+    HRESULT hr = S_OK;
+
+    SetObject(m_pResourceProvider, pResourceProvider);
+    
+    m_Identifier.assign(pIdentifier, IdentifierLength);
+
+    return hr;
+}
+
+void 
+CRegisteredFont::GetIdentifier(
+    __deref_out_ecount(*pIdentifierLength) const WCHAR** ppIdentifier,
+    UINT32* pIdentifierLength
+    )
+{
+    *ppIdentifier = m_Identifier.c_str();
+    *pIdentifierLength = m_Identifier.length();
+}
+
+__out IResourceProvider* 
+CRegisteredFont::GetResourceProvider(
+    )
+{
+    return m_pResourceProvider;
+}
+
+__out_opt CFreetypeFontFace* 
+CRegisteredFont::GetFontFace(
+    )
+{
+    return m_pFontFace;
+}
+
+void 
+CRegisteredFont::SetFontFace(
+    __in_opt CFreetypeFontFace* pFontFace
+    )
+{
+    ReplaceObject(m_pFontFace, pFontFace);
 }

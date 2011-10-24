@@ -13,7 +13,6 @@ class CDirectWriteTextProvider : public CTextProvider
 
         __override virtual __checkReturn HRESULT CreateFormat(
 			__in const CFontDescription* pFontDescription,
-            __in IResourceProvider* pResourceProvider,
 			__deref_out CTextFormat** ppTextFormat 
 			);
 
@@ -30,6 +29,12 @@ class CDirectWriteTextProvider : public CTextProvider
 			const SizeF& Size, 
 			__deref_out CEditableTextLayout** ppEditableTextLayout 
 			);
+
+        __override virtual __checkReturn HRESULT RegisterFont(
+            __in IResourceProvider* pResourceProvider,
+            __in_ecount(IdentifierLength) const WCHAR* pIdentifier,
+            UINT32 IdentifierLength
+            );
 
     protected:
         CDirectWriteTextProvider(

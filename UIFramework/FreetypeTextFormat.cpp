@@ -12,6 +12,11 @@ CFreetypeTextFormat::CFreetypeTextFormat(
 CFreetypeTextFormat::~CFreetypeTextFormat(
     )
 {
+    if (m_pFontFace != NULL)
+    {
+        m_pFontFace->RemoveCachedFormat(this);
+    }
+
     ReleaseObject(m_pFontFace);
 
     for (map< UINT32, ITexture* >::iterator it = m_GlyphTextures.begin(); it != m_GlyphTextures.end(); ++it)
@@ -131,4 +136,11 @@ Cleanup:
     delete pMetrics;
 
     return hr;
+}
+
+FLOAT
+CFreetypeTextFormat::GetFontSize(
+    )
+{
+    return m_fontSize;
 }

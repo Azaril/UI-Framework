@@ -907,6 +907,12 @@
     <ClCompile Include="ColorUtilities.cpp">
       <Filter>Framework\Graphics\Common</Filter>
     </ClCompile>
+    <ClCompile Include="AssertUtil.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="EndianUtil.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1697,6 +1703,12 @@
     </ClInclude>
     <ClInclude Include="ColorUtilities.h">
       <Filter>Framework\Graphics\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="AssertUtil.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="EndianUtil.h">
+      <Filter>Framework\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

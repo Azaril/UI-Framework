@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EndianUtil.h"
+
 #if _WINDOWS
 
 #include <windows.h>
@@ -17,7 +19,9 @@ isfinite(
 #else
 
 typedef int INT32;
+typedef short INT16;
 typedef unsigned int UINT32;
+typedef unsigned short UINT16;
 typedef float FLOAT;
 typedef wchar_t WCHAR;
 typedef char CHAR;

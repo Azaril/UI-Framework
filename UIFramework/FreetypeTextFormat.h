@@ -26,6 +26,9 @@ class CFreetypeTextFormat : public CTextFormat
             __deref_out_opt ITexture** ppTexture
             );
 
+        FLOAT GetFontSize(
+            );
+
     protected:
         CFreetypeTextFormat(
             );

@@ -91,6 +91,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CMouseController* pMouseController = NULL;
     CKeyboardController* pKeyboardController = NULL;
     CFileResourceProvider* pFileResourceProvider = NULL;
+    CTextProvider* pTextProvider = NULL;
 
 #if defined(BUILD_D2D) || defined(BUILD_D3D9) || defined(BUILD_D3D10)
 
@@ -183,7 +184,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 #endif
 
     //
-    // Create UI framework
+    // Create graphics device.
     //
 #if defined(BUILD_D2D)
 
@@ -226,8 +227,19 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     g_RenderTarget = pRenderTarget;
 
+    IFC(pGraphicsDevice->GetTextProvider(&pTextProvider));
+
+    //
+    // Load fonts.
+    //
     {
-        CFontDescription defaultFont(L"Opificio.ttf", 32, L"en-us");
+        const WCHAR fontFile[] = L"Opificio.ttf";
+
+        IFC(pTextProvider->RegisterFont(pFileResourceProvider, fontFile, ARRAYSIZE(fontFile)));
+    }
+
+    {
+        CFontDescription defaultFont(L"Opificio", 16, L"en-us");
 
         IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, pProviders, &defaultFont, &pUIHost));
     }

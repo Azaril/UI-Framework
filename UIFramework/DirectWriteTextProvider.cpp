@@ -51,42 +51,12 @@ Cleanup:
 __override __checkReturn HRESULT 
 CDirectWriteTextProvider::CreateFormat(
 	__in const CFontDescription* pFontDescription,
-    __in IResourceProvider* pResourceProvider,
 	__deref_out CTextFormat** ppTextFormat
 	)
 {
     HRESULT hr = S_OK;
     IDWriteTextFormat* pDirectWriteTextFormat = NULL;
     CDirectWriteTextFormat* pFormat = NULL;
-    //IDWriteFontFileLoader* pFontLoader = NULL;
-    IDWriteFontFile* pFontFile = NULL;
-    //IDWriteFontFace* pFontFace = NULL;
-
-    //TODO: Add cache lookup for font.
-
-    //TODO: Add cache lookup for font file.
-    //IFC(GetFontFileLoaderForResourceProvider(pResourceProvider, &pFontLoader));
-
-    //IFC(m_Factory->CreateCustomFontFileReference(pFontDescription->GetFontName(), wcslen(pFontDescription->GetFontName()), pFontLoader, &pFontFile));
-
-    {
-        BOOL supportedFont = FALSE;
-        DWRITE_FONT_FILE_TYPE fontFileType;
-        DWRITE_FONT_FACE_TYPE fontFaceType;
-        UINT32 numberOfFaces = 0;
-
-        IFC(pFontFile->Analyze(&supportedFont, &fontFileType, &fontFaceType, &numberOfFaces));
-
-        IFCEXPECT(supportedFont);
-
-        //IFC(m_Factory->CreateCustomFontCollection(
-        //IFC(
-    }
-        //if (SUCCEEDED(m_Factory->CreateFontFace((DWRITE_FONT_FACE_TYPE)i, 1, &pFontFile, 0, DWRITE_FONT_SIMULATIONS_NONE, &pFontFace)))
-        //{
-        //    IFC(m_Factory->CreateTextFormat(
-        //}
-    //TODO: Load from resource provider.
 
     IFC(m_Factory->CreateTextFormat(pFontDescription->GetFontName(), NULL, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, pFontDescription->GetFontSize(), pFontDescription->GetLocale(), &pDirectWriteTextFormat));
 
@@ -98,7 +68,6 @@ CDirectWriteTextProvider::CreateFormat(
 Cleanup:
     ReleaseObject(pDirectWriteTextFormat);
     ReleaseObject(pFormat);
-    ReleaseObject(pFontFile);
 
     return hr;
 }
@@ -160,5 +129,20 @@ CDirectWriteTextProvider::CreateEditableTextLayout(
 Cleanup:
     ReleaseObject(pDirectWriteEditableTextLayout);
 
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CDirectWriteTextProvider::RegisterFont(
+    __in IResourceProvider* pResourceProvider,
+    __in_ecount(IdentifierLength) const WCHAR* pIdentifier,
+    UINT32 IdentifierLength
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(E_NOTIMPL);
+
+Cleanup:
     return hr;
 }

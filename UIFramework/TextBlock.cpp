@@ -99,7 +99,7 @@ HRESULT CTextBlock::GetTextLayout(CTextLayout** ppLayout)
             const CFontDescription* pFontDescription = GetEffectiveFontDescription();
 
             //TODO: Handle font description changes.
-            IFC(pTextProvider->CreateFormat(pFontDescription, GetProviders()->GetResourceProvider(), &m_TextFormat));
+            IFC(pTextProvider->CreateFormat(pFontDescription, &m_TextFormat));
         }
 
         if(pText != NULL)

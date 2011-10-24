@@ -96,7 +96,7 @@ CTextBox::EnsureTextLayout(
             const CFontDescription* pFontDescription = GetEffectiveFontDescription();
 
             //TODO: Handle font description changes.
-            IFC(pTextProvider->CreateFormat(pFontDescription, GetProviders()->GetResourceProvider(), &m_TextFormat));
+            IFC(pTextProvider->CreateFormat(pFontDescription, &m_TextFormat));
         }
 
         IFC(pTextProvider->CreateEditableTextLayout(m_TextFormat, InitialSize, &m_TextLayout));

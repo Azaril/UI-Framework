@@ -2,6 +2,7 @@
 
 #include "Types.h"
 #include "Logging.h"
+#include "AssertUtil.h"
 
 #define WIDEN2(x) L ## x
 #define WIDEN(x) WIDEN2(x)

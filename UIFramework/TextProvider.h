@@ -11,7 +11,6 @@ class CTextProvider : public CRefCountedObject
     public:
         virtual __checkReturn HRESULT CreateFormat( 
 			__in const CFontDescription* pFontDescription,
-            __in IResourceProvider* pResourceProvider,
 			__deref_out CTextFormat** ppTextFormat 
 			) = 0;
 
@@ -28,4 +27,10 @@ class CTextProvider : public CRefCountedObject
 			const SizeF& Size, 
 			__deref_out CEditableTextLayout** ppEditableTextLayout 
 			) = 0;
+
+        virtual __checkReturn HRESULT RegisterFont(
+            __in IResourceProvider* pResourceProvider,
+            __in_ecount(IdentifierLength) const WCHAR* pIdentifier,
+            UINT32 IdentifierLength
+            ) = 0;
 };

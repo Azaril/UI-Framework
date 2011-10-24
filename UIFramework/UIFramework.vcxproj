@@ -100,6 +100,7 @@
     <ClCompile Include="AnimationClock.cpp" />
     <ClCompile Include="AnimationTimeline.cpp" />
     <ClCompile Include="AnimationTimelineCollection.cpp" />
+    <ClCompile Include="AssertUtil.cpp" />
     <ClCompile Include="BeginStoryboard.cpp" />
     <ClCompile Include="BezierSegment.cpp" />
     <ClCompile Include="BindingBase.cpp" />
@@ -129,6 +130,7 @@
     <ClCompile Include="D3D10HWNDRenderTarget.cpp" />
     <ClCompile Include="D3D10RenderTarget.cpp" />
     <ClCompile Include="EditableTextLayoutBase.cpp" />
+    <ClCompile Include="EndianUtil.cpp" />
     <ClCompile Include="FontDescription.cpp" />
     <ClCompile Include="FontMetrics.cpp" />
     <ClCompile Include="FreetypeFontFace.cpp" />
@@ -356,6 +358,7 @@
     <ClInclude Include="AnimationClock.h" />
     <ClInclude Include="AnimationTimeline.h" />
     <ClInclude Include="AnimationTimelineCollection.h" />
+    <ClInclude Include="AssertUtil.h" />
     <ClInclude Include="BeginStoryboard.h" />
     <ClInclude Include="BezierSegment.h" />
     <ClInclude Include="BindingBase.h" />
@@ -385,6 +388,7 @@
     <ClInclude Include="D3D10HWNDRenderTarget.h" />
     <ClInclude Include="D3D10RenderTarget.h" />
     <ClInclude Include="EditableTextLayoutBase.h" />
+    <ClInclude Include="EndianUtil.h" />
     <ClInclude Include="FontDescription.h" />
     <ClInclude Include="FontMetrics.h" />
     <ClInclude Include="FreetypeFontFace.h" />
