@@ -98,4 +98,5 @@ class CCOMReadStreamWrapper : public IStream
 
         ULONG m_Ref;
         IReadStream* m_pStream;
+        CRITICAL_SECTION m_Lock;
 };

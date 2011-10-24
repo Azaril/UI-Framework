@@ -1,8 +1,30 @@
 #include "COMReadStreamWrapper.h"
 
+class CAutoLock
+{
+    public:
+        CAutoLock(
+            CRITICAL_SECTION* pLock
+            )
+            : m_pLock(pLock)
+        {
+            EnterCriticalSection(m_pLock);
+        }
+
+        ~CAutoLock(
+            )
+        {
+            LeaveCriticalSection(m_pLock);
+        }
+
+    protected:
+        CRITICAL_SECTION* m_pLock;
+};
+
 CCOMReadStreamWrapper::CCOMReadStreamWrapper( 
     )
     : m_pStream(NULL)
+    , m_Ref(1)
 {
 }
 
@@ -10,6 +32,8 @@ CCOMReadStreamWrapper::~CCOMReadStreamWrapper(
     )
 {
     ReleaseObject(m_pStream);
+
+    DeleteCriticalSection(&m_Lock);
 }
 
 __checkReturn HRESULT
@@ -20,6 +44,8 @@ CCOMReadStreamWrapper::Initialize(
     HRESULT hr = S_OK;
 
     SetObject(m_pStream, pStream);
+
+    InitializeCriticalSection(&m_Lock);
 
     return hr;
 }
@@ -90,6 +116,8 @@ CCOMReadStreamWrapper::Read(
     HRESULT hr = S_OK;
     UINT64 bytesRead = 0;
 
+    CAutoLock lock(&m_Lock);
+
     IFC(m_pStream->Read(pv, cb, &bytesRead));
 
     if (pcbRead != NULL)
@@ -125,6 +153,8 @@ CCOMReadStreamWrapper::Seek(
 {
     HRESULT hr = S_OK;
     SeekType::Value seekType = SeekType::Begin;
+
+    CAutoLock lock(&m_Lock);
 
     switch (dwOrigin)
     {
@@ -252,6 +282,14 @@ CCOMReadStreamWrapper::Stat(
     )
 {
     HRESULT hr = S_OK;
+
+    CAutoLock lock(&m_Lock);
+
+    ZeroMemory(pstatstg, sizeof(STATSTG));
+
+    IFCEXPECT(grfStatFlag & STATFLAG_NONAME);
+
+    pstatstg->type = STGTY_STREAM;
 
     IFC(m_pStream->GetSize(&pstatstg->cbSize.QuadPart));
 

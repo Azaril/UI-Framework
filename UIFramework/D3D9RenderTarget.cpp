@@ -181,8 +181,6 @@ CD3D9RenderTarget::BeginRendering(
     IFC(m_pDevice->SetRenderState(D3DRS_SRCBLEND , D3DBLEND_SRCALPHA));
     IFC(m_pDevice->SetRenderState(D3DRS_DESTBLEND , D3DBLEND_INVSRCALPHA));
 
-    IFC(m_pDevice->BeginScene());
-
 Cleanup:
     return hr;
 }
@@ -194,8 +192,6 @@ CD3D9RenderTarget::EndRendering(
     HRESULT hr = S_OK;
 
     IFC(CRenderTargetBase::EndRendering());
-
-    IFC(m_pDevice->EndScene());
 
 Cleanup:
     return hr;

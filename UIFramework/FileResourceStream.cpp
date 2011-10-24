@@ -1,4 +1,7 @@
 #include "FileResourceStream.h"
+#include "StackHeapBuffer.h"
+#include "StringConversion.h"
+
 #include <stdio.h>
 
 CFileResourceStream::CFileResourceStream(
@@ -131,5 +134,50 @@ CFileResourceStream::Read(
     *pBytesWritten = readResult;
 
 Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CFileResourceStream::CreateOnPath(
+    __in_z const WCHAR* pPath,
+    __deref_out CFileResourceStream** ppStream
+    )
+{
+    HRESULT hr = S_OK;
+    FILE* pFile = NULL;
+    CFileResourceStream* pFileStream = NULL;
+
+#ifdef _WINDOWS
+    pFile = _wfsopen(pPath, L"rb", _SH_DENYWR);
+#else
+    {
+        StackHeapBuffer<CHAR, 2048> stringBuffer;
+        UINT32 stringLength = 0;
+
+        hr = ConvertWCHARToUTF8< CHAR, 2048 >(pPath, &stringBuffer, NULL);
+        IFC(hr);
+
+        pFile = fopen(stringBuffer.GetBuffer(), "rb");
+        IFCPTR(pFile);
+    }
+#endif
+
+    IFCPTR_NOTRACE(pFile);
+    
+    IFC(CFileResourceStream::Create(pFile, &pFileStream));
+
+    pFile = NULL;
+
+    *ppStream = pFileStream;
+    pFileStream = NULL;
+
+Cleanup:
+    if (pFile != NULL)
+    {
+        fclose(pFile);
+    }
+
+    ReleaseObject(pFileStream);
+
     return hr;
 }

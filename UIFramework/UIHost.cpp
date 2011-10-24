@@ -227,7 +227,7 @@ CUIHost_GetRootElement(
 
 extern "C" UIFRAMEWORK_API
 __checkReturn HRESULT 
-UIHost_GetFocusManager(
+CUIHost_GetFocusManager(
     __in CUIHost* pHost, 
     __deref_out CFocusManager** ppFocusManager
     )

@@ -909,6 +909,7 @@
     <ClCompile Include="EndianUtil.cpp">
       <Filter>Framework\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="D3D9SurfaceRenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1697,5 +1698,6 @@
     <ClInclude Include="EndianUtil.h">
       <Filter>Framework\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="D3D9SurfaceRenderTarget.h" />
   </ItemGroup>
 </Project>

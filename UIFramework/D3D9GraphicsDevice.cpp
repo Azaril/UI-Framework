@@ -41,12 +41,33 @@ CD3D9GraphicsDevice::~CD3D9GraphicsDevice(
 
 __checkReturn HRESULT
 CD3D9GraphicsDevice::Initialize(
+    IDirect3DDevice9* pDevice
+    )
+{
+    HRESULT hr = S_OK;
+    D3DDEVICE_CREATION_PARAMETERS creationParams = { };
+
+    SetObject(m_pDevice, pDevice);
+
+    IFC(pDevice->GetDirect3D(&m_pD3D));
+
+    IFC(pDevice->GetCreationParameters(&creationParams));
+
+    m_FocusWindow = creationParams.hFocusWindow;
+
+    IFC(InitializeCommon());
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT
+CD3D9GraphicsDevice::Initialize(
     HWND focusWindow
     )
 {
     HRESULT hr = S_OK;
     Direct3DCreate9Func CreateFunc = NULL;
-    D3DCAPS9 deviceCapabilites = { };
 
     m_FocusWindow = focusWindow;
 
@@ -88,6 +109,19 @@ CD3D9GraphicsDevice::Initialize(
         }
     }
 
+    IFC(InitializeCommon());
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT
+CD3D9GraphicsDevice::InitializeCommon(
+    )
+{
+    HRESULT hr = S_OK;
+    D3DCAPS9 deviceCapabilites = { };
+
     IFC(m_pDevice->GetDeviceCaps(&deviceCapabilites));
 
     IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(deviceCapabilites.MaxTextureWidth, deviceCapabilites.MaxTextureWidth, this, &m_pTextureAtlasPool));
@@ -109,7 +143,6 @@ CD3D9GraphicsDevice::CreateHWNDRenderTarget(
     )
 {
     HRESULT hr = S_OK;
-    IDirect3DDevice9* pDevice = NULL;
     CD3D9HWNDRenderTarget* pHWNDRenderTarget = NULL;
     IDirect3DSwapChain9* pSwapChain = NULL;
 
@@ -153,7 +186,30 @@ CD3D9GraphicsDevice::CreateHWNDRenderTarget(
     pHWNDRenderTarget = NULL;
 
 Cleanup:
-    ReleaseObject(pDevice);
+    ReleaseObject(pHWNDRenderTarget);
+
+    return hr;
+}
+
+__checkReturn HRESULT
+CD3D9GraphicsDevice::CreateSurfaceRenderTarget(
+    __in IDirect3DSurface9* pSurface,
+    __deref_out CD3D9SurfaceRenderTarget** ppRenderTarget
+    )
+{
+    HRESULT hr = S_OK;
+    CD3D9SurfaceRenderTarget* pSurfaceRenderTarget = NULL;
+
+    IFCPTR(pSurface);
+    IFCPTR(ppRenderTarget);
+
+    IFC(CD3D9SurfaceRenderTarget::Create(m_pDevice, pSurface, m_pTextureAtlasPool, &pSurfaceRenderTarget));
+
+    *ppRenderTarget = pSurfaceRenderTarget;
+    pSurfaceRenderTarget = NULL;
+
+Cleanup:
+    ReleaseObject(pSurfaceRenderTarget);
 
     return hr;
 }

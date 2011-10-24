@@ -4,10 +4,15 @@
 #include "RefCounted.h"
 #include "Factory.h"
 
-class CFileResourceStream : public CRefCountedObjectBase< IReadStream >
+class UIFRAMEWORK_API CFileResourceStream : public CRefCountedObjectBase< IReadStream >
 {
     public:
         DECLARE_FACTORY1( CFileResourceStream, FILE* );
+
+        static __checkReturn HRESULT CreateOnPath(
+            __in_z const WCHAR* pPath,
+            __deref_out CFileResourceStream** ppStream
+            );
 
         __override virtual __checkReturn HRESULT GetSize(
             __out UINT64* pSize

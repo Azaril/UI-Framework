@@ -62,6 +62,8 @@ CD3D9HWNDRenderTarget::BeginRendering(
 
     IFC(CD3D9RenderTarget::BeginRendering());
 
+    IFC(m_pDevice->BeginScene());
+
 Cleanup:
     return hr;
 }
@@ -73,6 +75,8 @@ CD3D9HWNDRenderTarget::EndRendering(
     HRESULT hr = S_OK;
 
     IFC(CD3D9RenderTarget::EndRendering());
+
+    IFC(m_pDevice->EndScene());
 
     IFC(m_pSwapChain->Present(NULL, NULL, NULL, NULL, NULL));
 

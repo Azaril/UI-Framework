@@ -73,7 +73,15 @@ CImageBrush::SetSource(
 {
     HRESULT hr = S_OK;
 
-    IFC(SetValue(&CImageBrush::SourceProperty, pSource));
+    if (pSource != NULL)
+    {
+        IFC(SetValue(&CImageBrush::SourceProperty, pSource));
+    }
+    else
+    {
+        //TODO: HACK: This should be using ClearValue most likely.
+        IFC(InternalSetSource(NULL));
+    }
 
 Cleanup:
     return hr;
@@ -298,6 +306,8 @@ CImageBrush::GetGraphicsBrush(
     IFCPTR_NOTRACE(pContext);
 
     IFC(pContext->GetBitmapSource(&pBitmapSource));
+
+    IFCPTR_NOTRACE(pBitmapSource);
 
     //if(pBitmapSource == NULL)
     //{

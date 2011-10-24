@@ -6,16 +6,23 @@
 #include "GraphicsDevice.h"
 #include "D3D9RenderTarget.h"
 #include "D3D9HWNDRenderTarget.h"
+#include "D3D9SurfaceRenderTarget.h"
 
 class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
                                             public IBatchUpdateTextureAllocator
 {
     public:
-        DECLARE_FACTORY1( CD3D9GraphicsDevice, HWND );
+        DECLARE_FACTORY1( CD3D9GraphicsDevice, IDirect3DDevice9* );
+        DECLARE_FACTORY1( CD3D9GraphicsDevice, HWND );      
 
         __checkReturn HRESULT CreateHWNDRenderTarget(
             HWND Window,
             __deref_out CD3D9HWNDRenderTarget** ppRenderTarget
+            );
+
+        __checkReturn HRESULT CreateSurfaceRenderTarget(
+            __in IDirect3DSurface9* pSurface,
+            __deref_out CD3D9SurfaceRenderTarget** ppRenderTarget
             );
 
         __override virtual __checkReturn HRESULT GetTextProvider(
@@ -38,7 +45,14 @@ class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
             );
 
         __checkReturn HRESULT Initialize(
+            IDirect3DDevice9* pDevice
+            );
+
+        __checkReturn HRESULT Initialize(
             HWND focusWindow
+            );
+
+        __checkReturn HRESULT InitializeCommon(
             );
 
         virtual __checkReturn HRESULT CreateTextProvider( 

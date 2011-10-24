@@ -374,19 +374,9 @@ HRESULT CFrameworkElement::OnNameChanged(CObjectWithType* pOldValue, CObjectWith
         ReleaseObject(m_RegisteredName);
     }
 
-    if(pNamescope != NULL && pNewValue != NULL)
+    if(pNamescope != NULL)
     {
-        CStringValue* pNewName = NULL;
-
-        IFC(CastType(pNewValue, &pNewName));
-
-        if(pNewValue)
-        {
-            IFC(pNamescope->RegisterName(pNewName->GetValue(), this));
-        }
-
-        m_RegisteredName = pNewName;
-        AddRefObject(m_RegisteredName);
+        IFC(RegisterInNamescope(pNamescope, &m_RegisteredName));
     }
 
 Cleanup:

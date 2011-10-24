@@ -137,14 +137,11 @@ CRootUIElement::RenderRoot(CRenderContext& Context)
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
-    ColorF ClearColor(0, 0, 0, 0);
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
 
     IFC(pRenderTarget->BeginRendering());
-
-    IFC(pRenderTarget->Clear(ClearColor));
 
     IFC(Render(Context));
 

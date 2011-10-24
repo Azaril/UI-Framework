@@ -248,6 +248,7 @@ CGeometryVisual::PreRender(
 
     if(m_FillBrush != NULL && m_FillGraphicsBrush == NULL)
     {
+        //TODO: Don't requery redundantly, wait for dirty notification.
         if(FAILED(m_FillBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_FillGraphicsBrush)))
         {
             m_FillGraphicsBrush = NULL;
@@ -260,6 +261,7 @@ CGeometryVisual::PreRender(
 
     if(m_StrokeBrush != NULL && m_StrokeGraphicsBrush == NULL)
     {
+        //TODO: Don't requery redundantly, wait for dirty notification.
         if(FAILED(m_StrokeBrush->GetGraphicsBrush(m_VisualContext.GetGraphicsDevice(), pRenderTarget, &m_StrokeGraphicsBrush)))
         {
             m_StrokeGraphicsBrush = NULL;

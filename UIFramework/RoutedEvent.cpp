@@ -5,7 +5,7 @@
 //
 extern "C" UIFRAMEWORK_API
 TypeIndex::Value 
-RoutedEvent_TypeIndex(
+CRoutedEvent_TypeIndex(
     )
 {
     return TypeIndex::RoutedEvent;

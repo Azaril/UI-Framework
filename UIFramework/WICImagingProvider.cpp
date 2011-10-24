@@ -156,7 +156,7 @@ CWICImagingProvider::LoadBitmapFromStream(
 
     IFC(CCOMReadStreamWrapper::Create(pStream, &pCOMStream));
 
-    IFC(m_Factory->CreateDecoderFromStream(pCOMStream, NULL, WICDecodeMetadataCacheOnLoad, &pDecoder));
+    IFC(m_Factory->CreateDecoderFromStream(pCOMStream, NULL, WICDecodeMetadataCacheOnDemand, &pDecoder));
 
     IFC(LoadBitmapFromDecoder(pDecoder, &pBitmapSource));
 

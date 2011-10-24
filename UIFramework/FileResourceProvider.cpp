@@ -47,10 +47,9 @@ CFileResourceProvider::ReadResource(
     )
 {
     HRESULT hr = S_OK;
-    FILE* pFile = NULL;
     CFileResourceStream* pFileStream = NULL;
 
-    for (list< std::wstring >::iterator it = m_SearchPaths.begin(); pFile == NULL && it != m_SearchPaths.end(); ++it)
+    for (list< std::wstring >::iterator it = m_SearchPaths.begin(); it != m_SearchPaths.end(); ++it)
     {
         std::wstring combinedPath = *it;
 
@@ -61,37 +60,19 @@ CFileResourceProvider::ReadResource(
 
         combinedPath.append(pIdentifier, identifierLength);
 
-#ifdef _WINDOWS
-        pFile = _wfsopen(combinedPath.c_str(), L"rb", _SH_DENYWR);
-#else
+        if (SUCCEEDED(CFileResourceStream::CreateOnPath(combinedPath.c_str(), &pFileStream)))
         {
-            StackHeapBuffer<CHAR, 2048> stringBuffer;
-
-            hr = ConvertWCHARToUTF8< CHAR, 2048 >(combinedPath.c_str(), combinedPath.length(), &stringBuffer, NULL);
-            IFC(hr);
-
-            pFile = fopen(stringBuffer.GetBuffer(), "rb");
-            IFCPTR(pFile);
+            break;
         }
-#endif
     }
 
-    IFCPTR(pFile);
-
-    IFC(CFileResourceStream::Create(pFile, &pFileStream));
-
-    pFile = NULL;
+    IFCPTR(pFileStream);
 
     *ppStream = pFileStream;
     pFileStream = NULL;
 
 Cleanup:
     ReleaseObject(pFileStream);
-
-    if (pFile != NULL)
-    {
-        fclose(pFile);
-    }
 
     return hr;
 }
