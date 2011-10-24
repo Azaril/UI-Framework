@@ -110,3 +110,24 @@ COpenGLES20Texture::SetSubData(
     
     return hr;
 }
+
+__override __checkReturn HRESULT 
+COpenGLES20Texture::SetMultipleSubData(
+    __in_ecount(RegionCount) const RectU* pRegions,
+    __in_ecount(RegionCount) BYTE** ppData,
+    __in_ecount(RegionCount) UINT32* pDataSizes,
+    __in_ecount(RegionCount) INT32* pStrides,
+    UINT32 RegionCount
+    )
+{
+    HRESULT hr = S_OK;
+    
+    //TODO: Is this optimal, is one lock better?
+    for (UINT32 i = 0; i < RegionCount; ++i)
+    {
+        IFC(SetSubData(pRegions[i], ppData[i], pDataSizes[i], pStrides[i]));
+    }
+    
+Cleanup:
+    return hr;
+}

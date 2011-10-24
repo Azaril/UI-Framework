@@ -25,6 +25,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CTextBlock, OnForegroundChanged );
 CTextBlock::CTextBlock() : m_TextLayout(NULL),
                            m_TextFormat(NULL),
                            m_TextVisual(NULL),
+                           m_TextLayoutDirty(TRUE),
                            m_Text(this, &CTextBlock::TextProperty),
                            m_Foreground(this, &CTextBlock::ForegroundProperty)
 {
@@ -75,6 +76,8 @@ HRESULT CTextBlock::InvalidateTextLayout()
     ReleaseObject(m_TextLayout);
 
     IFC(m_TextVisual->SetTextLayout(NULL));
+    
+    m_TextLayoutDirty = TRUE;
 
 Cleanup:
     return hr;
@@ -88,7 +91,7 @@ HRESULT CTextBlock::GetTextLayout(CTextLayout** ppLayout)
 
     IFCPTR(ppLayout);
 
-    if(m_TextLayout == NULL)
+    if(m_TextLayoutDirty)
     {
         IFC(GetEffectiveText(&pText));
 
@@ -102,16 +105,21 @@ HRESULT CTextBlock::GetTextLayout(CTextLayout** ppLayout)
             IFC(pTextProvider->CreateFormat(pFontDescription, &m_TextFormat));
         }
 
-        if(pText != NULL)
+        if (m_TextFormat != NULL)
         {
-            IFC(pTextProvider->CreateTextLayout(pText->GetValue(), wcslen(pText->GetValue()), m_TextFormat, GetDesiredSize(), &m_TextLayout));
-        }
-        else
-        {
-            IFC(pTextProvider->CreateTextLayout(NULL, 0, m_TextFormat, GetDesiredSize(), &m_TextLayout));
-        }
+            if(pText != NULL)
+            {
+                IFC(pTextProvider->CreateTextLayout(pText->GetValue(), wcslen(pText->GetValue()), m_TextFormat, GetDesiredSize(), &m_TextLayout));
+            }
+            else
+            {
+                IFC(pTextProvider->CreateTextLayout(NULL, 0, m_TextFormat, GetDesiredSize(), &m_TextLayout));
+            }
 
-        IFC(m_TextVisual->SetTextLayout(m_TextLayout));
+            IFC(m_TextVisual->SetTextLayout(m_TextLayout));
+        }
+        
+        m_TextLayoutDirty = FALSE;
     }
 
     *ppLayout = m_TextLayout;
@@ -135,11 +143,14 @@ HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
 
     IFC(GetTextLayout(&pTextLayout));
 
-    IFC(pTextLayout->SetMaxSize(AvailableSize));
+    if (pTextLayout != NULL)
+    {
+        IFC(pTextLayout->SetMaxSize(AvailableSize));
 
-    IFC(pTextLayout->GetMetrics(&pTextLayoutMetrics));
+        IFC(pTextLayout->GetMetrics(&pTextLayoutMetrics));
 
-    IFC(pTextLayoutMetrics->GetBounds(&TextBounds));
+        IFC(pTextLayoutMetrics->GetBounds(&TextBounds));
+    }
 
     DesiredSize.width = TextBounds.right - TextBounds.left;
     DesiredSize.height = TextBounds.bottom - TextBounds.top;
@@ -160,15 +171,17 @@ HRESULT CTextBlock::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 
     IFC(GetTextLayout(&pTextLayout));
 
-    IFC(pTextLayout->SetMaxSize(AvailableSize));
+    if (pTextLayout != NULL)
+    {
+        IFC(pTextLayout->SetMaxSize(AvailableSize));
 
-    IFC(pTextLayout->GetMetrics(&pMetrics));
+        IFC(pTextLayout->GetMetrics(&pMetrics));
 
-    IFC(pMetrics->GetBounds(&TextBounds));
-
-    UsedSize = AvailableSize;
-    //UsedSize.width = TextBounds.right - TextBounds.left;
-    //UsedSize.height = TextBounds.bottom - TextBounds.top;
+        IFC(pMetrics->GetBounds(&TextBounds));
+    }
+    
+    UsedSize.width = TextBounds.right - TextBounds.left;
+    UsedSize.height = TextBounds.bottom - TextBounds.top;
 
 Cleanup:
     ReleaseObject(pTextLayout);

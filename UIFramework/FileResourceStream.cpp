@@ -154,8 +154,7 @@ CFileResourceStream::CreateOnPath(
         StackHeapBuffer<CHAR, 2048> stringBuffer;
         UINT32 stringLength = 0;
 
-        hr = ConvertWCHARToUTF8< CHAR, 2048 >(pPath, &stringBuffer, NULL);
-        IFC(hr);
+        IFC(ConvertWCHARToUTF8< 2048 >(pPath, &stringBuffer, NULL));
 
         pFile = fopen(stringBuffer.GetBuffer(), "rb");
         IFCPTR(pFile);

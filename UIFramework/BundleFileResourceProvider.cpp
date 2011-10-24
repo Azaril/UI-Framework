@@ -43,7 +43,7 @@ CBundleFileResourceProvider::ReadResource(
 	const WCHAR* pFileNameStart = NULL;
     FILE* pFile = NULL;
     CFileResourceStream* pFileStream = NULL;
-    StackHeapBuffer< BYTE, 2048 > stringBuffer;
+    StackHeapBuffer< CHAR, 2048 > stringBuffer;
     UINT32 stringSize = 0;    
 
 	pMainBundle = CFBundleGetMainBundle();
@@ -78,24 +78,21 @@ CBundleFileResourceProvider::ReadResource(
 
 	IFCEXPECT(pFileNameStart != pDelimiter);
 
-    hr = ConvertWCHARToUTF8< BYTE, 2048 >(pFileNameStart, (pDelimiter - pFileNameStart), &stringBuffer, &stringSize);
-    IFC(hr);
+    IFC(ConvertWCHARToUTF8< 2048 >(pFileNameStart, (pDelimiter - pFileNameStart), &stringBuffer, &stringSize));
 
-    pIdentifierName = CFStringCreateWithBytes(NULL, stringBuffer.GetBuffer(), stringSize, kCFStringEncodingUTF8, false);
+    pIdentifierName = CFStringCreateWithBytes(NULL, (const BYTE*)stringBuffer.GetBuffer(), stringSize, kCFStringEncodingUTF8, false);
     IFCPTR(pIdentifierName);
 
-    hr = ConvertWCHARToUTF8< BYTE, 2048 >(pDelimiter + 1, (pIdentifier + identifierLength) - (pDelimiter + 1), &stringBuffer, &stringSize);
-    IFC(hr);
+    IFC(ConvertWCHARToUTF8< 2048 >(pDelimiter + 1, (pIdentifier + identifierLength) - (pDelimiter + 1), &stringBuffer, &stringSize));
 
-    pExtensionName = CFStringCreateWithBytes(NULL, stringBuffer.GetBuffer(), stringSize, kCFStringEncodingUTF8, false);
+    pExtensionName = CFStringCreateWithBytes(NULL, (const BYTE*)stringBuffer.GetBuffer(), stringSize, kCFStringEncodingUTF8, false);
     IFCPTR(pExtensionName);
 
     if (pIdentifier != pFileNameStart)
     {
-        hr = ConvertWCHARToUTF8< BYTE, 2048 >(pIdentifier, (pFileNameStart - 1) - pIdentifier, &stringBuffer, &stringSize);
-        IFC(hr);
+        IFC(ConvertWCHARToUTF8< 2048 >(pIdentifier, (pFileNameStart - 1) - pIdentifier, &stringBuffer, &stringSize));
 
-        pDirectoryPath = CFStringCreateWithBytes(NULL, stringBuffer.GetBuffer(), stringSize, kCFStringEncodingUTF8, false);
+        pDirectoryPath = CFStringCreateWithBytes(NULL, (const BYTE*)stringBuffer.GetBuffer(), stringSize, kCFStringEncodingUTF8, false);
         IFCPTR(pDirectoryPath);
     }
     else
@@ -106,7 +103,7 @@ CBundleFileResourceProvider::ReadResource(
 	pFileUrl = CFBundleCopyResourceURL(pMainBundle, pIdentifierName, pExtensionName, pDirectoryPath);
     IFCPTR(pFileUrl);
     
-    IFCEXPECT(CFURLGetFileSystemRepresentation(pFileUrl, FALSE, stringBuffer.GetBuffer(), stringBuffer.GetBufferSize()));
+    IFCEXPECT(CFURLGetFileSystemRepresentation(pFileUrl, FALSE, (BYTE*)stringBuffer.GetBuffer(), stringBuffer.GetBufferSize()));
     
     pFile = fopen((const CHAR*)stringBuffer.GetBuffer(), "rb");
     IFCPTR(pFile);
