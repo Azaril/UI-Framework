@@ -8,6 +8,12 @@ WindowsTestApp/WindowsTestApp/Debug/*
 WindowsTestApp/WindowsTestApp/Release/*
 WindowsTestApp/ipch/*
 
+UIFramework/External/freetype/objs/*
+
+ipch/
+Debug/
+Release/
+
 # Visual studio files
 *.vcxproj.user
 *.sdf
