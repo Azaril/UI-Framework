@@ -2,8 +2,9 @@
 
 #include "ReadStream.h"
 #include "Factory.h"
+#include "COMRefCounted.h"
 
-class CCOMReadStreamWrapper : public IStream
+class CCOMReadStreamWrapper : public CCOMRefCountedObjectBase< IStream >
 {
     public:
         DECLARE_FACTORY1( CCOMReadStreamWrapper, IReadStream* );
@@ -14,12 +15,6 @@ class CCOMReadStreamWrapper : public IStream
         STDMETHOD(QueryInterface)( 
             REFIID riid,
             __deref_out void** ppvObject
-            );
-
-        STDMETHOD_(ULONG, AddRef)(
-            );
-
-        STDMETHOD_(ULONG, Release)(
             );
 
         //
@@ -96,7 +91,6 @@ class CCOMReadStreamWrapper : public IStream
             __in IReadStream* pStream
             );
 
-        ULONG m_Ref;
         IReadStream* m_pStream;
         CRITICAL_SECTION m_Lock;
 };

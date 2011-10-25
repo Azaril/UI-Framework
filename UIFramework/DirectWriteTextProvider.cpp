@@ -2,6 +2,7 @@
 #include "DirectWriteTextFormat.h"
 #include "DirectWriteTextLayout.h"
 #include "DirectWriteEditableTextLayout.h"
+#include "StackHeapBuffer.h"
 
 typedef HRESULT (WINAPI *DWriteCreateFactoryFunc)(
 	__in DWRITE_FACTORY_TYPE factoryType, 
@@ -13,14 +14,36 @@ CDirectWriteTextProvider::CDirectWriteTextProvider(
 	) 
 	: m_DWriteModule(NULL)
 	, m_Factory(NULL)
-	, m_DefaultFormat(NULL)
+    , m_pFontCollectionLoader(NULL)
+    , m_pRegisteredFonts(NULL)
+    , m_pFontFileLoader(NULL)
 {
 }
 
 CDirectWriteTextProvider::~CDirectWriteTextProvider(
 	)
 {
-    ReleaseObject(m_DefaultFormat);
+    for (vector< IDWriteFontCollection* >::iterator it = m_FontCollections.begin(); it != m_FontCollections.end(); ++it)
+    {
+        (*it)->Release();
+    }
+
+    if (m_Factory != NULL)
+    {
+        if (m_pFontFileLoader != NULL)
+        {
+            IGNOREHR(m_Factory->UnregisterFontFileLoader(m_pFontFileLoader));
+        }
+
+        if (m_pFontCollectionLoader != NULL)
+        {
+            IGNOREHR(m_Factory->UnregisterFontCollectionLoader(m_pFontCollectionLoader));
+        }
+    }
+
+    ReleaseObject(m_pRegisteredFonts);
+    ReleaseObject(m_pFontFileLoader);
+    ReleaseObject(m_pFontCollectionLoader);
     ReleaseObject(m_Factory);
 
     if(m_DWriteModule)
@@ -44,6 +67,16 @@ CDirectWriteTextProvider::Initialize(
 
     IFC(CreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&m_Factory));
 
+    IFC(CDirectWriteRegisteredFontCollection::Create(&m_pRegisteredFonts));
+
+    IFC(CDirectWriteFontFileLoader::Create(m_pRegisteredFonts, &m_pFontFileLoader));
+
+    IFC(CDirectWriteFontCollectionLoader::Create(m_pFontFileLoader, &m_pFontCollectionLoader));
+
+    IFC(m_Factory->RegisterFontFileLoader(m_pFontFileLoader));
+
+    IFC(m_Factory->RegisterFontCollectionLoader(m_pFontCollectionLoader));
+
 Cleanup:
     return hr;
 }
@@ -57,8 +90,88 @@ CDirectWriteTextProvider::CreateFormat(
     HRESULT hr = S_OK;
     IDWriteTextFormat* pDirectWriteTextFormat = NULL;
     CDirectWriteTextFormat* pFormat = NULL;
+    IDWriteFontFamily* pFontFamily = NULL;
+    IDWriteLocalizedStrings* pFamilyNames = NULL;
+    IDWriteFontCollection* pFontCollection = NULL;
+    StackHeapBuffer< WCHAR, 256 > nameBuffer;
 
-    IFC(m_Factory->CreateTextFormat(pFontDescription->GetFontName(), NULL, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, pFontDescription->GetFontSize(), pFontDescription->GetLocale(), &pDirectWriteTextFormat));
+    //
+    // Find the collection that contains the specified name.
+    //
+    for (vector< IDWriteFontCollection* >::iterator it = m_FontCollections.begin(); pFontCollection == NULL && it != m_FontCollections.end(); ++it)
+    {
+        UINT32 fontFamilyCount = (*it)->GetFontFamilyCount();
+        
+        //
+        // Search each font family contained in the collection.
+        //
+        for (UINT32 i = 0; pFontCollection == NULL && i < fontFamilyCount; ++i)
+        {
+            BOOL hasLocale = FALSE;
+            UINT32 localeIndex = 0;
+            UINT32 searchStartIndex = 0;
+            UINT32 searchEndIndex = 0;
+
+            IFC((*it)->GetFontFamily(i, &pFontFamily));
+
+            IFC(pFontFamily->GetFamilyNames(&pFamilyNames));
+
+            //
+            // Attempt to find the localized string.
+            //
+            IFC(pFamilyNames->FindLocaleName(pFontDescription->GetLocale(), &localeIndex, &hasLocale));
+
+            //
+            // Use the locale specific name otherwise search all locales.
+            //
+            if (hasLocale)
+            {
+                searchStartIndex = localeIndex;
+                searchEndIndex = localeIndex + 1;
+            }
+            else
+            {
+                searchStartIndex = 0;
+                searchEndIndex = pFamilyNames->GetCount();
+            }
+
+            //
+            // Search localized string range for family name.
+            //
+            for (UINT32 j = searchStartIndex; j < searchEndIndex; ++j)
+            {
+                UINT32 stringSize = 0;
+
+                IFC(pFamilyNames->GetStringLength(j, &stringSize));
+
+                IFC(nameBuffer.EnsureBufferSize(stringSize + 1));
+
+                IFC(pFamilyNames->GetString(localeIndex, nameBuffer.GetBuffer(), nameBuffer.GetBufferSize()));
+
+                //
+                // Test if family name matches.
+                //
+                if (wcscmp(nameBuffer.GetBuffer(), pFontDescription->GetFontName()) == 0)
+                {
+                    //
+                    // Found the correct font collection to load the font from.
+                    //
+                    pFontCollection = (*it);
+
+                    break;
+                }
+            }
+
+            ReleaseObject(pFontFamily);
+            ReleaseObject(pFamilyNames);
+        }
+    }
+
+    IFCPTR(pFontCollection);
+
+    IFC(m_Factory->CreateTextFormat(pFontDescription->GetFontName(), pFontCollection, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, pFontDescription->GetFontSize(), pFontDescription->GetLocale(), &pDirectWriteTextFormat));
+
+    IFCPTR(pDirectWriteTextFormat);
 
     IFC(CDirectWriteTextFormat::Create(pDirectWriteTextFormat, &pFormat));
 
@@ -68,6 +181,8 @@ CDirectWriteTextProvider::CreateFormat(
 Cleanup:
     ReleaseObject(pDirectWriteTextFormat);
     ReleaseObject(pFormat);
+    ReleaseObject(pFontFamily);
+    ReleaseObject(pFamilyNames);
 
     return hr;
 }
@@ -140,9 +255,19 @@ CDirectWriteTextProvider::RegisterFont(
     )
 {
     HRESULT hr = S_OK;
+    IDWriteFontCollection* pCollection = NULL;
+    UINT32 fontToken = 0;
 
-    IFC(E_NOTIMPL);
+    IFC(m_pRegisteredFonts->RegisterFont(pResourceProvider, pIdentifier, IdentifierLength, &fontToken));
+
+    IFC(m_Factory->CreateCustomFontCollection(m_pFontCollectionLoader, &fontToken, sizeof(fontToken), &pCollection));
+
+    m_FontCollections.push_back(pCollection);
+
+    pCollection = NULL;
 
 Cleanup:
+    ReleaseObject(pCollection);
+
     return hr;
 }

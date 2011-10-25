@@ -110,6 +110,7 @@
     <ClCompile Include="ColorUtilities.cpp" />
     <ClCompile Include="CompositeResourceProvider.cpp" />
     <ClCompile Include="COMReadStreamWrapper.cpp" />
+    <ClCompile Include="COMRefCounted.cpp" />
     <ClCompile Include="CoreFigureBuilder.cpp" />
     <ClCompile Include="CoreFigureData.cpp" />
     <ClCompile Include="CoreGeometryProvider.cpp" />
@@ -127,6 +128,11 @@
     <ClCompile Include="D3D10HWNDRenderTarget.cpp" />
     <ClCompile Include="D3D10RenderTarget.cpp" />
     <ClCompile Include="D3D9SurfaceRenderTarget.cpp" />
+    <ClCompile Include="DirectWriteFontCollectionLoader.cpp" />
+    <ClCompile Include="DirectWriteFontFileEnumerator.cpp" />
+    <ClCompile Include="DirectWriteFontFileLoader.cpp" />
+    <ClCompile Include="DirectWriteFontFileStream.cpp" />
+    <ClCompile Include="DirectWriteRegisteredFontCollection.cpp" />
     <ClCompile Include="EditableTextLayoutBase.cpp" />
     <ClCompile Include="EndianUtil.cpp" />
     <ClCompile Include="FontDescription.cpp" />
@@ -357,6 +363,7 @@
     <ClInclude Include="AnimationTimeline.h" />
     <ClInclude Include="AnimationTimelineCollection.h" />
     <ClInclude Include="AssertUtil.h" />
+    <ClInclude Include="AutoLock.h" />
     <ClInclude Include="BeginStoryboard.h" />
     <ClInclude Include="BezierSegment.h" />
     <ClInclude Include="BindingBase.h" />
@@ -369,6 +376,7 @@
     <ClInclude Include="ColorUtilities.h" />
     <ClInclude Include="CompositeResourceProvider.h" />
     <ClInclude Include="COMReadStreamWrapper.h" />
+    <ClInclude Include="COMRefCounted.h" />
     <ClInclude Include="CoreFigureBuilder.h" />
     <ClInclude Include="CoreFigureData.h" />
     <ClInclude Include="CoreGeometryProvider.h" />
@@ -386,6 +394,11 @@
     <ClInclude Include="D3D10HWNDRenderTarget.h" />
     <ClInclude Include="D3D10RenderTarget.h" />
     <ClInclude Include="D3D9SurfaceRenderTarget.h" />
+    <ClInclude Include="DirectWriteFontCollectionLoader.h" />
+    <ClInclude Include="DirectWriteFontFileEnumerator.h" />
+    <ClInclude Include="DirectWriteFontFileLoader.h" />
+    <ClInclude Include="DirectWriteFontFileStream.h" />
+    <ClInclude Include="DirectWriteRegisteredFontCollection.h" />
     <ClInclude Include="EditableTextLayoutBase.h" />
     <ClInclude Include="EndianUtil.h" />
     <ClInclude Include="FontDescription.h" />

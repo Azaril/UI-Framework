@@ -909,7 +909,27 @@
     <ClCompile Include="EndianUtil.cpp">
       <Filter>Framework\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="D3D9SurfaceRenderTarget.cpp" />
+    <ClCompile Include="DirectWriteFontCollectionLoader.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D9SurfaceRenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="COMRefCounted.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteRegisteredFontCollection.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteFontFileEnumerator.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteFontFileLoader.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteFontFileStream.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1698,6 +1718,29 @@
     <ClInclude Include="EndianUtil.h">
       <Filter>Framework\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="D3D9SurfaceRenderTarget.h" />
+    <ClInclude Include="DirectWriteFontCollectionLoader.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D9SurfaceRenderTarget.h">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClInclude>
+    <ClInclude Include="COMRefCounted.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteRegisteredFontCollection.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteFontFileEnumerator.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteFontFileLoader.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteFontFileStream.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoLock.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

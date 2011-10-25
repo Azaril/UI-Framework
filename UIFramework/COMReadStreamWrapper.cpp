@@ -1,30 +1,9 @@
 #include "COMReadStreamWrapper.h"
-
-class CAutoLock
-{
-    public:
-        CAutoLock(
-            CRITICAL_SECTION* pLock
-            )
-            : m_pLock(pLock)
-        {
-            EnterCriticalSection(m_pLock);
-        }
-
-        ~CAutoLock(
-            )
-        {
-            LeaveCriticalSection(m_pLock);
-        }
-
-    protected:
-        CRITICAL_SECTION* m_pLock;
-};
+#include "AutoLock.h"
 
 CCOMReadStreamWrapper::CCOMReadStreamWrapper( 
     )
     : m_pStream(NULL)
-    , m_Ref(1)
 {
 }
 
@@ -48,29 +27,6 @@ CCOMReadStreamWrapper::Initialize(
     InitializeCriticalSection(&m_Lock);
 
     return hr;
-}
-
-STDMETHODIMP_(ULONG)
-CCOMReadStreamWrapper::AddRef(
-    )
-{
-    ULONG Ref = InterlockedIncrement(&m_Ref);
-
-    return Ref;
-}
-
-STDMETHODIMP_(ULONG)
-CCOMReadStreamWrapper::Release(
-    )
-{
-    ULONG Ref = InterlockedDecrement(&m_Ref);
-
-    if (Ref == 0)
-    {
-        delete this;
-    }
-
-    return Ref;
 }
 
 STDMETHODIMP

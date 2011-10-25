@@ -145,16 +145,13 @@ CDirectWriteEditableTextLayout::EnsureLayout(
 	)
 {
     HRESULT hr = S_OK;
-    CTextFormat* pTextFormat = NULL;
 
     if(m_TextLayout == NULL)
     {
-        IFC(m_TextProvider->CreateTextLayout(m_Text.c_str(), m_Text.length(), pTextFormat, m_MaxSize, &m_TextLayout));
+        IFC(m_TextProvider->CreateTextLayout(m_Text.c_str(), m_Text.length(), m_TextFormat, m_MaxSize, &m_TextLayout));
     }
 
 Cleanup:
-    ReleaseObject(pTextFormat);
-
     return hr;
 }
 
