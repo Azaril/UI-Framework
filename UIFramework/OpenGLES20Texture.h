@@ -6,7 +6,7 @@
 #include "Factory.h"
 #include "Texture.h"
 
-class COpenGLES20Texture : public CRefCountedObjectBase< ITexture >
+class COpenGLES20Texture : public CRefCountedObjectBase< IBatchUpdateTexture >
 {
     public:
         DECLARE_FACTORY4( COpenGLES20Texture, GLuint, UINT32, UINT32, PixelFormat::Value );
@@ -37,6 +37,14 @@ class COpenGLES20Texture : public CRefCountedObjectBase< ITexture >
             __in_ecount(DataSize) BYTE* pData,
             UINT32 DataSize,
             INT32 Stride
+            );    
+
+        __override virtual __checkReturn HRESULT SetMultipleSubData(
+            __in_ecount(RegionCount) const RectU* pRegions,
+            __in_ecount(RegionCount) BYTE** ppData,
+            __in_ecount(RegionCount) UINT32* pDataSizes,
+            __in_ecount(RegionCount) INT32* pStrides,
+            UINT32 RegionCount
             );    
 
     protected:

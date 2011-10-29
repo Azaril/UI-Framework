@@ -246,6 +246,27 @@ Cleanup:
     return hr;
 }
 
+__override __checkReturn HRESULT
+COpenGLES20GraphicsDevice::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out IBatchUpdateTexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    COpenGLES20Texture* pOpenGLESTexture = NULL;
+    
+    IFC(CreateTexture(Width, Height, &pOpenGLESTexture));
+    
+    *ppTexture = pOpenGLESTexture;
+    pOpenGLESTexture = NULL;
+    
+Cleanup:
+    ReleaseObject(pOpenGLESTexture);
+    
+    return hr;
+}
+
 __checkReturn HRESULT
 COpenGLES20GraphicsDevice::CreateTexture(
     UINT32 Width,
@@ -274,7 +295,7 @@ COpenGLES20GraphicsDevice::CreateTexture(
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);    
     
-    IFC(COpenGLES20Texture::Create(textureID, Width, Height, PixelFormat::B8G8R8A8, &pOpenGLESTexture));
+    IFC(COpenGLES20Texture::Create(textureID, Width, Height, PixelFormat::R8G8B8A8, &pOpenGLESTexture));
     
     textureID = 0;
     

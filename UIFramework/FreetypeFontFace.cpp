@@ -312,7 +312,7 @@ CFreetypeFontFace::GetFamilyNames(
                                 case TT_MS_ID_UNICODE_CS:
                                 case TT_MS_ID_SYMBOL_CS:
                                     {
-                                        IFC(ConvertUTF16BEToWCHAR((const UINT16*)name.string, name.string_len / sizeof(UINT16), &conversionBuffer, &convertedTextLength));
+                                        IFC(ConvertUTF16BEToWCHAR< 128 >((const UINT16*)name.string, name.string_len / sizeof(UINT16), &conversionBuffer, &convertedTextLength));
 
                                         pText = conversionBuffer.GetBuffer();
 

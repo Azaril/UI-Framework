@@ -46,6 +46,7 @@ UIFrameworkBridge::Initialize(
     )
 {
     HRESULT hr = S_OK;
+    CTextProvider* pTextProvider = NULL;
     
     IFC(CDynamicClassResolver::Create(&m_pClassResolver));
     
@@ -66,15 +67,25 @@ UIFrameworkBridge::Initialize(
     
     IFC(COpenGLES20GraphicsDevice::Create(pContext, &m_pGraphicsDevice));
     
+    IFC(m_pGraphicsDevice->GetTextProvider(&pTextProvider));
+    
+    {
+        const WCHAR fontFile[] = L"Opificio.ttf";
+        
+        IFC(pTextProvider->RegisterFont(m_pCompositeResourceProvider, fontFile, ARRAYSIZE(fontFile)));
+    }
+    
     IFC(m_pGraphicsDevice->CreateRenderTarget(pAllocator, &m_pRenderTarget));
     
     {
-        CFontDescription defaultFont(L"Opificio.ttf", 32, L"en-us");
+        CFontDescription defaultFont(L"Opificio", 32, L"en-us");
         
         IFC(CUIHost::Create(m_pGraphicsDevice, m_pRenderTarget, m_pProviders, &defaultFont, &m_pUIHost));
     }
     
 Cleanup:
+    ReleaseObject(pTextProvider);
+    
     return SUCCEEDED(hr);
 }
 

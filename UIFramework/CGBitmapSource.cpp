@@ -65,6 +65,7 @@ CCGBitmapSource::LoadIntoTexture(
 	switch (pixelFormat)
 	{
 		case PixelFormat::B8G8R8A8:
+        case PixelFormat::R8G8B8A8:
 			{
 				pColorSpace = CGColorSpaceCreateDeviceRGB();
 
@@ -87,10 +88,17 @@ CCGBitmapSource::LoadIntoTexture(
 	{
 		case PixelFormat::B8G8R8A8:
 			{
-				pContext = CGBitmapContextCreate(pDecodedImage, sourceSize.width, sourceSize.height, 8, lineSize, pColorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+				pContext = CGBitmapContextCreate(pDecodedImage, sourceSize.width, sourceSize.height, 8, lineSize, pColorSpace, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 
 				break;
 			}
+            
+		case PixelFormat::R8G8B8A8:
+            {
+                pContext = CGBitmapContextCreate(pDecodedImage, sourceSize.width, sourceSize.height, 8, lineSize, pColorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+                
+                break;
+            }            
 
 		default:
 			{

@@ -212,7 +212,6 @@
 		3D0784341419D7E80052E0DE /* RenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782C21419D7E80052E0DE /* RenderTarget.h */; };
 		3D0784371419D7E80052E0DE /* ResolvedTriggers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782C51419D7E80052E0DE /* ResolvedTriggers.cpp */; };
 		3D0784381419D7E80052E0DE /* ResolvedTriggers.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782C61419D7E80052E0DE /* ResolvedTriggers.h */; };
-		3D0784391419D7E80052E0DE /* Resource.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782C71419D7E80052E0DE /* Resource.h */; };
 		3D07843A1419D7E80052E0DE /* ResourceDictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782C81419D7E80052E0DE /* ResourceDictionary.cpp */; };
 		3D07843B1419D7E80052E0DE /* ResourceDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782C91419D7E80052E0DE /* ResourceDictionary.h */; };
 		3D07843C1419D7E80052E0DE /* RichPropertyNodeCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782CA1419D7E80052E0DE /* RichPropertyNodeCallback.cpp */; };
@@ -262,12 +261,10 @@
 		3D0784681419D7E80052E0DE /* StaticRoutedEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782F71419D7E80052E0DE /* StaticRoutedEvent.h */; };
 		3D0784691419D7E80052E0DE /* StaticTypeConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782F81419D7E80052E0DE /* StaticTypeConverter.cpp */; };
 		3D07846A1419D7E80052E0DE /* StaticTypeConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782F91419D7E80052E0DE /* StaticTypeConverter.h */; };
-		3D07846B1419D7E80052E0DE /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782FA1419D7E80052E0DE /* stdafx.h */; };
 		3D07846C1419D7E80052E0DE /* Style.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782FB1419D7E80052E0DE /* Style.cpp */; };
 		3D07846D1419D7E80052E0DE /* Style.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782FC1419D7E80052E0DE /* Style.h */; };
 		3D07846E1419D7E80052E0DE /* StyleCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0782FD1419D7E80052E0DE /* StyleCallback.cpp */; };
 		3D07846F1419D7E80052E0DE /* StyleCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782FE1419D7E80052E0DE /* StyleCallback.h */; };
-		3D0784701419D7E80052E0DE /* targetver.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0782FF1419D7E80052E0DE /* targetver.h */; };
 		3D0784711419D7E80052E0DE /* TemplateBinding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0783001419D7E80052E0DE /* TemplateBinding.cpp */; };
 		3D0784721419D7E80052E0DE /* TemplateBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D0783011419D7E80052E0DE /* TemplateBinding.h */; };
 		3D0784731419D7E80052E0DE /* TextBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D0783021419D7E80052E0DE /* TextBlock.cpp */; };
@@ -437,6 +434,12 @@
 		3D556AB614418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556AA914418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp */; };
 		3D556AB714418AF80089CCDA /* TextureAtlasWithWhitePixel.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AAA14418AF80089CCDA /* TextureAtlasWithWhitePixel.h */; };
 		3D556AB814418AF80089CCDA /* VertexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AAB14418AF80089CCDA /* VertexBuffer.h */; };
+		3D6BC7AD14554EA500FF758D /* AssertUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D6BC7A714554EA500FF758D /* AssertUtil.cpp */; };
+		3D6BC7AE14554EA500FF758D /* AssertUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6BC7A814554EA500FF758D /* AssertUtil.h */; };
+		3D6BC7AF14554EA500FF758D /* ColorUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D6BC7A914554EA500FF758D /* ColorUtilities.cpp */; };
+		3D6BC7B014554EA500FF758D /* ColorUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6BC7AA14554EA500FF758D /* ColorUtilities.h */; };
+		3D6BC7B114554EA500FF758D /* EndianUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D6BC7AB14554EA500FF758D /* EndianUtil.cpp */; };
+		3D6BC7B214554EA500FF758D /* EndianUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6BC7AC14554EA500FF758D /* EndianUtil.h */; };
 		3D9585B8141A02E30059E331 /* DummySal.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9585B7141A02E30059E331 /* DummySal.h */; };
 		3D9655A7142681A200132E4D /* CoreGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9655A6142681A200132E4D /* CoreGeometry.h */; };
 		3D9655A91426F93000132E4D /* TesselationSink.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D9655A81426F93000132E4D /* TesselationSink.h */; };
@@ -703,7 +706,6 @@
 		3D0782C21419D7E80052E0DE /* RenderTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderTarget.h; sourceTree = "<group>"; };
 		3D0782C51419D7E80052E0DE /* ResolvedTriggers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResolvedTriggers.cpp; sourceTree = "<group>"; };
 		3D0782C61419D7E80052E0DE /* ResolvedTriggers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResolvedTriggers.h; sourceTree = "<group>"; };
-		3D0782C71419D7E80052E0DE /* Resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Resource.h; sourceTree = "<group>"; };
 		3D0782C81419D7E80052E0DE /* ResourceDictionary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResourceDictionary.cpp; sourceTree = "<group>"; };
 		3D0782C91419D7E80052E0DE /* ResourceDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceDictionary.h; sourceTree = "<group>"; };
 		3D0782CA1419D7E80052E0DE /* RichPropertyNodeCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RichPropertyNodeCallback.cpp; sourceTree = "<group>"; };
@@ -753,12 +755,10 @@
 		3D0782F71419D7E80052E0DE /* StaticRoutedEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticRoutedEvent.h; sourceTree = "<group>"; };
 		3D0782F81419D7E80052E0DE /* StaticTypeConverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StaticTypeConverter.cpp; sourceTree = "<group>"; };
 		3D0782F91419D7E80052E0DE /* StaticTypeConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticTypeConverter.h; sourceTree = "<group>"; };
-		3D0782FA1419D7E80052E0DE /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
 		3D0782FB1419D7E80052E0DE /* Style.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Style.cpp; sourceTree = "<group>"; };
 		3D0782FC1419D7E80052E0DE /* Style.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Style.h; sourceTree = "<group>"; };
 		3D0782FD1419D7E80052E0DE /* StyleCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StyleCallback.cpp; sourceTree = "<group>"; };
 		3D0782FE1419D7E80052E0DE /* StyleCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StyleCallback.h; sourceTree = "<group>"; };
-		3D0782FF1419D7E80052E0DE /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
 		3D0783001419D7E80052E0DE /* TemplateBinding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TemplateBinding.cpp; sourceTree = "<group>"; };
 		3D0783011419D7E80052E0DE /* TemplateBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateBinding.h; sourceTree = "<group>"; };
 		3D0783021419D7E80052E0DE /* TextBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextBlock.cpp; sourceTree = "<group>"; };
@@ -928,6 +928,12 @@
 		3D556AA914418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlasWithWhitePixel.cpp; sourceTree = "<group>"; };
 		3D556AAA14418AF80089CCDA /* TextureAtlasWithWhitePixel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasWithWhitePixel.h; sourceTree = "<group>"; };
 		3D556AAB14418AF80089CCDA /* VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexBuffer.h; sourceTree = "<group>"; };
+		3D6BC7A714554EA500FF758D /* AssertUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AssertUtil.cpp; sourceTree = "<group>"; };
+		3D6BC7A814554EA500FF758D /* AssertUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssertUtil.h; sourceTree = "<group>"; };
+		3D6BC7A914554EA500FF758D /* ColorUtilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ColorUtilities.cpp; sourceTree = "<group>"; };
+		3D6BC7AA14554EA500FF758D /* ColorUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorUtilities.h; sourceTree = "<group>"; };
+		3D6BC7AB14554EA500FF758D /* EndianUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EndianUtil.cpp; sourceTree = "<group>"; };
+		3D6BC7AC14554EA500FF758D /* EndianUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndianUtil.h; sourceTree = "<group>"; };
 		3D9585B7141A02E30059E331 /* DummySal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummySal.h; sourceTree = "<group>"; };
 		3D9655A6142681A200132E4D /* CoreGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreGeometry.h; sourceTree = "<group>"; };
 		3D9655A81426F93000132E4D /* TesselationSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TesselationSink.h; sourceTree = "<group>"; };
@@ -1011,6 +1017,12 @@
 		3D06B5CD1419D4880097C7D9 /* UIFramework */ = {
 			isa = PBXGroup;
 			children = (
+				3D6BC7A714554EA500FF758D /* AssertUtil.cpp */,
+				3D6BC7A814554EA500FF758D /* AssertUtil.h */,
+				3D6BC7A914554EA500FF758D /* ColorUtilities.cpp */,
+				3D6BC7AA14554EA500FF758D /* ColorUtilities.h */,
+				3D6BC7AB14554EA500FF758D /* EndianUtil.cpp */,
+				3D6BC7AC14554EA500FF758D /* EndianUtil.h */,
 				3D9BADE91453F7A3003CE576 /* FontDescription.cpp */,
 				3D9BADEA1453F7A3003CE576 /* FontDescription.h */,
 				3D27E67D1453AC3C00761CCE /* EditableTextLayoutBase.cpp */,
@@ -1333,7 +1345,6 @@
 				3D0782C21419D7E80052E0DE /* RenderTarget.h */,
 				3D0782C51419D7E80052E0DE /* ResolvedTriggers.cpp */,
 				3D0782C61419D7E80052E0DE /* ResolvedTriggers.h */,
-				3D0782C71419D7E80052E0DE /* Resource.h */,
 				3D0782C81419D7E80052E0DE /* ResourceDictionary.cpp */,
 				3D0782C91419D7E80052E0DE /* ResourceDictionary.h */,
 				3D0782CA1419D7E80052E0DE /* RichPropertyNodeCallback.cpp */,
@@ -1383,12 +1394,10 @@
 				3D0782F71419D7E80052E0DE /* StaticRoutedEvent.h */,
 				3D0782F81419D7E80052E0DE /* StaticTypeConverter.cpp */,
 				3D0782F91419D7E80052E0DE /* StaticTypeConverter.h */,
-				3D0782FA1419D7E80052E0DE /* stdafx.h */,
 				3D0782FB1419D7E80052E0DE /* Style.cpp */,
 				3D0782FC1419D7E80052E0DE /* Style.h */,
 				3D0782FD1419D7E80052E0DE /* StyleCallback.cpp */,
 				3D0782FE1419D7E80052E0DE /* StyleCallback.h */,
-				3D0782FF1419D7E80052E0DE /* targetver.h */,
 				3D0783001419D7E80052E0DE /* TemplateBinding.cpp */,
 				3D0783011419D7E80052E0DE /* TemplateBinding.h */,
 				3D0783021419D7E80052E0DE /* TextBlock.cpp */,
@@ -1602,7 +1611,6 @@
 				3D0784321419D7E80052E0DE /* RenderContext.h in Headers */,
 				3D0784341419D7E80052E0DE /* RenderTarget.h in Headers */,
 				3D0784381419D7E80052E0DE /* ResolvedTriggers.h in Headers */,
-				3D0784391419D7E80052E0DE /* Resource.h in Headers */,
 				3D07843B1419D7E80052E0DE /* ResourceDictionary.h in Headers */,
 				3D07843D1419D7E80052E0DE /* RichPropertyNodeCallback.h in Headers */,
 				3D07843F1419D7E80052E0DE /* RootUIElement.h in Headers */,
@@ -1627,10 +1635,8 @@
 				3D0784661419D7E80052E0DE /* StaticRoutedCommand.h in Headers */,
 				3D0784681419D7E80052E0DE /* StaticRoutedEvent.h in Headers */,
 				3D07846A1419D7E80052E0DE /* StaticTypeConverter.h in Headers */,
-				3D07846B1419D7E80052E0DE /* stdafx.h in Headers */,
 				3D07846D1419D7E80052E0DE /* Style.h in Headers */,
 				3D07846F1419D7E80052E0DE /* StyleCallback.h in Headers */,
-				3D0784701419D7E80052E0DE /* targetver.h in Headers */,
 				3D0784721419D7E80052E0DE /* TemplateBinding.h in Headers */,
 				3D0784741419D7E80052E0DE /* TextBlock.h in Headers */,
 				3D0784761419D7E80052E0DE /* TextBox.h in Headers */,
@@ -1742,6 +1748,9 @@
 				3D27E6A21453AC3C00761CCE /* TextLayoutEngineMetrics.h in Headers */,
 				3D27E6A41453AC3C00761CCE /* TypeOperators.h in Headers */,
 				3D9BADEC1453F7A3003CE576 /* FontDescription.h in Headers */,
+				3D6BC7AE14554EA500FF758D /* AssertUtil.h in Headers */,
+				3D6BC7B014554EA500FF758D /* ColorUtilities.h in Headers */,
+				3D6BC7B214554EA500FF758D /* EndianUtil.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2034,6 +2043,9 @@
 				3D27E6A11453AC3C00761CCE /* TextLayoutEngineMetrics.cpp in Sources */,
 				3D27E6A31453AC3C00761CCE /* TypeOperators.cpp in Sources */,
 				3D9BADEB1453F7A3003CE576 /* FontDescription.cpp in Sources */,
+				3D6BC7AD14554EA500FF758D /* AssertUtil.cpp in Sources */,
+				3D6BC7AF14554EA500FF758D /* ColorUtilities.cpp in Sources */,
+				3D6BC7B114554EA500FF758D /* EndianUtil.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

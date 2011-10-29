@@ -13,7 +13,7 @@
 class COpenGLES20RenderTarget;
 
 class COpenGLES20GraphicsDevice : public CGraphicsDevice,
-                                  public ITextureAllocator
+                                  public IBatchUpdateTextureAllocator
 {
 	public:
 		DECLARE_FACTORY1( COpenGLES20GraphicsDevice, COpenGLES20Context* );
@@ -63,6 +63,12 @@ class COpenGLES20GraphicsDevice : public CGraphicsDevice,
             UINT32 Height,
             __deref_out ITexture** ppTexture
             );
+    
+        __override virtual __checkReturn HRESULT AllocateTexture(
+            UINT32 Width,
+            UINT32 Height,
+            __deref_out IBatchUpdateTexture** ppTexture
+            );    
 
         __checkReturn HRESULT CreateTexture(
             UINT32 Width,

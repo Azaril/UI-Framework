@@ -124,7 +124,7 @@ class CTextureAtlasPool : public CRefCountedObjectBase< ITextureAtlasPool >
         {
             HRESULT hr = S_OK;
             AtlasType* pNewAtlas = NULL;
-            AtlasType::TextureInterface* pNewAtlasStorageTexture = NULL;
+            typename AtlasType::TextureInterface* pNewAtlasStorageTexture = NULL;
             UINT32 inflatedWidth = std::max(NextPowerOfTwo(Width), m_MinimumWidth);
             UINT32 inflatedHeight = std::max(NextPowerOfTwo(Height), m_MinimumHeight);
 
