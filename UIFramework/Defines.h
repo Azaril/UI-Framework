@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _WINDOWS
+#ifdef WIN32
 
 #ifdef UIFRAMEWORK_EXPORTS
 #define UIFRAMEWORK_API __declspec(dllexport)

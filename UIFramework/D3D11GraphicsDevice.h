@@ -1,23 +1,27 @@
 #pragma once
 
-#include <d3d10.h>
+#include <d3d11.h>
 
 #include "Factory.h"
 #include "GraphicsDevice.h"
-#include "D3D10RenderTarget.h"
-#include "D3D10HWNDRenderTarget.h"
-#include "D3D10SurfaceRenderTarget.h"
+#include "D3D11RenderTarget.h"
+#include "D3D11HWNDRenderTarget.h"
+#include "D3D11SurfaceRenderTarget.h"
 #include "StagingTextureWrapper.h"
 
-class CD3D10Texture;
+class CD3D11Texture;
 
-typedef HRESULT (WINAPI *D3D10CreateDeviceFunc)(
+typedef HRESULT (WINAPI *D3D11CreateDeviceFunc)(
     __in IDXGIAdapter* pAdapter,
-    __in D3D10_DRIVER_TYPE DriverType,
+    __in D3D_DRIVER_TYPE DriverType,
     __in HMODULE Software,
     __in UINT Flags,
+    __in const D3D_FEATURE_LEVEL* pFeatureLevels,
+    __in UINT FeatureLevels,
     __in UINT SDKVersion,
-    __deref_out ID3D10Device** ppDevice
+    __deref_out ID3D11Device** ppDevice,
+    __out D3D_FEATURE_LEVEL* pFeatureLevel,
+    __deref_out ID3D11DeviceContext** ppImmediateContext
     );
 
 typedef HRESULT (WINAPI* CreateDXGIFactoryFunc)(
@@ -25,22 +29,22 @@ typedef HRESULT (WINAPI* CreateDXGIFactoryFunc)(
     __deref_out void** ppFactory
     );
 
-class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
+class UIFRAMEWORK_API CD3D11GraphicsDevice : public CGraphicsDevice,
                                              public IBatchUpdateTextureAllocator,
                                              private IStagingTextureCallback
 {
     public:
-        DECLARE_FACTORY( CD3D10GraphicsDevice );
-        DECLARE_FACTORY1( CD3D10GraphicsDevice, ID3D10Device* );
+        DECLARE_FACTORY( CD3D11GraphicsDevice );
+        DECLARE_FACTORY1( CD3D11GraphicsDevice, ID3D11Device* );
 
         __checkReturn HRESULT CreateHWNDRenderTarget(
             HWND Window,
-            __deref_out CD3D10HWNDRenderTarget** ppRenderTarget
+            __deref_out CD3D11HWNDRenderTarget** ppRenderTarget
             );
 
         __checkReturn HRESULT CreateSurfaceRenderTarget(
-            __in ID3D10Texture2D* pRenderTarget,
-            __deref_out CD3D10SurfaceRenderTarget** ppRenderTarget
+            __in ID3D11Texture2D* pRenderTarget,
+            __deref_out CD3D11SurfaceRenderTarget** ppRenderTarget
             );
 
         __override virtual __checkReturn HRESULT GetTextProvider(
@@ -56,17 +60,17 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
             );
 
     protected:
-        CD3D10GraphicsDevice(
+        CD3D11GraphicsDevice(
             );
 
-        virtual ~CD3D10GraphicsDevice(
-            );
-
-        __checkReturn HRESULT Initialize(
+        virtual ~CD3D11GraphicsDevice(
             );
 
         __checkReturn HRESULT Initialize(
-            __in ID3D10Device* pDevice
+            );
+
+        __checkReturn HRESULT Initialize(
+            __in ID3D11Device* pDevice
             );
 
         __checkReturn HRESULT EnsureDXGIFactory(
@@ -103,8 +107,8 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
             );
 
         __checkReturn HRESULT AllocateTexture(
-            const D3D10_TEXTURE2D_DESC& textureDescription,
-            __deref_out CD3D10Texture** ppTexture
+            const D3D11_TEXTURE2D_DESC& textureDescription,
+            __deref_out CD3D11Texture** ppTexture
             );
 
         __override virtual __checkReturn HRESULT AddUpdate(
@@ -114,13 +118,14 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
             const Point2U& destOffset
             );
 
-        HMODULE m_D3D10Module;
-        D3D10CreateDeviceFunc m_pCreateDevice;
+        HMODULE m_D3D11Module;
+        D3D11CreateDeviceFunc m_pCreateDevice;
 
         HMODULE m_DXGIModule;
         CreateDXGIFactoryFunc m_pCreateDXGIFactory;
 
-        ID3D10Device* m_pDevice;
+        ID3D11Device* m_pDevice;
+        ID3D11DeviceContext* m_pImmediateContext;
         IDXGIFactory* m_pDXGIFactory;
 
         CTextProvider* m_pTextProvider;
@@ -140,8 +145,8 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
                 );
 
             void Initialize(
-                __in CD3D10GraphicsDevice* pGraphicsDevice,
-                const D3D10_TEXTURE2D_DESC& baseDescription
+                __in CD3D11GraphicsDevice* pGraphicsDevice,
+                const D3D11_TEXTURE2D_DESC& baseDescription
                 );
 
             __override virtual __checkReturn HRESULT AllocateTexture(
@@ -157,8 +162,8 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
                 );
 
         protected:
-            CD3D10GraphicsDevice* m_pGraphicsDevice;
-            D3D10_TEXTURE2D_DESC m_TextureDescription;
+            CD3D11GraphicsDevice* m_pGraphicsDevice;
+            D3D11_TEXTURE2D_DESC m_TextureDescription;
         };
 
         CRenderTextureAllocator m_StagingTextureAllocator;

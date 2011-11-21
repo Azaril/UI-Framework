@@ -1,16 +1,16 @@
-#include "D3D10GraphicsDevice.h"
+#include "D3D11GraphicsDevice.h"
 #include "CoreGeometryProvider.h"
 #include "WICImagingProvider.h"
-#include "D3D10Texture.h"
+#include "D3D11Texture.h"
 #include "StagingTextureWrapper.h"
 #include "FreetypeTextProvider.h"
 
-CD3D10GraphicsDevice::CD3D10GraphicsDevice(
+CD3D11GraphicsDevice::CD3D11GraphicsDevice(
     )
     : m_pTextProvider(NULL)
     , m_pImagingProvider(NULL)
     , m_pGeometryProvider(NULL)
-    , m_D3D10Module(NULL)
+    , m_D3D11Module(NULL)
     , m_pCreateDevice(NULL)
     , m_DXGIModule(NULL)
     , m_pCreateDXGIFactory(NULL)
@@ -18,10 +18,11 @@ CD3D10GraphicsDevice::CD3D10GraphicsDevice(
     , m_pStagingTextureAtlasPool(NULL)
     , m_pTextureAtlasPool(NULL)
     , m_pDXGIFactory(NULL)
+    , m_pImmediateContext(NULL)
 {
 }
 
-CD3D10GraphicsDevice::~CD3D10GraphicsDevice(
+CD3D11GraphicsDevice::~CD3D11GraphicsDevice(
     )
 {
     ReleaseObject(m_pTextProvider);
@@ -30,13 +31,14 @@ CD3D10GraphicsDevice::~CD3D10GraphicsDevice(
 
     ReleaseObject(m_pTextureAtlasPool);
     ReleaseObject(m_pStagingTextureAtlasPool);
+    ReleaseObject(m_pImmediateContext);
     ReleaseObject(m_pDevice);
 
     ReleaseObject(m_pDXGIFactory);
 
-    if (m_D3D10Module != NULL)
+    if (m_D3D11Module != NULL)
     {
-        FreeLibrary(m_D3D10Module);
+        FreeLibrary(m_D3D11Module);
     }
 
     if (m_DXGIModule != NULL)
@@ -46,17 +48,19 @@ CD3D10GraphicsDevice::~CD3D10GraphicsDevice(
 }
 
 __checkReturn HRESULT
-CD3D10GraphicsDevice::Initialize(
+CD3D11GraphicsDevice::Initialize(
     )
 {
     HRESULT hr = S_OK;
     IDXGIAdapter* pAdapter = NULL;
-    ID3D10Device* pDevice = NULL;
+    ID3D11DeviceContext* pImmediateContext = NULL;
+    ID3D11Device* pDevice = NULL;
+    D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_9_1;
 
-    m_D3D10Module = LoadLibrary(L"D3D10.dll");
-    IFCEXPECT(m_D3D10Module != NULL);
+    m_D3D11Module = LoadLibrary(L"D3D11.dll");
+    IFCEXPECT(m_D3D11Module != NULL);
 
-    m_pCreateDevice = (D3D10CreateDeviceFunc)GetProcAddress(m_D3D10Module, "D3D10CreateDevice");
+    m_pCreateDevice = (D3D11CreateDeviceFunc)GetProcAddress(m_D3D11Module, "D3D11CreateDevice");
     IFCEXPECT(m_pCreateDevice != NULL);
 
     IFC(EnsureDXGIFactory());
@@ -64,37 +68,52 @@ CD3D10GraphicsDevice::Initialize(
     //TODO: Pick the correct adapter.
     IFC(m_pDXGIFactory->EnumAdapters(0, &pAdapter));
 
-    IFC(m_pCreateDevice(pAdapter, D3D10_DRIVER_TYPE_HARDWARE, NULL, D3D10_CREATE_DEVICE_SINGLETHREADED, D3D10_SDK_VERSION, &pDevice));
+    {
+        D3D_FEATURE_LEVEL featureLevels[] =
+        {
+            D3D_FEATURE_LEVEL_11_0,
+            D3D_FEATURE_LEVEL_10_1,
+            D3D_FEATURE_LEVEL_10_0,
+            D3D_FEATURE_LEVEL_9_3,
+            D3D_FEATURE_LEVEL_9_2,
+            D3D_FEATURE_LEVEL_9_1
+        };
+
+        IFC(m_pCreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, D3D11_CREATE_DEVICE_SINGLETHREADED, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &pDevice, &featureLevel, &pImmediateContext));
+    }
 
     IFC(Initialize(pDevice));
 
 Cleanup:
-    ReleaseObject(pAdapter);
     ReleaseObject(pDevice);
+    ReleaseObject(pImmediateContext);
+    ReleaseObject(pAdapter);
 
     return hr;
 }
 
 __checkReturn HRESULT
-CD3D10GraphicsDevice::Initialize(
-    __in ID3D10Device* pDevice
+CD3D11GraphicsDevice::Initialize(
+    __in ID3D11Device* pDevice
     )
 {
     HRESULT hr = S_OK;
 
     SetObject(m_pDevice, pDevice);
 
+    m_pDevice->GetImmediateContext(&m_pImmediateContext);
+
     {
-        D3D10_TEXTURE2D_DESC textureDescription = { };
+        D3D11_TEXTURE2D_DESC textureDescription = { };
 
         textureDescription.MipLevels = 1;
         textureDescription.ArraySize = 1;
         textureDescription.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
         textureDescription.SampleDesc.Count = 1;
         textureDescription.SampleDesc.Quality = 0;
-        textureDescription.Usage = D3D10_USAGE_STAGING;
+        textureDescription.Usage = D3D11_USAGE_STAGING;
         textureDescription.BindFlags = 0;
-        textureDescription.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
+        textureDescription.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
         textureDescription.MiscFlags = 0;
 
         m_StagingTextureAllocator.Initialize(this, textureDescription);
@@ -119,7 +138,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT
-CD3D10GraphicsDevice::EnsureDXGIFactory(
+CD3D11GraphicsDevice::EnsureDXGIFactory(
     )
 {
     HRESULT hr = S_OK;
@@ -146,14 +165,14 @@ Cleanup:
 }
 
 __checkReturn HRESULT
-CD3D10GraphicsDevice::CreateHWNDRenderTarget(
+CD3D11GraphicsDevice::CreateHWNDRenderTarget(
     HWND Window,
-    __deref_out CD3D10HWNDRenderTarget** ppRenderTarget
+    __deref_out CD3D11HWNDRenderTarget** ppRenderTarget
     )
 {
     HRESULT hr = S_OK;
     IDXGISwapChain* pSwapChain = NULL;
-    CD3D10HWNDRenderTarget* pHWNDRenderTarget = NULL;
+    CD3D11HWNDRenderTarget* pHWNDRenderTarget = NULL;
 
     IFCEXPECT(Window != NULL);
     IFCPTR(ppRenderTarget);
@@ -179,27 +198,28 @@ CD3D10GraphicsDevice::CreateHWNDRenderTarget(
         IFC(m_pDXGIFactory->CreateSwapChain(m_pDevice, &swapChainDescription, &pSwapChain));
     }
 
-    IFC(CD3D10HWNDRenderTarget::Create(m_pDevice, pSwapChain, m_pTextureAtlasPool, &pHWNDRenderTarget));
+    IFC(CD3D11HWNDRenderTarget::Create(m_pDevice, pSwapChain, m_pTextureAtlasPool, &pHWNDRenderTarget));
 
     *ppRenderTarget = pHWNDRenderTarget;
     pHWNDRenderTarget = NULL;
 
 Cleanup:
     ReleaseObject(pSwapChain);
+    ReleaseObject(pHWNDRenderTarget);
 
     return hr;
 }
 
 __checkReturn HRESULT
-CD3D10GraphicsDevice::CreateSurfaceRenderTarget(
-    __in ID3D10Texture2D* pRenderTarget,
-    __deref_out CD3D10SurfaceRenderTarget** ppRenderTarget
+CD3D11GraphicsDevice::CreateSurfaceRenderTarget(
+    __in ID3D11Texture2D* pRenderTarget,
+    __deref_out CD3D11SurfaceRenderTarget** ppRenderTarget
     )
 {
     HRESULT hr = S_OK;
-    CD3D10SurfaceRenderTarget* pSurfaceRenderTarget = NULL;
+    CD3D11SurfaceRenderTarget* pSurfaceRenderTarget = NULL;
 
-    IFC(CD3D10SurfaceRenderTarget::Create(m_pDevice, pRenderTarget, m_pTextureAtlasPool, &pSurfaceRenderTarget));
+    IFC(CD3D11SurfaceRenderTarget::Create(m_pDevice, pRenderTarget, m_pTextureAtlasPool, &pSurfaceRenderTarget));
 
     *ppRenderTarget = pSurfaceRenderTarget;
     pSurfaceRenderTarget = NULL;
@@ -211,7 +231,7 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CD3D10GraphicsDevice::GetTextProvider(
+CD3D11GraphicsDevice::GetTextProvider(
     __deref_out CTextProvider** ppTextProvider
     )
 {
@@ -227,7 +247,7 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CD3D10GraphicsDevice::GetImagingProvider(
+CD3D11GraphicsDevice::GetImagingProvider(
     CImagingProvider** ppImagingProvider
     )
 {
@@ -243,7 +263,7 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CD3D10GraphicsDevice::GetGeometryProvider(
+CD3D11GraphicsDevice::GetGeometryProvider(
     CGeometryProvider** ppGeometryProvider
     )
 {
@@ -259,7 +279,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D10GraphicsDevice::CreateTextProvider(
+CD3D11GraphicsDevice::CreateTextProvider(
     __deref_out CTextProvider** ppTextProvider
     )
 {
@@ -284,7 +304,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D10GraphicsDevice::CreateImagingProvider(
+CD3D11GraphicsDevice::CreateImagingProvider(
     __deref_out CImagingProvider** ppImagingProvider
     )
 {
@@ -309,7 +329,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D10GraphicsDevice::CreateGeometryProvider(
+CD3D11GraphicsDevice::CreateGeometryProvider(
     __deref_out CGeometryProvider** ppGeometryProvider
     )
 {
@@ -334,7 +354,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D10GraphicsDevice::AllocateTexture(
+CD3D11GraphicsDevice::AllocateTexture(
     UINT32 Width,
     UINT32 Height,
     __deref_out ITexture** ppTexture
@@ -355,7 +375,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D10GraphicsDevice::AllocateTexture(
+CD3D11GraphicsDevice::AllocateTexture(
     UINT32 Width,
     UINT32 Height,
     __deref_out IBatchUpdateTexture** ppTexture
@@ -376,22 +396,22 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D10GraphicsDevice::CreateTexture(
+CD3D11GraphicsDevice::CreateTexture(
     UINT32 Width,
     UINT32 Height,
     __deref_out CStagingTextureWrapper** ppTexture
     )
 {
     HRESULT hr = S_OK;
-    ID3D10Texture2D* pD3DTexture = NULL;
-    CD3D10Texture* pTexture = NULL;
+    ID3D11Texture2D* pD3DTexture = NULL;
+    CD3D11Texture* pTexture = NULL;
     CStagingTextureWrapper* pStagingTexture = NULL;
 
     //
     // Create rendering texture.
     //
     {
-        D3D10_TEXTURE2D_DESC textureDescription = { };
+        D3D11_TEXTURE2D_DESC textureDescription = { };
 
         textureDescription.Width = Width;
         textureDescription.Height = Height;
@@ -400,14 +420,14 @@ CD3D10GraphicsDevice::CreateTexture(
         textureDescription.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
         textureDescription.SampleDesc.Count = 1;
         textureDescription.SampleDesc.Quality = 0;
-        textureDescription.Usage = D3D10_USAGE_DEFAULT;
-        textureDescription.BindFlags = D3D10_BIND_SHADER_RESOURCE;
+        textureDescription.Usage = D3D11_USAGE_DEFAULT;
+        textureDescription.BindFlags = D3D11_BIND_SHADER_RESOURCE;
         textureDescription.CPUAccessFlags = 0;
         textureDescription.MiscFlags = 0;
 
         IFC(m_pDevice->CreateTexture2D(&textureDescription, NULL, &pD3DTexture));
 
-        IFC(CD3D10Texture::Create(pD3DTexture, &pTexture));
+        IFC(CD3D11Texture::Create(m_pImmediateContext, pD3DTexture, &pTexture));
     }
 
     //
@@ -426,18 +446,18 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D10GraphicsDevice::AllocateTexture(
-    const D3D10_TEXTURE2D_DESC& textureDescription,
-    __deref_out CD3D10Texture** ppTexture
+CD3D11GraphicsDevice::AllocateTexture(
+    const D3D11_TEXTURE2D_DESC& textureDescription,
+    __deref_out CD3D11Texture** ppTexture
     )
 {
     HRESULT hr = S_OK;
-    ID3D10Texture2D* pD3DTexture = NULL;
-    CD3D10Texture* pTexture = NULL;
+    ID3D11Texture2D* pD3DTexture = NULL;
+    CD3D11Texture* pTexture = NULL;
 
     IFC(m_pDevice->CreateTexture2D(&textureDescription, NULL, &pD3DTexture));
 
-    IFC(CD3D10Texture::Create(pD3DTexture, &pTexture));
+    IFC(CD3D11Texture::Create(m_pImmediateContext, pD3DTexture, &pTexture));
 
     *ppTexture = pTexture;
     pTexture = NULL;
@@ -450,7 +470,7 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CD3D10GraphicsDevice::AddUpdate(
+CD3D11GraphicsDevice::AddUpdate(
     __in ITexture* pSource,
     const RectU& sourceRect,
     __in ITexture* pDestination,
@@ -459,18 +479,18 @@ CD3D10GraphicsDevice::AddUpdate(
 {
     HRESULT hr = S_OK;
     CTextureAtlasView* pSourceView = NULL;
-    CD3D10Texture* pSourceTexture = NULL;
-    CD3D10Texture* pDestinationTexture = NULL;
+    CD3D11Texture* pSourceTexture = NULL;
+    CD3D11Texture* pDestinationTexture = NULL;
 
     pSourceView = (CTextureAtlasView*)pSource;
 
-    pSourceTexture = (CD3D10Texture*)pSourceView->GetTexture();
-    pDestinationTexture = (CD3D10Texture*)pDestination;
+    pSourceTexture = (CD3D11Texture*)pSourceView->GetTexture();
+    pDestinationTexture = (CD3D11Texture*)pDestination;
 
     {
         const RectU& viewSourceRect = pSourceView->GetRect();
 
-        D3D10_BOX sourceBox = { };
+        D3D11_BOX sourceBox = { };
 
         sourceBox.left = viewSourceRect.left + sourceRect.left;
         sourceBox.top = viewSourceRect.top + sourceRect.top;
@@ -480,13 +500,13 @@ CD3D10GraphicsDevice::AddUpdate(
         sourceBox.back = 1;
 
         //TODO: Batch texture updates.
-        m_pDevice->CopySubresourceRegion(pDestinationTexture->GetD3DTexture(), D3D10CalcSubresource(0, 0, 1), destOffset.x, destOffset.y, 0, pSourceTexture->GetD3DTexture(), D3D10CalcSubresource(0, 0, 1), &sourceBox);
+        m_pImmediateContext->CopySubresourceRegion(pDestinationTexture->GetD3DTexture(), D3D11CalcSubresource(0, 0, 1), destOffset.x, destOffset.y, 0, pSourceTexture->GetD3DTexture(), D3D11CalcSubresource(0, 0, 1), &sourceBox);
     }
 
     return hr;
 }
 
-CD3D10GraphicsDevice::CRenderTextureAllocator::CRenderTextureAllocator(
+CD3D11GraphicsDevice::CRenderTextureAllocator::CRenderTextureAllocator(
     )
     : m_pGraphicsDevice(NULL)
 {
@@ -494,9 +514,9 @@ CD3D10GraphicsDevice::CRenderTextureAllocator::CRenderTextureAllocator(
 }
 
 void
-CD3D10GraphicsDevice::CRenderTextureAllocator::Initialize(
-    __in CD3D10GraphicsDevice* pGraphicsDevice,
-    const D3D10_TEXTURE2D_DESC& baseDescription
+CD3D11GraphicsDevice::CRenderTextureAllocator::Initialize(
+    __in CD3D11GraphicsDevice* pGraphicsDevice,
+    const D3D11_TEXTURE2D_DESC& baseDescription
     )
 {
     m_pGraphicsDevice = pGraphicsDevice;
@@ -504,15 +524,15 @@ CD3D10GraphicsDevice::CRenderTextureAllocator::Initialize(
 }
 
 __override __checkReturn HRESULT 
-CD3D10GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
+CD3D11GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
     UINT32 Width,
     UINT32 Height,
     __deref_out ITexture** ppTexture
     )
 {
     HRESULT hr = S_OK;
-    D3D10_TEXTURE2D_DESC textureDescription = m_TextureDescription;
-    CD3D10Texture* pNewTexture = NULL;
+    D3D11_TEXTURE2D_DESC textureDescription = m_TextureDescription;
+    CD3D11Texture* pNewTexture = NULL;
 
     textureDescription.Width = Width;
     textureDescription.Height = Height;
@@ -529,15 +549,15 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CD3D10GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
+CD3D11GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
     UINT32 Width,
     UINT32 Height,
     __deref_out IBatchUpdateTexture** ppTexture
     )
 {
     HRESULT hr = S_OK;
-    D3D10_TEXTURE2D_DESC textureDescription = m_TextureDescription;
-    CD3D10Texture* pNewTexture = NULL;
+    D3D11_TEXTURE2D_DESC textureDescription = m_TextureDescription;
+    CD3D11Texture* pNewTexture = NULL;
 
     textureDescription.Width = Width;
     textureDescription.Height = Height;

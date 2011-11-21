@@ -3,7 +3,7 @@
 #include "RefCounted.h"
 
 template< typename T = Nothing >
-class UIFRAMEWORK_API CCOMRefCountedObjectBase : public T
+class CCOMRefCountedObjectBase : public T
 {
     public:
         STDMETHOD_(ULONG, AddRef)(
@@ -43,7 +43,7 @@ class UIFRAMEWORK_API CCOMRefCountedObjectBase : public T
 };
 
 template< >
-class UIFRAMEWORK_API CCOMRefCountedObjectBase< Nothing >
+class CCOMRefCountedObjectBase< Nothing >
 {
     public:
         STDMETHOD_(ULONG, AddRef)(
@@ -96,3 +96,10 @@ STDMETHOD(ULONG, Release)( \
 {   \
     return base::Release(); \
 }
+
+#define DECLARE_COM_ADDREF_RELEASE_INTERFACE()   \
+STDMETHOD(ULONG, AddRef)( \
+    ) = 0;  \
+\
+STDMETHOD(ULONG, Release)( \
+    ) = 0;
