@@ -3,7 +3,7 @@
 #include "Types.h"
 
 template< typename T = Nothing >
-class UIFRAMEWORK_API CRefCountedObjectBase : public T
+class CRefCountedObjectBase : public T
 {
     public:
         virtual INT32 AddRef(
@@ -43,7 +43,7 @@ class UIFRAMEWORK_API CRefCountedObjectBase : public T
 };
 
 template< >
-class UIFRAMEWORK_API CRefCountedObjectBase< Nothing >
+class CRefCountedObjectBase< Nothing >
 {
     public:
         virtual INT32 AddRef(

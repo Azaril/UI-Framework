@@ -40,7 +40,7 @@ CStringValue::Initialize(
     HRESULT hr = S_OK;
     UINT32 BufferSize = 0;
 
-    IFCPTR(pValue);
+    IFCEXPECT(pValue != NULL || Length == 0);
 
     m_Length = Length;
 

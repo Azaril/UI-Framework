@@ -139,6 +139,9 @@
     <Filter Include="Framework\Text\Core\Layout">
       <UniqueIdentifier>{168ab37b-fa12-4b14-891f-eef2ec39a181}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Graphics\D3D11">
+      <UniqueIdentifier>{787041c7-6999-4c75-8123-1246244a6ca0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -909,7 +912,46 @@
     <ClCompile Include="EndianUtil.cpp">
       <Filter>Framework\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="D3D9SurfaceRenderTarget.cpp" />
+    <ClCompile Include="DirectWriteFontCollectionLoader.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D9SurfaceRenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="COMRefCounted.cpp">
+      <Filter>Framework\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteRegisteredFontCollection.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteFontFileEnumerator.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteFontFileLoader.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectWriteFontFileStream.cpp">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11GraphicsDevice.cpp">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11RenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11HWNDRenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11VertexBuffer.cpp">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11Texture.cpp">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D10SurfaceRenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11SurfaceRenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1698,6 +1740,48 @@
     <ClInclude Include="EndianUtil.h">
       <Filter>Framework\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="D3D9SurfaceRenderTarget.h" />
+    <ClInclude Include="DirectWriteFontCollectionLoader.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D9SurfaceRenderTarget.h">
+      <Filter>Framework\Graphics\D3D9</Filter>
+    </ClInclude>
+    <ClInclude Include="COMRefCounted.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteRegisteredFontCollection.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteFontFileEnumerator.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteFontFileLoader.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteFontFileStream.h">
+      <Filter>Framework\Text\DirectWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoLock.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11GraphicsDevice.h">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11RenderTarget.h">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11HWNDRenderTarget.h">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11VertexBuffer.h">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11Texture.h">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D10SurfaceRenderTarget.h">
+      <Filter>Framework\Graphics\D3D10</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11SurfaceRenderTarget.h" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-#include "D3D10Texture.h"
+#include "D3D11Texture.h"
 
 namespace
 {
@@ -29,9 +29,10 @@ DXGIFormatToPixelFormat(
 
 }
 
-CD3D10Texture::CD3D10Texture(
+CD3D11Texture::CD3D11Texture(
     )
     : m_pTexture(NULL)
+    , m_pContext(NULL)
     , m_Width(0)
     , m_Height(0)
     , m_Format(PixelFormat::Unknown)
@@ -39,22 +40,25 @@ CD3D10Texture::CD3D10Texture(
 {
 }
 
-CD3D10Texture::~CD3D10Texture(
+CD3D11Texture::~CD3D11Texture(
     )
 {
+    ReleaseObject(m_pContext);
     ReleaseObject(m_pResourceView);
     ReleaseObject(m_pTexture);
 }
 
 __checkReturn HRESULT
-CD3D10Texture::Initialize(
-    __in ID3D10Texture2D* pTexture
+CD3D11Texture::Initialize(
+    __in ID3D11DeviceContext* pContext,
+    __in ID3D11Texture2D* pTexture
     )
 {
     HRESULT hr = S_OK;
-    D3D10_TEXTURE2D_DESC textureDescription = { };
+    D3D11_TEXTURE2D_DESC textureDescription = { };
 
     SetObject(m_pTexture, pTexture);
+    SetObject(m_pContext, pContext);
 
     m_pTexture->GetDesc(&textureDescription);
 
@@ -65,60 +69,60 @@ CD3D10Texture::Initialize(
     return hr;
 }
 
-__out ID3D10Texture2D*
-CD3D10Texture::GetD3DTexture( 
+__out ID3D11Texture2D*
+CD3D11Texture::GetD3DTexture( 
     )
 {
     return m_pTexture;
 }
 
-__out ID3D10ShaderResourceView* 
-CD3D10Texture::GetResourceView(
+__out ID3D11ShaderResourceView* 
+CD3D11Texture::GetResourceView(
     )
 {
     return m_pResourceView;
 }
 
 void 
-CD3D10Texture::SetResourceView(
-    __in_opt ID3D10ShaderResourceView* pView
+CD3D11Texture::SetResourceView(
+    __in_opt ID3D11ShaderResourceView* pView
     )
 {
     ReplaceObject(m_pResourceView, pView);
 }
 
 __override UINT32 
-CD3D10Texture::GetWidth(
+CD3D11Texture::GetWidth(
     )
 {
     return m_Width;
 }
 
 __override UINT32 
-CD3D10Texture::GetHeight(
+CD3D11Texture::GetHeight(
     )
 {
     return m_Height;
 }
 
 __override PixelFormat::Value
-CD3D10Texture::GetPixelFormat(
+CD3D11Texture::GetPixelFormat(
     )
 {
     return m_Format;
 }
 
 __override __checkReturn HRESULT 
-CD3D10Texture::SetData(
+CD3D11Texture::SetData(
     __in_ecount(DataSize) BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
 {
     HRESULT hr = S_OK;
-    D3D10_MAPPED_TEXTURE2D  mappedTexture = { };
+    D3D11_MAPPED_SUBRESOURCE mappedTexture = { };
 
-    IFC(m_pTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTexture));
+    IFC(m_pContext->Map(m_pTexture, D3D11CalcSubresource(0, 0, 1), D3D11_MAP_WRITE_DISCARD, 0, &mappedTexture));
 
     {
         BYTE* pSourceData = pData;
@@ -137,14 +141,14 @@ CD3D10Texture::SetData(
 Cleanup:
     if (mappedTexture.pData != NULL)
     {
-        m_pTexture->Unmap(D3D10CalcSubresource(0, 0, 1));
+        m_pContext->Unmap(m_pTexture, D3D11CalcSubresource(0, 0, 1));
     }
 
     return hr;
 }
 
 __override __checkReturn HRESULT 
-CD3D10Texture::SetSubData(
+CD3D11Texture::SetSubData(
     const RectU& Region,
     __in_ecount(DataSize) BYTE* pData,
     UINT32 DataSize,
@@ -152,11 +156,11 @@ CD3D10Texture::SetSubData(
     )
 {
     HRESULT hr = S_OK;
-    D3D10_MAPPED_TEXTURE2D  mappedTexture = { };
+    D3D11_MAPPED_SUBRESOURCE mappedTexture = { };
 
     //TODO: Validate data size.
 
-    IFC(m_pTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE, 0, &mappedTexture));
+    IFC(m_pContext->Map(m_pTexture, D3D11CalcSubresource(0, 0, 1), D3D11_MAP_WRITE, 0, &mappedTexture));
 
     {
         BYTE* pSourceData = pData;
@@ -175,14 +179,14 @@ CD3D10Texture::SetSubData(
 Cleanup:
     if (mappedTexture.pData != NULL)
     {
-        m_pTexture->Unmap(D3D10CalcSubresource(0, 0, 1));
+        m_pContext->Unmap(m_pTexture, D3D11CalcSubresource(0, 0, 1));
     }
 
     return hr;
 }
 
 __override __checkReturn HRESULT 
-CD3D10Texture::SetMultipleSubData(
+CD3D11Texture::SetMultipleSubData(
     __in_ecount(RegionCount) const RectU* pRegions,
     __in_ecount(RegionCount) BYTE** ppData,
     __in_ecount(RegionCount) UINT32* pDataSizes,
@@ -191,11 +195,11 @@ CD3D10Texture::SetMultipleSubData(
     )
 {
     HRESULT hr = S_OK;
-    D3D10_MAPPED_TEXTURE2D  mappedTexture = { };
+    D3D11_MAPPED_SUBRESOURCE mappedTexture = { };
 
     //TODO: Validate data size.
 
-    IFC(m_pTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE, 0, &mappedTexture));
+    IFC(m_pContext->Map(m_pTexture, D3D11CalcSubresource(0, 0, 1), D3D11_MAP_WRITE, 0, &mappedTexture));
 
     for (UINT32 i = 0; i < RegionCount; ++i)
     {
@@ -215,7 +219,7 @@ CD3D10Texture::SetMultipleSubData(
 Cleanup:
     if (mappedTexture.pData != NULL)
     {
-        m_pTexture->Unmap(D3D10CalcSubresource(0, 0, 1));
+        m_pContext->Unmap(m_pTexture, D3D11CalcSubresource(0, 0, 1));
     }
 
     return hr;

@@ -2,7 +2,7 @@
 
 #include "EndianUtil.h"
 
-#if _WINDOWS
+#if WIN32
 
 #include <windows.h>
 

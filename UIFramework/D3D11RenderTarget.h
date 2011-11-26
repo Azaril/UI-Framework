@@ -1,15 +1,15 @@
 #pragma once
 
-#include <d3d10.h>
+#include <d3d11.h>
 
 #include "RenderTarget.h"
 #include "TextureAllocator.h"
 #include "TextureAtlasPool.h"
 #include "RenderTargetBase.h"
-#include "D3D10VertexBuffer.h"
+#include "D3D11VertexBuffer.h"
 #include "StagingTextureCallback.h"
 
-class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase
+class UIFRAMEWORK_API CD3D11RenderTarget : public CRenderTargetBase
 {
     public:
         /*
@@ -105,15 +105,15 @@ class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase
             */
 
     protected:
-        CD3D10RenderTarget(
+        CD3D11RenderTarget(
 			);
 
-        virtual ~CD3D10RenderTarget(
+        virtual ~CD3D11RenderTarget(
 			);
 
         __checkReturn HRESULT Initialize(
-            __in ID3D10Device* pDevice,
-            __in ID3D10RenderTargetView* pRenderTargetView,
+            __in ID3D11Device* pDevice,
+            __in ID3D11RenderTargetView* pRenderTargetView,
             __in CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* pTextureAtlasPool
 			);
 
@@ -129,17 +129,18 @@ class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase
             __in IVertexBuffer* pVertexBuffer
             );
 
-        ID3D10Device* m_pDevice;
-        CD3D10VertexBuffer* m_pVertexBuffers[2];
-        ID3D10VertexShader* m_pVertexShader;
-        ID3D10PixelShader* m_pPixelShader;
-        ID3D10InputLayout* m_pInputLayout;
-        ID3D10Buffer* m_pTransformBuffer;
-        ID3D10RasterizerState* m_pRasterizerState;
-        ID3D10SamplerState* m_pSamplerState;
-        ID3D10BlendState* m_pBlendState;
-        ID3D10DepthStencilState* m_pDepthStencilState;
+        ID3D11Device* m_pDevice;
+        ID3D11DeviceContext* m_pImmediateContext;
+        CD3D11VertexBuffer* m_pVertexBuffers[2];
+        ID3D11VertexShader* m_pVertexShader;
+        ID3D11PixelShader* m_pPixelShader;
+        ID3D11InputLayout* m_pInputLayout;
+        ID3D11Buffer* m_pTransformBuffer;
+        ID3D11RasterizerState* m_pRasterizerState;
+        ID3D11SamplerState* m_pSamplerState;
+        ID3D11BlendState* m_pBlendState;
+        ID3D11DepthStencilState* m_pDepthStencilState;
 
     private:
-        ID3D10RenderTargetView* m_pRenderTargetView;
+        ID3D11RenderTargetView* m_pRenderTargetView;
 };

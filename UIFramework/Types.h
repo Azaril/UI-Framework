@@ -9,7 +9,7 @@
 
 #include "Collections.h"
 
-#if _WINDOWS
+#if WIN32
 #include <crtdbg.h>
 
 #if defined(_DEBUG) && defined(TRACK_LEAKS)

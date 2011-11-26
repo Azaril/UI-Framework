@@ -3,6 +3,9 @@
 #include "TextProvider.h"
 #include "D2DGraphicsDevice.h"
 #include "DirectWriteTextFormat.h"
+#include "DirectWriteFontCollectionLoader.h"
+#include "DirectWriteRegisteredFontCollection.h"
+#include "DirectWriteFontFileLoader.h"
 
 #include <dwrite.h>
 
@@ -48,5 +51,8 @@ class CDirectWriteTextProvider : public CTextProvider
 
         HMODULE m_DWriteModule;
         IDWriteFactory* m_Factory;
-        CTextFormat* m_DefaultFormat;
+        CDirectWriteRegisteredFontCollection* m_pRegisteredFonts;
+        CDirectWriteFontCollectionLoader* m_pFontCollectionLoader;
+        CDirectWriteFontFileLoader* m_pFontFileLoader;
+        vector< IDWriteFontCollection* > m_FontCollections;
 };
