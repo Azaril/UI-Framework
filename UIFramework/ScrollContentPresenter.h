@@ -18,8 +18,8 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 
         virtual HRESULT Arrange( RectF Bounds );
 
-        HRESULT SetCanScrollVertically( BOOL CanScroll );
-        HRESULT SetCanScrollHorizontally( BOOL CanScroll );
+        HRESULT SetCanScrollVertically( bool CanScroll );
+        HRESULT SetCanScrollHorizontally( bool CanScroll );
 
         HRESULT LineUp();
         HRESULT LineDown();
@@ -56,7 +56,7 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
 
-        virtual BOOL ShouldClipToLayout();
+        virtual bool ShouldClipToLayout();
 
         virtual const Matrix3X2F* GetChildRenderTransform();
 
@@ -65,8 +65,8 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 
         HRESULT SetScrollOffsets( FLOAT XOffset, FLOAT YOffset );
 
-        HRESULT GetEffectiveCanScrollVertically( BOOL* pCanScroll );
-        HRESULT GetEffectiveCanScrollHorizontally( BOOL* pCanScroll );
+        HRESULT GetEffectiveCanScrollVertically( bool* pCanScroll );
+        HRESULT GetEffectiveCanScrollHorizontally( bool* pCanScroll );
 
         //
         // Property Change Handlers
@@ -81,7 +81,7 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
         FLOAT m_HorizontalOffset;
 
         Matrix3X2F m_ChildrenTransform;
-        BOOL m_ChildTransformDirty;
+        bool m_ChildTransformDirty;
         SizeF m_Extent;
         SizeF m_Viewport;
         IScrollOwner* m_ScrollOwner;

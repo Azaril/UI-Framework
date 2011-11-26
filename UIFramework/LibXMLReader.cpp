@@ -122,7 +122,7 @@ CLibXMLReader::ProcessReader(
                 {
                     const xmlChar* pName = NULL;
                     size_t NameLength = 0;
-                    BOOL EmptyElement = FALSE;
+                    bool EmptyElement = FALSE;
                     UINT32 ConvertedTextLength = 0;
 
                     EmptyElement = xmlTextReaderIsEmptyElement(pReader);

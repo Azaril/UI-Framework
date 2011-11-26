@@ -13,27 +13,27 @@ class CRichPropertyNodeCallback : public CPropertyNodeCallback
     public:
         DECLARE_FACTORY3( CRichPropertyNodeCallback, CParseContext*, CPropertyInformation*, CXMLElementStart* );
 
-        __override virtual BOOL IsComplete(
+        __override virtual bool IsComplete(
 			);
 
         __override virtual __checkReturn HRESULT OnElementStart( 
 			__in CXMLElementStart* pElementStart, 
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
         __override virtual __checkReturn HRESULT OnElementEnd( 
 			__in CXMLElementEnd* pElementEnd, 
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
         __override virtual __checkReturn HRESULT OnText( 
 			__in CXMLText* pText,
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
         __override virtual __checkReturn HRESULT OnAttribute( 
 			__in CXMLAttribute* pAttribute, 
-			BOOL& Consumed
+			bool& Consumed
 			);
 
     protected:
@@ -49,11 +49,11 @@ class CRichPropertyNodeCallback : public CPropertyNodeCallback
 			__in CXMLElementStart* pXMLStart 
 			);
 
-        BOOL m_Complete;
-        BOOL m_SetTextValue;
-        BOOL m_SetObjectValue;
+        bool m_Complete;
+        bool m_SetTextValue;
+        bool m_SetObjectValue;
         CElementNodeCallback* m_ChildNode;
         CProperty* m_Property;
-        BOOL m_IsTemplate;
+        bool m_IsTemplate;
         CParserCommandList* m_ChildCommandList;
 };

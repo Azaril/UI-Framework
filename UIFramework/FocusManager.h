@@ -11,7 +11,7 @@ class UIFRAMEWORK_API CFocusManager : public CRefCountedObject
 
         __checkReturn HRESULT SetFocus( 
             __in CUIElement* pElement, 
-            __out BOOL* pSetFocus 
+            __out bool* pSetFocus 
             );
 
         __checkReturn HRESULT GetFocusedElement(

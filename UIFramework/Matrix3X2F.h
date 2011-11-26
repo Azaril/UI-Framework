@@ -39,7 +39,7 @@ struct UIFRAMEWORK_API Matrix3X2F
         return (_11 * _22) - (_12 * _21);
     }
     
-    inline BOOL IsInvertible(
+    inline bool IsInvertible(
         )
     {
         FLOAT Det = Determinant();
@@ -59,7 +59,7 @@ struct UIFRAMEWORK_API Matrix3X2F
         return TRUE;
     }
     
-    inline BOOL Invert(
+    inline bool Invert(
         )
     {
         FLOAT Det = Determinant();

@@ -32,7 +32,7 @@ class CThumb : public CControl
         HRESULT UpdateDrag( Point2F Location );
         HRESULT StopDragging( Point2F Location );
 
-        BOOL m_Dragging;
+        bool m_Dragging;
         Point2F m_LastMouseLocation;
 };
 

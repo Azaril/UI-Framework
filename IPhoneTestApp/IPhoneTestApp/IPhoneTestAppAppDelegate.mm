@@ -1,11 +1,3 @@
-//
-//  IPhoneTestAppAppDelegate.m
-//  IPhoneTestApp
-//
-//  Created by William Archbell on 9/9/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-
 #import "IPhoneTestAppAppDelegate.h"
 
 #import "EAGLView.h"
@@ -21,6 +13,7 @@
 {
     // Override point for customization after application launch.
     self.window.rootViewController = self.viewController;
+    
     return YES;
 }
 

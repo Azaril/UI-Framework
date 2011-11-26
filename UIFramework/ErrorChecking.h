@@ -28,7 +28,7 @@
 
 #endif
 
-#define IFC_NOTRACE(expr) do{ hr = (expr); if(FAILED(hr)) { goto Cleanup; } } while(FALSE, FALSE);
+#define IFC_NOTRACE(expr) do{ hr = (expr); if(FAILED(hr)) { goto Cleanup; } } while(FALSE && FALSE);
 #define IFCPTR_NOTRACE(ptr) if((ptr) == NULL) { hr = E_POINTER; goto Cleanup; };
 #define IFCOOM_NOTRACE(ptr) if((ptr) == NULL) { hr = E_OUTOFMEMORY; goto Cleanup; };
 #define IFCEXPECT_NOTRACE(expr) if(!(expr)) { hr = E_UNEXPECTED; goto Cleanup; };
@@ -43,7 +43,7 @@
 #undef IFCOOM
 #undef IFCEXPECT
 
-#define IFC(expr) do{ hr = (expr); if(FAILED(hr)) { DEBUG_OUT_HR(expr, hr); goto Cleanup; } } while(FALSE, FALSE);
+#define IFC(expr) do{ hr = (expr); if(FAILED(hr)) { DEBUG_OUT_HR(expr, hr); goto Cleanup; } } while(FALSE && FALSE);
 #define IFCPTR(ptr) if((ptr) == NULL) { hr = E_POINTER; DEBUG_OUT_HR((ptr) == NULL, hr); goto Cleanup; };
 #define IFCOOM(ptr) if((ptr) == NULL) { hr = E_OUTOFMEMORY; DEBUG_OUT_HR((ptr) == NULL, hr); goto Cleanup; };
 #define IFCEXPECT(expr) if(!(expr)) { hr = E_UNEXPECTED; DEBUG_OUT_HR(expr, hr); goto Cleanup; };

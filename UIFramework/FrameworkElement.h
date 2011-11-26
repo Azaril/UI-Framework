@@ -38,7 +38,7 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
 
         virtual HRESULT Arrange( RectF Bounds );
 
-        void SetAutomaticNamescopeParticipation( BOOL Participate );
+        void SetAutomaticNamescopeParticipation( bool Participate );
 
         HRESULT RegisterInNamescope( CNamescope* pNamescope, CStringValue** ppRegisteredName );
 
@@ -173,13 +173,13 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
         CTypedLocalLayeredValue< CFrameworkElement, CResourceDictionary > m_Resources;
         CTypedLocalLayeredValue< CFrameworkElement, CStyle > m_Style;
 
-        BOOL m_AutomaticNamescopeParticipation;
+        bool m_AutomaticNamescopeParticipation;
         CStringValue* m_RegisteredName;
 
-        BOOL m_StyleDirty;
+        bool m_StyleDirty;
         CResolvedStyle* m_ResolvedStyle;
 
-        BOOL m_ChildrenNeedLoading;
+        bool m_ChildrenNeedLoading;
 
     private:
         CUIElementCollection* m_Children;

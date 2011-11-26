@@ -47,7 +47,7 @@ class CFreetypeTextFormat : public CTextFormat
         ITextureAllocator* m_pTextureAllocator;
         map< UINT32, ITexture* > m_GlyphTextures;
         map< UINT32, GlyphMetrics* > m_GlyphMetrics;
-        BOOL m_HaveFontMetrics;
+        bool m_HaveFontMetrics;
         FontMetrics m_FontMetrics;
 };
 

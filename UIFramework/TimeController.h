@@ -46,7 +46,7 @@ class UIFRAMEWORK_API CTimeController : public CRefCountedObjectBase< CTimeSourc
             );
 
         vector< CTimeSink* > m_Sinks;
-        BOOL m_CallingSinks;
+        bool m_CallingSinks;
         UINT32 m_CurrentSinkIndex;
 };
 

@@ -13,12 +13,12 @@ class UIFRAMEWORK_API CMouseController : public CRefCountedObject
         __checkReturn HRESULT InjectMouseButton( 
             MouseButton::Value Button, 
             MouseButtonState::Value State, 
-            __out_opt BOOL* pConsumed = NULL 
+            __out_opt bool* pConsumed = NULL 
             );
 
         __checkReturn HRESULT InjectMouseMove( 
             Point2F Location,
-            __out_opt BOOL* pConsumed = NULL 
+            __out_opt bool* pConsumed = NULL 
             );
 
         __checkReturn HRESULT SetMouseOverElement( 
@@ -28,14 +28,14 @@ class UIFRAMEWORK_API CMouseController : public CRefCountedObject
 
         __checkReturn HRESULT RaiseMouseMove( 
             Point2F Location, 
-            __out_opt BOOL* pConsumed = NULL 
+            __out_opt bool* pConsumed = NULL 
             );
 
         __checkReturn HRESULT RaiseMouseButton( 
             Point2F Location,
             MouseButton::Value Button, 
             MouseButtonState::Value State, 
-            __out_opt BOOL* pConsumed = NULL 
+            __out_opt bool* pConsumed = NULL 
             );
 
         __checkReturn HRESULT SetCapture( 

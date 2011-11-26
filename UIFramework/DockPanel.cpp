@@ -37,7 +37,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDockPanel::GetEffectiveLastChildFill(BOOL* pLastChildFill)
+HRESULT CDockPanel::GetEffectiveLastChildFill(bool* pLastChildFill)
 {
     HRESULT hr = S_OK;
     CBoolValue* pEffectiveValue = NULL;
@@ -75,7 +75,7 @@ HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     FLOAT AccumulatedHeight = 0;
     CUIElementCollection* pChildCollection = NULL;
     UINT32 ChildCount = 0;
-    BOOL LastChildFill = FALSE;
+    bool LastChildFill = FALSE;
 
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
@@ -141,7 +141,7 @@ HRESULT CDockPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     FLOAT BottomSideOffset = 0;
     CUIElementCollection* pChildCollection = NULL;
     UINT32 ChildCount = 0;
-    BOOL LastChildFill = FALSE;
+    bool LastChildFill = FALSE;
 
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
@@ -152,7 +152,7 @@ HRESULT CDockPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 
     for(UINT32 i = 0; i < ChildCount; i++)
     {
-        BOOL LastChild = (i == ChildCount - 1);
+        bool LastChild = (i == ChildCount - 1);
         CUIElement* pElement = pChildCollection->GetAtIndex(i);
 
         SizeF ElementDesiredSize = pElement->GetDesiredSize();

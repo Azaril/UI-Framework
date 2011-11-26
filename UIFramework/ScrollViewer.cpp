@@ -90,10 +90,10 @@ HRESULT CScrollViewer::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
     IFC(GetEffectiveHorizontalScrollBarVisibility(&ScrollHorizontalVisibility));
 
     {
-        BOOL AutoVerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Auto);
-        BOOL AutoHorizontalVisibility = (ScrollHorizontalVisibility == ScrollBarVisibility::Auto);
-        BOOL VerticalDisableScrollBar = (ScrollVerticalVisibility == ScrollBarVisibility::Disabled);
-        BOOL HorizontalDisableScrollBar = (ScrollHorizontalVisibility == ScrollBarVisibility::Disabled);
+        bool AutoVerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Auto);
+        bool AutoHorizontalVisibility = (ScrollHorizontalVisibility == ScrollBarVisibility::Auto);
+        bool VerticalDisableScrollBar = (ScrollVerticalVisibility == ScrollBarVisibility::Disabled);
+        bool HorizontalDisableScrollBar = (ScrollHorizontalVisibility == ScrollBarVisibility::Disabled);
         Visibility::Value VerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Visible) ? Visibility::Visible : Visibility::Collapsed;
         Visibility::Value HorizontalVisibility = (ScrollHorizontalVisibility == ScrollBarVisibility::Visible) ? Visibility::Visible : Visibility::Collapsed;
 
@@ -120,8 +120,8 @@ HRESULT CScrollViewer::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
             SizeF CurrentExtent = m_ScrollPresenter->GetExtent();
             SizeF CurrentViewport = m_ScrollPresenter->GetViewport();
 
-            BOOL MakeHorizontalBarVisible = AutoHorizontalVisibility && (CurrentExtent.width > CurrentViewport.width);
-            BOOL MakeVerticalBarVisible = AutoVerticalVisibility && (CurrentExtent.height > CurrentViewport.height);
+            bool MakeHorizontalBarVisible = AutoHorizontalVisibility && (CurrentExtent.width > CurrentViewport.width);
+            bool MakeVerticalBarVisible = AutoVerticalVisibility && (CurrentExtent.height > CurrentViewport.height);
 
             if(MakeVerticalBarVisible)
             {
@@ -145,8 +145,8 @@ HRESULT CScrollViewer::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
                 SizeF SecondPassCurrentExtent = m_ScrollPresenter->GetExtent();
                 SizeF SecondPassCurrentViewport = m_ScrollPresenter->GetViewport();
 
-                BOOL SecondPassMakeHorizontalBarVisible = !MakeHorizontalBarVisible && (SecondPassCurrentExtent.width > SecondPassCurrentViewport.width);
-                BOOL SecondPassMakeVerticalBarVisible = !MakeVerticalBarVisible && (SecondPassCurrentExtent.height > SecondPassCurrentViewport.height);
+                bool SecondPassMakeHorizontalBarVisible = !MakeHorizontalBarVisible && (SecondPassCurrentExtent.width > SecondPassCurrentViewport.width);
+                bool SecondPassMakeVerticalBarVisible = !MakeVerticalBarVisible && (SecondPassCurrentExtent.height > SecondPassCurrentViewport.height);
 
                 if(SecondPassMakeHorizontalBarVisible)
                 {

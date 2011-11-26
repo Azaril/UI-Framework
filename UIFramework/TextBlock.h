@@ -54,7 +54,7 @@ class UIFRAMEWORK_API CTextBlock : public CFrameworkElement
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;
         CTextVisual* m_TextVisual;
-        BOOL m_TextLayoutDirty;
+        bool m_TextLayoutDirty;
 };
 
 template< >

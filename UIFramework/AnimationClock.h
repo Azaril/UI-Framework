@@ -99,7 +99,7 @@ class UIFRAMEWORK_API CAnimationClock : public CRefCountedObjectBase< CTimeSink 
         CTimeSpan m_RunningDuration;
         ClockChangedSignal m_ValueChanged;
         ClockCompletedSignal m_Completed;
-        BOOL m_Connected;
+        bool m_Connected;
         ClockState::Value m_ClockState;
         FLOAT m_Progress;
 };

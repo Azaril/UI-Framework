@@ -1,22 +1,12 @@
-//
-//  IPhoneTestAppViewController.m
-//  IPhoneTestApp
-//
-//  Created by William Archbell on 9/9/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-
 #import <QuartzCore/QuartzCore.h>
 
 #import "IPhoneTestAppViewController.h"
 #import "EAGLView.h"
-#include "UIFrameworkBridge.h"
 #include "EAGLContextBridgeGLES20.h"
 #include "EAGLLayerStorageAllocator.h"
 
 @interface IPhoneTestAppViewController ()
 @property (nonatomic, assign) CADisplayLink *displayLink;
-@property UIFrameworkBridge* frameworkBridge;
 @property EAGLContextBridgeGLES20* contextBridge;
 @property EAGLLayerStorageAllocator* storageAllocator;
 @end
@@ -25,7 +15,6 @@
 
 @synthesize animating;
 @synthesize displayLink;
-@synthesize frameworkBridge;
 @synthesize contextBridge;
 @synthesize storageAllocator;
 
@@ -75,23 +64,136 @@ L"<TextBlock Text=\"Foo Bar\" Foreground=\"Red\"/>\n"
 L"</Border>\n"
 L"</Canvas>\n";
 
+- (id)init
+{
+    self = [super init];
+    
+    if (self)
+    {
+        m_pClassResolver = NULL;
+        m_pTypeConverter = NULL;
+        m_pProviders = NULL;
+        m_pParser = NULL;
+        m_pUIHost = NULL;
+        m_pFileResourceProvider = NULL;
+        m_pBundleResourceProvider = NULL;
+        m_pCompositeResourceProvider = NULL;
+        m_pGraphicsDevice = NULL;
+        m_pRenderTarget = NULL;
+        m_pMouseController = NULL;
+    }
+    
+    return self;
+}
+
 - (void)awakeFromNib
 {
+    HRESULT hr = S_OK;
+    CTextProvider* pTextProvider = NULL;
+    
+    m_pClassResolver = NULL;
+    m_pTypeConverter = NULL;
+    m_pProviders = NULL;
+    m_pParser = NULL;
+    m_pUIHost = NULL;
+    m_pFileResourceProvider = NULL;
+    m_pBundleResourceProvider = NULL;
+    m_pCompositeResourceProvider = NULL;
+    m_pGraphicsDevice = NULL;
+    m_pRenderTarget = NULL;
+    m_pMouseController = NULL;    
+    
     contextBridge = new EAGLContextBridgeGLES20();
+    IFCPTR(contextBridge);
+    
     storageAllocator = new EAGLLayerStorageAllocator(contextBridge, (CAEAGLLayer*)self.view.layer);
+    IFCPTR(storageAllocator);
     
     animating = FALSE;
     animationFrameInterval = 1;
     self.displayLink = nil;
     
-    frameworkBridge = new UIFrameworkBridge();
-    frameworkBridge->Initialize(contextBridge, storageAllocator);
+    IFC(CDynamicClassResolver::Create(&m_pClassResolver));
     
-    frameworkBridge->LoadContent(g_MarkupContent);
+    IFC(CreateBasicTypeConverter(&m_pTypeConverter));
+    
+    IFC(CFileResourceProvider::Create(&m_pFileResourceProvider));
+    
+    IFC(CBundleFileResourceProvider::Create(&m_pBundleResourceProvider));
+    
+    IFC(CCompositeResourceProvider::Create(&m_pCompositeResourceProvider));
+    
+    IFC(m_pCompositeResourceProvider->AddResourceProvider(m_pBundleResourceProvider));
+    IFC(m_pCompositeResourceProvider->AddResourceProvider(m_pFileResourceProvider));
+    
+    IFC(CProviders::Create(m_pClassResolver, m_pTypeConverter, m_pCompositeResourceProvider, &m_pProviders));
+    
+    IFC(CParser::Create(m_pProviders, &m_pParser));
+    
+    IFC(COpenGLES20GraphicsDevice::Create(contextBridge, &m_pGraphicsDevice));
+    
+    IFC(m_pGraphicsDevice->GetTextProvider(&pTextProvider));
+    
+    {
+        const WCHAR fontFile[] = L"Opificio.ttf";
+        
+        IFC(pTextProvider->RegisterFont(m_pCompositeResourceProvider, fontFile, ARRAYSIZE(fontFile)));
+    }
+    
+    IFC(m_pGraphicsDevice->CreateRenderTarget(storageAllocator, &m_pRenderTarget));
+    
+    {
+        CFontDescription defaultFont(L"Opificio", 32, L"en-us");
+        
+        IFC(CUIHost::Create(m_pGraphicsDevice, m_pRenderTarget, m_pProviders, &defaultFont, &m_pUIHost));
+    }
+    
+    IFC(m_pUIHost->GetMouseController(&m_pMouseController))
+    
+    IFC([self LoadContent:g_MarkupContent]);
+    
+   [(EAGLView*)self.view setUIHost:m_pUIHost];
+    
+Cleanup:
+    ReleaseObject(pTextProvider);
+}
+
+- (HRESULT)LoadContent:(const wchar_t*)pContent
+{
+    HRESULT hr = S_OK;
+    CObjectWithType* pParsedRootObject = NULL;
+    CRootUIElement* pRootElement = NULL;
+    CUIElement* pParsedRootElement = NULL;
+    
+    IFC(m_pParser->LoadFromString(pContent, &pParsedRootObject));
+    
+    IFC(m_pUIHost->GetRootElement(&pRootElement));
+    
+    IFC(CastType(pParsedRootObject, &pParsedRootElement));
+    
+    IFC(pRootElement->SetChild(pParsedRootElement));
+    
+Cleanup:
+    ReleaseObject(pRootElement);
+    ReleaseObject(pParsedRootObject);
+    
+    return SUCCEEDED(hr);
 }
 
 - (void)dealloc
 {
+    ReleaseObject(m_pFileResourceProvider);
+    ReleaseObject(m_pBundleResourceProvider);
+    ReleaseObject(m_pCompositeResourceProvider);
+    ReleaseObject(m_pClassResolver);
+    ReleaseObject(m_pTypeConverter);
+    ReleaseObject(m_pProviders);
+    ReleaseObject(m_pParser);
+    ReleaseObject(m_pRenderTarget);
+    ReleaseObject(m_pGraphicsDevice);
+    ReleaseObject(m_pMouseController);
+    ReleaseObject(m_pUIHost); 
+    
     if (contextBridge != NULL)
     {
         contextBridge->Release();
@@ -134,11 +236,6 @@ L"</Canvas>\n";
 {
 	[super viewDidUnload];
 	
-    if (program) {
-        glDeleteProgram(program);
-        program = 0;
-    }
-
     // Tear down context.
 //    if ([EAGLContext currentContext] == context)
 //        [EAGLContext setCurrentContext:nil];
@@ -168,7 +265,8 @@ L"</Canvas>\n";
 
 - (void)startAnimation
 {
-    if (!animating) {
+    if (!animating) 
+    {
         CADisplayLink *aDisplayLink = [[UIScreen mainScreen] displayLinkWithTarget:self selector:@selector(drawFrame)];
         [aDisplayLink setFrameInterval:animationFrameInterval];
         [aDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -180,7 +278,8 @@ L"</Canvas>\n";
 
 - (void)stopAnimation
 {
-    if (animating) {
+    if (animating) 
+    {
         [self.displayLink invalidate];
         self.displayLink = nil;
         animating = FALSE;
@@ -189,9 +288,17 @@ L"</Canvas>\n";
 
 - (void)drawFrame
 {
-    frameworkBridge->Render();
-
-    contextBridge->Present(frameworkBridge->GetRenderBuffer());
+    HRESULT hr = S_OK;
+    
+    if (m_pUIHost != NULL)
+    {
+        IFC(m_pUIHost->Render());
+        
+        contextBridge->Present(m_pRenderTarget->GetRenderBuffer());        
+    }
+    
+Cleanup:
+    ;
 }
 
 @end

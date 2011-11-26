@@ -72,7 +72,7 @@ class CFreetypeFontFace : public CRefCountedObject
         FT_Face m_pFontFace;
         FLOAT m_CurrentFontSize;
         UINT32 m_CurrentGlyph;
-        BOOL m_LoadedFamilyNames;
+        bool m_LoadedFamilyNames;
         WCHAR** m_ppFamilyNames;
         UINT32 m_FamilyNameCount;
         list< CFreetypeTextFormat* > m_CachedFormats;

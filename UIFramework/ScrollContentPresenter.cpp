@@ -171,8 +171,8 @@ HRESULT CScrollContentPresenter::MeasureInternal(SizeF AvailableSize, SizeF& Des
     HRESULT hr = S_OK;
     SizeF AvailableContentSize;
     SizeF DesiredContentSize;
-    BOOL CanScrollHorizontally = FALSE;
-    BOOL CanScrollVertically = FALSE;
+    bool CanScrollHorizontally = FALSE;
+    bool CanScrollVertically = FALSE;
 
     IFC(GetEffectiveCanScrollHorizontally(&CanScrollHorizontally));
     IFC(GetEffectiveCanScrollVertically(&CanScrollVertically));
@@ -212,8 +212,8 @@ HRESULT CScrollContentPresenter::ArrangeInternal(SizeF AvailableSize, SizeF& Use
     CUIElement* pContentChild = NULL;
     SizeF AvailableContentSize;
     SizeF DesiredContentSize;
-    BOOL CanScrollHorizontally = FALSE;
-    BOOL CanScrollVertically = FALSE;
+    bool CanScrollHorizontally = FALSE;
+    bool CanScrollVertically = FALSE;
 
     IFC(GetEffectiveCanScrollHorizontally(&CanScrollHorizontally));
     IFC(GetEffectiveCanScrollVertically(&CanScrollVertically));
@@ -256,7 +256,7 @@ Cleanup:
     return hr;
 }
 
-BOOL CScrollContentPresenter::ShouldClipToLayout()
+bool CScrollContentPresenter::ShouldClipToLayout()
 {
     return TRUE;
 }
@@ -326,7 +326,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CScrollContentPresenter::SetCanScrollVertically(BOOL CanScroll)
+HRESULT CScrollContentPresenter::SetCanScrollVertically(bool CanScroll)
 {
     HRESULT hr = S_OK;
     CBoolValue* pValue = NULL;
@@ -341,7 +341,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CScrollContentPresenter::SetCanScrollHorizontally( BOOL CanScroll )
+HRESULT CScrollContentPresenter::SetCanScrollHorizontally( bool CanScroll )
 {
     HRESULT hr = S_OK;
     CBoolValue* pValue = NULL;
@@ -356,7 +356,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CScrollContentPresenter::GetEffectiveCanScrollVertically(BOOL* pCanScroll)
+HRESULT CScrollContentPresenter::GetEffectiveCanScrollVertically(bool* pCanScroll)
 {
     HRESULT hr = S_OK;
     CBoolValue* pEffectiveValue = NULL;
@@ -371,7 +371,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CScrollContentPresenter::GetEffectiveCanScrollHorizontally(BOOL* pCanScroll)
+HRESULT CScrollContentPresenter::GetEffectiveCanScrollHorizontally(bool* pCanScroll)
 {
     HRESULT hr = S_OK;
     CBoolValue* pEffectiveValue = NULL;

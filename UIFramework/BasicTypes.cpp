@@ -70,7 +70,7 @@ CStringValue::GetLength(
     return m_Length;
 }
 
-__override BOOL 
+__override bool 
 CStringValue::Equals(
     __in_opt CObjectWithType* pOther
     )
@@ -124,7 +124,7 @@ CDurationValue::Initialize(
     return hr;
 }
 
-__override BOOL 
+__override bool 
 CDurationValue::Equals(
     __in_opt CObjectWithType* pOther
     )
@@ -141,21 +141,21 @@ CDurationValue::Equals(
     return FALSE;
 }
 
-BOOL 
+bool 
 CDurationValue::IsAutomatic(
     )
 {
     return m_Automatic;
 }
 
-BOOL 
+bool 
 CDurationValue::IsForever(
     )
 {
     return m_Forever;
 }
 
-BOOL 
+bool 
 CDurationValue::HasTimeSpan(
     )
 {

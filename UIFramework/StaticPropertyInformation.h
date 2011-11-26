@@ -43,19 +43,19 @@ class UIFRAMEWORK_API CStaticProperty : public CProperty
         __override virtual __out const WCHAR* GetName(
             );
 
-        __override virtual BOOL IsCollection(
+        __override virtual bool IsCollection(
             );
 
-        __override virtual BOOL IsDictionary(
+        __override virtual bool IsDictionary(
             );
 
-        __override virtual BOOL IsAttached(
+        __override virtual bool IsAttached(
             );
 
-        __override virtual BOOL IsContent(
+        __override virtual bool IsContent(
             );
 
-        __override virtual BOOL IsReadOnly(
+        __override virtual bool IsReadOnly(
             );
 
         __override virtual HRESULT GetDefaultValue( 

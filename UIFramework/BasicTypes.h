@@ -21,7 +21,7 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
             return m_Value;
         }
 
-        __override virtual BOOL Equals(
+        __override virtual bool Equals(
             __in_opt CObjectWithType* pOther 
             )
         {
@@ -35,7 +35,7 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
             return FALSE;
         }
 
-        __override virtual BOOL IsShareable(
+        __override virtual bool IsShareable(
             ) 
         { 
             return true; 
@@ -94,7 +94,7 @@ struct ObjectTypeTraits< CRectangleEdgeValue >
     static const TypeIndex::Value Type = TypeIndex::RectangleEdge;
 };
 
-typedef CBasicValue< BOOL, TypeIndex::Bool > CBoolValue;
+typedef CBasicValue< bool, TypeIndex::Bool > CBoolValue;
 
 template< >
 struct ObjectTypeTraits< CBoolValue >
@@ -172,7 +172,7 @@ class CStringValue : public CRefCountedObjectBase< CObjectWithType >
         UINT32 GetLength(
             );
 
-        __override virtual BOOL Equals(
+        __override virtual bool Equals(
             __in_opt CObjectWithType* pOther 
             );
 
@@ -213,17 +213,17 @@ class CDurationValue : public CRefCountedObjectBase< CObjectWithType >
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::Duration, CObjectWithType );
 
-        __override virtual BOOL Equals(
+        __override virtual bool Equals(
             __in_opt CObjectWithType* pOther 
             );
 
-        BOOL IsForever(
+        bool IsForever(
             );
 
-        BOOL IsAutomatic(
+        bool IsAutomatic(
             );
 
-        BOOL HasTimeSpan(
+        bool HasTimeSpan(
             );
 
         const CTimeSpan* GetTimeSpan(
@@ -241,8 +241,8 @@ class CDurationValue : public CRefCountedObjectBase< CObjectWithType >
             );
 
         CTimeSpan m_TimeSpan;
-        BOOL m_Forever : 1;
-        BOOL m_Automatic : 1;
+        bool m_Forever : 1;
+        bool m_Automatic : 1;
 };
 
 template< >

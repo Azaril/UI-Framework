@@ -83,7 +83,7 @@ CContentPropertyNodeCallback::Initialize(
 	)
 {
     HRESULT hr = S_OK;
-    BOOL Consumed = FALSE;
+    bool Consumed = FALSE;
 
     IFCPTR(pContext);
     IFCPTR(pXMLText);
@@ -101,7 +101,7 @@ Cleanup:
 __checkReturn HRESULT 
 CContentPropertyNodeCallback::OnElementStart(
 	__in CXMLElementStart* pElementStart, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -133,7 +133,7 @@ Cleanup:
 __checkReturn HRESULT
 CContentPropertyNodeCallback::OnElementEnd(
 	__in CXMLElementEnd* pElementEnd, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -175,7 +175,7 @@ Cleanup:
 __checkReturn HRESULT 
 CContentPropertyNodeCallback::OnText(
 	__in CXMLText* pText, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -223,7 +223,7 @@ Cleanup:
 __checkReturn HRESULT
 CContentPropertyNodeCallback::OnAttribute(
 	__in CXMLAttribute* pAttribute,
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -245,7 +245,7 @@ Cleanup:
     return hr;
 }
 
-BOOL 
+bool 
 CContentPropertyNodeCallback::IsComplete(
 	)
 {

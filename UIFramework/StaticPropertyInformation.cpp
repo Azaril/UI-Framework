@@ -145,34 +145,34 @@ CStaticProperty::GetName(
     return m_Name;
 }
 
-__override BOOL 
+__override bool 
 CStaticProperty::IsCollection(
     )
 {
     return (m_Flags & StaticPropertyFlags::Collection) ? TRUE : FALSE;
 }
 
-__override BOOL 
+__override bool 
 CStaticProperty::IsDictionary(
     )
 {
     return (m_Flags & StaticPropertyFlags::Dictionary) ? TRUE : FALSE;
 }
 
-__override BOOL 
+__override bool 
 CStaticProperty::IsContent(
     )
 {
     return (m_Flags & StaticPropertyFlags::Content) ? TRUE : FALSE;
 }
 
-__override BOOL 
+__override bool 
 CStaticProperty::IsAttached()
 {
     return (m_Flags & StaticPropertyFlags::Attached) ? TRUE : FALSE;
 }
 
-__override BOOL 
+__override bool 
 CStaticProperty::IsReadOnly()
 {
     return (m_Flags & StaticPropertyFlags::ReadOnly) ? TRUE : FALSE;

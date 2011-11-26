@@ -86,8 +86,8 @@ class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink 
         RenderVertex* m_pCacheWriteOffset;    
         ColorF m_DiffuseColor;
         Matrix3X2F m_Transform;
-        BOOL m_NeedsBrushTransform;
+        bool m_NeedsBrushTransform;
         Matrix3X2F m_BrushTransform;
-        BOOL m_NeedsMaskTransform;
+        bool m_NeedsMaskTransform;
         Matrix3X2F m_MaskTransform;
 };

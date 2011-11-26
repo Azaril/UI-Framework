@@ -16,27 +16,27 @@ class CElementNodeCallback : public CParserNodeCallback
         CStringValue* GetKey(
 			);
 
-        __override virtual BOOL IsComplete(
+        __override virtual bool IsComplete(
 			);
 
         __override virtual __checkReturn HRESULT OnElementStart( 
 			__in CXMLElementStart* pElementStart, 
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
         __override virtual __checkReturn HRESULT OnElementEnd( 
 			__in CXMLElementEnd* pElementEnd, 
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
         __override virtual __checkReturn HRESULT OnText( 
 			__in CXMLText* pText, 
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
         __override virtual __checkReturn HRESULT OnAttribute( 
 			__in CXMLAttribute* pAttribute, 
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
     protected:
@@ -54,6 +54,6 @@ class CElementNodeCallback : public CParserNodeCallback
         CPropertyNodeCallback* m_ChildNode;
         CResolvedClass* m_ResolvedClass;
         CPropertyInformation* m_Properties;
-        BOOL m_Complete;
+        bool m_Complete;
         CStringValue* m_KeyString;
 };

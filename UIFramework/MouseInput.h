@@ -23,7 +23,7 @@ class CMouseButtonHitTestCallback : public CHitTestCallback
             Point2F MouseLocation,
             MouseButton::Value Button, 
             MouseButtonState::Value State, 
-            __out_opt BOOL* pHandled 
+            __out_opt bool* pHandled 
             );
 
         __override virtual __checkReturn HRESULT ItemHit( 
@@ -36,7 +36,7 @@ class CMouseButtonHitTestCallback : public CHitTestCallback
         MouseButton::Value m_Button;
         MouseButtonState::Value m_ButtonState;
         Point2F m_Location;
-        BOOL* m_Handled;
+        bool* m_Handled;
 };
 
 class CMouseMoveHitTestCallback : public CHitTestCallback
@@ -45,7 +45,7 @@ class CMouseMoveHitTestCallback : public CHitTestCallback
         CMouseMoveHitTestCallback( 
             __in CMouseController* pController,
             Point2F MouseLocation,
-            __out_opt BOOL* pHandled 
+            __out_opt bool* pHandled 
             );
 
         __override virtual __checkReturn HRESULT ItemHit( 
@@ -56,5 +56,5 @@ class CMouseMoveHitTestCallback : public CHitTestCallback
     protected:
         CMouseController* m_Controller;
         Point2F m_Location;
-        BOOL* m_Handled;
+        bool* m_Handled;
 };

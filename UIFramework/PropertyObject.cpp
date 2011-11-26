@@ -134,7 +134,7 @@ CPropertyObject::SetValuePrivate(
     {
         if(pProperty->IsAttached())
         {
-            BOOL SetVal = FALSE;
+            bool SetVal = FALSE;
 
             for(vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
             {

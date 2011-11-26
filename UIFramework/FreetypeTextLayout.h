@@ -96,7 +96,7 @@ class CFreetypeTextLayout : public CEditableTextLayoutBase,
 
         CFreetypeTextFormat* m_pTextFormat;
         SizeF m_Size;
-        BOOL m_LayoutValid;
+        bool m_LayoutValid;
         CTextLayoutEngine* m_pLayoutEngine;
         RectF m_Bounds;
 };

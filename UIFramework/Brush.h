@@ -19,7 +19,7 @@ class CBrush : public CVisualResource
             __deref_out CPropertyInformation** ppInformation 
             );
         
-        __override virtual BOOL IsShareable(
+        __override virtual bool IsShareable(
             )
         { 
             return TRUE; 

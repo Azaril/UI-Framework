@@ -35,7 +35,7 @@ struct UIFRAMEWORK_API RectF
         bottom = Bottom;
     }
 
-    inline BOOL IsInfinite(
+    inline bool IsInfinite(
         )
     {
         return (left == std::numeric_limits< FLOAT >::min() && right == std::numeric_limits< FLOAT >::max() && top == std::numeric_limits< FLOAT >::min() && bottom == std::numeric_limits< FLOAT >::max());
@@ -47,7 +47,7 @@ struct UIFRAMEWORK_API RectF
         return RectF(std::numeric_limits< FLOAT >::min(), std::numeric_limits< FLOAT >::min(), std::numeric_limits< FLOAT >::max(), std::numeric_limits< FLOAT >::max());
     }
     
-    inline BOOL ContainsPoint(
+    inline bool ContainsPoint(
         const Point2F& Point
         )
     {

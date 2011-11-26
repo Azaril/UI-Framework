@@ -93,8 +93,8 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
         Matrix3X2F m_FillBrushTransform;
         Matrix3X2F m_StrokeBrushTransform;
         Matrix3X2F m_BrushTransform;
-        BOOL m_UpdateFillTransform;
-        BOOL m_UpdateStrokeTransform;
+        bool m_UpdateFillTransform;
+        bool m_UpdateStrokeTransform;
 };
 
 template< >

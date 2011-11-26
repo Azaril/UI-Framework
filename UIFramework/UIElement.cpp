@@ -236,7 +236,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::RequiresLayer(BOOL* pRequiresLayer)
+HRESULT CUIElement::RequiresLayer(bool* pRequiresLayer)
 {
     HRESULT hr = S_OK;
     RectF ClipRect;
@@ -292,7 +292,7 @@ HRESULT CUIElement::PreRenderInternal(CPreRenderContext& Context)
 {
     HRESULT hr = S_OK;
     CRenderTarget* pRenderTarget = NULL;
-    BOOL NeedsLayer = FALSE;
+    bool NeedsLayer = FALSE;
 
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
@@ -317,7 +317,7 @@ Cleanup:
     return hr;
 }
 
-BOOL CUIElement::ShouldClipToLayout()
+bool CUIElement::ShouldClipToLayout()
 {
     return m_ClipToLayoutBounds;
 }
@@ -427,7 +427,7 @@ HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
 {
     HRESULT hr = S_OK;
     CRoutedEventArgs* pAttachedEventArgs = NULL;
-    BOOL IsNamescope = FALSE;
+    bool IsNamescope = FALSE;
     CNamescope* pNamescope = NULL;
 
     IFCEXPECT(!IsAttached());
@@ -490,7 +490,7 @@ Cleanup:
     return hr;
 }
 
-BOOL CUIElement::IsAttached()
+bool CUIElement::IsAttached()
 {
     return m_Attached;
 }
@@ -593,7 +593,7 @@ HRESULT CUIElement::Measure(SizeF AvailableSize)
 
             m_UnclippedDesiredSize = ElementDesiredSize;
 
-            BOOL Clipped = FALSE;
+            bool Clipped = FALSE;
 
             if(ElementDesiredSize.width > MaxSize.width)
             {
@@ -784,7 +784,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::GetEffectiveFocusable(BOOL* pFocusable)
+HRESULT CUIElement::GetEffectiveFocusable(bool* pFocusable)
 {
     HRESULT hr = S_OK;
     CBoolValue* pEffectiveValue = NULL;
@@ -816,7 +816,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::GetEffectiveNamescope(BOOL* pNamescope)
+HRESULT CUIElement::GetEffectiveNamescope(bool* pNamescope)
 {
     HRESULT hr = S_OK;
     CBoolValue* pEffectiveValue = NULL;
@@ -831,7 +831,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::SetIsNamescope(BOOL IsNamescope)
+HRESULT CUIElement::SetIsNamescope(bool IsNamescope)
 {
     HRESULT hr = S_OK;
     CBoolValue* pValue = NULL;
@@ -873,7 +873,7 @@ HRESULT CUIElement::Arrange(RectF Bounds)
 
         if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
-            BOOL NeedsClipBounds = FALSE;
+            bool NeedsClipBounds = FALSE;
 
             SizeF ArrangeSize(Bounds.right - Bounds.left, Bounds.bottom - Bounds.top);
             SizeF OriginalArrangeSize = ArrangeSize;
@@ -1081,12 +1081,12 @@ Cleanup:
     return hr;
 }
 
-BOOL CUIElement::IsMeasureDirty()
+bool CUIElement::IsMeasureDirty()
 {
     return m_MeasureDirty;
 }
 
-BOOL CUIElement::IsArrangeDirty()
+bool CUIElement::IsArrangeDirty()
 {
     return m_ArrangeDirty;
 }
@@ -1540,10 +1540,10 @@ HRESULT CUIElement::OnOpacityChanged(CObjectWithType* pOldValue, CObjectWithType
     return hr;
 }
 
-BOOL CUIElement::IsFocusable()
+bool CUIElement::IsFocusable()
 {
-    BOOL Focusable = FALSE;
-    BOOL EffectiveFocusable = FALSE;
+    bool Focusable = FALSE;
+    bool EffectiveFocusable = FALSE;
     Visibility::Value EffectiveVisibility = Visibility::Visible;
 
     if(SUCCEEDED(GetEffectiveFocusable(&EffectiveFocusable)) && SUCCEEDED(GetEffectiveVisibility(&EffectiveVisibility)))
@@ -1554,7 +1554,7 @@ BOOL CUIElement::IsFocusable()
     return Focusable;
 }
 
-HRESULT CUIElement::Focus(BOOL* pSetFocus)
+HRESULT CUIElement::Focus(bool* pSetFocus)
 {
     HRESULT hr = S_OK;
     CFocusManager* pFocusManager = NULL;
@@ -1898,7 +1898,7 @@ void CUIElement::OnMouseLeftButtonDown(CObjectWithType* pSender, CRoutedEventArg
 {
     HRESULT hr = S_OK;
     CMouseButtonEventArgs* pMouseButtonEventArgs = NULL;
-    BOOL SetFocus = FALSE;
+    bool SetFocus = FALSE;
 
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
@@ -2102,11 +2102,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::IsHitTestVisible(BOOL* pVisible)
+HRESULT CUIElement::IsHitTestVisible(bool* pVisible)
 {
     HRESULT hr = S_OK;
     Visibility::Value EffectiveVisibility;
-    BOOL HitTestVisible = TRUE;
+    bool HitTestVisible = TRUE;
 
     IFC(GetEffectiveVisibility(&EffectiveVisibility));
 
@@ -2160,7 +2160,7 @@ Cleanup:
     return hr;
 }
 
-BOOL CEventHandlerChain::HasHandlers()
+bool CEventHandlerChain::HasHandlers()
 {
     return !m_Handlers.empty();
 }
@@ -2357,7 +2357,7 @@ CProperty* CUIElement_GetVisibilityProperty()
 }
 
 extern "C" UIFRAMEWORK_API
-HRESULT CUIElement_Focus(CUIElement* pElement, BOOL* pSetFocus)
+HRESULT CUIElement_Focus(CUIElement* pElement, bool* pSetFocus)
 {
     return pElement->Focus(pSetFocus);
 }

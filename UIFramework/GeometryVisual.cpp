@@ -357,7 +357,7 @@ CGeometryVisual::HitTest(
     )
 {
     HRESULT hr = S_OK;
-    BOOL FillContainsPoint = FALSE;
+    bool FillContainsPoint = FALSE;
 
     IFCPTR(ppHitTestResult);
 

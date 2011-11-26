@@ -47,7 +47,7 @@ CParserCallback::OnElementStart(
     }
     else
     {
-        BOOL Consumed = FALSE;
+        bool Consumed = FALSE;
 
         IFC(m_ChildNode->OnElementStart(pElementStart, Consumed));
     }
@@ -62,7 +62,7 @@ CParserCallback::OnElementEnd(
 	)
 {
     HRESULT hr = S_OK;
-    BOOL Consumed = FALSE;
+    bool Consumed = FALSE;
 
     IFCPTR(pElementEnd);
 
@@ -80,7 +80,7 @@ CParserCallback::OnText(
 	)
 {
     HRESULT hr = S_OK;
-    BOOL Consumed = FALSE;
+    bool Consumed = FALSE;
 
     IFCPTR(pText);
 
@@ -98,7 +98,7 @@ CParserCallback::OnAttribute(
 	)
 {
     HRESULT hr = S_OK;
-    BOOL Consumed = FALSE;
+    bool Consumed = FALSE;
 
     IFCPTR(pAttribute);
 

@@ -24,7 +24,7 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
             __deref_out CPropertyInformation** ppInformation 
             );
 
-        __override virtual BOOL IsShareable(
+        __override virtual bool IsShareable(
             ) 
         { 
             return TRUE; 

@@ -37,16 +37,16 @@ class UIFRAMEWORK_API CProperty
         virtual TypeIndex::Value GetType(
             ) = 0;
 
-        virtual BOOL IsCollection(
+        virtual bool IsCollection(
             ) = 0;
 
-        virtual BOOL IsDictionary(
+        virtual bool IsDictionary(
             ) = 0;
 
-        virtual BOOL IsAttached(
+        virtual bool IsAttached(
             ) = 0;
 
-        virtual BOOL IsReadOnly(
+        virtual bool IsReadOnly(
             ) = 0;
 
         virtual __checkReturn HRESULT GetDefaultValue( 
@@ -105,7 +105,7 @@ __override virtual TypeIndex::Value GetType( \
 { \
     return type; \
 } \
-__override virtual BOOL IsTypeOf( \
+__override virtual bool IsTypeOf( \
     TypeIndex::Value Type \
     ) const \
 { \
@@ -118,7 +118,7 @@ __override virtual TypeIndex::Value GetType( \
 { \
     return type; \
 } \
-__override virtual BOOL IsTypeOf( \
+__override virtual bool IsTypeOf( \
     TypeIndex::Value Type \
     ) const \
 { \
@@ -136,14 +136,14 @@ class UIFRAMEWORK_API CObjectWithType
         virtual INT32 Release(
             ) = 0;       
 
-        virtual BOOL Equals( 
+        virtual bool Equals( 
             __in_opt CObjectWithType* pOther 
             )
         { 
             return this == pOther; 
         }
 
-        virtual BOOL IsShareable(
+        virtual bool IsShareable(
             ) 
         { 
             return FALSE;

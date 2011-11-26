@@ -48,7 +48,7 @@ class CD2DGeometryBase : public T
 
         virtual __checkReturn HRESULT FillContainsPoint(
 			const Point2F& LocalPoint, 
-			BOOL* pContainsPoint 
+			bool* pContainsPoint 
 			)
         {
             HRESULT hr = S_OK;

@@ -91,7 +91,7 @@ class StackHeapBuffer
     	}
     
     protected:
-        BOOL m_UseInternalBuffer;
+        bool m_UseInternalBuffer;
         T m_InternalBuffer[Size];
         T* m_pHeapBuffer;
         UINT32 m_HeapBufferSize;

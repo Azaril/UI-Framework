@@ -14,7 +14,7 @@ CMouseInputHitTestFilter::Filter(
 
     if(pVisual->IsTypeOf(TypeIndex::UIElement))
     {
-        BOOL HitTestVisible = FALSE;
+        bool HitTestVisible = FALSE;
         CUIElement* pElement = (CUIElement*)pVisual;
 
         IFC(pElement->IsHitTestVisible(&HitTestVisible));
@@ -35,7 +35,7 @@ CMouseButtonHitTestCallback::CMouseButtonHitTestCallback(
     Point2F MouseLocation,
     MouseButton::Value Button, 
     MouseButtonState::Value State, 
-    __out_opt BOOL* pHandled
+    __out_opt bool* pHandled
     ) 
     : m_Controller(pController)
     , m_Button(Button)
@@ -74,7 +74,7 @@ Cleanup:
 CMouseMoveHitTestCallback::CMouseMoveHitTestCallback(
     __in CMouseController* pController,
     Point2F MouseLocation,
-    __out BOOL* pHandled
+    __out bool* pHandled
     ) 
     : m_Controller(pController)
     , m_Location(MouseLocation)

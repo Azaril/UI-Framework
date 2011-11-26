@@ -534,7 +534,7 @@ Cleanup:
     return hr;
 }
 
-void CFrameworkElement::SetAutomaticNamescopeParticipation(BOOL Participate)
+void CFrameworkElement::SetAutomaticNamescopeParticipation(bool Participate)
 {
     m_AutomaticNamescopeParticipation = Participate;
 }

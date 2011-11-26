@@ -15,11 +15,11 @@ class CRoutedEventArgs : public CRefCountedObjectBase< CObjectWithType >
         virtual CRoutedEvent* GetRoutedEvent(
             );
 
-        virtual BOOL IsHandled(
+        virtual bool IsHandled(
             );
 
         virtual void SetHandled(
-            BOOL Handled = TRUE 
+            bool Handled = TRUE 
             );
 
     protected:
@@ -34,7 +34,7 @@ class CRoutedEventArgs : public CRefCountedObjectBase< CObjectWithType >
             );
 
         CRoutedEvent* m_RoutedEvent;
-        BOOL m_Handled;
+        bool m_Handled;
 };
 
 template< >

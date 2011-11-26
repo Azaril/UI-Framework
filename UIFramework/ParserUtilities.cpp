@@ -9,7 +9,7 @@
 #include "SetPropertyCommand.h"
 #include "EvaluateMarkupExtensionCommand.h"
 
-BOOL 
+bool 
 IsAttribute(
 	__in_z const WCHAR* pText
 	)
@@ -143,7 +143,7 @@ ParseMarkupExtensionInternal(
 {
     HRESULT hr = S_OK;
     const WCHAR* pParsePoint = NULL;
-    BOOL Continue = TRUE;
+    bool Continue = TRUE;
     MarkupExtensionParseState::Value ParseState = MarkupExtensionParseState::Start;
     UINT32 MarkupTypeCharacters = 0;
     WCHAR MarkupType[256] = { 0 };
@@ -544,7 +544,7 @@ Cleanup:
     return hr;
 }
 
-BOOL 
+bool 
 IsMarkupExtension(
 	__in_ecount(ValueLength) const WCHAR* pValue, 
 	UINT32 ValueLength

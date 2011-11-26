@@ -125,7 +125,7 @@ CFreetypeTextProvider::CreateFormat(
 
 
         {
-            BOOL matchesDescription = FALSE;
+            bool matchesDescription = FALSE;
 
             //
             // Search family names in font face for a match.

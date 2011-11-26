@@ -13,12 +13,12 @@ class UIFRAMEWORK_API CKeyboardController :  public CRefCountedObject
         __checkReturn HRESULT InjectKey( 
             Key::Value Key, 
             KeyState::Value State, 
-            __out_opt BOOL* pConsumed = NULL 
+            __out_opt bool* pConsumed = NULL 
             );
 
         __checkReturn HRESULT InjectCharacter(
             WCHAR Character, 
-            __out_opt BOOL* pConsumed = NULL 
+            __out_opt bool* pConsumed = NULL 
             );
 
     protected:

@@ -146,6 +146,11 @@ CAnimationClock::OnTimeUpdate(
             {
                 break;
             }
+            
+        case ClockState::Stopped:
+            {
+                break;
+            }
     }
 
 Cleanup:

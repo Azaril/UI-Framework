@@ -20,7 +20,7 @@ class CCoreRectangleGeometry : public CCoreGeometry< CRectangleGraphicsGeometry 
 
         __override virtual __checkReturn HRESULT FillContainsPoint( 
 			const Point2F& LocalPoint, 
-			__out BOOL* pContainsPoint 
+			__out bool* pContainsPoint 
 			);
     
         __override virtual __checkReturn HRESULT TesselateFill(

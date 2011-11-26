@@ -62,7 +62,7 @@ class UIFRAMEWORK_API CTextVisual : public CVisual
         CGraphicsBrush* m_ForegroundGraphicsBrush;
         CTextLayout* m_TextLayout;
         Matrix3X2F m_ForegroundBrushTransform;
-        BOOL m_UpdateBrushTransform;
+        bool m_UpdateBrushTransform;
 };
 
 template< >

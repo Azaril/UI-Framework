@@ -8,7 +8,7 @@ CVisualResource::OnVisualAttach(
     )
 {
     HRESULT hr = S_OK;
-    BOOL AddedReference = FALSE;
+    bool AddedReference = FALSE;
 
     for(vector< VisualParentInfo >::iterator It = m_Parents.begin(); It != m_Parents.end(); ++It)
     {

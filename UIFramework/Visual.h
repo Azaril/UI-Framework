@@ -171,7 +171,7 @@ class UIFRAMEWORK_API CVisual : public CAnimatable
         CVisualAttachContext m_VisualContext;
         VisualChildCollection m_VisualChildren;
         VisualResourceCollection m_VisualResources;
-        BOOL m_VisualAttached;
+        bool m_VisualAttached;
 };
 
 template< >

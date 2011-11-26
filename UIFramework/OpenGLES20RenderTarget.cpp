@@ -29,7 +29,7 @@ do \
         while (glErrorCode != GL_NO_ERROR); \
         goto Cleanup; \
     } \
-} while(FALSE, FALSE) \
+} while(FALSE && FALSE) \
 
 #else
 

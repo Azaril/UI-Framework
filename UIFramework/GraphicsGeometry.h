@@ -20,7 +20,7 @@ class UIFRAMEWORK_API CGraphicsGeometry : public CObjectWithType
 
         virtual __checkReturn HRESULT FillContainsPoint( 
 			const Point2F& LocalPoint, 
-			__out BOOL* pContainsPoint 
+			__out bool* pContainsPoint 
 			) = 0;
 };
 

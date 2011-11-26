@@ -42,14 +42,14 @@ class CTrack : public CControl
         void OnThumbDragDelta(CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs);
 
         HRESULT ComputeSliderLengths( SizeF AvailableSize, Orientation::Value Orient, FLOAT* pDecreaseButtonLength, FLOAT* pThumbLength, FLOAT* pIncreaseButtonLength );
-        HRESULT ComputeScrollBarLengths( SizeF AvailableSize, FLOAT ViewportSize, Orientation::Value Orient, FLOAT* pDecreaseButtonLength, FLOAT* pThumbLength, FLOAT* pIncreaseButtonLength, BOOL* pHide );
+        HRESULT ComputeScrollBarLengths( SizeF AvailableSize, FLOAT ViewportSize, Orientation::Value Orient, FLOAT* pDecreaseButtonLength, FLOAT* pThumbLength, FLOAT* pIncreaseButtonLength, bool* pHide );
 
         HRESULT GetEffectiveThumb( CThumb** ppThumb );
         HRESULT GetEffectiveIncreaseButton( CButton** ppIncreaseButton );
         HRESULT GetEffectiveDecreaseButton( CButton** ppDecreaseButton );
         HRESULT GetEffectiveViewportSize( FLOAT* pViewportSize );
         HRESULT GetEffectiveOrientation( Orientation::Value* pOrientation );
-        HRESULT GetEffectiveDirectionReversed( BOOL* pReversed );
+        HRESULT GetEffectiveDirectionReversed( bool* pReversed );
         HRESULT GetEffectiveMinimum( FLOAT* pMinimum );
         HRESULT GetEffectiveMaximum( FLOAT* pMaximum );
         HRESULT GetEffectiveTrackValue( FLOAT* pValue );

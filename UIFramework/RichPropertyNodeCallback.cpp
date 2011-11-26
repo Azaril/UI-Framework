@@ -58,7 +58,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CRichPropertyNodeCallback::OnElementStart(
 	__in CXMLElementStart* pElementStart, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -90,7 +90,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CRichPropertyNodeCallback::OnElementEnd(
 	__in CXMLElementEnd* pElementEnd, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -132,7 +132,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CRichPropertyNodeCallback::OnText(
 	__in CXMLText* pText, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -177,7 +177,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CRichPropertyNodeCallback::OnAttribute(
 	__in CXMLAttribute* pAttribute, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -199,7 +199,7 @@ Cleanup:
     return hr;
 }
 
-__override BOOL 
+__override bool 
 CRichPropertyNodeCallback::IsComplete(
 	)
 {

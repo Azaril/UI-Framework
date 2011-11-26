@@ -97,7 +97,7 @@ class CTextLayoutEngine : public CRefCountedObject
         std::wstring m_Text;
         SizeF m_LayoutSize;
         map< UINT32, GlyphRun* > m_GlyphRuns;
-        BOOL m_LayoutDirty;
+        bool m_LayoutDirty;
         CTextLayoutEngineMetrics* m_pLayoutMetrics;
 };
 

@@ -91,7 +91,7 @@ class CControl : public CFrameworkElement
         CTypedLayeredValue< CControl, CFloatValue > m_BorderThickness;
         CTypedLayeredValue< CControl, CHorizontalAlignmentValue > m_HorizontalContentAlignment;
         CTypedLayeredValue< CControl, CVerticalAlignmentValue > m_VerticalContentAlignment;
-        BOOL m_TemplateDirty;
+        bool m_TemplateDirty;
         CUIElement* m_TemplateChild;
         CNamescope* m_TemplateNamescope;
 };

@@ -233,7 +233,7 @@ class CEventHandlerChain : public CRefCountedObject
 
         HRESULT AddHandler( const RoutedEventHandler& Handler, events::signals::connection* pConnection );
 
-        BOOL HasHandlers();
+        bool HasHandlers();
 
         HRESULT RaiseEvent( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
@@ -270,8 +270,8 @@ class UIFRAMEWORK_API CUIElement : public CVisual
             __out Matrix3X2F* pTransform
             );
 
-        BOOL IsAttached();
-        BOOL IsLoaded();
+        bool IsAttached();
+        bool IsLoaded();
 
         virtual HRESULT Measure( SizeF Size );
         virtual SizeF GetDesiredSize();
@@ -284,8 +284,8 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         virtual HRESULT InvalidateMeasure();
         virtual HRESULT InvalidateArrange();
 
-        BOOL IsMeasureDirty();
-        BOOL IsArrangeDirty();
+        bool IsMeasureDirty();
+        bool IsArrangeDirty();
 
         virtual CUIElement* GetParent();
         virtual CUIElement* GetTemplateParent();
@@ -304,15 +304,15 @@ class UIFRAMEWORK_API CUIElement : public CVisual
 
         virtual HRESULT AddHandler( CRoutedEvent* pRoutedEvent, const RoutedEventHandler& Handler, events::signals::connection* pConnection );
 
-        HRESULT Focus( BOOL* pSetFocus );
-        BOOL IsFocusable();
+        HRESULT Focus( bool* pSetFocus );
+        bool IsFocusable();
 
-        HRESULT IsHitTestVisible( BOOL* pVisible );
+        HRESULT IsHitTestVisible( bool* pVisible );
 
         HRESULT CaptureMouse();
         HRESULT ReleaseMouse();
 
-        HRESULT SetIsNamescope( BOOL IsNamescope );
+        HRESULT SetIsNamescope( bool IsNamescope );
 
         virtual HRESULT SetBinding( CProperty* pProperty, CBindingBase* pBinding );
 
@@ -389,9 +389,9 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         virtual HRESULT GetClippingGeometry( CGraphicsGeometry** ppGeometry );
         virtual HRESULT GetClippingRectangle( RectF* pClippingRectangle );
 
-        virtual BOOL ShouldClipToLayout();
+        virtual bool ShouldClipToLayout();
 
-        HRESULT RequiresLayer( BOOL* pRequiresLayer );
+        HRESULT RequiresLayer( bool* pRequiresLayer );
 
         virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
         virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
@@ -417,9 +417,9 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         HRESULT GetEffectiveHorizontalAlignment( HorizontalAlignment::Value* pAlignment );
         HRESULT GetEffectiveVerticalAlignment( VerticalAlignment::Value* pAlignment );
         HRESULT GetEffectiveMargin( RectF* pMargin );
-        HRESULT GetEffectiveFocusable( BOOL* pFocusable );
+        HRESULT GetEffectiveFocusable( bool* pFocusable );
         HRESULT GetEffectiveOpacity( FLOAT* pOpacity );
-        HRESULT GetEffectiveNamescope( BOOL* pNamescope );
+        HRESULT GetEffectiveNamescope( bool* pNamescope );
 
         virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
@@ -493,16 +493,16 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         CTypedLayeredValue< CUIElement, CFloatValue > m_Opacity;
         CTypedLayeredValue< CUIElement, CBoolValue > m_Namescope;
 
-        BOOL m_MeasureDirty;
-        BOOL m_ArrangeDirty;
-        BOOL m_NotifiedParentMeasureDirty;
-        BOOL m_NotifiedParentArrangeDirty;
+        bool m_MeasureDirty;
+        bool m_ArrangeDirty;
+        bool m_NotifiedParentMeasureDirty;
+        bool m_NotifiedParentArrangeDirty;
 
     private:
         CProviders* m_Providers;
-        BOOL m_Attached;
+        bool m_Attached;
 
-        BOOL m_Loaded;
+        bool m_Loaded;
 
         SizeF m_LastMeasureSize;
         RectF m_LastArrangeBounds;
@@ -511,7 +511,7 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         SizeF m_FinalSize;
         SizeF m_LayoutTransformOffset;
 
-        BOOL m_ClipToLayoutBounds;
+        bool m_ClipToLayoutBounds;
 
         CLayer* m_Layer;
 

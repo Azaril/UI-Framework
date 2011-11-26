@@ -82,7 +82,7 @@ CCoreRectangleGeometry::GetBounds(
 __override __checkReturn HRESULT 
 CCoreRectangleGeometry::FillContainsPoint( 
 	const Point2F& LocalPoint, 
-	__out BOOL* pContainsPoint 
+	__out bool* pContainsPoint 
 	)
 {
     HRESULT hr = S_OK;

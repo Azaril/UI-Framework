@@ -81,7 +81,7 @@ void CTrack::OnThumbDragDelta(CObjectWithType* pSender, CRoutedEventArgs* pRoute
     HRESULT hr = S_OK;
     CDragDeltaEventArgs* pDragEventArgs = NULL;
     Orientation::Value Orient;
-    BOOL DirectionReversed = FALSE;
+    bool DirectionReversed = FALSE;
     FLOAT TrackValue = 0.0f;
     
     IFC(CastType(pRoutedEventArgs, &pDragEventArgs));
@@ -503,7 +503,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTrack::ComputeScrollBarLengths(SizeF AvailableSize, FLOAT ViewportSize, Orientation::Value Orient, FLOAT* pDecreaseButtonLength, FLOAT* pThumbLength, FLOAT* pIncreaseButtonLength, BOOL* pHide)
+HRESULT CTrack::ComputeScrollBarLengths(SizeF AvailableSize, FLOAT ViewportSize, Orientation::Value Orient, FLOAT* pDecreaseButtonLength, FLOAT* pThumbLength, FLOAT* pIncreaseButtonLength, bool* pHide)
 {
     HRESULT hr = S_OK;
     FLOAT Minimum = 0;
@@ -557,8 +557,8 @@ HRESULT CTrack::ComputeScrollBarLengths(SizeF AvailableSize, FLOAT ViewportSize,
              
         ThumbLength = std::max(ThumbMinimumLength, ThumbLength);
 
-        BOOL NotEnoughContentToScroll = (Range < 0.0);
-        BOOL ThumbLongerThanTrack = (ThumbLength > TrackLength);
+        bool NotEnoughContentToScroll = (Range < 0.0);
+        bool ThumbLongerThanTrack = (ThumbLength > TrackLength);
 
         if (NotEnoughContentToScroll || ThumbLongerThanTrack)
         {
@@ -636,7 +636,7 @@ HRESULT CTrack::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     {
         ViewportSize = std::max(0.0f, ViewportSize);
 
-        BOOL Hide = FALSE;
+        bool Hide = FALSE;
 
         IFC(ComputeScrollBarLengths(AvailableSize, ViewportSize, TrackOrientation, &DecreaseButtonLength, &ThumbLength, &IncreaseButtonLength, &Hide));
 
@@ -651,7 +651,7 @@ HRESULT CTrack::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
 	{
 		Point2F Offset;
 		SizeF PieceSize = AvailableSize;
-		BOOL IsDirectionReversed = FALSE;
+		bool IsDirectionReversed = FALSE;
 
 		IFC(GetEffectiveDirectionReversed(&IsDirectionReversed));
 
@@ -795,7 +795,7 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTrack::GetEffectiveDirectionReversed(BOOL* pDirectionReversed)
+HRESULT CTrack::GetEffectiveDirectionReversed(bool* pDirectionReversed)
 {
     HRESULT hr = S_OK;
     CBoolValue* pEffectiveValue = NULL;

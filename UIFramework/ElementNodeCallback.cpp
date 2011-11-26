@@ -60,7 +60,7 @@ CElementNodeCallback::GetKey(
 __override __checkReturn HRESULT 
 CElementNodeCallback::OnElementStart(
 	__in CXMLElementStart* pElementStart, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -87,7 +87,7 @@ Cleanup:
 __override __checkReturn HRESULT
 CElementNodeCallback::OnElementEnd(
 	__in CXMLElementEnd* pElementEnd, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -120,7 +120,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CElementNodeCallback::OnText(
 	__in CXMLText* pText, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -147,7 +147,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CElementNodeCallback::OnAttribute(
 	__in CXMLAttribute* pAttribute, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -200,7 +200,7 @@ CElementNodeCallback::OnAttribute(
         {
             IFC(m_Context->GetClassResolver()->ResolveProperty(pNameString, m_Properties, &pProperty));
 
-            BOOL IsTemplate = (pProperty->GetType() == TypeIndex::ParserCommandList);
+            bool IsTemplate = (pProperty->GetType() == TypeIndex::ParserCommandList);
 
             if(IsTemplate)
             {
@@ -236,7 +236,7 @@ Cleanup:
     return hr;
 }
 
-__override BOOL 
+__override bool 
 CElementNodeCallback::IsComplete(
 	)
 {

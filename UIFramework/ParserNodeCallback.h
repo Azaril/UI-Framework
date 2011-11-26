@@ -10,27 +10,27 @@ class CParserNodeCallback : public CRefCountedObject,
                             public CParserXMLCallback
 {
     public:
-        virtual BOOL IsComplete(
+        virtual bool IsComplete(
 			) = 0;
 
         __override virtual __checkReturn HRESULT OnElementStart( 
 			__in CXMLElementStart* pElementStart,
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
         __override virtual __checkReturn HRESULT OnElementEnd(
 			__in CXMLElementEnd* pElementEnd, 
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
         __override virtual __checkReturn HRESULT OnText(
 			__in CXMLText* pText, 
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
         __override virtual __checkReturn HRESULT OnAttribute(
 			__in CXMLAttribute* pAttribute, 
-			BOOL& Consumed 
+			bool& Consumed 
 			);
 
     protected:

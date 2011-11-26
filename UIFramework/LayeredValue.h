@@ -283,7 +283,7 @@ class UIFRAMEWORK_API CTypedLocalLayeredValue : public CLayeredValue
         HRESULT ClearLayer( ValueLayer& Layer, EffectiveValue::Value ValueType )
         {
             HRESULT hr = S_OK;
-            BOOL IsEffectiveValue = (m_ActualEffectiveValue <= ValueType);
+            bool IsEffectiveValue = (m_ActualEffectiveValue <= ValueType);
             CObjectWithType* pOldValue = NULL;
             CObjectWithType* pNewValue = NULL;
 
@@ -325,7 +325,7 @@ class UIFRAMEWORK_API CTypedLocalLayeredValue : public CLayeredValue
             HRESULT hr = S_OK;
             CTypeConverter* pTypeConverter = NULL;
             CObjectWithType* pConvertedType = NULL;
-            BOOL IsEffectiveValue = (m_ActualEffectiveValue <= ValueType);
+            bool IsEffectiveValue = (m_ActualEffectiveValue <= ValueType);
             CObjectWithType* pOldValue = NULL;
             CObjectWithType* pNewValue = NULL;
 
@@ -425,7 +425,7 @@ class UIFRAMEWORK_API CTypedLocalLayeredValue : public CLayeredValue
         OwnerType* m_Owner;
         CProperty* m_Property;
         CObjectWithType* m_EffectiveValueObject;
-        BOOL m_IsInvalidated;
+        bool m_IsInvalidated;
         ValueLayer m_LocalLayer;
         ValueLayer m_AnimationLayer;
 };

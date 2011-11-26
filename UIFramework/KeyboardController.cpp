@@ -40,7 +40,7 @@ __checkReturn HRESULT
 CKeyboardController::InjectKey(
     Key::Value Key,
     KeyState::Value State, 
-    __out_opt BOOL* pConsumed
+    __out_opt bool* pConsumed
     )
 {
     HRESULT hr = S_OK;
@@ -71,7 +71,7 @@ Cleanup:
 __checkReturn HRESULT 
 CKeyboardController::InjectCharacter(
     WCHAR Character, 
-    __out_opt BOOL* pConsumed
+    __out_opt bool* pConsumed
     )
 {
     HRESULT hr = S_OK;

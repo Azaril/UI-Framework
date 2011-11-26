@@ -238,7 +238,7 @@ CTextEditor::OnKeyDown(
 {
     HRESULT hr = S_OK;
     CKeyEventArgs* pKeyEventArgs = NULL;
-    BOOL Handled = FALSE;
+    bool Handled = FALSE;
 
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
@@ -260,6 +260,11 @@ CTextEditor::OnKeyDown(
                 {
                     IFC(HandleEnter(&Handled));
 
+                    break;
+                }
+                
+            default:
+                {
                     break;
                 }
         }
@@ -298,11 +303,11 @@ Cleanup:
 
 __checkReturn HRESULT 
 CTextEditor::HandleBackspace(
-	__out BOOL* pConsumed
+	__out bool* pConsumed
 	)
 {
     HRESULT hr = S_OK;
-    BOOL Handled = TRUE;
+    bool Handled = TRUE;
 
     if(HasSelection())
     {
@@ -327,11 +332,11 @@ Cleanup:
 
 __checkReturn HRESULT 
 CTextEditor::HandleEnter(
-	__out BOOL* pConsumed
+	__out bool* pConsumed
 	)
 {
     HRESULT hr = S_OK;
-    BOOL Handled = FALSE;
+    bool Handled = FALSE;
 
     if(m_AcceptsEnter)
     {
@@ -349,7 +354,7 @@ Cleanup:
     return hr;
 }
 
-BOOL 
+bool 
 CTextEditor::HasSelection(
 	)
 {
@@ -359,7 +364,7 @@ CTextEditor::HasSelection(
 
 void 
 CTextEditor::SetAcceptsEnter(
-	BOOL AcceptsEnter
+	bool AcceptsEnter
 	)
 {
     m_AcceptsEnter = AcceptsEnter;

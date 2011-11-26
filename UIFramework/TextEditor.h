@@ -27,7 +27,7 @@ class CTextEditor : public CRefCountedObject
 			);
 
         void SetAcceptsEnter( 
-			BOOL AcceptsEnter 
+			bool AcceptsEnter 
 			);
 
     protected:
@@ -72,14 +72,14 @@ class CTextEditor : public CRefCountedObject
 			);
 
         __checkReturn HRESULT HandleBackspace(
-			__out BOOL* pConsumed 
+			__out bool* pConsumed 
 			);
 
         __checkReturn HRESULT HandleEnter(
-			__out BOOL* pConsumed 
+			__out bool* pConsumed 
 			);
 
-        BOOL HasSelection(
+        bool HasSelection(
 			);
 
         __checkReturn HRESULT DeleteSelection(
@@ -92,5 +92,5 @@ class CTextEditor : public CRefCountedObject
         events::signals::connection m_KeyUpConnection;
         UINT32 m_CaretPosition;
         std::wstring m_TextHolder;
-        BOOL m_AcceptsEnter;
+        bool m_AcceptsEnter;
 };

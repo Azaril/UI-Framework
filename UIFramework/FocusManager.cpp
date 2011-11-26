@@ -40,7 +40,7 @@ Cleanup:
 __checkReturn HRESULT 
 CFocusManager::SetFocus(
     __in CUIElement* pElement, 
-    __out BOOL* pSetFocus
+    __out bool* pSetFocus
     )
 {
     HRESULT hr = S_OK;
@@ -48,7 +48,7 @@ CFocusManager::SetFocus(
     CRoutedEventArgs* pPreviewGotFocusEventArgs = NULL;
     CRoutedEventArgs* pLostFocusEvent = NULL;
     CRoutedEventArgs* pGotFocusEvent = NULL;
-    BOOL Abort = FALSE;
+    bool Abort = FALSE;
 
     if(pElement != m_FocusedElement)
     {
@@ -139,7 +139,7 @@ __checkReturn HRESULT
 CFocusManager_SetFocus(
     __in CFocusManager* pManager, 
     __in CUIElement* pElement, 
-    __out BOOL* pSetFocus
+    __out bool* pSetFocus
     )
 {
     return pManager->SetFocus(pElement, pSetFocus);

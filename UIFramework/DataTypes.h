@@ -25,7 +25,6 @@ typedef unsigned short UINT16;
 typedef float FLOAT;
 typedef wchar_t WCHAR;
 typedef char CHAR;
-typedef UINT32 BOOL;
 typedef unsigned char BYTE;
 typedef long long LONGLONG;
 typedef unsigned long long ULONGLONG;

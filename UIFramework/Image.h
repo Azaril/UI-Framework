@@ -67,7 +67,7 @@ class UIFRAMEWORK_API CImage : public CFrameworkElement
         CTypedLayeredValue< CImage, CStretchDirectionValue > m_StretchDirection;
         CImageBrush* m_ImageBrush;
         CGeometryVisual* m_ImageVisual;
-        BOOL m_GeometryDirty;
+        bool m_GeometryDirty;
 };
 
 template< >

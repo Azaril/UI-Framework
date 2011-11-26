@@ -86,7 +86,7 @@ class UIFRAMEWORK_API CBorder : public CDecorator
         CTypedLayeredValue< CBorder, CFloatValue > m_CornerRadius;
 
         CGeometryVisual* m_BorderVisual;
-        BOOL m_GeometryDirty;
+        bool m_GeometryDirty;
 };
 
 template< >

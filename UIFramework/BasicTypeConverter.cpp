@@ -101,7 +101,7 @@ ConvertStringToEnum(
     __in CObjectWithType* pValue, 
     __in_ecount(EnumCount) const EnumHolder< T >* pEnums,
     UINT32 EnumCount, 
-    BOOL CaseSensitive, 
+    bool CaseSensitive, 
     __deref_out HolderType** ppConvertedValue
     )
 {
@@ -350,7 +350,7 @@ ConvertStringToColorF(
     CStringValue* pStringValue = NULL;
     CColorFValue* pColorFValue = NULL;
     ColorF Value;
-    BOOL GotColor = FALSE;
+    bool GotColor = FALSE;
     const WCHAR* pString = NULL;
     UINT32 StringLength = 0;
 
@@ -367,9 +367,9 @@ ConvertStringToColorF(
     if(StringLength > 0 && pString[0] == L'#')
     {
         const WCHAR* pParsePoint = pString + 1;
-        BOOL Continue = TRUE;
+        bool Continue = TRUE;
         UINT32 HexDigits = 0;
-        BOOL FailedParse = FALSE;
+        bool FailedParse = FALSE;
         BYTE HexValues[8] = { 0 };
 
         while(Continue && !FailedParse)
@@ -504,9 +504,9 @@ ConvertStringToRectF(
     WCHAR ValueBuffer[1024];
     UINT32 ValueBufferIndex = 0;
     RectFParseState::Value ParseState = RectFParseState::BeforeNumber;
-    BOOL Continue = TRUE;
-    BOOL GotSeperator = FALSE;
-    BOOL GotDigit = FALSE;
+    bool Continue = TRUE;
+    bool GotSeperator = FALSE;
+    bool GotDigit = FALSE;
 
     IFCPTR(pValue);
     IFCPTR(ppConvertedValue);
@@ -752,7 +752,7 @@ ConvertStringToBool(
     )
 {
     HRESULT hr = S_OK;
-    BOOL Value = TRUE;
+    bool Value = TRUE;
     CStringValue* pStringValue = NULL;
     CBoolValue* pBoolValue = NULL;
 
@@ -814,9 +814,9 @@ ConvertStringToPoint2F(
     WCHAR ValueBuffer[1024];
     UINT32 ValueBufferIndex = 0;
     Point2FParseState::Value ParseState = Point2FParseState::BeforeNumber;
-    BOOL Continue = TRUE;
-    BOOL GotSeperator = FALSE;
-    BOOL GotDigit = FALSE;
+    bool Continue = TRUE;
+    bool GotSeperator = FALSE;
+    bool GotDigit = FALSE;
 
     IFCPTR(pValue);
     IFCPTR(ppConvertedValue);
@@ -1336,9 +1336,9 @@ ConvertStringToDuration(
     WCHAR ValueBuffer[1024];
     UINT32 ValueBufferIndex = 0;
     DurationParseState::Value ParseState = DurationParseState::BeforeNumber;
-    BOOL Continue = TRUE;
-    BOOL GotSeperator = FALSE;
-    BOOL GotDigit = FALSE;
+    bool Continue = TRUE;
+    bool GotSeperator = FALSE;
+    bool GotDigit = FALSE;
 
     IFCPTR(pValue);
     IFCPTR(ppConvertedValue);

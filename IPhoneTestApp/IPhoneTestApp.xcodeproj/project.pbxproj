@@ -15,13 +15,12 @@
 		3D846EF7141A0F7F00AC9C7D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846EF6141A0F7F00AC9C7D /* OpenGLES.framework */; };
 		3D846EFD141A0F7F00AC9C7D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3D846EFB141A0F7F00AC9C7D /* InfoPlist.strings */; };
 		3D846EFF141A0F7F00AC9C7D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D846EFE141A0F7F00AC9C7D /* main.m */; };
-		3D846F03141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m */; };
+		3D846F03141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.mm */; };
 		3D846F06141A0F7F00AC9C7D /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3D846F04141A0F7F00AC9C7D /* MainWindow.xib */; };
-		3D846F0D141A0F7F00AC9C7D /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F0C141A0F7F00AC9C7D /* EAGLView.m */; };
+		3D846F0D141A0F7F00AC9C7D /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F0C141A0F7F00AC9C7D /* EAGLView.mm */; };
 		3D846F10141A0F7F00AC9C7D /* IPhoneTestAppViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F0F141A0F7F00AC9C7D /* IPhoneTestAppViewController.mm */; };
 		3D846F13141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3D846F11141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib */; };
 		3D846F24141A114600AC9C7D /* libUIFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846F21141A0FBF00AC9C7D /* libUIFramework.a */; };
-		3D846F27141A133400AC9C7D /* UIFrameworkBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F26141A133400AC9C7D /* UIFrameworkBridge.cpp */; };
 		3D846F2B141A257900AC9C7D /* EAGLContextBridgeGLES20.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */; };
 		3D9BADE71453F6B3003CE576 /* Opificio.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D9BADE51453F6B3003CE576 /* Opificio.ttf */; };
 		3D9BADE81453F6B3003CE576 /* testimg.png in Resources */ = {isa = PBXBuildFile; fileRef = 3D9BADE61453F6B3003CE576 /* testimg.png */; };
@@ -61,16 +60,14 @@
 		3D846EFE141A0F7F00AC9C7D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3D846F00141A0F7F00AC9C7D /* IPhoneTestApp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IPhoneTestApp-Prefix.pch"; sourceTree = "<group>"; };
 		3D846F01141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IPhoneTestAppAppDelegate.h; sourceTree = "<group>"; };
-		3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IPhoneTestAppAppDelegate.m; sourceTree = "<group>"; };
+		3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = IPhoneTestAppAppDelegate.mm; sourceTree = "<group>"; };
 		3D846F05141A0F7F00AC9C7D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		3D846F0B141A0F7F00AC9C7D /* EAGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
-		3D846F0C141A0F7F00AC9C7D /* EAGLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EAGLView.m; sourceTree = "<group>"; };
+		3D846F0C141A0F7F00AC9C7D /* EAGLView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
 		3D846F0E141A0F7F00AC9C7D /* IPhoneTestAppViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IPhoneTestAppViewController.h; sourceTree = "<group>"; };
 		3D846F0F141A0F7F00AC9C7D /* IPhoneTestAppViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = IPhoneTestAppViewController.mm; sourceTree = "<group>"; };
 		3D846F12141A0F7F00AC9C7D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IPhoneTestAppViewController.xib; sourceTree = "<group>"; };
 		3D846F19141A0FBE00AC9C7D /* UIFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = UIFramework.xcodeproj; path = ../UIFramework.xcodeproj; sourceTree = "<group>"; };
-		3D846F25141A130600AC9C7D /* UIFrameworkBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIFrameworkBridge.h; sourceTree = "<group>"; };
-		3D846F26141A133400AC9C7D /* UIFrameworkBridge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UIFrameworkBridge.cpp; sourceTree = "<group>"; };
 		3D846F28141A22A500AC9C7D /* EAGLContextBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLContextBridge.h; sourceTree = "<group>"; };
 		3D846F29141A242100AC9C7D /* EAGLContextBridgeGLES20.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLContextBridgeGLES20.h; sourceTree = "<group>"; };
 		3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLContextBridgeGLES20.mm; sourceTree = "<group>"; };
@@ -139,13 +136,12 @@
 		3D846EF8141A0F7F00AC9C7D /* IPhoneTestApp */ = {
 			isa = PBXGroup;
 			children = (
-				3D846F25141A130600AC9C7D /* UIFrameworkBridge.h */,
-				3D846F26141A133400AC9C7D /* UIFrameworkBridge.cpp */,
-				3D846F01141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.h */,
-				3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m */,
+				3D846F11141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib */,
 				3D846F04141A0F7F00AC9C7D /* MainWindow.xib */,
+				3D846F01141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.h */,
+				3D846F02141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.mm */,
 				3D846F0B141A0F7F00AC9C7D /* EAGLView.h */,
-				3D846F0C141A0F7F00AC9C7D /* EAGLView.m */,
+				3D846F0C141A0F7F00AC9C7D /* EAGLView.mm */,
 				3D846F0E141A0F7F00AC9C7D /* IPhoneTestAppViewController.h */,
 				3D846F0F141A0F7F00AC9C7D /* IPhoneTestAppViewController.mm */,
 				3DF3D0E8141C02E900431CFF /* EAGLLayerStorageAllocator.h */,
@@ -154,7 +150,6 @@
 				3D51F7E7144B8AD0003BD760 /* EAGLContextBridge.mm */,
 				3D846F29141A242100AC9C7D /* EAGLContextBridgeGLES20.h */,
 				3D846F2A141A257900AC9C7D /* EAGLContextBridgeGLES20.mm */,
-				3D846F11141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib */,
 				3D846EF9141A0F7F00AC9C7D /* Supporting Files */,
 			);
 			path = IPhoneTestApp;
@@ -207,6 +202,9 @@
 /* Begin PBXProject section */
 		3D846EE1141A0F7F00AC9C7D /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 3D846EE4141A0F7F00AC9C7D /* Build configuration list for PBXProject "IPhoneTestApp" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -261,10 +259,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D846EFF141A0F7F00AC9C7D /* main.m in Sources */,
-				3D846F03141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.m in Sources */,
-				3D846F0D141A0F7F00AC9C7D /* EAGLView.m in Sources */,
+				3D846F03141A0F7F00AC9C7D /* IPhoneTestAppAppDelegate.mm in Sources */,
+				3D846F0D141A0F7F00AC9C7D /* EAGLView.mm in Sources */,
 				3D846F10141A0F7F00AC9C7D /* IPhoneTestAppViewController.mm in Sources */,
-				3D846F27141A133400AC9C7D /* UIFrameworkBridge.cpp in Sources */,
 				3D846F2B141A257900AC9C7D /* EAGLContextBridgeGLES20.mm in Sources */,
 				3DF3D0EC141C058600431CFF /* EAGLLayerStorageAllocator.mm in Sources */,
 				3D51F7E8144B8AD0003BD760 /* EAGLContextBridge.mm in Sources */,
@@ -366,6 +363,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IPhoneTestApp/IPhoneTestApp-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "IPhoneTestApp/IPhoneTestApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -383,6 +381,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IPhoneTestApp/IPhoneTestApp-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "IPhoneTestApp/IPhoneTestApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

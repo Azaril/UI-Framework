@@ -54,7 +54,7 @@ class CWICImagingProvider : public CImagingProvider
 			);
 
         IWICImagingFactory* m_Factory;
-        BOOL m_UninitializeCOM;
+        bool m_UninitializeCOM;
         HMODULE m_ShlwapiModule;
         SHCreateMemStreamFunc m_SHCreateMemStream;
 };

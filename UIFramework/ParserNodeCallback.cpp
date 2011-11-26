@@ -31,7 +31,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CParserNodeCallback::OnElementStart(
 	__in CXMLElementStart* pElementStart, 
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -47,7 +47,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CParserNodeCallback::OnElementEnd(
 	__in CXMLElementEnd* pElementEnd,
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -63,7 +63,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CParserNodeCallback::OnText(
 	__in CXMLText* pText,
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;
@@ -79,7 +79,7 @@ Cleanup:
 __override __checkReturn HRESULT
 CParserNodeCallback::OnAttribute(
 	__in CXMLAttribute* pAttribute,
-	BOOL& Consumed
+	bool& Consumed
 	)
 {
     HRESULT hr = S_OK;

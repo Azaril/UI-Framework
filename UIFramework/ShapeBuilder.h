@@ -140,6 +140,6 @@ class CShapeBuilder : public CRefCountedObjectBase< T >
 
         CShapeData* m_pShapeData;
         CFigureBuilder* m_pFigureBuilder;
-        BOOL m_FigureOpen;
+        bool m_FigureOpen;
 };
 

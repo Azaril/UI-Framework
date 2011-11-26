@@ -144,7 +144,7 @@ CXMLLiteReader::ProcessReader(
                 {
                     const WCHAR* pName = NULL;
                     UINT32 NameLength = 0;
-                    BOOL EmptyElement = FALSE;
+                    bool EmptyElement = FALSE;
 
                     EmptyElement = pReader->IsEmptyElement();
 

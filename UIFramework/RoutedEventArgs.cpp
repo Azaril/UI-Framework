@@ -36,7 +36,7 @@ CRoutedEventArgs::GetRoutedEvent(
     return m_RoutedEvent;
 }
 
-BOOL 
+bool 
 CRoutedEventArgs::IsHandled(
     )
 {
@@ -45,7 +45,7 @@ CRoutedEventArgs::IsHandled(
 
 void
 CRoutedEventArgs::SetHandled(
-    BOOL Handled
+    bool Handled
     )
 {
     m_Handled = Handled;
@@ -81,7 +81,7 @@ CObjectWithType_CastTo_CRoutedEventArgs(
 }
 
 extern "C" UIFRAMEWORK_API
-BOOL 
+bool 
 CRoutedEventArgs_IsHandled(
     __in CRoutedEventArgs* pArgs
     )
@@ -93,7 +93,7 @@ extern "C" UIFRAMEWORK_API
 void 
 CRoutedEventArgs_SetHandled(
     __in CRoutedEventArgs* pArgs, 
-    BOOL Handled
+    bool Handled
     )
 {
     pArgs->SetHandled(Handled);

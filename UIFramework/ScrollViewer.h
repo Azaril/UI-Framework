@@ -89,7 +89,7 @@ class CScrollViewer : public CContentControl,
         CTypedLocalLayeredValue< CScrollViewer, CVisibilityValue > m_ComputedVerticalScrollBarVisibility;
 
     private:
-        BOOL m_InMeasure;
+        bool m_InMeasure;
         events::signals::connection m_RoutedCommandExecutedConnection;
 };
 
