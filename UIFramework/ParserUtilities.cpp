@@ -431,8 +431,29 @@ ParseMarkupExtensionInternal(
             case MarkupExtensionParseState::Complete:
                 {
                     IFC(AddEvaluateMarkupExtensionCommand(pContext));
+                    
+                    UINT32 charactersConsumed = (pParsePoint - pValue);
+                    
+                    //
+                    // Consume trailing whitespace and null terminator.
+                    //
+                    while (charactersConsumed < ValueLength)
+                    {
+                        const WCHAR Token = *pParsePoint;
+                        
+                        if (iswspace(Token) || Token == L'\0')
+                        {
+                            ++pParsePoint;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                        
+                        charactersConsumed = (pParsePoint - pValue);
+                    }
 
-                    *pCharactersConsumed = pParsePoint - pValue;
+                    *pCharactersConsumed = charactersConsumed;
 
                     Continue = FALSE;
 

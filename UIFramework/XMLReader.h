@@ -2,6 +2,8 @@
 
 #include "RefCounted.h"
 
+struct IReadStream;
+
 class CXMLElementStart
 {
     public:
@@ -85,6 +87,11 @@ class CXMLReader : public CRefCountedObject
 			__in_z const WCHAR* pText,
 			__in CXMLReaderCallback* pCallback 
 			) = 0;
+    
+        virtual __checkReturn HRESULT LoadFromStream(
+            __in IReadStream* pStream,
+            __in CXMLReaderCallback* pCallback
+            ) = 0;
 };
 
 __checkReturn HRESULT CreateXMLReader( 

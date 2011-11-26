@@ -1,6 +1,7 @@
 #include "LibXMLReader.h"
 #include "StackHeapBuffer.h"
 #include "StringConversion.h"
+#include "ReadStream.h"
 
 typedef StackHeapBuffer< CHAR, 2048 > StackCharBuffer;
 typedef StackHeapBuffer< WCHAR, 2048 > StackWCharBuffer;
@@ -74,6 +75,7 @@ CLibXMLReader::LoadFromString(
     //
     // NOTE: Remove NULL terminator from string length.
     //
+    //TODO: Handle other encodings?
     pBuffer = xmlParserInputBufferCreateStatic(ConvertedTextBuffer.GetBuffer(), ConvertedTextLength - 1, XML_CHAR_ENCODING_UTF8);
     IFCOOM(pBuffer);
 
@@ -90,7 +92,63 @@ Cleanup:
     
     if (pBuffer != NULL)
     {
-        delete pBuffer;
+        xmlFreeParserInputBuffer(pBuffer);
+    }
+    
+    return hr;
+}
+
+int 
+CLibXMLReader::ReadStreamCallback(
+    void* pContext, 
+    char* pBuffer, 
+    int bufferLength
+    )
+{
+    HRESULT hr = S_OK;
+    UINT64 bytesRead = 0;
+    
+    IReadStream* pStream = (IReadStream*)pContext;
+    
+    IFC(pStream->Read(pBuffer, bufferLength, &bytesRead));
+    
+Cleanup:
+    if (FAILED(hr))
+    {
+        return - 1;
+    }
+    else
+    {
+        return bytesRead;
+    }
+}
+
+int 
+CLibXMLReader::CloseStreamCallback(
+    void* pContext
+    )
+{
+    return 0;
+}
+
+__checkReturn HRESULT
+CLibXMLReader::LoadFromStream(
+    __in IReadStream* pStream,
+    __in CXMLReaderCallback* pCallback
+    )
+{
+    HRESULT hr = S_OK;
+    xmlTextReaderPtr pReader = NULL;
+    
+    pReader = xmlReaderForIO(&CLibXMLReader::ReadStreamCallback, &CLibXMLReader::CloseStreamCallback, pStream, "", NULL, 0);
+    IFCPTR(pReader);
+    
+    IFC(ProcessReader(pReader, pCallback));
+    
+Cleanup: 
+    if (pReader != NULL)
+    {
+        xmlFreeTextReader(pReader);
     }
     
     return hr;

@@ -118,6 +118,11 @@ class CLibXMLReader : public CXMLReader
 			__in_z const WCHAR* pText,
 			__in CXMLReaderCallback* pCallback 
 			);
+    
+        __override virtual __checkReturn HRESULT LoadFromStream(
+            __in IReadStream* pStream,
+            __in CXMLReaderCallback* pCallback
+            );
 
     protected:
         CLibXMLReader(
@@ -163,4 +168,14 @@ class CLibXMLReader : public CXMLReader
 			UINT32 NamespaceUriLength,
 			__in CXMLReaderCallback* pCallback 
 			);
+
+        static int ReadStreamCallback(
+            void* pContext, 
+            char* pBuffer, 
+            int bufferLength
+            );
+    
+        static int CloseStreamCallback(
+            void* pContext
+            );
 };

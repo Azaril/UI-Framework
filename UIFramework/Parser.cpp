@@ -106,6 +106,44 @@ Cleanup:
     return hr;
 }
 
+__checkReturn HRESULT 
+CParser::LoadFromStream(
+    __in IReadStream* pStream,
+    __deref_out CObjectWithType** ppRootObject
+    )
+{
+    HRESULT hr = S_OK;
+    CXMLReader* pXMLReader = NULL;
+    CParserCallback* pCallback = NULL;
+    CParserCommandList* pCommandList = NULL;
+    CParseContext* pContext = NULL;
+    
+    IFCPTR(pStream);
+    IFCPTR(ppRootObject);
+    
+    IFC(CParseContext::Create(m_Providers, &pContext));
+    
+    IFC(CParserCallback::Create(pContext, &pCallback));
+    
+    IFC(CParserCommandList::Create(m_Providers, &pCommandList));
+    
+    IFC(pContext->PushCommandList(pCommandList));
+    
+    IFC(CreateXMLReader(&pXMLReader));
+    
+    IFC(pXMLReader->LoadFromStream(pStream, pCallback));
+    
+    IFC(pCommandList->Execute(NULL, ppRootObject));
+    
+Cleanup:
+    ReleaseObject(pCallback);
+    ReleaseObject(pXMLReader);
+    ReleaseObject(pCommandList);
+    ReleaseObject(pContext);
+    
+    return hr;
+}
+
 //
 // CParser
 //

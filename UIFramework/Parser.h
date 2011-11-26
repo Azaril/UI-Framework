@@ -5,6 +5,7 @@
 #include "ClassResolver.h"
 #include "TypeConverter.h"
 #include "Providers.h"
+#include "ReadStream.h"
 
 class UIFRAMEWORK_API CParser : public CRefCountedObject
 {
@@ -20,6 +21,11 @@ class UIFRAMEWORK_API CParser : public CRefCountedObject
 			__in_z const WCHAR* pMarkup, 
 			__deref_out CObjectWithType** ppRootObject 
 			);
+    
+        __checkReturn HRESULT LoadFromStream(
+            __in IReadStream* pStream,
+            __deref_out CObjectWithType** ppRootObject
+            );
 
         template< typename T >
         __checkReturn HRESULT LoadFromFile( 
@@ -76,6 +82,35 @@ class UIFRAMEWORK_API CParser : public CRefCountedObject
         Cleanup:
             ReleaseObject(pRoot);
 
+            return hr;
+        }
+    
+        template< typename T >
+        __checkReturn HRESULT LoadFromStream( 
+            __in IReadStream* pStream, 
+            __deref_out T** ppRootObject 
+            )
+        {
+            HRESULT hr = S_OK;
+            CObjectWithType* pRoot = NULL;
+            
+            IFC(LoadFromStream(pStream, &pRoot));
+            
+            if(pRoot)
+            {
+                IFCEXPECT(pRoot->IsTypeOf(ObjectTypeTraits< T >::Type));
+                
+                *ppRootObject = (T*)pRoot;
+                pRoot = NULL;
+            }
+            else
+            {
+                *ppRootObject = NULL;
+            }
+            
+        Cleanup:
+            ReleaseObject(pRoot);
+            
             return hr;
         }
 

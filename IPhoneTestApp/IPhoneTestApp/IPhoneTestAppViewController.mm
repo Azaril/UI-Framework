@@ -90,6 +90,7 @@ L"</Canvas>\n";
 {
     HRESULT hr = S_OK;
     CTextProvider* pTextProvider = NULL;
+    IReadStream* pContentStream = NULL;
     
     m_pClassResolver = NULL;
     m_pTypeConverter = NULL;
@@ -148,24 +149,31 @@ L"</Canvas>\n";
         IFC(CUIHost::Create(m_pGraphicsDevice, m_pRenderTarget, m_pProviders, &defaultFont, &m_pUIHost));
     }
     
-    IFC(m_pUIHost->GetMouseController(&m_pMouseController))
+    IFC(m_pUIHost->GetMouseController(&m_pMouseController));
     
-    IFC([self LoadContent:g_MarkupContent]);
+    {
+        const WCHAR markupFile[] = L"testxml.xml";
+        
+        IFC(m_pBundleResourceProvider->ReadResource(markupFile, ARRAYSIZE(markupFile), &pContentStream));
+    }                                                   
+    
+    IFC([self LoadContent:pContentStream]);
     
    [(EAGLView*)self.view setUIHost:m_pUIHost];
     
 Cleanup:
     ReleaseObject(pTextProvider);
+    ReleaseObject(pContentStream);
 }
 
-- (HRESULT)LoadContent:(const wchar_t*)pContent
+- (HRESULT)LoadContent:(IReadStream*)pContentStream
 {
     HRESULT hr = S_OK;
     CObjectWithType* pParsedRootObject = NULL;
     CRootUIElement* pRootElement = NULL;
     CUIElement* pParsedRootElement = NULL;
     
-    IFC(m_pParser->LoadFromString(pContent, &pParsedRootObject));
+    IFC(m_pParser->LoadFromStream(pContentStream, &pParsedRootObject));
     
     IFC(m_pUIHost->GetRootElement(&pRootElement));
     

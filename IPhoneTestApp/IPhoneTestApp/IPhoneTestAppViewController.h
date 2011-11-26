@@ -53,6 +53,6 @@
 - (void)startAnimation;
 - (void)stopAnimation;
 
-- (HRESULT)LoadContent:(const wchar_t*)pContent;
+- (HRESULT)LoadContent:(IReadStream*)pContentStream;
 
 @end
