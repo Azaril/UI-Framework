@@ -14,6 +14,10 @@ CTextureAtlasView::~CTextureAtlasView(
 {
     ReleaseObject(m_pTexture);
 
+    //
+    // The node may be deleted during this call, do not reference
+    // it after notifying it of deletion.
+    //
     m_pNode->NotifyViewDeleted();
 }
 

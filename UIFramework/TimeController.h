@@ -24,9 +24,6 @@ class UIFRAMEWORK_API CTimeController : public CRefCountedObjectBase< CTimeSourc
             const CTimeSpan& TimeDelta
             );
 
-        __checkReturn HRESULT Disconnect(
-            );
-
         __override virtual __checkReturn HRESULT AddSink( 
             __in CTimeSink* pSink 
             );

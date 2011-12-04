@@ -153,11 +153,6 @@ CResolvedBeginStoryboard::~CResolvedBeginStoryboard(
         ReleaseObject(m_pTimeSource);
     }
 
-    if (m_pTimeController != NULL)
-    {
-        IGNOREHR(m_pTimeController->Disconnect());
-    }
-
     ReleaseObject(m_pTimeController);
 }
 

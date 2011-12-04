@@ -76,7 +76,11 @@
 
 - (void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    CGPoint touchPoint = [[touches anyObject] locationInView:self];
     
+    Point2F point(touchPoint.x, touchPoint.y);
+    
+    m_pMouseController->InjectMouseMove(point);    
 }
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -92,6 +96,13 @@
 
 - (void) touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    
+    Point2F point(touchPoint.x, touchPoint.y);
+    
+    m_pMouseController->InjectMouseMove(point);
+    
+    m_pMouseController->InjectMouseButton(MouseButton::Left, MouseButtonState::Up);    
 }
 
 - (void) setUIHost:(CUIHost*)pUIHost;

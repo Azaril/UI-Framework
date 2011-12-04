@@ -18,13 +18,7 @@ CUIHost::CUIHost(
 CUIHost::~CUIHost(
     )
 {
-    if(m_TimeController)
-    {
-        IGNOREHR(m_TimeController->Disconnect());
-
-        ReleaseObject(m_TimeController);
-    }
-
+    ReleaseObject(m_TimeController);
     ReleaseObject(m_RootElement);
     ReleaseObject(m_LayoutManager);
     ReleaseObject(m_FocusManager);

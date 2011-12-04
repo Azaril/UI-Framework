@@ -594,7 +594,6 @@
 		3D0782501419D7E80052E0DE /* EvaluateMarkupExtensionCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EvaluateMarkupExtensionCommand.h; sourceTree = "<group>"; };
 		3D0782511419D7E80052E0DE /* EventTrigger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventTrigger.cpp; sourceTree = "<group>"; };
 		3D0782521419D7E80052E0DE /* EventTrigger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventTrigger.h; sourceTree = "<group>"; };
-		3D0782531419D7E80052E0DE /* External */ = {isa = PBXFileReference; lastKnownFileType = folder; path = External; sourceTree = "<group>"; };
 		3D0782541419D7E80052E0DE /* Factory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Factory.cpp; sourceTree = "<group>"; };
 		3D0782551419D7E80052E0DE /* Factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Factory.h; sourceTree = "<group>"; };
 		3D0782561419D7E80052E0DE /* FloatAnimation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FloatAnimation.cpp; sourceTree = "<group>"; };
@@ -1233,7 +1232,6 @@
 				3D0782501419D7E80052E0DE /* EvaluateMarkupExtensionCommand.h */,
 				3D0782511419D7E80052E0DE /* EventTrigger.cpp */,
 				3D0782521419D7E80052E0DE /* EventTrigger.h */,
-				3D0782531419D7E80052E0DE /* External */,
 				3D0782541419D7E80052E0DE /* Factory.cpp */,
 				3D0782551419D7E80052E0DE /* Factory.h */,
 				3D0782561419D7E80052E0DE /* FloatAnimation.cpp */,

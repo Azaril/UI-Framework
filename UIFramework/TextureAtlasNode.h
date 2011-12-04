@@ -16,9 +16,11 @@ class CTextureAtlasNode : private ITextureAtlasNode
 {
     public:
         CTextureAtlasNode(
-            const RectU& Rect
+            const RectU& Rect,
+            __in_opt CTextureAtlasNode< Padding >* pParent
             )
             : m_Rect(Rect)
+            , m_pParent(pParent)
             , m_pLeftChild(NULL)
             , m_pRightChild(NULL)
             , m_pView(NULL)
@@ -117,10 +119,10 @@ class CTextureAtlasNode : private ITextureAtlasNode
                         RectU left(m_Rect.left, m_Rect.top, m_Rect.left + Size.width, m_Rect.bottom);
                         RectU right(m_Rect.left + Size.width, m_Rect.top, m_Rect.right, m_Rect.bottom);
 
-                        m_pLeftChild = new CTextureAtlasNode(left);
+                        m_pLeftChild = new CTextureAtlasNode(left, this);
                         IFCOOM(m_pLeftChild);
 
-                        m_pRightChild = new CTextureAtlasNode(right);
+                        m_pRightChild = new CTextureAtlasNode(right, this);
                         IFCOOM(m_pRightChild);
                     }
                     else
@@ -128,10 +130,10 @@ class CTextureAtlasNode : private ITextureAtlasNode
                         RectU top(m_Rect.left, m_Rect.top, m_Rect.right, m_Rect.top + Size.height);
                         RectU bottom(m_Rect.left, m_Rect.top + Size.height, m_Rect.right, m_Rect.bottom);
 
-                        m_pLeftChild = new CTextureAtlasNode(top);
+                        m_pLeftChild = new CTextureAtlasNode(top, this);
                         IFCOOM(m_pLeftChild);
 
-                        m_pRightChild = new CTextureAtlasNode(bottom);
+                        m_pRightChild = new CTextureAtlasNode(bottom, this);
                         IFCOOM(m_pRightChild);
                     }
 
@@ -158,11 +160,50 @@ class CTextureAtlasNode : private ITextureAtlasNode
         {
             m_pView = NULL;
 
-            //TODO: Coalesce free regions...        
+            FreeEmptyRegions(TRUE);
+        }
+    
+        void FreeEmptyRegions(
+            bool forceNotifyParent
+            )
+        {
+            bool notifyParent = forceNotifyParent;
+            
+            //
+            // If both children are empty, delete them.
+            //
+            if (m_pLeftChild != NULL && m_pRightChild != NULL)
+            {
+                if (m_pLeftChild->IsEmpty() && m_pRightChild->IsEmpty())
+                {
+                    delete m_pLeftChild;
+                    m_pLeftChild = NULL;
+                    
+                    delete m_pRightChild;
+                    m_pRightChild = NULL;
+                    
+                    notifyParent = true;
+                }
+            }
+            
+            //
+            // Notify parent
+            //
+            if (m_pParent != NULL && notifyParent)
+            {
+                m_pParent->FreeEmptyRegions(false);
+            }            
+        }
+    
+        bool IsEmpty(
+            )
+        {
+            return (m_pView == NULL && m_pLeftChild == NULL && m_pRightChild == NULL);
         }
 
         RectU m_Rect;
         CTextureAtlasView* m_pView;
+        CTextureAtlasNode< Padding >* m_pParent;
         CTextureAtlasNode< Padding >* m_pLeftChild;
         CTextureAtlasNode< Padding >* m_pRightChild;
 };

@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Border xmlns:x="http://internal" Background="White">
-  <Border.Resources>
+﻿<Grid xmlns:x="http://internal" VerticalAlignment="Top">
+  <Grid.Resources>
 
     <LinearGradientBrush x:Key="NormalButtonStateBrush" StartPoint="0,0" EndPoint="0,1">
       <GradientStop Color="#717171" Offset="0"/>
@@ -22,17 +21,17 @@
     </LinearGradientBrush>
 
     <Style x:Key="ButtonBorderStyle">
-      
+
       <Style.Setters>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="4"/>
+        <!-- <Setter Property="CornerRadius" Value="4"/> -->
         <Setter Property="BorderBrush">
           <SolidColorBrush Color="#000000"/>
         </Setter>
         <Setter Property="Background" Value="{DynamicResource ResourceKey=NormalButtonStateBrush}"/>
         <Setter Property="Padding" Value="15,8,15,8"/>
       </Style.Setters>
-      
+
     </Style>
 
     <Style x:Key="ButtonTextBlockStyle">
@@ -63,7 +62,7 @@
           <Setter Property="Background" Value="{DynamicResource ResourceKey=NormalButtonStateBrush}"/>
         </EventTrigger>
       </Style.Triggers>
-      
+
     </Style>
 
     <!-- Text Box Background Brush -->
@@ -73,12 +72,12 @@
     <Style x:Key="TextBoxBorderStyle">
       <Style.Setters>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="2"/>
+        <!-- <Setter Property="CornerRadius" Value="2"/> -->
         <Setter Property="BorderBrush">
           <SolidColorBrush Color="#000000"/>
         </Setter>
         <Setter Property="Background" Value="{DynamicResource ResourceKey=TextBoxBackgroundBrush}"/>
-        <Setter Property="Padding" Value="8,8,8,8"/>
+        <Setter Property="Padding" Value="6,6,6,6"/>
       </Style.Setters>
     </Style>
 
@@ -93,15 +92,133 @@
     <Style x:Key="{Type TypeName=TextBox}">
       <Style.Setters>
         <Setter Property="Template" Value="{DynamicResource ResourceKey=TextBoxTemplate}"/>
-      </Style.Setters>      
+      </Style.Setters>
+    </Style>
+
+    <!-- Thumb Background Brush -->
+    <SolidColorBrush x:Key="ThumbBackgroundBrush" Color="#707070"/>
+
+    <!-- Thumb Border Style -->
+    <Style x:Key="ThumbBorderStyle">
+      <Style.Setters>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!-- <Setter Property="CornerRadius" Value="2"/> -->
+        <Setter Property="BorderBrush">
+          <SolidColorBrush Color="#000000"/>
+        </Setter>
+        <Setter Property="Background" Value="{DynamicResource ResourceKey=ThumbBackgroundBrush}"/>
+      </Style.Setters>
+    </Style>
+
+    <!-- Default Thumb Template -->
+    <ControlTemplate x:Key="ThumbTemplate">
+      <Border Style="{DynamicResource ResourceKey=ThumbBorderStyle}" Background="{TemplateBinding Property=Background}" BorderBrush="{TemplateBinding Property=BorderBrush}" BorderThickness="1">
+      </Border>
+    </ControlTemplate>
+
+    <!-- Default Thumb Style -->
+    <Style x:Key="{Type TypeName=Thumb}">
+      <Style.Setters>
+        <Setter Property="Template" Value="{DynamicResource ResourceKey=ThumbTemplate}"/>
+      </Style.Setters>
+    </Style>
+
+    <!-- Scroll Bar Thumb Style -->
+    <Style x:Key="ScrollBarThumb">
+      <Style.Setters>
+        <!--<Setter Property="Height" Value="14"/>
+        <Setter Property="Width" Value="14"/>-->
+        <Setter Property="Template" Value="{DynamicResource ResourceKey=ThumbTemplate}"/>
+      </Style.Setters>
+    </Style>
+
+    <!-- Track Button Background Brush -->
+    <SolidColorBrush x:Key="TrackButtonBackgroundBrush" Color="#404040"/>
+
+    <!-- Track Button Border Style -->
+    <Style x:Key="TrackButtonBorderStyle">
+      <Style.Setters>
+        <Setter Property="BorderThickness" Value="1"/>
+        <!-- <Setter Property="CornerRadius" Value="2"/> -->
+        <Setter Property="BorderBrush">
+          <SolidColorBrush Color="#000000"/>
+        </Setter>
+        <Setter Property="Background" Value="{DynamicResource ResourceKey=TrackButtonBackgroundBrush}"/>
+      </Style.Setters>
+    </Style>
+
+    <!-- Scroll Bar Track Button Template -->
+    <ControlTemplate x:Key="ScrollBarTrackButtonTemplate">
+      <Border Style="{DynamicResource ResourceKey=TrackButtonBorderStyle}" Background="{TemplateBinding Property=Background}" BorderBrush="{TemplateBinding Property=BorderBrush}" BorderThickness="1">
+      </Border>
+    </ControlTemplate>
+
+    <!-- Scroll Bar Increase/Decrease Button Style -->
+    <Style x:Key="ScrollBarTrackButton">
+      <Style.Setters>
+        <Setter Property="Template" Value="{DynamicResource ResourceKey=ScrollBarTrackButtonTemplate}"/>
+      </Style.Setters>
+    </Style>
+
+    <!-- Vertical Scroll Bar Template -->
+    <ControlTemplate x:Key="ScrollBarVerticalTemplate">
+      <DockPanel>
+
+        <Button DockPanel.Dock="Top" Command="ScrollBar.LineUp">
+          <TextBlock Text="˄" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
+        </Button>
+
+        <Button DockPanel.Dock="Bottom" Command="ScrollBar.LineDown">
+          <TextBlock Text="˅" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
+        </Button>
+
+        <Track Name="PART_Track"
+               DirectionReversed="True"
+               ViewportSize="{TemplateBinding Property=ViewportSize}"
+               Value="{TemplateBinding Property=Value, BindingDirection=TwoWay}"
+               Minimum="{TemplateBinding Property=Minimum}"
+               Maximum="{TemplateBinding Property=Maximum}">
+          <Track.DecreaseButton>
+            <Button Style="{DynamicResource ResourceKey=ScrollBarTrackButton}">
+            </Button>
+          </Track.DecreaseButton>
+
+          <Track.IncreaseButton>
+            <Button Style="{DynamicResource ResourceKey=ScrollBarTrackButton}">
+            </Button>
+          </Track.IncreaseButton>
+
+          <Track.Thumb>
+            <Thumb Style="{DynamicResource ResourceKey=ScrollBarThumb}" Margin="1,0,1,0"/>
+          </Track.Thumb>
+        </Track>
+
+      </DockPanel>
+    </ControlTemplate>
+
+    <!-- Default Scroll Bar Style -->
+    <Style x:Key="{Type TypeName=ScrollBar}">
+      <Style.Setters>
+        <!-- TODO: Switch this based on orientation. -->
+        <Setter Property="Template" Value="{DynamicResource ResourceKey=ScrollBarVerticalTemplate}"/>
+      </Style.Setters>
     </Style>
 
     <!-- Default Scroll Viewer Template -->
     <ControlTemplate x:Key="ScrollViewerTemplate">
-      <Border CornerRadius="2" BorderBrush="{TemplateBinding Property=BorderBrush}" BorderThickness="{TemplateBinding Property=BorderThickness}">
-        <DockPanel>
+      <!--<Border CornerRadius="2" BorderBrush="{TemplateBinding Property=BorderBrush}" BorderThickness="{TemplateBinding Property=BorderThickness}">-->
+      <DockPanel>
 
-          <DockPanel DockPanel.Dock="Right" LastChildFill="False">
+        <ScrollBar DockPanel.Dock="Right"
+                   ViewportSize="{TemplateBinding Property=ViewportHeight}"
+                   Maximum="{TemplateBinding Property=ScrollableHeight}"
+                   Minimum="0"
+                   Value="{TemplateBinding Property=VerticalOffset,BindingDirection=TwoWay}"
+                   Visibility="{TemplateBinding Property=ComputedVerticalScrollBarVisibility}"
+                   />
+        <!-- Margin="0,-1,-1,-1"-->
+
+        <!--<DockPanel DockPanel.Dock="Right" LastChildFill="False">
             <Button DockPanel.Dock="Top" Command="ScrollBar.LineUp">
               <TextBlock Text="˄" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
             </Button>
@@ -109,13 +226,16 @@
             <Button DockPanel.Dock="Bottom" Command="ScrollBar.LineDown">
               <TextBlock Text="˅" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
             </Button>
-          </DockPanel>
-          
-          <!-- Content -->
-          <ScrollContentPresenter Name="PART_ScrollContentPresenter" Content="{TemplateBinding Property=Content}"/>
-          
-        </DockPanel>
-      </Border>
+
+            <Thumb/>
+          </DockPanel>-->
+
+        <!-- Content -->
+        <ScrollContentPresenter Name="PART_ScrollContentPresenter"
+                                Content="{TemplateBinding Property=Content}"/>
+
+      </DockPanel>
+      <!--</Border>-->
     </ControlTemplate>
 
     <!-- Default Scroll Viewer Style -->
@@ -133,38 +253,55 @@
         <Setter Property="Template" Value="{DynamicResource ResourceKey=ScrollViewerTemplate}"/>
       </Style.Setters>
     </Style>
-    
-  </Border.Resources>
 
-  <!-- Console Border -->
-  <Border BorderBrush="Black" BorderThickness="1" Height="200" Background="#898989">
+    <!-- Default Text Block Style -->
+    <Style x:Key="{Type TypeName=TextBlock}">
+      <Style.Setters>
+        <Setter Property="Foreground">
+          <SolidColorBrush Color="White"/>
+        </Setter>
+      </Style.Setters>
+    </Style>
+
+
+  </Grid.Resources>
+
+<Border xmlns:x="http://internal" VerticalAlignment="Top">
+<!-- Console Border -->
+  <Border BorderBrush="Black" BorderThickness="1" Opacity="0.8" Height="200">
+    <!-- Background="#898989" -->
+    <Border.Background>
+      <LinearGradientBrush StartPoint="0,0" EndPoint="0.5,1">
+        <GradientStop Color="#3B3B3B" Offset="0"/>
+        <GradientStop Color="#3B3B3B" Offset="0.39"/>
+        <GradientStop Color="#000000" Offset="1"/>
+      </LinearGradientBrush>
+    </Border.Background>
+
     <DockPanel>
 
       <!-- Input Area -->
       <Border DockPanel.Dock="Bottom" Padding="5">
         <DockPanel>
-          <Button DockPanel.Dock="Right">
-            <TextBlock Text="Button" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
+          <Button Name="SubmitButton" DockPanel.Dock="Right">
+            <TextBlock Text="Run" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
           </Button>
-          <TextBox Text="Text goes here" Margin="0,0,5,0"/>
+          <TextBox Name="InputTextBox" AcceptsReturn="False" Margin="0,0,5,0"/>
         </DockPanel>
       </Border>
 
       <!-- History Area -->
       <Border DockPanel.Dock="Top">
-        <ScrollViewer>
-          <StackPanel DockPanel.Dock="Top">
-            <TextBlock Text="Console history goes here"/>
-            <TextBlock Text="Console history goes here"/>
-            <TextBlock Text="Console history goes here"/>
-            <TextBlock Text="Console history goes here"/>
-            <TextBlock Text="Console history goes here"/>
-            <TextBlock Text="Console history goes here"/>
-          </StackPanel>
+        <ScrollViewer Name="HistoryScrollViewer" Margin="5,5,5,0">
+          <StackPanel Name="HistoryPanel" DockPanel.Dock="Top"/>
         </ScrollViewer>
       </Border>
-      
+
     </DockPanel>
+
   </Border>
-  
+
 </Border>
+
+
+</Grid>

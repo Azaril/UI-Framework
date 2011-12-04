@@ -10,7 +10,6 @@ CTimeController::CTimeController(
 CTimeController::~CTimeController(
     )
 {
-    IGNOREHR(Disconnect());
 }
 
 __checkReturn HRESULT 
@@ -18,22 +17,6 @@ CTimeController::Initialize(
     )
 {
     HRESULT hr = S_OK;
-
-    return hr;
-}
-
-__checkReturn HRESULT 
-CTimeController::Disconnect(
-    )
-{
-    HRESULT hr = S_OK;
-
-    for(vector< CTimeSink* >::iterator It = m_Sinks.begin(); It != m_Sinks.end(); ++It)
-    {
-        //(*It)->Release();
-    }
-
-    m_Sinks.clear();
 
     return hr;
 }

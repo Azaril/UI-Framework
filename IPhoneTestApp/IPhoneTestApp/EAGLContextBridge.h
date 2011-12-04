@@ -13,9 +13,12 @@ class EAGLContextBridge : public COpenGLES20Context
         virtual int Release(
             );
     
-        virtual EAGLContext* GetContext() = 0;
+        virtual EAGLContext* GetContext(
+            ) = 0;
     
-        virtual bool Present(unsigned int RenderBuffer) = 0;
+        virtual bool Present(
+            unsigned int RenderBuffer
+            ) = 0;
     
     protected:
         EAGLContextBridge(

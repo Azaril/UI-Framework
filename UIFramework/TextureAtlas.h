@@ -109,7 +109,7 @@ class CTextureAtlas : public CRefCountedObjectBase< Base >
             m_pTexture = pTexture;
             AddRefObject(m_pTexture);
 
-            m_pRootNode = new CTextureAtlasNode< texturePadding >(MakeRect(SizeU(pTexture->GetWidth(), pTexture->GetHeight())));
+            m_pRootNode = new CTextureAtlasNode< texturePadding >(MakeRect(SizeU(pTexture->GetWidth(), pTexture->GetHeight())), NULL);
             IFCOOM(m_pRootNode);
 
         Cleanup:
