@@ -59,14 +59,14 @@ CSetter::GetPropertyValue(
 
 __checkReturn HRESULT 
 CSetter::SetPropertyInternal(
-    __in_z const WCHAR* pProperty
+    __in CStringValue* pProperty
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
 
-    IFC(CStringValue::Create(pProperty, &m_Property));
+    ReplaceObject(m_Property, pProperty);
 
 Cleanup:
     return hr;
@@ -81,12 +81,9 @@ CSetter::SetPropertyValueInternal(
 
     IFCPTR(pValue);
 
-    ReleaseObject(m_Value);
     ReleaseObject(m_CachedValue);
 
-    m_Value = pValue;
-
-    AddRefObject(m_Value);
+    ReplaceObject(m_Value, pValue);
 
 Cleanup:
     return hr;
@@ -186,7 +183,7 @@ CSetter::SetValueInternal(
 
         CStringValue* pStringValue = (CStringValue*)pValue;
 
-        IFC(SetPropertyInternal(pStringValue->GetValue()));
+        IFC(SetPropertyInternal(pStringValue));
     }
     else if(pProperty == &CSetter::ValueProperty)
     {

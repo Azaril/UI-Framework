@@ -12,7 +12,7 @@
 #if WIN32
 #include <crtdbg.h>
 
-#if defined(_DEBUG) && defined(TRACK_LEAKS)
+#if defined(FRAMEWORK_DEBUG) && defined(TRACK_LEAKS)
 #include "Signals.h"
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif

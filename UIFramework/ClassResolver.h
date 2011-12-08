@@ -8,11 +8,7 @@ class CProviders;
 class UIFRAMEWORK_API CResolvedClass
 {
     public:
-        virtual INT32 AddRef(
-			) = 0;
-
-        virtual INT32 Release(
-			) = 0;
+        DECLARE_ADDREF_RELEASE_INTERFACE();
 
         virtual TypeIndex::Value GetType(
 			) = 0;

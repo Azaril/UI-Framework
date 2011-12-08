@@ -9,8 +9,8 @@ Point2F DefaultEndPoint(1, 1);
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( StartPoint, CPoint2FValue, DefaultStartPoint );
-DEFINE_GET_DEFAULT( EndPoint, CPoint2FValue, DefaultEndPoint );
+DEFINE_GET_DEFAULT( StartPoint, Point2F, DefaultStartPoint );
+DEFINE_GET_DEFAULT( EndPoint, Point2F, DefaultEndPoint );
 
 //
 // Properties

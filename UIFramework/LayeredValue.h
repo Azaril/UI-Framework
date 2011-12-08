@@ -333,16 +333,14 @@ class UIFRAMEWORK_API CTypedLocalLayeredValue : public CLayeredValue
 
             if(IsEffectiveValue)
             {
-                pOldValue = m_EffectiveValueObject;
-                AddRefObject(pOldValue);
+                SetObject(pOldValue, m_EffectiveValueObject);
             }
 
             if(pValue)
             {
                 if(pValue->IsTypeOf(ObjectTypeTraits< T >::Type))
                 {
-                    Layer.Value = (T*)pValue;
-                    AddRefObject(pValue);
+                    ReplaceObject(Layer.Value, (T*)pValue);
                 }
                 else 
                 {
@@ -359,8 +357,7 @@ class UIFRAMEWORK_API CTypedLocalLayeredValue : public CLayeredValue
 
                     if(SUCCEEDED(hr))
                     {
-                        Layer.Value = pConvertedType;
-                        pConvertedType = NULL;
+                        ReplaceObject(Layer.Value, pConvertedType);
                     }
                     else
                     {
@@ -401,8 +398,7 @@ class UIFRAMEWORK_API CTypedLocalLayeredValue : public CLayeredValue
             {
                 if(Layer.Value->IsTypeOf(ObjectTypeTraits< T >::Type))
                 {
-                    *ppEffectiveValue = Layer.Value;
-                    AddRefObject(Layer.Value);
+                    SetObject(*ppEffectiveValue, Layer.Value);
                 }
                 else
                 {

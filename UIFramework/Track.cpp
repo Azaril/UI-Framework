@@ -12,12 +12,12 @@
 DEFINE_GET_DEFAULT_NULL( Thumb );
 DEFINE_GET_DEFAULT_NULL( IncreaseButton );
 DEFINE_GET_DEFAULT_NULL( DecreaseButton );
-DEFINE_GET_DEFAULT( ViewportSize, CFloatValue, std::numeric_limits< FLOAT >::quiet_NaN() );
-DEFINE_GET_DEFAULT( Orientation, COrientationValue, Orientation::Vertical );
-DEFINE_GET_DEFAULT( DirectionReversed, CBoolValue, FALSE );
-DEFINE_GET_DEFAULT( Minimum, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( Maximum, CFloatValue, 1.0f );
-DEFINE_GET_DEFAULT( TrackValue, CFloatValue, 0.0f );
+DEFINE_GET_DEFAULT( ViewportSize, FLOAT, std::numeric_limits< FLOAT >::quiet_NaN() );
+DEFINE_GET_DEFAULT( Orientation, Orientation::Value, Orientation::Vertical );
+DEFINE_GET_DEFAULT( DirectionReversed, bool, FALSE );
+DEFINE_GET_DEFAULT( Minimum, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( Maximum, FLOAT, 1.0f );
+DEFINE_GET_DEFAULT( TrackValue, FLOAT, 0.0f );
 
 //
 // Properties

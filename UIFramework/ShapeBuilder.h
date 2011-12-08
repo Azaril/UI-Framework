@@ -7,7 +7,7 @@
 #include "GeometryBuilder.h"
 
 template< typename T >
-class CShapeBuilder : public CRefCountedObjectBase< T >
+class CShapeBuilder : public T
 {
     public:
         DECLARE_FACTORY1( CShapeBuilder, CShapeData* );

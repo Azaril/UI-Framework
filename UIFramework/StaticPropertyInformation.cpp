@@ -117,20 +117,6 @@ CStaticProperty::CStaticProperty(
 {
 }
 
-__override INT32 
-CStaticProperty::AddRef(
-    )
-{
-    return 1;
-}
-
-__override INT32 
-CStaticProperty::Release(
-    )
-{
-    return 1;
-}
-
 __override TypeIndex::Value 
 CStaticProperty::GetType(
     )

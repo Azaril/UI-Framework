@@ -120,6 +120,11 @@ class CXMLLiteReader : public CXMLReader
 			__in CXMLReaderCallback* pCallback 
 			);
 
+        __override virtual __checkReturn HRESULT LoadFromStream(
+            __in IReadStream* pStream,
+            __in CXMLReaderCallback* pCallback
+            );
+
         virtual __checkReturn HRESULT LoadFromStream(
 			__in IStream* pStream,
 			__in CXMLReaderCallback* pCallback 

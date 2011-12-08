@@ -585,6 +585,8 @@ CVisual::TransformToAncestor(
     IFC(pFromTransform->Invert(ppTransform));
 
 Cleanup:
+    ReleaseObject(pFromTransform);
+
     return hr;
 }
 

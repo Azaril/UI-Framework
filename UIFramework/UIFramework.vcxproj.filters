@@ -951,7 +951,9 @@
     <ClCompile Include="D3D10SurfaceRenderTarget.cpp">
       <Filter>Framework\Graphics\D3D10</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11SurfaceRenderTarget.cpp" />
+    <ClCompile Include="D3D11SurfaceRenderTarget.cpp">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1782,6 +1784,11 @@
     <ClInclude Include="D3D10SurfaceRenderTarget.h">
       <Filter>Framework\Graphics\D3D10</Filter>
     </ClInclude>
-    <ClInclude Include="D3D11SurfaceRenderTarget.h" />
+    <ClInclude Include="D3D11SurfaceRenderTarget.h">
+      <Filter>Framework\Graphics\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Noncopyable.h">
+      <Filter>Framework\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,20 +9,6 @@ CStaticRoutedEvent::CStaticRoutedEvent(
 {
 }
 
-__override INT32 
-CStaticRoutedEvent::AddRef(
-    )
-{
-    return 1;
-}
-
-__override INT32 
-CStaticRoutedEvent::Release(
-    )
-{
-    return 1;
-}
-
 __override RoutingStrategy::Value 
 CStaticRoutedEvent::GetRoutingStrategy(
     )

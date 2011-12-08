@@ -12,20 +12,6 @@ CStaticRoutedCommand::~CStaticRoutedCommand(
 {
 }
 
-__override INT32 
-CStaticRoutedCommand::AddRef(
-    )
-{
-    return 1;
-}
-
-__override INT32 
-CStaticRoutedCommand::Release(
-    )
-{
-    return 1;
-}
-
 __override __out const WCHAR* 
 CStaticRoutedCommand::GetName(
     )

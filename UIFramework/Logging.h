@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.h"
+#include "Defines.h"
 
 namespace logging
 {
@@ -11,7 +12,7 @@ namespace logging
 #define LOGGING_CRITICAL    1
 #define LOGGING_OFF         0
 
-#ifdef DEBUG
+#ifdef FRAMEWORK_DEBUG
 #define LOGGING_LEVEL   LOGGING_VERBOSE
 #else
 #define LOGGING_LEVEL   LOGGING_VERBOSE

@@ -7,16 +7,16 @@
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( ExtentHeight, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( ExtentWidth, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( ViewportWidth, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( ViewportHeight, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( HorizontalOffset, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( VerticalOffset, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( ScrollableWidth, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( ScrollableHeight, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( ComputedVerticalScrollBarVisibility, CVisibilityValue, Visibility::Collapsed );
-DEFINE_GET_DEFAULT( ComputedHorizontalScrollBarVisibility, CVisibilityValue, Visibility::Collapsed );
+DEFINE_GET_DEFAULT( ExtentHeight, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( ExtentWidth, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( ViewportWidth, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( ViewportHeight, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( HorizontalOffset, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( VerticalOffset, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( ScrollableWidth, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( ScrollableHeight, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( ComputedVerticalScrollBarVisibility, Visibility::Value, Visibility::Collapsed );
+DEFINE_GET_DEFAULT( ComputedHorizontalScrollBarVisibility, Visibility::Value, Visibility::Collapsed );
 
 //
 // Properties

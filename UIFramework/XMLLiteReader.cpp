@@ -1,4 +1,5 @@
 #include "XMLLiteReader.h"
+#include "COMReadStreamWrapper.h"
 #include <Shlwapi.h>
 #include <strsafe.h>
 
@@ -91,6 +92,25 @@ Cleanup:
     return hr;
 }
 
+__override __checkReturn HRESULT 
+CXMLLiteReader::LoadFromStream(
+    __in IReadStream* pStream,
+    __in CXMLReaderCallback* pCallback
+    )
+{
+     HRESULT hr = S_OK;
+     CCOMReadStreamWrapper* pCOMStream = NULL;
+
+     IFC(CCOMReadStreamWrapper::Create(pStream, &pCOMStream));
+
+     IFC(LoadFromStream(pCOMStream, pCallback));
+
+Cleanup:
+     ReleaseObject(pCOMStream);
+
+     return hr;
+}
+
 __checkReturn HRESULT 
 CXMLLiteReader::LoadFromStream(
 	__in IStream* pStream, 
@@ -144,7 +164,7 @@ CXMLLiteReader::ProcessReader(
                 {
                     const WCHAR* pName = NULL;
                     UINT32 NameLength = 0;
-                    bool EmptyElement = FALSE;
+                    BOOL EmptyElement = FALSE;
 
                     EmptyElement = pReader->IsEmptyElement();
 

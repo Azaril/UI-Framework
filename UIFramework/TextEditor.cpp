@@ -39,16 +39,12 @@ CTextEditor::SetTextHost(
         m_TextConnection.disconnect();
         m_KeyDownConnection.disconnect();
         m_KeyUpConnection.disconnect();
-
-        ReleaseObject(m_Host);
     }
 
     m_Host = pElement;
     
     if(m_Host)
     {
-        AddRefObject(m_Host);
-
         IFC(m_Host->AddHandler(&CUIElement::TextEvent, bind(&CTextEditor::OnText, this, _1, _2), &m_TextConnection));
         IFC(m_Host->AddHandler(&CUIElement::KeyDownEvent, bind(&CTextEditor::OnKeyDown, this, _1, _2), &m_KeyDownConnection));
         IFC(m_Host->AddHandler(&CUIElement::KeyUpEvent, bind(&CTextEditor::OnKeyUp, this, _1, _2), &m_KeyUpConnection));

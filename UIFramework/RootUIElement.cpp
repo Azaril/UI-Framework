@@ -83,8 +83,9 @@ CRootUIElement::Finalize(
         IFC(OnVisualDetach(VisualContext));
     }
 
+    IFC(SetChild(NULL));
+
 Cleanup:
-    ReleaseObject(m_Child);
     ReleaseObject(m_Namescope);
 
     return hr;

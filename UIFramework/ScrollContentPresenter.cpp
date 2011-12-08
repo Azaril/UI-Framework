@@ -4,8 +4,8 @@
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( CanScrollVertically, CBoolValue, FALSE );
-DEFINE_GET_DEFAULT( CanScrollHorizontally, CBoolValue, FALSE );
+DEFINE_GET_DEFAULT( CanScrollVertically, bool, FALSE );
+DEFINE_GET_DEFAULT( CanScrollHorizontally, bool, FALSE );
 
 //
 // Properties

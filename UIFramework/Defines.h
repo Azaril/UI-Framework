@@ -23,3 +23,9 @@
 #include "DummySal.h"
 
 #endif
+
+#if defined(DEBUG) || defined(_DEBUG)
+#define FRAMEWORK_DEBUG
+#else
+#define FRAMEWORK_RELEASE
+#endif

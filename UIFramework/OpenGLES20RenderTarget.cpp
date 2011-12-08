@@ -11,7 +11,7 @@
 
 #define REQUIRED_TEXTURE_UNITS 2
 
-#ifdef DEBUG
+#ifdef FRAMEWORK_DEBUG
 
 #define GL_DEBUG_OUT(res) logging::DebugOut(L"%ls(%u): OpenGL Error 0x%X\n", __WFILE__, __LINE__, res);
 
@@ -245,7 +245,7 @@ COpenGLES20RenderTarget::CreateShader(
     HRESULT hr = S_OK;
     GLuint shader = 0;
     GLint compileStatus = 0;
-#ifdef DEBUG
+#ifdef FRAMEWORK_DEBUG
     GLchar* pLog = NULL;
 #endif
     
@@ -285,7 +285,7 @@ Cleanup:
         glDeleteShader(shader);
     }
 
-#ifdef DEBUG
+#ifdef FRAMEWORK_DEBUG
     delete [] pLog;
 #endif    
 
@@ -328,7 +328,7 @@ COpenGLES20RenderTarget::LinkProgram(
     IFCGL();
     
 Cleanup:
-#ifdef DEBUG
+#ifdef FRAMEWORK_DEBUG
     delete [] pLog;    
 #endif
     

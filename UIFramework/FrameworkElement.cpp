@@ -110,6 +110,8 @@ HRESULT CFrameworkElement::OnDetach(CUIDetachContext& Context)
     HRESULT hr = S_OK;
     CNamescope* pNamescope = NULL;
 
+    IFC(RevokeStyle());
+
     pNamescope = GetNamescope();
     IFCPTR(pNamescope);
 

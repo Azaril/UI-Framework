@@ -199,6 +199,8 @@ CResolvedBeginStoryboard::Apply(
         it->SetClock(pAnimationClock);
 
         IFC(it->GetAnimatable()->ApplyAnimationClock(it->GetProperty(), it->GetClock()));
+
+        ReleaseObject(pAnimationClock);
     }
 
     if (!m_RegisteredToTimeSource)

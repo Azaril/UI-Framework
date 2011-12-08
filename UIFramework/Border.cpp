@@ -7,10 +7,10 @@
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Background );
-DEFINE_GET_DEFAULT( Padding, CRectFValue, RectF(0, 0, 0, 0) );
-DEFINE_GET_DEFAULT( BorderThickness, CFloatValue, 0 );
+DEFINE_GET_DEFAULT( Padding, RectF, RectF(0, 0, 0, 0) );
+DEFINE_GET_DEFAULT( BorderThickness, FLOAT, 0 );
 DEFINE_GET_DEFAULT_NULL( BorderBrush );
-DEFINE_GET_DEFAULT( CornerRadius, CFloatValue, 0 );
+DEFINE_GET_DEFAULT( CornerRadius, FLOAT, 0 );
 
 //
 // Properties

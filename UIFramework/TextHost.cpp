@@ -33,11 +33,7 @@ HRESULT CTextHost::SetTextLayout(CTextLayout* pLayout)
 {
     HRESULT hr = S_OK;
 
-    ReleaseObject(m_TextLayout);
-
-    m_TextLayout = pLayout;
-
-    AddRefObject(m_TextLayout);
+    ReplaceObject(m_TextLayout, pLayout);
 
     IFC(m_TextVisual->SetTextLayout(pLayout));
 

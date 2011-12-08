@@ -7,15 +7,15 @@
 #include "Enums.h"
 #include "TimeValue.h"
 
-template< typename T, TypeIndex::Value TypeID >
+template< typename T >
 class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
 {
     public:
         DECLARE_FACTORY1( CBasicValue, T );
 
-        DECLARE_TYPE_WITH_BASE( TypeID, CObjectWithType );
+        DECLARE_TYPE_WITH_BASE( ObjectTypeTraits< CBasicValue< T > >::Type, CObjectWithType );
 
-        virtual T GetValue(
+        const T& GetValue(
             )
         {
             return m_Value;
@@ -27,7 +27,7 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
         {
             if(pOther != NULL && pOther->GetType() == GetType())
             {
-                CBasicValue< T, TypeID >* pTypedOther = (CBasicValue< T, TypeID >*)pOther;
+                CBasicValue< T >* pTypedOther = (CBasicValue< T >*)pOther;
 
                 return pTypedOther->GetValue() == m_Value;
             }
@@ -43,7 +43,7 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
 
     protected:
         __checkReturn HRESULT Initialize( 
-            T Value 
+            const T& Value 
             )
         {
             m_Value = Value;
@@ -54,7 +54,23 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
         T m_Value;
 };
 
-typedef CBasicValue< FLOAT, TypeIndex::Float > CFloatValue;
+template< typename T >
+class CStaticBasicValue : public CBasicValue< T >
+{
+    public:
+        CStaticBasicValue(
+            const T& Value
+            )
+        {
+            Initialize(Value);
+        }
+
+        STATIC_REFCOUNTING();
+
+        DISABLE_OBJECT_TRACKING();
+};
+
+typedef CBasicValue< FLOAT > CFloatValue;
 
 template< >
 struct ObjectTypeTraits< CFloatValue >
@@ -62,7 +78,7 @@ struct ObjectTypeTraits< CFloatValue >
     static const TypeIndex::Value Type = TypeIndex::Float;
 };
 
-typedef CBasicValue< Visibility::Value, TypeIndex::Visibility > CVisibilityValue;
+typedef CBasicValue< Visibility::Value > CVisibilityValue;
 
 template< >
 struct ObjectTypeTraits< CVisibilityValue >
@@ -70,7 +86,7 @@ struct ObjectTypeTraits< CVisibilityValue >
     static const TypeIndex::Value Type = TypeIndex::Visibility;
 };
 
-typedef CBasicValue< ColorF, TypeIndex::ColorF > CColorFValue;
+typedef CBasicValue< ColorF > CColorFValue;
 
 template< >
 struct ObjectTypeTraits< CColorFValue >
@@ -78,7 +94,7 @@ struct ObjectTypeTraits< CColorFValue >
     static const TypeIndex::Value Type = TypeIndex::ColorF;
 };
 
-typedef CBasicValue< RectF, TypeIndex::RectF > CRectFValue;
+typedef CBasicValue< RectF > CRectFValue;
 
 template< >
 struct ObjectTypeTraits< CRectFValue >
@@ -86,7 +102,7 @@ struct ObjectTypeTraits< CRectFValue >
     static const TypeIndex::Value Type = TypeIndex::RectF;
 };
 
-typedef CBasicValue< RectangleEdge::Value, TypeIndex::RectangleEdge > CRectangleEdgeValue;
+typedef CBasicValue< RectangleEdge::Value > CRectangleEdgeValue;
 
 template< >
 struct ObjectTypeTraits< CRectangleEdgeValue >
@@ -94,7 +110,7 @@ struct ObjectTypeTraits< CRectangleEdgeValue >
     static const TypeIndex::Value Type = TypeIndex::RectangleEdge;
 };
 
-typedef CBasicValue< bool, TypeIndex::Bool > CBoolValue;
+typedef CBasicValue< bool > CBoolValue;
 
 template< >
 struct ObjectTypeTraits< CBoolValue >
@@ -102,7 +118,7 @@ struct ObjectTypeTraits< CBoolValue >
     static const TypeIndex::Value Type = TypeIndex::Bool;
 };
 
-typedef CBasicValue< Point2F, TypeIndex::Point2F > CPoint2FValue;
+typedef CBasicValue< Point2F > CPoint2FValue;
 
 template< >
 struct ObjectTypeTraits< CPoint2FValue >
@@ -110,7 +126,7 @@ struct ObjectTypeTraits< CPoint2FValue >
     static const TypeIndex::Value Type = TypeIndex::Point2F;
 };
 
-typedef CBasicValue< HorizontalAlignment::Value, TypeIndex::HorizontalAlignment > CHorizontalAlignmentValue;
+typedef CBasicValue< HorizontalAlignment::Value > CHorizontalAlignmentValue;
 
 template< >
 struct ObjectTypeTraits< CHorizontalAlignmentValue >
@@ -118,7 +134,7 @@ struct ObjectTypeTraits< CHorizontalAlignmentValue >
     static const TypeIndex::Value Type = TypeIndex::HorizontalAlignment;
 };
 
-typedef CBasicValue< VerticalAlignment::Value, TypeIndex::VerticalAlignment > CVerticalAlignmentValue;
+typedef CBasicValue< VerticalAlignment::Value > CVerticalAlignmentValue;
 
 template< >
 struct ObjectTypeTraits< CVerticalAlignmentValue >
@@ -126,7 +142,7 @@ struct ObjectTypeTraits< CVerticalAlignmentValue >
     static const TypeIndex::Value Type = TypeIndex::VerticalAlignment;
 };
 
-typedef CBasicValue< TypeIndex::Value, TypeIndex::Type > CTypeValue;
+typedef CBasicValue< TypeIndex::Value > CTypeValue;
 
 template< >
 struct ObjectTypeTraits< CTypeValue >
@@ -134,7 +150,7 @@ struct ObjectTypeTraits< CTypeValue >
     static const TypeIndex::Value Type = TypeIndex::Type;
 };
 
-typedef CBasicValue< Orientation::Value, TypeIndex::Orientation > COrientationValue;
+typedef CBasicValue< Orientation::Value > COrientationValue;
 
 template< >
 struct ObjectTypeTraits< COrientationValue >
@@ -142,7 +158,7 @@ struct ObjectTypeTraits< COrientationValue >
     static const TypeIndex::Value Type = TypeIndex::Orientation;
 };
 
-typedef CBasicValue< Stretch::Value, TypeIndex::Stretch > CStretchValue;
+typedef CBasicValue< Stretch::Value > CStretchValue;
 
 template< >
 struct ObjectTypeTraits< CStretchValue >
@@ -150,7 +166,7 @@ struct ObjectTypeTraits< CStretchValue >
     static const TypeIndex::Value Type = TypeIndex::Stretch;
 };
 
-typedef CBasicValue< StretchDirection::Value, TypeIndex::StretchDirection > CStretchDirectionValue;
+typedef CBasicValue< StretchDirection::Value > CStretchDirectionValue;
 
 template< >
 struct ObjectTypeTraits< CStretchDirectionValue >

@@ -1,12 +1,13 @@
 #include "TextBox.h"
 #include "StaticPropertyInformation.h"
 #include "DelegatingPropertyInformation.h"
+#include "AssertUtil.h"
 
 //
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Text );
-DEFINE_GET_DEFAULT( AcceptsReturn, CBoolValue, TRUE );
+DEFINE_GET_DEFAULT( AcceptsReturn, bool, TRUE );
 
 //
 // Properties
@@ -165,6 +166,8 @@ HRESULT CTextBox::PreTemplateRevoked()
     IFC(m_TextEditor->SetTextLayout(NULL));
 
     IFC(m_TextEditor->SetTextHost(this));
+
+    ReleaseObject(m_TextHost);
 
     IFC(CControl::PreTemplateRevoked());
 

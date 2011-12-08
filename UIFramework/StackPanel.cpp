@@ -5,7 +5,7 @@
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( Orientation, COrientationValue, Orientation::Vertical );
+DEFINE_GET_DEFAULT( Orientation, Orientation::Value, Orientation::Vertical );
 
 //
 // Properties

@@ -5,6 +5,7 @@
 #include "ResourceDictionary.h"
 #include "Style.h"
 #include "LayeredValue.h"
+#include "Noncopyable.h"
 
 class UIFRAMEWORK_API CUIElementCollection : public CCollection< CUIElement >
 {
@@ -202,6 +203,8 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
                 }
 
             protected:
+                DISABLE_COPY_AND_ASSIGN( CChildrenSubscriber );
+
                 CFrameworkElement& m_This;
 
         } m_ChildrenSubscriber;
@@ -219,6 +222,8 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
                 }
 
             protected:
+                DISABLE_COPY_AND_ASSIGN( CStyleCallback );
+
                 CFrameworkElement& m_This;
 
         } m_StyleCallback;

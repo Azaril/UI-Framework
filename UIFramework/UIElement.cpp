@@ -17,17 +17,17 @@
 //
 DEFINE_GET_DEFAULT_NULL( Width );
 DEFINE_GET_DEFAULT_NULL( Height );
-DEFINE_GET_DEFAULT( MinimumWidth, CFloatValue, 0 );
-DEFINE_GET_DEFAULT( MinimumHeight, CFloatValue, 0 );
-DEFINE_GET_DEFAULT( MaximumWidth, CFloatValue, std::numeric_limits< FLOAT >::max() );
-DEFINE_GET_DEFAULT( MaximumHeight, CFloatValue, std::numeric_limits< FLOAT >::max() );
-DEFINE_GET_DEFAULT( Visibility, CVisibilityValue, Visibility::Visible );
-DEFINE_GET_DEFAULT( HorizontalAlignment, CHorizontalAlignmentValue, HorizontalAlignment::Stretch );
-DEFINE_GET_DEFAULT( VerticalAlignment, CVerticalAlignmentValue, VerticalAlignment::Stretch );
-DEFINE_GET_DEFAULT( Margin, CRectFValue, RectF(0, 0, 0, 0) );
-DEFINE_GET_DEFAULT( Focusable, CBoolValue, FALSE );
-DEFINE_GET_DEFAULT( Opacity, CFloatValue, 1.0f );
-DEFINE_GET_DEFAULT( Namescope, CBoolValue, FALSE );
+DEFINE_GET_DEFAULT( MinimumWidth, FLOAT, 0 );
+DEFINE_GET_DEFAULT( MinimumHeight, FLOAT, 0 );
+DEFINE_GET_DEFAULT( MaximumWidth, FLOAT, std::numeric_limits< FLOAT >::max() );
+DEFINE_GET_DEFAULT( MaximumHeight, FLOAT, std::numeric_limits< FLOAT >::max() );
+DEFINE_GET_DEFAULT( Visibility, Visibility::Value, Visibility::Visible );
+DEFINE_GET_DEFAULT( HorizontalAlignment, HorizontalAlignment::Value, HorizontalAlignment::Stretch );
+DEFINE_GET_DEFAULT( VerticalAlignment, VerticalAlignment::Value, VerticalAlignment::Stretch );
+DEFINE_GET_DEFAULT( Margin, RectF, RectF(0, 0, 0, 0) );
+DEFINE_GET_DEFAULT( Focusable, bool, FALSE );
+DEFINE_GET_DEFAULT( Opacity, FLOAT, 1.0f );
+DEFINE_GET_DEFAULT( Namescope, bool, FALSE );
 
 //
 // Properties

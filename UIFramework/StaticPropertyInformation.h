@@ -31,11 +31,7 @@ class UIFRAMEWORK_API CStaticProperty : public CProperty
             __in_opt OnValueChangeFunc ValueChangeFunc = NULL
             );
 
-        __override virtual INT32 AddRef(
-            );
-
-        __override virtual INT32 Release(
-            );
+        STATIC_REFCOUNTING();
 
         __override virtual TypeIndex::Value GetType(
             );
@@ -102,26 +98,18 @@ class CStaticPropertyInformation : public CPropertyInformation
         vector< CStaticProperty* > m_Properties;
 };
 
-// HACK: Remove this as it triggers an allocation for every default value query.
 #define DEFINE_GET_DEFAULT( name, type, value ) \
 namespace   \
 {   \
+    CStaticBasicValue< type > g_defaultValue_##name(value); \
+    \
     __checkReturn HRESULT GetDefault##name( \
         __deref_out_opt CObjectWithType** ppObject  \
-            )   \
+        )   \
     {   \
         HRESULT hr = S_OK;  \
-        type* pValue = NULL;    \
         \
-        IFCPTR(ppObject);   \
-        \
-        IFC( type::Create(value, &pValue) );    \
-        \
-        *ppObject = pValue; \
-        pValue = NULL;  \
-        \
-    Cleanup:    \
-        ReleaseObject(pValue);  \
+        *ppObject = &g_defaultValue_##name; \
         \
         return hr;  \
     }   \
@@ -136,13 +124,10 @@ namespace   \
     {   \
         HRESULT hr = S_OK;  \
         \
-        IFCPTR(ppObject);   \
-        \
         *ppObject = NULL; \
         \
-    Cleanup:    \
         return hr;  \
-    }   \
+    }\
 }
 
 #define GET_DEFAULT( name ) GetDefault##name

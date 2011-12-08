@@ -63,6 +63,9 @@ ATOM MyRegisterClass( HINSTANCE hInstance );
 HRESULT InitInstance( HINSTANCE hInstance, int nCmdShow, HWND* pWindow );
 LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
+void CheckLeaks(
+    );
+
 #if defined(BUILD_D2D)
 
 CD2DHWNDRenderTarget* g_RenderTarget = NULL;
@@ -139,7 +142,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 #endif
 
-#if defined(_DEBUG) && defined(USE_LEAK_CHECKING)
+#if defined(FRAMEWORK_DEBUG) && defined(USE_LEAK_CHECKING)
     // Get current flag
     int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
 
@@ -327,6 +330,7 @@ Cleanup:
     ReleaseObject(pTypeConverter);
     ReleaseObject(pParser);
     ReleaseObject(pFileResourceProvider);
+    ReleaseObject(pTextProvider);
     ReleaseObject(pProviders);
 
     ReleaseObject(pGraphicsDevice);
@@ -339,10 +343,28 @@ Cleanup:
 
 #endif
 
+    CheckLeaks();
+
 	return SUCCEEDED(hr);
 }
 
+class CLeakChecker : public ITrackableInformationCallback
+{
+    public:
+        __override virtual void ProcessInformation(
+            __in TrackableInformation* pInformation
+            )
+        {
+        }
+};
 
+void CheckLeaks(
+    )
+{
+    CLeakChecker callback;
+
+    EnumerateTrackableInformation(&callback);
+}
 
 //
 //  FUNCTION: MyRegisterClass()
@@ -549,7 +571,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 if(iswprint(wParam))
                 {
-                    BOOL Consumed = FALSE;
+                    bool Consumed = FALSE;
 
                     IFC(g_KeyboardController->InjectCharacter(wParam, &Consumed));
 

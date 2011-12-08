@@ -10,11 +10,7 @@ class UIFRAMEWORK_API CStaticRoutedEvent : public CRoutedEvent
             RoutingStrategy::Value Strategy 
             );
 
-        __override virtual INT32 AddRef(
-            );
-
-        __override virtual INT32 Release(
-            );
+        STATIC_REFCOUNTING();
 
         __override virtual RoutingStrategy::Value GetRoutingStrategy(
             );

@@ -89,11 +89,7 @@ CTextVisual::SetTextLayout(
 {
     HRESULT hr = S_OK;
 
-    ReleaseObject(m_TextLayout);
-
-    m_TextLayout = pTextLayout;
-
-    AddRefObject(m_TextLayout);
+    ReplaceObject(m_TextLayout, pTextLayout);
 
     m_UpdateBrushTransform = TRUE;
 

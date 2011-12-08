@@ -27,6 +27,7 @@ CFloatAnimation::~CFloatAnimation(
 {
     ReleaseObject(m_From);
     ReleaseObject(m_To);
+    ReleaseObject(m_Duration);
 }
 
 __checkReturn HRESULT
@@ -102,15 +103,19 @@ CFloatAnimation::SetValueInternal(
 
     if(pProperty == &CFloatAnimation::FromProperty)
     {
-        IFC(CastType(pValue, &m_From));
+        CFloatValue* pFrom = NULL;
 
-        AddRefObject(m_From);
+        IFC(CastType(pValue, &pFrom));
+
+        ReplaceObject(m_From, pFrom);
     }
     else if(pProperty == &CFloatAnimation::ToProperty)
     {
-        IFC(CastType(pValue, &m_To));
+        CFloatValue* pTo = NULL;
 
-        AddRefObject(m_To);
+        IFC(CastType(pValue, &pTo));
+
+        ReplaceObject(m_To, pTo);
     }
     else
     {
@@ -134,13 +139,11 @@ CFloatAnimation::GetValueInternal(
 
     if(pProperty == &CFloatAnimation::FromProperty)
     {
-        *ppValue = m_From;
-        AddRefObject(m_From);
+        SetObject(*ppValue, m_From);
     }
     else if(pProperty == &CFloatAnimation::ToProperty)
     {
-        *ppValue = m_To;
-        AddRefObject(m_To);
+        SetObject(*ppValue, m_To);
     }
     else
     {

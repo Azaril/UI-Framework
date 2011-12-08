@@ -9,6 +9,10 @@ CAnimatable::CAnimatable(
 CAnimatable::~CAnimatable(
     )
 {
+    for(vector< CAnimationInfo* >::iterator It = m_Animations.begin(); It != m_Animations.end(); ++It)
+    {
+        (*It)->Release();
+    }
 }
 
 __checkReturn HRESULT 

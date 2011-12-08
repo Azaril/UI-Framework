@@ -53,10 +53,13 @@ class CD2DGeometryBase : public T
         {
             HRESULT hr = S_OK;
             Matrix3X2F identity = Matrix3X2F::Identity();
+            BOOL containsPoint = FALSE;
 
             IFCPTR(pContainsPoint);
 
-            IFC(m_Geometry->FillContainsPoint(Point2FTOD2DPoint2F(LocalPoint), Matrix3X2FToD2DMatrix3X2F(identity), pContainsPoint));
+            IFC(m_Geometry->FillContainsPoint(Point2FTOD2DPoint2F(LocalPoint), Matrix3X2FToD2DMatrix3X2F(&identity), &containsPoint));
+
+            *pContainsPoint = containsPoint ? TRUE: FALSE;
 
         Cleanup:
             return hr;

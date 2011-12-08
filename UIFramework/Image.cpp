@@ -7,8 +7,8 @@
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Source );
-DEFINE_GET_DEFAULT( Stretch, CStretchValue, Stretch::Uniform );
-DEFINE_GET_DEFAULT( StretchDirection, CStretchDirectionValue, StretchDirection::Both );
+DEFINE_GET_DEFAULT( Stretch, Stretch::Value, Stretch::Uniform );
+DEFINE_GET_DEFAULT( StretchDirection, StretchDirection::Value, StretchDirection::Both );
 
 //
 // Properties

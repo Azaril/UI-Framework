@@ -12,11 +12,7 @@ class CStaticRoutedCommand : public CRoutedCommand
         virtual ~CStaticRoutedCommand(
             );
 
-        __override virtual INT32 AddRef(
-            );
-
-        __override virtual INT32 Release(
-            );
+        STATIC_REFCOUNTING();
 
         __override virtual __out const WCHAR* GetName(
             );

@@ -65,7 +65,7 @@ class CSetter : public CRefCountedObjectBase< CTriggerAction >
             );
 
         __checkReturn HRESULT SetPropertyInternal( 
-            __in_z const WCHAR* pProperty 
+            __in  CStringValue* pProperty 
             );
 
         __checkReturn HRESULT SetPropertyValueInternal( 

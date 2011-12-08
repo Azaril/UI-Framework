@@ -5,7 +5,7 @@
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( BindingDirection, CBindingDirectionValue, BindingDirection::OneWay );
+DEFINE_GET_DEFAULT( BindingDirection, BindingDirection::Value, BindingDirection::OneWay );
 
 //
 // Properties

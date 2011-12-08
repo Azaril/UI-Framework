@@ -6,8 +6,8 @@ static ColorF DefaultColor(1, 1, 1, 1);
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( Color, CColorFValue, DefaultColor );
-DEFINE_GET_DEFAULT( Offset, CFloatValue, 0 );
+DEFINE_GET_DEFAULT( Color, ColorF, DefaultColor );
+DEFINE_GET_DEFAULT( Offset, FLOAT, 0 );
 
 //
 // Properties

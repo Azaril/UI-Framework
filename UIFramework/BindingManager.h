@@ -11,7 +11,7 @@ typedef __checkReturn HRESULT (*SetValueFunc)(
     __in CObjectWithType* pValue 
     );
 
-class CDefaultBindingContext : public CRefCountedObjectBase< CBindingContext >
+class CDefaultBindingContext : public CBindingContext
 {
     public:
         DECLARE_FACTORY( CDefaultBindingContext );

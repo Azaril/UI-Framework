@@ -2,8 +2,116 @@
 
 #include "Types.h"
 
+#ifdef FRAMEWORK_DEBUG
+
+struct UIFRAMEWORK_API ITrackable
+{
+    virtual ~ITrackable(
+        )
+    {
+    }
+
+    virtual bool IgnoreTrackableForLeaks(
+        )
+    {
+        return false;
+    }
+};
+
+
+struct TrackableInformation
+{
+    UINT32 AllocationID;
+    ITrackable* Object;
+};
+
+__out UIFRAMEWORK_API TrackableInformation* GetNewTrackableInformation(
+    );
+
+UIFRAMEWORK_API void FreeTrackableInformation(
+    __in_opt TrackableInformation* pTrackableInformation
+    );
+
+struct ITrackableInformationCallback
+{
+    virtual void ProcessInformation(
+        __in TrackableInformation* pInformation
+        ) = 0;
+};
+
+UIFRAMEWORK_API void EnumerateTrackableInformation(
+    __in ITrackableInformationCallback* pCallback
+    );
+
 template< typename T = Nothing >
-class CRefCountedObjectBase : public T
+class CTrackable : public T, 
+                   public ITrackable
+{
+    protected:
+        CTrackable(
+            )
+            : m_pTrackableInformation(NULL)
+        {
+            m_pTrackableInformation = GetNewTrackableInformation();
+
+            m_pTrackableInformation->Object = this;
+        }
+
+        virtual ~CTrackable(
+            )
+        {
+            FreeTrackableInformation(m_pTrackableInformation);
+        }
+
+    private:
+        TrackableInformation* m_pTrackableInformation;
+};
+
+template< >
+class CTrackable< Nothing > : public ITrackable
+{
+    protected:
+        CTrackable(
+            )
+            : m_pTrackableInformation(NULL)
+        {
+            m_pTrackableInformation = GetNewTrackableInformation();
+
+            m_pTrackableInformation->Object = this;
+        }
+
+        virtual ~CTrackable(
+            )
+        {
+            FreeTrackableInformation(m_pTrackableInformation);
+        }
+
+    private:
+        TrackableInformation* m_pTrackableInformation;
+};
+
+#define DISABLE_OBJECT_TRACKING() \
+__override virtual bool IgnoreTrackableForLeaks(   \
+    )   \
+{   \
+    return true;    \
+}
+
+#else
+
+#define DISABLE_OBJECT_TRACKING()
+
+#endif
+
+
+
+template< typename T = Nothing >
+class CRefCountedObjectBase : 
+#ifdef FRAMEWORK_DEBUG
+    public CTrackable< T >
+#else
+    public T
+#endif
 {
     public:
         virtual INT32 AddRef(
@@ -43,7 +151,10 @@ class CRefCountedObjectBase : public T
 };
 
 template< >
-class CRefCountedObjectBase< Nothing >
+class CRefCountedObjectBase< Nothing > 
+#ifdef FRAMEWORK_DEBUG
+    : public CTrackable< Nothing >
+#endif
 {
     public:
         virtual INT32 AddRef(
@@ -149,3 +260,16 @@ virtual INT32 AddRef(   \
 \
 virtual INT32 Release(  \
     ) = 0;
+
+#define STATIC_REFCOUNTING()    \
+__override virtual INT32 AddRef( \
+    )  \
+{   \
+    return 1;  \
+}   \
+\
+__override virtual INT32 Release( \
+    ) \
+{   \
+    return 1; \
+}

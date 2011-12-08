@@ -7,9 +7,9 @@
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( Maximum, CFloatValue, 100.0f );
-DEFINE_GET_DEFAULT( Minimum, CFloatValue, 0.0f );
-DEFINE_GET_DEFAULT( Value, CFloatValue, 0.0f );
+DEFINE_GET_DEFAULT( Maximum, FLOAT, 100.0f );
+DEFINE_GET_DEFAULT( Minimum, FLOAT, 0.0f );
+DEFINE_GET_DEFAULT( Value, FLOAT, 0.0f );
 
 //
 // Properties

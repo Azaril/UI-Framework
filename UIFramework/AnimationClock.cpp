@@ -27,6 +27,7 @@ CAnimationClock::~CAnimationClock(
     }
 
     ReleaseObject(m_Timeline);
+    ReleaseObject(m_TimeSource);
 }
 
 __checkReturn HRESULT 

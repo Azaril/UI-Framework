@@ -12,7 +12,7 @@ namespace BindingDirection
     };
 }
 
-typedef CBasicValue< BindingDirection::Value, TypeIndex::BindingDirection > CBindingDirectionValue;
+typedef CBasicValue< BindingDirection::Value > CBindingDirectionValue;
 
 template< >
 struct ObjectTypeTraits< CBindingDirectionValue >

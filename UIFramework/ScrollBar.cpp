@@ -6,8 +6,8 @@
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( Orientation, COrientationValue, Orientation::Vertical );
-DEFINE_GET_DEFAULT( ViewportSize, CFloatValue, 0 );
+DEFINE_GET_DEFAULT( Orientation, Orientation::Value, Orientation::Vertical );
+DEFINE_GET_DEFAULT( ViewportSize, FLOAT, 0 );
 
 //
 // Properties

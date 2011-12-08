@@ -6,7 +6,7 @@
 //
 // Property Defaults
 //
-DEFINE_GET_DEFAULT( LastChildFill, CBoolValue, TRUE );
+DEFINE_GET_DEFAULT( LastChildFill, bool, TRUE );
 
 //
 // Properties
