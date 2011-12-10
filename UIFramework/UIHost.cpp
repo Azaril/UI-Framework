@@ -172,17 +172,17 @@ CUIHost::Render(
 
     IFC(m_LayoutManager->EnsureLayout());
 
-    //{
-    //    CPreRenderContext PreRenderContext(m_RenderTarget);
+    {
+        CPreRenderContext PreRenderContext(m_RenderTarget);
 
-    //    IFC(m_RootElement->PreRender(PreRenderContext));
+        IFC(m_RootElement->PreRender(PreRenderContext));
 
-    //    {
-    //        CRenderContext RenderContext(m_RenderTarget);
+        {
+            CRenderContext RenderContext(m_RenderTarget);
 
-    //        IFC(PreRenderContext.RenderRoots(RenderContext));
-    //    }
-    //}
+            IFC(PreRenderContext.RenderRoots(RenderContext));
+        }
+    }
 
 Cleanup:
     return hr;

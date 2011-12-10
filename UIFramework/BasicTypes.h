@@ -62,7 +62,7 @@ class CStaticBasicValue : public CBasicValue< T >
             const T& Value
             )
         {
-            Initialize(Value);
+            this->Initialize(Value);
         }
 
         STATIC_REFCOUNTING();

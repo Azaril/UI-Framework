@@ -3,6 +3,13 @@
 
 #ifdef FRAMEWORK_DEBUG
 
+#ifdef _WIN32
+#else
+
+#include <libkern/OSAtomic.h>
+
+#endif
+
 struct TrackableBlock : public TrackableInformation
 {
     TrackableBlock* Previous;
@@ -48,7 +55,11 @@ __out TrackableInformation* GetNewTrackableInformation(
     TrackableBlock* pBlock = new TrackableBlock();
     ASSERT(pBlock);
 
+#ifdef _WIN32
     pBlock->AllocationID = InterlockedIncrement(&g_AllocationID);
+#else
+    pBlock->AllocationID = OSAtomicIncrement32((INT32*)&g_AllocationID) + 1;
+#endif
 
     if (g_TailBlock == NULL)
     {
