@@ -240,7 +240,6 @@ CRenderTargetBase::CreateLinearGradientBrush(
                 texelColor = ColorF::Interpolate(ColorF(pSortedGradientStops[fromColorIndex].color), ColorF(pSortedGradientStops[fromColorIndex + 1].color), interpolateVal);
             }
             
-            //TODO: Byte ordering seems wrong here...
             switch(format)
             {
                 case PixelFormat::B8G8R8A8:
@@ -672,7 +671,7 @@ CRenderTargetBase::ApplyMask(
             IFC(BindMask(pMaskTexture));
         }
 
-        SetObject(m_pLastRenderedMaskAtlas, (ITextureAtlasWithWhitePixel*)pMaskView->GetAtlas());
+        ReplaceObject(m_pLastRenderedMaskAtlas, (ITextureAtlasWithWhitePixel*)pMaskView->GetAtlas());
 
         {
             const RectU& viewBounds = pMaskView->GetRect();
@@ -735,7 +734,7 @@ CRenderTargetBase::ApplyBrush(
             IFC(BindTexture(pTexture));
         }
         
-        SetObject(m_pLastRenderedTextureAtlas, (ITextureAtlasWithWhitePixel*)pTextureView->GetAtlas());
+        ReplaceObject(m_pLastRenderedTextureAtlas, (ITextureAtlasWithWhitePixel*)pTextureView->GetAtlas());
         
         {
             const RectU& viewBounds = pTextureView->GetRect();

@@ -17,6 +17,7 @@ Release/
 # Visual studio files
 *.vcxproj.user
 *.sdf
+*.opensdf
 *.suo
 
 # Mac files

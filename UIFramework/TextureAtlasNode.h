@@ -30,6 +30,8 @@ class CTextureAtlasNode : private ITextureAtlasNode
         virtual ~CTextureAtlasNode(
             )
         {
+            ASSERT(m_pView == NULL);
+
             delete m_pLeftChild;
             delete m_pRightChild;            
         }
