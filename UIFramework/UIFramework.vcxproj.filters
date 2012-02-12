@@ -954,6 +954,10 @@
     <ClCompile Include="D3D11SurfaceRenderTarget.cpp">
       <Filter>Framework\Graphics\D3D11</Filter>
     </ClCompile>
+    <ClCompile Include="FreetypeFontSize.cpp">
+      <Filter>Framework\Text\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="FloatUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1790,5 +1794,9 @@
     <ClInclude Include="Noncopyable.h">
       <Filter>Framework\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="FreetypeFontSize.h">
+      <Filter>Framework\Text\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="FloatUtils.h" />
   </ItemGroup>
 </Project>

@@ -142,9 +142,11 @@
     <ClCompile Include="DirectWriteRegisteredFontCollection.cpp" />
     <ClCompile Include="EditableTextLayoutBase.cpp" />
     <ClCompile Include="EndianUtil.cpp" />
+    <ClCompile Include="FloatUtils.cpp" />
     <ClCompile Include="FontDescription.cpp" />
     <ClCompile Include="FontMetrics.cpp" />
     <ClCompile Include="FreetypeFontFace.cpp" />
+    <ClCompile Include="FreetypeFontSize.cpp" />
     <ClCompile Include="FreeTypeTextFormat.cpp" />
     <ClCompile Include="FreetypeTextLayout.cpp" />
     <ClCompile Include="TextLayoutEngineMetrics.cpp" />
@@ -415,9 +417,11 @@
     <ClInclude Include="DirectWriteRegisteredFontCollection.h" />
     <ClInclude Include="EditableTextLayoutBase.h" />
     <ClInclude Include="EndianUtil.h" />
+    <ClInclude Include="FloatUtils.h" />
     <ClInclude Include="FontDescription.h" />
     <ClInclude Include="FontMetrics.h" />
     <ClInclude Include="FreetypeFontFace.h" />
+    <ClInclude Include="FreetypeFontSize.h" />
     <ClInclude Include="FreeTypeTextFormat.h" />
     <ClInclude Include="FreetypeTextLayout.h" />
     <ClInclude Include="Noncopyable.h" />

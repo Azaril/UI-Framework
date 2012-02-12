@@ -3,15 +3,16 @@
 #include "StringConversion.h"
 #include "FontDescription.h"
 #include "FreetypeTextFormat.h"
+#include "FreetypeFontSize.h"
 
 #include <freetype/ftsnames.h>
 #include <freetype/ttnameid.h>
 
+#include FT_SIZES_H
+
 CFreetypeFontFace::CFreetypeFontFace(
     )
     : m_pFontFace(NULL)
-    , m_CurrentGlyph((UINT32)-1)
-    , m_CurrentFontSize(-1.0f)
     , m_LoadedFamilyNames(FALSE)
     , m_ppFamilyNames(NULL)
     , m_FamilyNameCount(0)
@@ -56,74 +57,39 @@ CFreetypeFontFace::LoadGlyph(
 {
     HRESULT hr = S_OK;
 
-    if (m_CurrentGlyph != glyph)
-    {
-        UINT32 glyphIndex = FT_Get_Char_Index(m_pFontFace, glyph);
+    UINT32 glyphIndex = FT_Get_Char_Index(m_pFontFace, glyph);
 
-        IFCEXPECT(FT_Load_Glyph(m_pFontFace, glyphIndex, FT_LOAD_DEFAULT) == 0);
-
-        m_CurrentGlyph = glyph;
-    }
+    IFCEXPECT(FT_Load_Glyph(m_pFontFace, glyphIndex, FT_LOAD_DEFAULT) == 0);
 
 Cleanup:
     return hr;
 }
 
-__checkReturn HRESULT
-CFreetypeFontFace::SetFontSize(
-    const FLOAT& fontSize
+__out FT_Face
+CFreetypeFontFace::GetFontFace(
     )
 {
-    HRESULT hr = S_OK;
-    FLOAT realFontSize = fabsf(fontSize);
-
-    if (m_CurrentFontSize != realFontSize)
-    {
-        //TODO: Query DPI?
-        IFCEXPECT(FT_Set_Char_Size(m_pFontFace, 0, FT_F26Dot6(64.0f * realFontSize), 96, 96) == 0);
-
-        m_CurrentFontSize = realFontSize;
-    }
-
-Cleanup:
-    return hr;
-}
-
-__checkReturn HRESULT
-CFreetypeFontFace::GetFontMetrics(
-    const FLOAT& fontSize,
-    __out FontMetrics* pFontMetrics
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFC(SetFontSize(fontSize));
-
-    pFontMetrics->Height = m_pFontFace->size->metrics.height;
-    pFontMetrics->Asecender = m_pFontFace->size->metrics.ascender;
-    pFontMetrics->Descender = m_pFontFace->size->metrics.descender;
-
-Cleanup:
-    return hr;
+    return m_pFontFace;
 }
 
 __checkReturn HRESULT 
 CFreetypeFontFace::GetGlyphMetrics(
     const UINT32 glyph,
-    const FLOAT& fontSize,
+    __in CFreetypeFontSize* pFontSize,
     __out GlyphMetrics* pGlyphMetrics
     )
 {
     HRESULT hr = S_OK;
     FT_GlyphSlot pGlyphSlot = NULL;
 
-    IFC(SetFontSize(fontSize));
+    IFC(pFontSize->Apply());
+
     IFC(LoadGlyph(glyph));
 
     pGlyphSlot = m_pFontFace->glyph;
 
-    pGlyphMetrics->Advance.x = pGlyphSlot->metrics.horiAdvance;
-    pGlyphMetrics->Advance.y = pGlyphSlot->metrics.vertAdvance;
+    pGlyphMetrics->HorizontalAdvance = pGlyphSlot->metrics.horiAdvance;
+    pGlyphMetrics->VerticalAdvance = pGlyphSlot->metrics.vertAdvance;
     
     pGlyphMetrics->HorizontalBearing.x = pGlyphSlot->metrics.horiBearingX;
     pGlyphMetrics->HorizontalBearing.y = pGlyphSlot->metrics.horiBearingY;
@@ -141,7 +107,7 @@ Cleanup:
 __checkReturn HRESULT
 CFreetypeFontFace::LoadIntoTexture(
     const UINT32 glyph,
-    const FLOAT& fontSize,
+    __in CFreetypeFontSize* pFontSize,
     __in ITextureAllocator* pAllocator,
     __deref_out_opt ITexture** ppTexture
     )
@@ -151,7 +117,8 @@ CFreetypeFontFace::LoadIntoTexture(
     ITexture* pOutputTexture = NULL;
     StackHeapBuffer< BYTE, 1024 * 4 > bitmapBuffer;
 
-    IFC(SetFontSize(fontSize));
+    IFC(pFontSize->Apply());
+
     IFC(LoadGlyph(glyph));
 
     pGlyphSlot = m_pFontFace->glyph;
@@ -461,4 +428,72 @@ CFreetypeFontFace::RemoveCachedFormat(
             break;
         }
     }
+}
+
+__checkReturn HRESULT
+CFreetypeFontFace::CreateFontSize( 
+    FLOAT fontSize, 
+    __deref_out CFreetypeFontSize** ppFontSize 
+    )
+{
+    HRESULT hr = S_OK;
+    FT_Size newFontSize = NULL;
+    CFreetypeFontSize* pNewFontSize = NULL;
+
+    IFCEXPECT(FT_New_Size(m_pFontFace, &newFontSize) == FT_Err_Ok);
+
+    IFC(CFreetypeFontSize::Create(this, newFontSize, fontSize, &pNewFontSize));
+
+    newFontSize = NULL;
+
+    *ppFontSize = pNewFontSize;
+    pNewFontSize = NULL;
+
+Cleanup:
+    if (newFontSize != NULL)
+    {
+        FT_Done_Size(newFontSize);
+    }
+
+    return hr;
+}
+
+__checkReturn HRESULT 
+CFreetypeFontFace::GetSupportsKerning(
+    __out bool* pSupportsKerning
+    )
+{
+    HRESULT hr = S_OK;
+
+    *pSupportsKerning = FT_HAS_KERNING(m_pFontFace) ? TRUE : FALSE;
+    
+    return hr;
+}
+
+__checkReturn HRESULT 
+CFreetypeFontFace::GetKerning(
+    UINT32 leftGlyph,
+    UINT32 rightGlyph,
+    __in CFreetypeFontSize* pFontSize,
+    __out Point2I* pKerning
+    )
+{
+    HRESULT hr = S_OK;
+    FT_Vector kerning;
+
+    IFC(pFontSize->Apply());
+
+    //
+    // TODO: Fix this as it requires multiple extra lookups.
+    //
+    UINT32 leftGlyphIndex = FT_Get_Char_Index(m_pFontFace, leftGlyph);
+    UINT32 rightGlyphIndex = FT_Get_Char_Index(m_pFontFace, rightGlyph);
+
+    IFCEXPECT(FT_Get_Kerning(m_pFontFace, leftGlyphIndex, rightGlyphIndex, FT_KERNING_DEFAULT, &kerning) == FT_Err_Ok);
+
+    pKerning->x = kerning.x;
+    pKerning->y = kerning.y;
+    
+Cleanup:
+    return hr;
 }

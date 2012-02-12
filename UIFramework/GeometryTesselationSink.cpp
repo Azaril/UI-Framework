@@ -14,6 +14,8 @@ CGeometryTesselationSink::CGeometryTesselationSink(
     , m_pVertexCache(NULL)
     , m_VertexCacheSize(0)
     , m_pCacheWriteOffset(NULL)
+    , m_HasLocalTransform(false)
+    , m_LocalTransform(Matrix3X2F::Identity())
 {
 }
 
@@ -37,7 +39,8 @@ __checkReturn HRESULT
 CGeometryTesselationSink::Initialize(
     __in ITesselationBatchCallback* pCallback,
     __in_ecount(VertexBufferCount) IVertexBuffer** ppVertexBuffers,
-    UINT32 VertexBufferCount
+    UINT32 VertexBufferCount,
+    __in_opt Matrix3X2F* pTransform
 	)
 {
 	HRESULT hr = S_OK;
@@ -68,6 +71,12 @@ CGeometryTesselationSink::Initialize(
     IFCOOM(m_pVertexCache);
 
     m_pCacheWriteOffset = m_pVertexCache;
+
+    if (pTransform != NULL)
+    {
+        m_HasLocalTransform = true;
+        m_LocalTransform = *pTransform;
+    }
 
 Cleanup:
 	return hr;
@@ -222,6 +231,13 @@ CGeometryTesselationSink::SetDiffuseColor(
     return hr;
 }
 
+const ColorF&
+CGeometryTesselationSink::GetDiffuseColor( 
+    )
+{
+    return m_DiffuseColor;
+}
+
 __checkReturn HRESULT
 CGeometryTesselationSink::SetTransform(
     const Matrix3X2F& Transform
@@ -229,7 +245,14 @@ CGeometryTesselationSink::SetTransform(
 {
     HRESULT hr = S_OK;
     
-    m_Transform = Transform;
+    if (m_HasLocalTransform)
+    {
+        m_Transform = m_LocalTransform * Transform;
+    }
+    else
+    {
+        m_Transform = Transform;
+    }
     
     return hr;
 }

@@ -3,7 +3,7 @@
 #include "RefCounted.h"
 
 template< typename T = Nothing >
-class CCOMRefCountedObjectBase : public T
+class CCOMRefCountedObjectBase : public CTrackable< T >
 {
     public:
         STDMETHOD_(ULONG, AddRef)(
@@ -43,7 +43,7 @@ class CCOMRefCountedObjectBase : public T
 };
 
 template< >
-class CCOMRefCountedObjectBase< Nothing >
+class CCOMRefCountedObjectBase< Nothing > : public CTrackable< Nothing >
 {
     public:
         STDMETHOD_(ULONG, AddRef)(

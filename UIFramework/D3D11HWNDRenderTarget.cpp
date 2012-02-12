@@ -60,6 +60,10 @@ CD3D11HWNDRenderTarget::BeginRendering(
 
     m_pImmediateContext->OMSetRenderTargets(1, &m_pBackBufferView, NULL);
 
+    const FLOAT clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+    m_pImmediateContext->ClearRenderTargetView(m_pBackBufferView, clearColor);
+
     IFC(CD3D11RenderTarget::BeginRendering());
 
 Cleanup:

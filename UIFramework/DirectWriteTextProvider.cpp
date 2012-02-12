@@ -30,14 +30,14 @@ CDirectWriteTextProvider::~CDirectWriteTextProvider(
 
     if (m_Factory != NULL)
     {
-        if (m_pFontFileLoader != NULL)
-        {
-            IGNOREHR(m_Factory->UnregisterFontFileLoader(m_pFontFileLoader));
-        }
-
         if (m_pFontCollectionLoader != NULL)
         {
             IGNOREHR(m_Factory->UnregisterFontCollectionLoader(m_pFontCollectionLoader));
+        }
+
+        if (m_pFontFileLoader != NULL)
+        {
+            IGNOREHR(m_Factory->UnregisterFontFileLoader(m_pFontFileLoader));
         }
     }
 

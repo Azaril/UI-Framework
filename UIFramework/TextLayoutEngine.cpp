@@ -126,50 +126,80 @@ CTextLayoutEngine::EnsureLayout(
 
         bounds.bottom += pFontMetrics->Height >> 6;
 
-        for (UINT32 i = 0; i < m_Text.length(); ++i)
         {
-            const GlyphMetrics* pMetrics = NULL;
-            const UINT32 glyph = m_Text[i];
+            UINT32 previousGlyph = 0;
+            bool useKerning = false;
 
-            if (m_Text[i] == L'\n')
+            IFC(m_pCallback->GetSupportsKerning(&useKerning));
+
+            for (UINT32 i = 0; i < m_Text.length(); ++i)
             {
-                linePosition.y += pFontMetrics->Height;
+                const GlyphMetrics* pMetrics = NULL;
+                const UINT32 glyph = m_Text[i];
 
-                currentPosition = linePosition;
-            }
-            else
-            {
-                IFC(m_pCallback->GetGlyphMetrics(glyph, &pMetrics));
-
+                if (m_Text[i] == L'\n')
                 {
-                    GlyphData data;
+                    linePosition.y += pFontMetrics->Height;
 
-                    Point2I renderPosition = currentPosition;
+                    currentPosition = linePosition;
+                }
+                else
+                {
+                    IFC(m_pCallback->GetGlyphMetrics(glyph, &pMetrics));
 
-                    renderPosition.y -= pMetrics->HorizontalBearing.y;
-                    renderPosition.x += pMetrics->HorizontalBearing.x;
+                    if (useKerning && previousGlyph != 0)
+                    {
+                        Point2I kerningData;
 
-                    Point2I bottomRight = renderPosition + pMetrics->Size;
+                        //
+                        // NOTE: First parameter is visual left glyph, second parameter is visual right.
+                        //       For right to left the ordering is important and may need to be switched.
+                        //
+                        if (SUCCEEDED(m_pCallback->GetKerning(glyph, previousGlyph, &kerningData)))
+                        {
+                            currentPosition.x += kerningData.x;
+                            currentPosition.y -= kerningData.y;
+                        }
+                    }
 
-                    bounds.right = std::max((UINT32)bottomRight.x, bounds.right);
-                    bounds.bottom = std::max((UINT32)bottomRight.y, bounds.bottom);
+                    {
+                        GlyphData data;
 
-                    data.Position.x = renderPosition.x / 64.0f;
-                    data.Position.y = renderPosition.y / 64.0f;
+                        Point2I renderPosition = currentPosition;
 
-                    GlyphRun* pGlyphRun = NULL;
+                        renderPosition.x += pMetrics->HorizontalBearing.x;
+                        renderPosition.y -= pMetrics->HorizontalBearing.y;
 
-                    IFC(GetGlyphRun(glyph, &pGlyphRun));
+                        Point2I bottomRight = renderPosition + pMetrics->Size;
 
-                    pGlyphRun->Glyphs.push_back(data);
+                        bounds.right = std::max((UINT32)bottomRight.x, bounds.right);
+                        bounds.bottom = std::max((UINT32)bottomRight.y, bounds.bottom);
+
+                        //
+                        // Convert from 26.6 fixed point to floating point.
+                        //
+                        data.Position.x = renderPosition.x / 64.0f;
+                        data.Position.y = renderPosition.y / 64.0f;
+
+                        GlyphRun* pGlyphRun = NULL;
+
+                        IFC(GetGlyphRun(glyph, &pGlyphRun));
+
+                        pGlyphRun->Glyphs.push_back(data);
+                    }
+
+                    currentPosition.x += pMetrics->HorizontalAdvance;
                 }
 
-                currentPosition.x += pMetrics->Advance.x;
+                previousGlyph = glyph;
             }
         }
 
         ReleaseObject(m_pLayoutMetrics);
 
+        //
+        // Convert from 26.6 fixed point to floating point.
+        //
         IFC(CTextLayoutEngineMetrics::Create(RectF(bounds.left / 64.0f, bounds.top / 64.0f, bounds.right / 64.0f, bounds.bottom / 64.0f), &m_pLayoutMetrics));
 
         m_LayoutDirty = FALSE;

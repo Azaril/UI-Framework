@@ -678,10 +678,10 @@ CRenderTargetBase::ApplyMask(
             const FLOAT textureWidth = (FLOAT)pMaskTexture->GetWidth();
             const FLOAT textureHeight = (FLOAT)pMaskTexture->GetHeight();
 
-            const FLOAT left = (viewBounds.left / textureWidth) + (0.5f / textureWidth);
-            const FLOAT right = (viewBounds.right / textureWidth) - (0.5f / textureWidth);
-            const FLOAT top = (viewBounds.top / textureHeight) + (0.5f / textureHeight);
-            const FLOAT bottom = (viewBounds.bottom / textureHeight) - (0.5f / textureHeight);
+            const FLOAT left = ((viewBounds.left + 0.5f) / textureWidth);
+            const FLOAT right = ((viewBounds.right - 0.5f) / textureWidth);
+            const FLOAT top = ((viewBounds.top + 0.5f) / textureHeight);
+            const FLOAT bottom = ((viewBounds.bottom - 0.5f) / textureHeight);
 
             //
             // Scale from [0, 1] range to texture view UV range.
@@ -741,10 +741,10 @@ CRenderTargetBase::ApplyBrush(
             const FLOAT textureWidth = (FLOAT)pTexture->GetWidth();
             const FLOAT textureHeight = (FLOAT)pTexture->GetHeight();
             
-            const FLOAT left = (viewBounds.left / textureWidth) + (0.5f / textureWidth);
-            const FLOAT right = (viewBounds.right / textureWidth) - (0.5f / textureWidth);
-            const FLOAT top = (viewBounds.top / textureHeight) + (0.5f / textureHeight);
-            const FLOAT bottom = (viewBounds.bottom / textureHeight) - (0.5f / textureHeight);
+            const FLOAT left = ((viewBounds.left + 0.5f) / textureWidth);
+            const FLOAT right = ((viewBounds.right - 0.5f) / textureWidth);
+            const FLOAT top = ((viewBounds.top + 0.5f) / textureHeight);
+            const FLOAT bottom = ((viewBounds.bottom - 0.5f) / textureHeight);
             
             //
             // Scale from [0, 1] range to texture view UV range.

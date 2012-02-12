@@ -80,7 +80,7 @@ CD3D10RenderTarget::Initialize(
         ReleaseObject(pD3DBuffer);
     }
 
-    IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &pTesselationSink));
+    IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), NULL, &pTesselationSink));
 
     IFC(pTextureAtlasPool->GetOrCreateFirstTextureAtlas(&pFirstTextureAtlas));
 

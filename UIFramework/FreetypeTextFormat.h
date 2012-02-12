@@ -6,6 +6,7 @@
 #include "TextureAllocator.h"
 #include "FreetypeFontFace.h"
 #include "GlyphMetrics.h"
+#include "FreetypeFontSize.h"
 
 class CFreetypeTextFormat : public CTextFormat
 {
@@ -29,6 +30,16 @@ class CFreetypeTextFormat : public CTextFormat
         FLOAT GetFontSize(
             );
 
+        __checkReturn HRESULT GetSupportsKerning(
+            __out bool* pSupportsKerning
+            );
+
+        __checkReturn HRESULT GetKerning(
+            UINT32 leftGlyph,
+            UINT32 rightGlyph,
+            __out Point2I* pKerning
+            );
+
     protected:
         CFreetypeTextFormat(
             );
@@ -43,6 +54,7 @@ class CFreetypeTextFormat : public CTextFormat
             );
 
         CFreetypeFontFace* m_pFontFace;
+        CFreetypeFontSize* m_pFontSize;
         FLOAT m_fontSize;
         ITextureAllocator* m_pTextureAllocator;
         map< UINT32, ITexture* > m_GlyphTextures;

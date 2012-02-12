@@ -6,12 +6,15 @@ CFreetypeTextFormat::CFreetypeTextFormat(
     , m_fontSize(0)
     , m_pTextureAllocator(NULL)
     , m_HaveFontMetrics(FALSE)
+    , m_pFontSize(NULL)
 {
 }
 
 CFreetypeTextFormat::~CFreetypeTextFormat(
     )
 {
+    ReleaseObject(m_pFontSize);
+
     if (m_pFontFace != NULL)
     {
         m_pFontFace->RemoveCachedFormat(this);
@@ -47,6 +50,9 @@ CFreetypeTextFormat::Initialize(
     m_fontSize = fontSize;
     m_pTextureAllocator = pTextureAllocator;
 
+    IFC(m_pFontFace->CreateFontSize(fontSize, &m_pFontSize));
+
+Cleanup:
     return hr;
 }
 
@@ -68,7 +74,7 @@ CFreetypeTextFormat::GetGlyphTexture(
     }
     else
     {
-        IFC(m_pFontFace->LoadIntoTexture(glyph, m_fontSize, m_pTextureAllocator, &pNewTexture));
+        IFC(m_pFontFace->LoadIntoTexture(glyph, m_pFontSize, m_pTextureAllocator, &pNewTexture));
 
         m_GlyphTextures.insert(std::make_pair(glyph, pNewTexture));
 
@@ -93,7 +99,7 @@ CFreetypeTextFormat::GetFontMetrics(
 
     if (!m_HaveFontMetrics)
     {
-        IFC(m_pFontFace->GetFontMetrics(m_fontSize, &m_FontMetrics));
+        IFC(m_pFontSize->GetFontMetrics(&m_FontMetrics));
 
         m_HaveFontMetrics = TRUE;
     }
@@ -124,7 +130,7 @@ CFreetypeTextFormat::GetGlyphMetics(
         pMetrics = new GlyphMetrics();
         IFCOOM(pMetrics);
 
-        IFC(m_pFontFace->GetGlyphMetrics(glyph, m_fontSize, pMetrics));
+        IFC(m_pFontFace->GetGlyphMetrics(glyph, m_pFontSize, pMetrics));
 
         m_GlyphMetrics.insert(std::make_pair(glyph, pMetrics));
 
@@ -135,6 +141,34 @@ CFreetypeTextFormat::GetGlyphMetics(
 Cleanup:
     delete pMetrics;
 
+    return hr;
+}
+
+__checkReturn HRESULT 
+CFreetypeTextFormat::GetSupportsKerning(
+    __out bool* pSupportsKerning
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_pFontFace->GetSupportsKerning(pSupportsKerning));
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT 
+CFreetypeTextFormat::GetKerning(
+    UINT32 leftGlyph,
+    UINT32 rightGlyph,
+    __out Point2I* pKerning
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_pFontFace->GetKerning(leftGlyph, rightGlyph, m_pFontSize, pKerning));
+
+Cleanup:
     return hr;
 }
 

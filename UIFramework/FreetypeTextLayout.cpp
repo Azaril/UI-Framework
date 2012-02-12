@@ -90,6 +90,34 @@ Cleanup:
     return hr;
 }
 
+__override __checkReturn HRESULT 
+CFreetypeTextLayout::GetSupportsKerning(
+    __out bool* pSupportsKerning
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_pTextFormat->GetSupportsKerning(pSupportsKerning));
+
+Cleanup:
+    return hr;
+}
+
+__override __checkReturn HRESULT
+CFreetypeTextLayout::GetKerning(
+    UINT32 leftGlyph,
+    UINT32 rightGlyph,
+    __out Point2I* pKerning
+    )
+{
+    HRESULT hr = S_OK;
+
+    IFC(m_pTextFormat->GetKerning(leftGlyph, rightGlyph, pKerning));
+
+Cleanup:
+    return hr;
+}
+
 struct RenderContext
 {
     ITextLayoutRenderCallback* Callback;

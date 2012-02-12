@@ -88,6 +88,16 @@ class CFreetypeTextLayout : public CEditableTextLayoutBase,
             __deref_out const GlyphMetrics** ppGlyphMetrics
             );
 
+        __override virtual __checkReturn HRESULT GetSupportsKerning(
+            __out bool* pSupportsKerning
+            );
+
+        __override virtual __checkReturn HRESULT GetKerning(
+            UINT32 leftGlyph,
+            UINT32 rightGlyph,
+            __out Point2I* pKerning
+            );
+
         __override virtual __checkReturn HRESULT RenderGlyphRun(
             UINT32 glyph,
             __in GlyphRun* pGlyphRun,

@@ -888,13 +888,13 @@ HRESULT CUIElement::Arrange(RectF Bounds)
             ArrangeSize.width = std::max(0.0f, ArrangeSize.width - MarginWidth);
             ArrangeSize.height = std::max(0.0f, ArrangeSize.height - MarginHeight);
 
-            if(ArrangeSize.width < m_UnclippedDesiredSize.width)
+            if(IsFloatLessThan(ArrangeSize.width, m_UnclippedDesiredSize.width))
             {
                 NeedsClipBounds = TRUE;
                 ArrangeSize.width = m_UnclippedDesiredSize.width;
             }
 
-            if(ArrangeSize.height < m_UnclippedDesiredSize.height)
+            if(IsFloatLessThan(ArrangeSize.height, m_UnclippedDesiredSize.height))
             {
                 NeedsClipBounds = TRUE;
                 ArrangeSize.height = m_UnclippedDesiredSize.height;
@@ -942,11 +942,11 @@ HRESULT CUIElement::Arrange(RectF Bounds)
 
             SizeF ClippedSize(std::min(UsedArrangeSize.width, MaxSize.width), std::min(UsedArrangeSize.height, MaxSize.height));
 
-            NeedsClipBounds |= (ClippedSize.width < UsedArrangeSize.width) ||  (ClippedSize.height < UsedArrangeSize.height);
+            NeedsClipBounds |= IsFloatLessThan(ClippedSize.width, UsedArrangeSize.width) || IsFloatLessThan(ClippedSize.height, UsedArrangeSize.height);
 
             SizeF ClientSize(std::max(0.0f, OriginalArrangeSize.width - MarginWidth), std::max(0.0f, OriginalArrangeSize.height - MarginHeight));
 
-            NeedsClipBounds |= (ClientSize.width < ClippedSize.width) || (ClientSize.height < ClippedSize.height);
+            NeedsClipBounds |= IsFloatLessThan(ClientSize.width, ClippedSize.width) || IsFloatLessThan(ClientSize.height, ClippedSize.height);
 
             SizeF Offset;
 

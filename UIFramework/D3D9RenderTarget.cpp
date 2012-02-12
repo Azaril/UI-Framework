@@ -62,7 +62,14 @@ CD3D9RenderTarget::Initialize(
         ReleaseObject(pD3DVertexBuffer);
     }
 
-    IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &pTesselationSink));
+    //
+    // Translate vertices by 0.5f to correctly offset sampling.
+    //
+    {
+        Matrix3X2F vertexTransform = Matrix3X2F::Translation(0.5f, 0.5f);
+
+        IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &vertexTransform, &pTesselationSink));
+    }
 
     IFC(pDevice->GetDeviceCaps(&deviceCapabilites));
 

@@ -263,7 +263,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     }
 
     {
-        CFontDescription defaultFont(L"Opificio", 16, L"en-us");
+        CFontDescription defaultFont(L"Opificio", 12, L"en-us");
 
         IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, pProviders, &defaultFont, &pUIHost));
     }

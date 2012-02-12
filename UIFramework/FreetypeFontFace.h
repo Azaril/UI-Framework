@@ -11,26 +11,22 @@
 
 class CFontDescription;
 class CFreetypeTextFormat;
+class CFreetypeFontSize;
 
 class CFreetypeFontFace : public CRefCountedObject
 {
     public:
         DECLARE_FACTORY1( CFreetypeFontFace, FT_Face );
 
-        __checkReturn HRESULT GetFontMetrics(
-            const FLOAT& fontSize,
-            __out FontMetrics* pFontMetrics
-            );
-
         __checkReturn HRESULT GetGlyphMetrics(
             const UINT32 glyph,
-            const FLOAT& fontSize,
+            __in CFreetypeFontSize* pFontSize,
             __out GlyphMetrics* pGlyphMetrics
             );
 
         __checkReturn HRESULT LoadIntoTexture(
             const UINT32 glyph,
-            const FLOAT& fontSize,
+            __in CFreetypeFontSize* pFontSize,
             __in ITextureAllocator* pAllocator,
             __deref_out_opt ITexture** ppTexture
             );
@@ -50,6 +46,25 @@ class CFreetypeFontFace : public CRefCountedObject
             __in CFreetypeTextFormat* pFormat
             );
 
+        __checkReturn HRESULT CreateFontSize(
+            FLOAT fontSize,
+            __deref_out CFreetypeFontSize** ppFontSize
+            );
+
+        __out FT_Face GetFontFace(
+            );
+
+        __checkReturn HRESULT GetSupportsKerning(
+            __out bool* pSupportsKerning
+            );
+
+        __checkReturn HRESULT GetKerning(
+            UINT32 leftGlyph,
+            UINT32 rightGlyph,
+            __in CFreetypeFontSize* pFontSize,
+            __out Point2I* pKerning
+            );
+
     protected:
         CFreetypeFontFace(
             );
@@ -65,13 +80,7 @@ class CFreetypeFontFace : public CRefCountedObject
             UINT32 glyph
             );
 
-        __checkReturn HRESULT SetFontSize(
-            const FLOAT& fontSize
-            );
-
         FT_Face m_pFontFace;
-        FLOAT m_CurrentFontSize;
-        UINT32 m_CurrentGlyph;
         bool m_LoadedFamilyNames;
         WCHAR** m_ppFamilyNames;
         UINT32 m_FamilyNameCount;

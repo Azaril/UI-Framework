@@ -15,7 +15,7 @@ struct ITesselationBatchCallback
 class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink >
 {
     public:
-        DECLARE_FACTORY3( CGeometryTesselationSink, ITesselationBatchCallback*, IVertexBuffer**, UINT32 );
+        DECLARE_FACTORY4( CGeometryTesselationSink, ITesselationBatchCallback*, IVertexBuffer**, UINT32, Matrix3X2F* );
     
 	    __override virtual __checkReturn HRESULT AddTriangle(
 	        const Point2F& point1,
@@ -32,6 +32,9 @@ class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink 
     
         __checkReturn HRESULT SetDiffuseColor(
             const ColorF& Color
+            );
+
+        const ColorF& GetDiffuseColor(
             );
     
         __checkReturn HRESULT SetTransform(
@@ -56,7 +59,8 @@ class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink 
         __checkReturn HRESULT Initialize(
 	        __in ITesselationBatchCallback* pCallback,
 	        __in_ecount(VertexBufferCount) IVertexBuffer** ppVertexBuffers,
-	        UINT32 VertexBufferCount
+	        UINT32 VertexBufferCount,
+            __in_opt Matrix3X2F* pTransform
 	        );
     
         __checkReturn HRESULT FlushVertexCache(
@@ -85,6 +89,8 @@ class CGeometryTesselationSink : public CRefCountedObjectBase< ITesselationSink 
         UINT32 m_VertexCacheSize;
         RenderVertex* m_pCacheWriteOffset;    
         ColorF m_DiffuseColor;
+        bool m_HasLocalTransform;
+        Matrix3X2F m_LocalTransform;
         Matrix3X2F m_Transform;
         bool m_NeedsBrushTransform;
         Matrix3X2F m_BrushTransform;

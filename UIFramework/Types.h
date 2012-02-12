@@ -49,6 +49,7 @@ _wtof(
 #include "Gradient.h"
 #include "BezierSegment.h"
 #include "TypeOperators.h"
+#include "FloatUtils.h"
 
 #ifndef ARRAYSIZE
 #define ARRAYSIZE(a) (sizeof(a)/sizeof(a[0]))

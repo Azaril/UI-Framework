@@ -20,6 +20,26 @@ struct UIFRAMEWORK_API Point2U
         x = X;
         y = Y;
     }
+
+    inline Point2U& operator+=(
+        const Point2U& other
+        )
+    {
+        x += other.x;
+        y += other.y;
+
+        return (*this);
+    }
+
+    inline Point2U& operator-=(
+        const Point2U& other
+        )
+    {
+        x -= other.x;
+        y -= other.y;
+
+        return (*this);
+    }
     
     UINT32 x;
     UINT32 y;

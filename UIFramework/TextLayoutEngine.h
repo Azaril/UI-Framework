@@ -17,6 +17,16 @@ struct ITextLayoutCallback
         UINT32 glyph,
         __deref_out const GlyphMetrics** ppGlyphMetrics
         ) = 0;
+
+    virtual __checkReturn HRESULT GetSupportsKerning(
+        __out bool* pSupportsKerning
+        ) = 0;
+
+    virtual __checkReturn HRESULT GetKerning(
+        UINT32 leftGlyph,
+        UINT32 rightGlyph,
+        __out Point2I* pKerning
+        ) = 0;
 };
 
 struct ITextLayoutEngineRenderCallback

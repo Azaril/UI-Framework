@@ -60,6 +60,8 @@ CD3D9HWNDRenderTarget::BeginRendering(
 
     IFC(m_pDevice->SetRenderTarget(0, pBackBuffer));
 
+    IFC(m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 0, 0, 0), 1.0f, 0));
+
     IFC(CD3D9RenderTarget::BeginRendering());
 
     IFC(m_pDevice->BeginScene());
