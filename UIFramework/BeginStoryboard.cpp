@@ -5,7 +5,18 @@
 //
 // Properties
 //
-CStaticProperty CBeginStoryboard::StoryboardProperty(L"Storyboard", TypeIndex::Storyboard, StaticPropertyFlags::Content);
+namespace BeginStoryboardProperties
+{
+    enum Value
+    {
+        Storyboard
+    };
+}
+
+//
+// Properties
+//
+CStaticProperty CBeginStoryboard::StoryboardProperty(BeginStoryboardProperties::Storyboard, L"Storyboard", TypeIndex::Storyboard, StaticPropertyFlags::Content);
 
 CBeginStoryboard::CBeginStoryboard(
     )

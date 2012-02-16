@@ -6,8 +6,20 @@
 //
 // Properties
 //
-CStaticProperty CSetter::PropertyProperty(L"Property", TypeIndex::String, StaticPropertyFlags::None);
-CStaticProperty CSetter::ValueProperty(L"Value", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
+namespace SetterProperties
+{
+    enum Value
+    {
+        Property,
+        Value
+    };
+}
+
+//
+// Properties
+//
+CStaticProperty CSetter::PropertyProperty(SetterProperties::Property, L"Property", TypeIndex::String, StaticPropertyFlags::None);
+CStaticProperty CSetter::ValueProperty(SetterProperties::Value, L"Value", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
 
 CSetter::CSetter(
     ) 

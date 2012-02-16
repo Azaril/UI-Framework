@@ -149,6 +149,7 @@
     <ClCompile Include="FreetypeFontSize.cpp" />
     <ClCompile Include="FreeTypeTextFormat.cpp" />
     <ClCompile Include="FreetypeTextLayout.cpp" />
+    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="TextLayoutEngineMetrics.cpp" />
     <ClCompile Include="FreetypeTextProvider.cpp" />
     <ClCompile Include="GlyphData.cpp" />
@@ -425,6 +426,7 @@
     <ClInclude Include="FreeTypeTextFormat.h" />
     <ClInclude Include="FreetypeTextLayout.h" />
     <ClInclude Include="Noncopyable.h" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="TextLayoutEngineMetrics.h" />
     <ClInclude Include="FreetypeTextProvider.h" />
     <ClInclude Include="GlyphData.h" />

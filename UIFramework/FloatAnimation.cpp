@@ -2,6 +2,19 @@
 #include "DelegatingPropertyInformation.h"
 
 //
+// Properties
+//
+namespace FloatAnimationproperties
+{
+    enum Value
+    {
+        From,
+        To,
+        Duration
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( From );
@@ -11,9 +24,9 @@ DEFINE_GET_DEFAULT_NULL( Duration );
 //
 // Properties
 //
-CStaticProperty CFloatAnimation::FromProperty(L"From", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( From ), NULL);
-CStaticProperty CFloatAnimation::ToProperty(L"To", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( To ), NULL);
-CStaticProperty CFloatAnimation::DurationProperty(L"To", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Duration ), NULL);
+CStaticProperty CFloatAnimation::FromProperty(FloatAnimationproperties::From, L"From", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( From ), NULL);
+CStaticProperty CFloatAnimation::ToProperty(FloatAnimationproperties::To, L"To", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( To ), NULL);
+CStaticProperty CFloatAnimation::DurationProperty(FloatAnimationproperties::Duration, L"Duration", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Duration ), NULL);
 
 CFloatAnimation::CFloatAnimation(
     ) 

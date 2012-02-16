@@ -44,8 +44,15 @@ class UIFRAMEWORK_API CBorder : public CDecorator
         HRESULT Initialize( CProviders* pProviders );
         HRESULT Finalize();
 
-        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
+        __override virtual __checkReturn HRESULT MeasureInternal( 
+            const SizeF& AvailableSize,
+            SizeF& DesiredSize
+            );
+
+        __override virtual __checkReturn HRESULT ArrangeInternal(
+            const SizeF& AvailableSize,
+            SizeF& UsedSize 
+            );
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
 

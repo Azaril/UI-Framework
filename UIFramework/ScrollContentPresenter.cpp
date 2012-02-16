@@ -2,6 +2,18 @@
 #include "DelegatingPropertyInformation.h"
 
 //
+// Properties
+//
+namespace ScrollContentPresenterProperties
+{
+    enum Value
+    {
+        CanScrollVertically,
+        CanScrollHorizontally
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT( CanScrollVertically, bool, FALSE );
@@ -10,8 +22,8 @@ DEFINE_GET_DEFAULT( CanScrollHorizontally, bool, FALSE );
 //
 // Properties
 //
-CStaticProperty CScrollContentPresenter::CanScrollVerticallyProperty( L"CanScrollVertically", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( CanScrollVertically ), &INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollVerticallyChanged ) );
-CStaticProperty CScrollContentPresenter::CanScrollHorizontallyProperty( L"CanScrollHorizontally", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( CanScrollHorizontally ), &INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollHorizontallyChanged ) );
+CStaticProperty CScrollContentPresenter::CanScrollVerticallyProperty(ScrollContentPresenterProperties::CanScrollVertically, L"CanScrollVertically", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( CanScrollVertically ), &INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollVerticallyChanged ));
+CStaticProperty CScrollContentPresenter::CanScrollHorizontallyProperty(ScrollContentPresenterProperties::CanScrollHorizontally, L"CanScrollHorizontally", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( CanScrollHorizontally ), &INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollHorizontallyChanged ));
 
 //
 // Property Change Handlers
@@ -166,7 +178,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CScrollContentPresenter::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CScrollContentPresenter::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     SizeF AvailableContentSize;
@@ -194,7 +210,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT CScrollContentPresenter::Arrange(RectF Bounds)
+__override __checkReturn HRESULT 
+CScrollContentPresenter::Arrange(
+    const RectF& Bounds
+    )
 {
     HRESULT hr = S_OK;
 
@@ -206,7 +225,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CScrollContentPresenter::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CScrollContentPresenter::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     CUIElement* pContentChild = NULL;

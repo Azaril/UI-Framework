@@ -35,9 +35,13 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
-        virtual HRESULT Measure( SizeF Size );
+        virtual __checkReturn HRESULT Measure(
+            const SizeF& Size
+            );
 
-        virtual HRESULT Arrange( RectF Bounds );
+        virtual HRESULT Arrange( 
+            const RectF& Bounds 
+            );
 
         void SetAutomaticNamescopeParticipation( bool Participate );
 

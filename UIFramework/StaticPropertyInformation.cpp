@@ -103,13 +103,15 @@ Cleanup:
 }
 
 CStaticProperty::CStaticProperty(
+    UINT32 LocalIndex,
     __in_z const WCHAR* pName, 
     const TypeIndex::Value Type, 
     UINT32 Flags, 
     __in_opt GetDefaultPropertyValueFunc DefaultValueFunc,
     __in_opt OnValueChangeFunc ValueChangeFunc
     ) 
-    : m_Name(pName)
+    : m_LocalIndex(LocalIndex)
+    , m_Name(pName)
     , m_Type(Type)
     , m_Flags(Flags)
     , m_DefaultValueFunc(DefaultValueFunc)
@@ -186,4 +188,11 @@ CStaticProperty::GetOnValueChangedCallback(
     )
 {
     return m_ValueChangeFunc;
+}
+
+UINT32 
+CStaticProperty::GetLocalIndex(
+    )
+{
+    return m_LocalIndex;
 }

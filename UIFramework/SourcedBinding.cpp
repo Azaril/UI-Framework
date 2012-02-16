@@ -3,6 +3,17 @@
 #include "DelegatingPropertyInformation.h"
 
 //
+// Properties
+//
+namespace SourcedBindingProperties
+{
+    enum Value
+    {
+        BindingDirection
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT( BindingDirection, BindingDirection::Value, BindingDirection::OneWay );
@@ -10,7 +21,7 @@ DEFINE_GET_DEFAULT( BindingDirection, BindingDirection::Value, BindingDirection:
 //
 // Properties
 //
-CStaticProperty CSourcedBinding::BindingDirectionProperty(L"BindingDirection", TypeIndex::BindingDirection, StaticPropertyFlags::None, &GET_DEFAULT( BindingDirection ), &INSTANCE_CHANGE_CALLBACK( CSourcedBinding, OnBindingDirectionChanged ));
+CStaticProperty CSourcedBinding::BindingDirectionProperty(SourcedBindingProperties::BindingDirection, L"BindingDirection", TypeIndex::BindingDirection, StaticPropertyFlags::None, &GET_DEFAULT( BindingDirection ), &INSTANCE_CHANGE_CALLBACK( CSourcedBinding, OnBindingDirectionChanged ));
 
 //
 // Property Change Handlers

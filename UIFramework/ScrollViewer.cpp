@@ -5,6 +5,26 @@
 #include "DelegatingPropertyInformation.h"
 
 //
+// Properties
+//
+namespace ScrollViewerProperties
+{
+    enum Value
+    {
+        ExtentHeight,
+        ExtentWidth,
+        ViewportWidth,
+        ViewportHeight,
+        HorizontalOffset,
+        VerticalOffset,
+        ScrollableWidth,
+        ScrollableHeight,
+        ComputedHorizontalScrollBarVisibility,
+        ComputedVerticalScrollBarVisibility
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT( ExtentHeight, FLOAT, 0.0f );
@@ -21,16 +41,16 @@ DEFINE_GET_DEFAULT( ComputedHorizontalScrollBarVisibility, Visibility::Value, Vi
 //
 // Properties
 //
-CStaticProperty CScrollViewer::ExtentHeightProperty( L"ExtentHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ExtentHeight ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnExtentHeightChanged ) );
-CStaticProperty CScrollViewer::ExtentWidthProperty( L"ExtentWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ExtentWidth ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnExtentWidthChanged ) );
-CStaticProperty CScrollViewer::ViewportWidthProperty( L"ViewportWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportWidth ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnViewportWidthChanged ) );
-CStaticProperty CScrollViewer::ViewportHeightProperty( L"ViewportHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportHeight ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnViewportHeightChanged ) );
-CStaticProperty CScrollViewer::HorizontalOffsetProperty( L"HorizontalOffset", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( HorizontalOffset ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnHorizontalOffsetChanged ) );
-CStaticProperty CScrollViewer::VerticalOffsetProperty( L"VerticalOffset", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( VerticalOffset ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnVerticalOffsetChanged ) );
-CStaticProperty CScrollViewer::ScrollableWidthProperty( L"ScrollableWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ScrollableWidth ) );
-CStaticProperty CScrollViewer::ScrollableHeightProperty( L"ScrollableHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ScrollableHeight ) );
-CStaticProperty CScrollViewer::ComputedHorizontalScrollBarVisibilityProperty( L"ComputedHorizontalScrollBarVisibility", TypeIndex::Visibility, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ComputedVerticalScrollBarVisibility ) );
-CStaticProperty CScrollViewer::ComputedVerticalScrollBarVisibilityProperty( L"ComputedVerticalScrollBarVisibility", TypeIndex::Visibility, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ComputedHorizontalScrollBarVisibility ) );
+CStaticProperty CScrollViewer::ExtentHeightProperty(ScrollViewerProperties::ExtentHeight, L"ExtentHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ExtentHeight ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnExtentHeightChanged ) );
+CStaticProperty CScrollViewer::ExtentWidthProperty(ScrollViewerProperties::ExtentWidth, L"ExtentWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ExtentWidth ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnExtentWidthChanged ) );
+CStaticProperty CScrollViewer::ViewportWidthProperty(ScrollViewerProperties::ViewportWidth, L"ViewportWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportWidth ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnViewportWidthChanged ) );
+CStaticProperty CScrollViewer::ViewportHeightProperty(ScrollViewerProperties::ViewportHeight, L"ViewportHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ViewportHeight ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnViewportHeightChanged ) );
+CStaticProperty CScrollViewer::HorizontalOffsetProperty(ScrollViewerProperties::HorizontalOffset, L"HorizontalOffset", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( HorizontalOffset ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnHorizontalOffsetChanged ) );
+CStaticProperty CScrollViewer::VerticalOffsetProperty(ScrollViewerProperties::VerticalOffset, L"VerticalOffset", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( VerticalOffset ), &INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnVerticalOffsetChanged ) );
+CStaticProperty CScrollViewer::ScrollableWidthProperty(ScrollViewerProperties::ScrollableWidth, L"ScrollableWidth", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ScrollableWidth ) );
+CStaticProperty CScrollViewer::ScrollableHeightProperty(ScrollViewerProperties::ScrollableHeight, L"ScrollableHeight", TypeIndex::Float, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ScrollableHeight ) );
+CStaticProperty CScrollViewer::ComputedHorizontalScrollBarVisibilityProperty(ScrollViewerProperties::ComputedHorizontalScrollBarVisibility, L"ComputedHorizontalScrollBarVisibility", TypeIndex::Visibility, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ComputedVerticalScrollBarVisibility ) );
+CStaticProperty CScrollViewer::ComputedVerticalScrollBarVisibilityProperty(ScrollViewerProperties::ComputedVerticalScrollBarVisibility, L"ComputedVerticalScrollBarVisibility", TypeIndex::Visibility, StaticPropertyFlags::ReadOnly, &GET_DEFAULT( ComputedHorizontalScrollBarVisibility ) );
 
 //
 // Property Change Handlers
@@ -78,7 +98,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CScrollViewer::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CScrollViewer::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     CUIElement* pChild = NULL;
@@ -521,57 +545,92 @@ Cleanup:
     return hr;
 }
 
-HRESULT CScrollViewer::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
+__override __checkReturn HRESULT 
+CScrollViewer::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
+    )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppLayeredValue);
 
-    //TODO: Make this a lookup table rather than requiring a comparison per property.
-    if(pProperty == &CScrollViewer::ExtentHeightProperty)
+    if (pProperty->GetType() == TypeIndex::ScrollViewer)
     {
-        *ppLayeredValue = &m_ExtentHeight;
-    }
-    else if(pProperty == &CScrollViewer::ExtentWidthProperty)
-    {
-        *ppLayeredValue = &m_ExtentWidth;
-    }
-    else if(pProperty == &CScrollViewer::ViewportWidthProperty)
-    {
-        *ppLayeredValue = &m_ViewportWidth;
-    }
-    else if(pProperty == &CScrollViewer::ViewportHeightProperty)
-    {
-        *ppLayeredValue = &m_ViewportHeight;
-    }
-    else if(pProperty == &CScrollViewer::HorizontalOffsetProperty)
-    {
-        *ppLayeredValue = &m_HorizontalOffset;
-    }
-    else if(pProperty == &CScrollViewer::VerticalOffsetProperty)
-    {
-        *ppLayeredValue = &m_VerticalOffset;
-    }
-    else if(pProperty == &CScrollViewer::ScrollableWidthProperty)
-    {
-        *ppLayeredValue = &m_ScrollableWidth;
-    }
-    else if(pProperty == &CScrollViewer::ScrollableHeightProperty)
-    {
-        *ppLayeredValue = &m_ScrollableHeight;
-    }
-    else if(pProperty == &CScrollViewer::ComputedHorizontalScrollBarVisibilityProperty)
-    {
-        *ppLayeredValue = &m_ComputedHorizontalScrollBarVisibility;
-    }
-    else if(pProperty == &CScrollViewer::ComputedVerticalScrollBarVisibilityProperty)
-    {
-        *ppLayeredValue = &m_ComputedVerticalScrollBarVisibility;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case ScrollViewerProperties::ExtentHeight:
+                {
+                    *ppLayeredValue = &m_ExtentHeight;
+                    break;
+                }
+
+            case ScrollViewerProperties::ExtentWidth:
+                {
+                    *ppLayeredValue = &m_ExtentWidth;
+                    break;
+                }
+
+            case ScrollViewerProperties::ViewportWidth:
+                {
+                    *ppLayeredValue = &m_ViewportWidth;
+                    break;
+                }
+
+            case ScrollViewerProperties::ViewportHeight:
+                {
+                    *ppLayeredValue = &m_ViewportHeight;
+                    break;
+                }
+
+            case ScrollViewerProperties::HorizontalOffset:
+                {
+                    *ppLayeredValue = &m_HorizontalOffset;
+                    break;
+                }
+
+            case ScrollViewerProperties::VerticalOffset:
+                {
+                    *ppLayeredValue = &m_VerticalOffset;
+                    break;
+                }
+
+            case ScrollViewerProperties::ScrollableWidth:
+                {
+                    *ppLayeredValue = &m_ScrollableWidth;
+                    break;
+                }
+
+            case ScrollViewerProperties::ScrollableHeight:
+                {
+                    *ppLayeredValue = &m_ScrollableHeight;
+                    break;
+                }
+
+            case ScrollViewerProperties::ComputedHorizontalScrollBarVisibility:
+                {
+                    *ppLayeredValue = &m_ComputedHorizontalScrollBarVisibility;
+                    break;
+                }
+
+            case ScrollViewerProperties::ComputedVerticalScrollBarVisibility:
+                {
+                    *ppLayeredValue = &m_ComputedVerticalScrollBarVisibility;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        hr = CContentControl::GetLayeredValue(pProperty, ppLayeredValue);
+        IFC_NOTRACE(CContentControl::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

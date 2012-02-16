@@ -5,6 +5,18 @@
 #include "BasicTypes.h"
 
 //
+// Properties
+//
+namespace TextBlockProperties
+{
+    enum Value
+    {
+        Text,
+        Foreground
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Text );
@@ -13,8 +25,8 @@ DEFINE_GET_DEFAULT_NULL( Foreground );
 //
 // Properties
 // 
-CStaticProperty CTextBlock::TextProperty( L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT( Text ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnTextChanged ) );
-CStaticProperty CTextBlock::ForegroundProperty( L"Foreground", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Foreground ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnForegroundChanged ) );
+CStaticProperty CTextBlock::TextProperty(TextBlockProperties::Text, L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT( Text ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnTextChanged ));
+CStaticProperty CTextBlock::ForegroundProperty(TextBlockProperties::Foreground, L"Foreground", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Foreground ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnForegroundChanged ));
 
 //
 // Property Change Handlers
@@ -132,7 +144,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextBlock::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CTextBlock::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     CTextLayout* pTextLayout = NULL;
@@ -162,7 +178,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextBlock::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CTextBlock::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     CTextLayout* pTextLayout = NULL;

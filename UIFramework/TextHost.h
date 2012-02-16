@@ -21,8 +21,15 @@ class UIFRAMEWORK_API CTextHost : public CFrameworkElement
 
         HRESULT Initialize( CProviders* pProviders, CTextLayout* pLayout = NULL );
 
-        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
+        __override virtual __checkReturn HRESULT MeasureInternal( 
+            const SizeF& AvailableSize,
+            SizeF& DesiredSize
+            );
+
+        __override virtual __checkReturn HRESULT ArrangeInternal(
+            const SizeF& AvailableSize,
+            SizeF& UsedSize 
+            );
 
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;

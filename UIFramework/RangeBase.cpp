@@ -5,6 +5,19 @@
 #include "DelegatingRoutedEventInformation.h"
 
 //
+// Properties
+//
+namespace RangeBaseProperties
+{
+    enum Value
+    {
+        Maximum,
+        Minimum,
+        Value
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT( Maximum, FLOAT, 100.0f );
@@ -14,9 +27,9 @@ DEFINE_GET_DEFAULT( Value, FLOAT, 0.0f );
 //
 // Properties
 //
-CStaticProperty CRangeBase::MaximumProperty( L"Maximum", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Maximum ), &INSTANCE_CHANGE_CALLBACK( CRangeBase, OnMaximumChanged ) );
-CStaticProperty CRangeBase::MinimumProperty( L"Minimum", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Minimum ), &INSTANCE_CHANGE_CALLBACK( CRangeBase, OnMinimumChanged ) );
-CStaticProperty CRangeBase::ValueProperty( L"Value", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Value ), &INSTANCE_CHANGE_CALLBACK( CRangeBase, OnValueChanged ) );
+CStaticProperty CRangeBase::MaximumProperty(RangeBaseProperties::Maximum, L"Maximum", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Maximum ), &INSTANCE_CHANGE_CALLBACK( CRangeBase, OnMaximumChanged ));
+CStaticProperty CRangeBase::MinimumProperty(RangeBaseProperties::Minimum, L"Minimum", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Minimum ), &INSTANCE_CHANGE_CALLBACK( CRangeBase, OnMinimumChanged ));
+CStaticProperty CRangeBase::ValueProperty(RangeBaseProperties::Value, L"Value", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Value ), &INSTANCE_CHANGE_CALLBACK( CRangeBase, OnValueChanged ));
 
 //
 // Property Change Handlers

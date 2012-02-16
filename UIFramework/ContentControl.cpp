@@ -3,6 +3,17 @@
 #include "DelegatingPropertyInformation.h"
 
 //
+// Properties
+//
+namespace ContentControlProperties
+{
+    enum Value
+    {
+        Content
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Content );
@@ -10,7 +21,7 @@ DEFINE_GET_DEFAULT_NULL( Content );
 //
 // Properties
 //
-CStaticProperty CContentControl::ContentProperty( L"Content", TypeIndex::Object, StaticPropertyFlags::Content, GET_DEFAULT( Content ), &INSTANCE_CHANGE_CALLBACK( CContentControl, OnContentChanged ) );
+CStaticProperty CContentControl::ContentProperty(ContentControlProperties::Content, L"Content", TypeIndex::Object, StaticPropertyFlags::Content, GET_DEFAULT( Content ), &INSTANCE_CHANGE_CALLBACK( CContentControl, OnContentChanged ) );
 
 //
 // Property Change Handlers
@@ -73,21 +84,38 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentControl::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
+__override __checkReturn HRESULT 
+CContentControl::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
+    )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppLayeredValue);
 
-    //TODO: Make this a lookup table rather than requiring a comparison per property.
-    if(pProperty == &CContentControl::ContentProperty)
+    if (pProperty->GetType() == TypeIndex::ContentControl)
     {
-        *ppLayeredValue = &m_Content;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case ContentControlProperties::Content:
+                {
+                    *ppLayeredValue = &m_Content;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        hr = CControl::GetLayeredValue(pProperty, ppLayeredValue);
+        IFC_NOTRACE(CControl::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

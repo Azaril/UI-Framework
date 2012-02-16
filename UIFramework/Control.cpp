@@ -4,6 +4,22 @@
 #include "BasicTypes.h"
 
 //
+// Properties
+//
+namespace ControlProperties
+{
+    enum Value
+    {
+        Template,
+        Background,
+        BorderBrush,
+        BorderThickness,
+        HorizontalContentAlignment,
+        VerticalContentAlignment
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Template );
@@ -16,12 +32,12 @@ DEFINE_GET_DEFAULT( VerticalContentAlignment, VerticalAlignment::Value, Vertical
 //
 // Properties
 //
-CStaticProperty CControl::TemplateProperty( L"Template", TypeIndex::ControlTemplate, StaticPropertyFlags::None, &GET_DEFAULT( Template ), &INSTANCE_CHANGE_CALLBACK( CControl, OnTemplateChanged ) );
-CStaticProperty CControl::BackgroundProperty( L"Background", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Background ) );
-CStaticProperty CControl::BorderBrushProperty( L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( BorderBrush ) );
-CStaticProperty CControl::BorderThicknessProperty( L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(BorderThickness) );
-CStaticProperty CControl::HorizontalContentAlignmentProperty( L"HorizontalContentAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(HorizontalContentAlignment) );
-CStaticProperty CControl::VerticalContentAlignmentProperty( L"VerticalContentAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(VerticalContentAlignment) );
+CStaticProperty CControl::TemplateProperty(ControlProperties::Template, L"Template", TypeIndex::ControlTemplate, StaticPropertyFlags::None, &GET_DEFAULT( Template ), &INSTANCE_CHANGE_CALLBACK( CControl, OnTemplateChanged ) );
+CStaticProperty CControl::BackgroundProperty(ControlProperties::Background, L"Background", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Background ) );
+CStaticProperty CControl::BorderBrushProperty(ControlProperties::BorderBrush, L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( BorderBrush ) );
+CStaticProperty CControl::BorderThicknessProperty(ControlProperties::BorderThickness, L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(BorderThickness) );
+CStaticProperty CControl::HorizontalContentAlignmentProperty(ControlProperties::HorizontalContentAlignment, L"HorizontalContentAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(HorizontalContentAlignment) );
+CStaticProperty CControl::VerticalContentAlignmentProperty(ControlProperties::VerticalContentAlignment, L"VerticalContentAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(VerticalContentAlignment) );
 
 //
 // Property Change Handlers
@@ -94,8 +110,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT 
-CControl::Measure( SizeF Size )
+__override __checkReturn HRESULT 
+CControl::Measure( 
+    const SizeF& Size 
+    )
 {
     HRESULT hr = S_OK;
 
@@ -107,8 +125,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT 
-CControl::Arrange( RectF Bounds )
+__override __checkReturn HRESULT 
+CControl::Arrange( 
+    const RectF& Bounds 
+    )
 {
     HRESULT hr = S_OK;
 
@@ -332,7 +352,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CControl::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CControl::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     SizeF ChildSizeDesired;
@@ -356,7 +380,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CControl::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CControl::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     CUIElement* pChild = NULL;

@@ -4,6 +4,18 @@
 #include "BasicTypes.h"
 
 //
+// Properties
+//
+namespace DockPanelProperties
+{
+    enum Value
+    {
+        Dock,
+        LastChildFill
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT( LastChildFill, bool, TRUE );
@@ -11,8 +23,8 @@ DEFINE_GET_DEFAULT( LastChildFill, bool, TRUE );
 //
 // Properties
 //
-CStaticProperty CDockPanel::DockProperty( L"Dock", TypeIndex::RectangleEdge, StaticPropertyFlags::Attached );
-CStaticProperty CDockPanel::LastChildFillProperty( L"LastChildFill", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( LastChildFill ), &INSTANCE_CHANGE_CALLBACK( CDockPanel, OnLastChildFillChanged ) );
+CStaticProperty CDockPanel::DockProperty(DockPanelProperties::Dock, L"Dock", TypeIndex::RectangleEdge, StaticPropertyFlags::Attached );
+CStaticProperty CDockPanel::LastChildFillProperty(DockPanelProperties::LastChildFill, L"LastChildFill", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( LastChildFill ), &INSTANCE_CHANGE_CALLBACK( CDockPanel, OnLastChildFillChanged ) );
 
 //
 // Property Change Handlers
@@ -65,7 +77,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDockPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CDockPanel::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     CRectangleEdgeValue* pDock = NULL;
@@ -131,7 +147,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CDockPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CDockPanel::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     CRectangleEdgeValue* pDock = NULL;

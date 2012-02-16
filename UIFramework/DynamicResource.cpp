@@ -6,7 +6,18 @@
 //
 // Properties
 //
-CStaticProperty CDynamicResource::ResourceKeyProperty(L"ResourceKey", TypeIndex::Object, StaticPropertyFlags::None);
+namespace DynamicResourceProperties
+{
+    enum Value
+    {
+        ResourceKey
+    };
+}
+
+//
+// Properties
+//
+CStaticProperty CDynamicResource::ResourceKeyProperty(DynamicResourceProperties::ResourceKey, L"ResourceKey", TypeIndex::Object, StaticPropertyFlags::None);
 
 CDynamicResource::CDynamicResource(
     ) 

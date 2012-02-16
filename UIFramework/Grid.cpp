@@ -20,7 +20,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGrid::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CGrid::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     CUIElementCollection* pChildCollection = NULL;
@@ -43,7 +47,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CGrid::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CGrid::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     Point2F LayoutPoint;

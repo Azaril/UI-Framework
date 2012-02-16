@@ -45,7 +45,10 @@ class CScrollViewer : public CContentControl,
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
+        __override virtual __checkReturn HRESULT MeasureInternal( 
+            const SizeF& AvailableSize,
+            SizeF& DesiredSize
+            );
 
         virtual HRESULT PostTemplateApplied();
         virtual HRESULT PreTemplateRevoked();

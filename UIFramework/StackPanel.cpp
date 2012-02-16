@@ -3,6 +3,17 @@
 #include "DelegatingPropertyInformation.h"
 
 //
+// Properties
+//
+namespace StackPanelproperties
+{
+    enum Value
+    {
+        Orientation
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT( Orientation, Orientation::Value, Orientation::Vertical );
@@ -10,7 +21,7 @@ DEFINE_GET_DEFAULT( Orientation, Orientation::Value, Orientation::Vertical );
 //
 // Properties
 //
-CStaticProperty CStackPanel::OrientationProperty( L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CStackPanel, OnOrientationChanged ) );
+CStaticProperty CStackPanel::OrientationProperty(StackPanelproperties::Orientation, L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CStackPanel, OnOrientationChanged ));
 
 //
 // Property Change Handlers
@@ -35,7 +46,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStackPanel::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CStackPanel::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     SizeF ChildrenSize;
@@ -84,7 +99,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CStackPanel::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CStackPanel::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     Point2F LayoutPoint;

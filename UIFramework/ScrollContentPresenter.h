@@ -16,7 +16,9 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT Arrange( RectF Bounds );
+        __override virtual __checkReturn HRESULT Arrange(
+            const RectF& Bounds 
+            );
 
         HRESULT SetCanScrollVertically( bool CanScroll );
         HRESULT SetCanScrollHorizontally( bool CanScroll );
@@ -51,8 +53,15 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 
         virtual HRESULT OnContentChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
+        __override virtual __checkReturn HRESULT MeasureInternal( 
+            const SizeF& AvailableSize,
+            SizeF& DesiredSize
+            );
+
+        __override virtual __checkReturn HRESULT ArrangeInternal(
+            const SizeF& AvailableSize,
+            SizeF& UsedSize 
+            );
 
         virtual HRESULT PreRenderInternal( CPreRenderContext& Context );
 

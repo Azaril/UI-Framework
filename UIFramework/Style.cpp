@@ -6,8 +6,20 @@
 //
 // Properties
 //
-CStaticProperty CStyle::SettersProperty(L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
-CStaticProperty CStyle::TriggersProperty(L"Triggers", TypeIndex::Trigger, StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly);
+namespace StyleProperties
+{
+    enum Value
+    {
+        Setters,
+        Triggers
+    };
+}
+
+//
+// Properties
+//
+CStaticProperty CStyle::SettersProperty(StyleProperties::Setters, L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
+CStaticProperty CStyle::TriggersProperty(StyleProperties::Triggers, L"Triggers", TypeIndex::Trigger, StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly);
 
 CStyle::CStyle(
     ) 

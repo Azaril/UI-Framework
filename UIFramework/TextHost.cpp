@@ -43,7 +43,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextHost::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CTextHost::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     CTextLayoutMetrics* pTextLayoutMetrics = NULL;
@@ -69,7 +73,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextHost::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CTextHost::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     CTextLayoutMetrics* pMetrics = NULL;
@@ -85,8 +93,6 @@ HRESULT CTextHost::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
     }
 
     UsedSize = AvailableSize;
-    //UsedSize.width = TextBounds.right - TextBounds.left;
-    //UsedSize.height = TextBounds.bottom - TextBounds.top;
 
 Cleanup:
     ReleaseObject(pMetrics);

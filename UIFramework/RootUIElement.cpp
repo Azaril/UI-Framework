@@ -154,7 +154,7 @@ Cleanup:
 
 __override __checkReturn HRESULT 
 CRootUIElement::MeasureInternal(
-    SizeF AvailableSize, 
+    const SizeF& AvailableSize, 
     SizeF& DesiredSize
     )
 {
@@ -171,9 +171,9 @@ Cleanup:
     return hr;
 }
 
-__checkReturn HRESULT 
+__override __checkReturn HRESULT 
 CRootUIElement::ArrangeInternal(
-    SizeF AvailableSize,
+    const SizeF& AvailableSize,
     SizeF& UsedSize
     )
 {

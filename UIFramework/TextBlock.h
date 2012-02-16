@@ -29,8 +29,15 @@ class UIFRAMEWORK_API CTextBlock : public CFrameworkElement
 
         HRESULT Initialize( CProviders* pProviders );
 
-        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
+        __override virtual __checkReturn HRESULT MeasureInternal( 
+            const SizeF& AvailableSize,
+            SizeF& DesiredSize
+            );
+
+        __override virtual __checkReturn HRESULT ArrangeInternal(
+            const SizeF& AvailableSize,
+            SizeF& UsedSize 
+            );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 

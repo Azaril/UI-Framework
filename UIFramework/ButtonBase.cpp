@@ -5,6 +5,17 @@
 #include "DelegatingRoutedEventInformation.h"
 
 //
+// Properties
+//
+namespace ButtonBaseProperties
+{
+    enum Value
+    {
+        Command
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Command );
@@ -12,7 +23,7 @@ DEFINE_GET_DEFAULT_NULL( Command );
 //
 // Properties
 //
-CStaticProperty CButtonBase::CommandProperty( L"Command", TypeIndex::Command, StaticPropertyFlags::None, &GET_DEFAULT( Command ), &INSTANCE_CHANGE_CALLBACK( CButtonBase, OnCommandChanged ) );
+CStaticProperty CButtonBase::CommandProperty(ButtonBaseProperties::Command, L"Command", TypeIndex::Command, StaticPropertyFlags::None, &GET_DEFAULT( Command ), &INSTANCE_CHANGE_CALLBACK( CButtonBase, OnCommandChanged ) );
 
 //
 // Property Change Handlers
@@ -173,21 +184,38 @@ Cleanup:
     return hr;
 }
 
-HRESULT CButtonBase::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
+__override __checkReturn HRESULT 
+CButtonBase::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
+    )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppLayeredValue);
 
-    //TODO: Make this a lookup table rather than requiring a comparison per property.
-    if(pProperty == &CButtonBase::CommandProperty)
+    if (pProperty->GetType() == TypeIndex::ButtonBase)
     {
-        *ppLayeredValue = &m_Command;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case ButtonBaseProperties::Command:
+                {
+                    *ppLayeredValue = &m_Command;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        hr = CContentControl::GetLayeredValue(pProperty, ppLayeredValue);
+        IFC_NOTRACE(CContentControl::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

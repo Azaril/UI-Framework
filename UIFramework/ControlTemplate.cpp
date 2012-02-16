@@ -4,7 +4,18 @@
 //
 // Properties
 //
-CStaticProperty CControlTemplate::TemplateProperty(L"Template", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
+namespace ControlTemplateProperties
+{
+    enum Value
+    {
+        Template
+    };
+}
+
+//
+// Properties
+//
+CStaticProperty CControlTemplate::TemplateProperty(ControlTemplateProperties::Template, L"Template", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
 
 CControlTemplate::CControlTemplate(
     ) 

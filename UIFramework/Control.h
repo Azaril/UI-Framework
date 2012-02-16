@@ -4,16 +4,20 @@
 #include "ControlTemplate.h"
 #include "Brush.h"
 
-class CControl : public CFrameworkElement
+class UIFRAMEWORK_API CControl : public CFrameworkElement
 {
     public:
         DECLARE_TYPE_WITH_BASE( TypeIndex::Control, CFrameworkElement );
 
         static HRESULT CreatePropertyInformation( CPropertyInformation** ppInformation );
 
-        virtual HRESULT Measure( SizeF Size );
+        virtual __checkReturn HRESULT Measure(
+            const SizeF& Size
+            );
 
-        virtual HRESULT Arrange( RectF Bounds );
+        virtual HRESULT Arrange( 
+            const RectF& Bounds 
+            );
 
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
@@ -59,8 +63,15 @@ class CControl : public CFrameworkElement
 
         HRESULT Initialize( CProviders* pProviders );
 
-        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
+        __override virtual __checkReturn HRESULT MeasureInternal( 
+            const SizeF& AvailableSize,
+            SizeF& DesiredSize
+            );
+
+        __override virtual __checkReturn HRESULT ArrangeInternal(
+            const SizeF& AvailableSize,
+            SizeF& UsedSize 
+            );
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 

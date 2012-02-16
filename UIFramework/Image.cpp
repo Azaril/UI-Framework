@@ -4,6 +4,19 @@
 #include "BasicTypes.h"
 
 //
+// Properties
+//
+namespace ImageProperties
+{
+    enum Value
+    {
+        Source,
+        Stretch,
+        StretchDirection
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Source );
@@ -13,9 +26,9 @@ DEFINE_GET_DEFAULT( StretchDirection, StretchDirection::Value, StretchDirection:
 //
 // Properties
 //
-CStaticProperty CImage::SourceProperty( L"Source", TypeIndex::Object, StaticPropertyFlags::None, &GET_DEFAULT( Source ), &INSTANCE_CHANGE_CALLBACK( CImage, OnSourceChanged ) );
-CStaticProperty CImage::StretchProperty( L"Stretch", TypeIndex::Stretch, StaticPropertyFlags::None, &GET_DEFAULT( Stretch ), &INSTANCE_CHANGE_CALLBACK( CImage, OnStretchChanged ) );
-CStaticProperty CImage::StretchDirectionProperty( L"StretchDirection", TypeIndex::StretchDirection, StaticPropertyFlags::None, &GET_DEFAULT( StretchDirection ), &INSTANCE_CHANGE_CALLBACK( CImage, OnStretchDirectionChanged ) );
+CStaticProperty CImage::SourceProperty(ImageProperties::Source, L"Source", TypeIndex::Object, StaticPropertyFlags::None, &GET_DEFAULT( Source ), &INSTANCE_CHANGE_CALLBACK( CImage, OnSourceChanged ) );
+CStaticProperty CImage::StretchProperty(ImageProperties::Stretch, L"Stretch", TypeIndex::Stretch, StaticPropertyFlags::None, &GET_DEFAULT( Stretch ), &INSTANCE_CHANGE_CALLBACK( CImage, OnStretchChanged ) );
+CStaticProperty CImage::StretchDirectionProperty(ImageProperties::StretchDirection, L"StretchDirection", TypeIndex::StretchDirection, StaticPropertyFlags::None, &GET_DEFAULT( StretchDirection ), &INSTANCE_CHANGE_CALLBACK( CImage, OnStretchDirectionChanged ) );
 
 //
 // Property Change Handlers
@@ -372,7 +385,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImage::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CImage::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     
@@ -382,7 +399,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CImage::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CImage::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     

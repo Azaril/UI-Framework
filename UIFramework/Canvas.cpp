@@ -4,6 +4,20 @@
 #include "BasicTypes.h"
 
 //
+// Properties
+//
+namespace CanvasProperties
+{
+    enum Value
+    {
+        Left,
+        Top,
+        Right,
+        Bottom
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Left );
@@ -14,10 +28,10 @@ DEFINE_GET_DEFAULT_NULL( Bottom );
 //
 // Properties
 // 
-CStaticProperty CCanvas::LeftProperty( L"Left", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Left ), &CCanvas::OnLeftChanged );
-CStaticProperty CCanvas::TopProperty( L"Top", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Top ), &CCanvas::OnTopChanged );
-CStaticProperty CCanvas::RightProperty( L"Right", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Right ), &CCanvas::OnRightChanged );
-CStaticProperty CCanvas::BottomProperty( L"Bottom", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Bottom ), &CCanvas::OnBottomChanged );
+CStaticProperty CCanvas::LeftProperty(CanvasProperties::Left, L"Left", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Left ), &CCanvas::OnLeftChanged);
+CStaticProperty CCanvas::TopProperty(CanvasProperties::Top, L"Top", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Top ), &CCanvas::OnTopChanged);
+CStaticProperty CCanvas::RightProperty(CanvasProperties::Right, L"Right", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Right ), &CCanvas::OnRightChanged);
+CStaticProperty CCanvas::BottomProperty(CanvasProperties::Bottom, L"Bottom", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Bottom ), &CCanvas::OnBottomChanged);
 
 CCanvas::CCanvas()
 {
@@ -37,7 +51,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CCanvas::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CCanvas::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     SizeF MaxSize(std::numeric_limits< FLOAT >::max(), std::numeric_limits< FLOAT >::max());
@@ -60,7 +78,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CCanvas::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CCanvas::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     CFloatValue* pLeft = NULL;

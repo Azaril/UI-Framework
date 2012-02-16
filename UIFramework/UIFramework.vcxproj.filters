@@ -142,6 +142,9 @@
     <Filter Include="Framework\Graphics\D3D11">
       <UniqueIdentifier>{787041c7-6999-4c75-8123-1246244a6ca0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\UI\Visuals\Elements\Shapes">
+      <UniqueIdentifier>{ec31f30d-6db3-4268-b93d-0198b9d22d6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -957,7 +960,12 @@
     <ClCompile Include="FreetypeFontSize.cpp">
       <Filter>Framework\Text\Core</Filter>
     </ClCompile>
-    <ClCompile Include="FloatUtils.cpp" />
+    <ClCompile Include="FloatUtils.cpp">
+      <Filter>Framework\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>Framework\UI\Visuals\Elements\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1797,6 +1805,11 @@
     <ClInclude Include="FreetypeFontSize.h">
       <Filter>Framework\Text\Core</Filter>
     </ClInclude>
-    <ClInclude Include="FloatUtils.h" />
+    <ClInclude Include="FloatUtils.h">
+      <Filter>Framework\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>Framework\UI\Visuals\Elements\Shapes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

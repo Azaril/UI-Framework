@@ -4,6 +4,17 @@
 #include "BasicTypes.h"
 
 //
+// Properties
+//
+namespace ContentPresenterProperties
+{
+    enum Value
+    {
+        Content
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Content );
@@ -11,7 +22,7 @@ DEFINE_GET_DEFAULT_NULL( Content );
 //
 // Properties
 // 
-CStaticProperty CContentPresenter::ContentProperty( L"Content", TypeIndex::Object, StaticPropertyFlags::Content, &GET_DEFAULT( Content ), &INSTANCE_CHANGE_CALLBACK( CContentPresenter, OnContentChanged ) );
+CStaticProperty CContentPresenter::ContentProperty(ContentPresenterProperties::Content, L"Content", TypeIndex::Object, StaticPropertyFlags::Content, &GET_DEFAULT( Content ), &INSTANCE_CHANGE_CALLBACK( CContentPresenter, OnContentChanged ));
 
 //
 // Property Change Handlers
@@ -229,7 +240,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPresenter::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CContentPresenter::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     SizeF ChildSizeDesired;
@@ -248,7 +263,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CContentPresenter::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CContentPresenter::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
 

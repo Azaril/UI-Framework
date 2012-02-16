@@ -24,8 +24,15 @@ class UIFRAMEWORK_API CCanvas : public CPanel
 
         HRESULT Initialize( CProviders* pProviders );
 
-        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
+        __override virtual __checkReturn HRESULT MeasureInternal( 
+            const SizeF& AvailableSize,
+            SizeF& DesiredSize
+            );
+
+        __override virtual __checkReturn HRESULT ArrangeInternal(
+            const SizeF& AvailableSize,
+            SizeF& UsedSize 
+            );
     
         static __checkReturn HRESULT OnLeftChanged(
             __in CPropertyObject* pObject,

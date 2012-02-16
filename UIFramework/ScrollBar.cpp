@@ -4,6 +4,18 @@
 #include "DelegatingCommandInformation.h"
 
 //
+// Properties
+//
+namespace ScrollBarProperties
+{
+    enum Value
+    {
+        Orientation,
+        ViewportSize
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT( Orientation, Orientation::Value, Orientation::Vertical );
@@ -12,8 +24,8 @@ DEFINE_GET_DEFAULT( ViewportSize, FLOAT, 0 );
 //
 // Properties
 //
-CStaticProperty CScrollBar::OrientationProperty( L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CScrollBar, OnOrientationChanged ) );
-CStaticProperty CScrollBar::ViewportSizeProperty( L"ViewportSize", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( ViewportSize ) );
+CStaticProperty CScrollBar::OrientationProperty(ScrollBarProperties::Orientation, L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CScrollBar, OnOrientationChanged ));
+CStaticProperty CScrollBar::ViewportSizeProperty(ScrollBarProperties::ViewportSize, L"ViewportSize", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( ViewportSize ));
 
 //
 // Property Change Handlers

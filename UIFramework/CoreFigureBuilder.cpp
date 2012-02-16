@@ -132,7 +132,7 @@ CCoreFigureBuilder::AddBeziers(
 
     for (UINT32 i = 0; i < BezierCount; ++i)
     {
-        m_FigureDataType.push_back(FigureDataType::Line);
+        m_FigureDataType.push_back(FigureDataType::Bezier);
 
         //TODO: Remove hack for windows.
 

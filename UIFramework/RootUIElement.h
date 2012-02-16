@@ -53,13 +53,13 @@ class UIFRAMEWORK_API CRootUIElement : public CFrameworkElement,
             CPreRenderContext& Context 
             );
 
-        __override virtual __checkReturn HRESULT MeasureInternal(
-            SizeF AvailableSize, 
+        __override virtual __checkReturn HRESULT MeasureInternal( 
+            const SizeF& AvailableSize,
             SizeF& DesiredSize
             );
 
         __override virtual __checkReturn HRESULT ArrangeInternal(
-            SizeF AvailableSize, 
+            const SizeF& AvailableSize,
             SizeF& UsedSize 
             );
 

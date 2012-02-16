@@ -1,7 +1,19 @@
 #include "GradientStop.h"
 #include "BasicTypes.h"
 
-static ColorF DefaultColor(1, 1, 1, 1);
+//
+// Properties
+//
+namespace GradientStopProperties
+{
+    enum Value
+    {
+        Color,
+        Offset
+    };
+}
+
+const ColorF DefaultColor(1, 1, 1, 1);
 
 //
 // Property Defaults
@@ -12,8 +24,8 @@ DEFINE_GET_DEFAULT( Offset, FLOAT, 0 );
 //
 // Properties
 //
-CStaticProperty CGradientStop::ColorProperty(L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnColorChanged ));
-CStaticProperty CGradientStop::OffsetProperty(L"Offset", TypeIndex::Float, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnOffsetChanged ));
+CStaticProperty CGradientStop::ColorProperty(GradientStopProperties::Color, L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnColorChanged ));
+CStaticProperty CGradientStop::OffsetProperty(GradientStopProperties::Offset, L"Offset", TypeIndex::Float, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnOffsetChanged ));
 
 //
 // Property Change Handlers

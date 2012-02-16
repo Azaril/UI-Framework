@@ -4,6 +4,21 @@
 #include "BasicTypes.h"
 
 //
+// Properties
+//
+namespace BorderProperties
+{
+    enum Value
+    {
+        Background,
+        Padding,
+        BorderThickness,
+        BorderBrush,
+        CornerRadius
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Background );
@@ -15,11 +30,11 @@ DEFINE_GET_DEFAULT( CornerRadius, FLOAT, 0 );
 //
 // Properties
 //
-CStaticProperty CBorder::BackgroundProperty( L"Background", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT(Background), &INSTANCE_CHANGE_CALLBACK( CBorder, OnBackgroundChanged ) );
-CStaticProperty CBorder::PaddingProperty( L"Padding", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT(Padding), &INSTANCE_CHANGE_CALLBACK( CBorder, OnPaddingChanged ) );
-CStaticProperty CBorder::BorderThicknessProperty( L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(BorderThickness), &INSTANCE_CHANGE_CALLBACK( CBorder, OnBorderThicknessChanged ) );
-CStaticProperty CBorder::BorderBrushProperty( L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT(BorderBrush), &INSTANCE_CHANGE_CALLBACK( CBorder, OnBorderBrushChanged ) );
-CStaticProperty CBorder::CornerRadiusProperty( L"CornerRadius", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(CornerRadius), &INSTANCE_CHANGE_CALLBACK( CBorder, OnCornerRadiusChanged ) );
+CStaticProperty CBorder::BackgroundProperty(BorderProperties::Background, L"Background", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT(Background), &INSTANCE_CHANGE_CALLBACK( CBorder, OnBackgroundChanged ) );
+CStaticProperty CBorder::PaddingProperty(BorderProperties::Padding, L"Padding", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT(Padding), &INSTANCE_CHANGE_CALLBACK( CBorder, OnPaddingChanged ) );
+CStaticProperty CBorder::BorderThicknessProperty(BorderProperties::BorderBrush, L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(BorderThickness), &INSTANCE_CHANGE_CALLBACK( CBorder, OnBorderThicknessChanged ) );
+CStaticProperty CBorder::BorderBrushProperty(BorderProperties::BorderBrush, L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT(BorderBrush), &INSTANCE_CHANGE_CALLBACK( CBorder, OnBorderBrushChanged ) );
+CStaticProperty CBorder::CornerRadiusProperty(BorderProperties::CornerRadius, L"CornerRadius", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(CornerRadius), &INSTANCE_CHANGE_CALLBACK( CBorder, OnCornerRadiusChanged ) );
 
 //
 // Property Change Handlers
@@ -373,7 +388,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBorder::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CBorder::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;
     SizeF InternalSize;
@@ -406,7 +425,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBorder::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CBorder::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;
     CUIElement* pChild = NULL;

@@ -5,6 +5,19 @@
 #include "BindingManager.h"
 
 //
+// Properties
+//
+namespace FrameworkElementProperties
+{
+    enum Value
+    {
+        Name,
+        Resources,
+        Style
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Name );
@@ -14,9 +27,9 @@ DEFINE_GET_DEFAULT_NULL( Style );
 //
 // Properties
 //
-CStaticProperty CFrameworkElement::NameProperty( L"Name", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Name ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnNameChanged ) );
-CStaticProperty CFrameworkElement::ResourcesProperty( L"Resources", TypeIndex::Object, StaticPropertyFlags::Dictionary | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( Resources ) );
-CStaticProperty CFrameworkElement::StyleProperty( L"Style", TypeIndex::Style, StaticPropertyFlags::None, &GET_DEFAULT( Style ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnStyleChanged ) );
+CStaticProperty CFrameworkElement::NameProperty(FrameworkElementProperties::Name, L"Name", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Name ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnNameChanged ) );
+CStaticProperty CFrameworkElement::ResourcesProperty(FrameworkElementProperties::Resources, L"Resources", TypeIndex::Object, StaticPropertyFlags::Dictionary | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( Resources ) );
+CStaticProperty CFrameworkElement::StyleProperty(FrameworkElementProperties::Style, L"Style", TypeIndex::Style, StaticPropertyFlags::None, &GET_DEFAULT( Style ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnStyleChanged ) );
 
 //
 // Property Change Handlers
@@ -141,8 +154,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT 
-CFrameworkElement::Measure( SizeF Size )
+__checkReturn HRESULT 
+CFrameworkElement::Measure(
+    const SizeF& Size
+    )
 {
     HRESULT hr = S_OK;
 
@@ -154,8 +169,10 @@ Cleanup:
     return hr;
 }
 
-HRESULT 
-CFrameworkElement::Arrange( RectF Bounds )
+__checkReturn HRESULT 
+CFrameworkElement::Arrange(
+    const RectF& Bounds 
+    )
 {
     HRESULT hr = S_OK;
 

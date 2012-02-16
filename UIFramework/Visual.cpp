@@ -639,7 +639,7 @@ CVisual::GetValueInternal(
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    IFC(CPropertyObject::GetValue(pProperty, ppValue));
+    IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
 
 Cleanup:
     return hr;

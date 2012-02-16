@@ -4,6 +4,17 @@
 #include "BasicTypes.h"
 
 //
+// Properties
+//
+namespace GradientBrushProperties
+{
+    enum Value
+    {
+        GradientStops
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( GradientStops );
@@ -11,7 +22,7 @@ DEFINE_GET_DEFAULT_NULL( GradientStops );
 //
 // Properties
 //
-CStaticProperty CGradientBrush::GradientStopsProperty(L"GradientStops", TypeIndex::GradientStop, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( GradientStops ), &INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged ));
+CStaticProperty CGradientBrush::GradientStopsProperty(GradientBrushProperties::GradientStops, L"GradientStops", TypeIndex::GradientStop, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( GradientStops ), &INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged ));
 
 //
 // Property Change Handlers

@@ -3,7 +3,18 @@
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
 
-static ColorF DefaultColor(1, 1, 1, 1);
+//
+// Properties
+//
+namespace SolidColorBrushProperties
+{
+    enum Value
+    {
+        Color
+    };
+}
+
+const ColorF DefaultColor(1, 1, 1, 1);
 
 //
 // Property Defaults
@@ -13,7 +24,7 @@ DEFINE_GET_DEFAULT( Color, ColorF, DefaultColor );
 //
 // Properties
 //
-CStaticProperty CSolidColorBrush::ColorProperty(L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged ));
+CStaticProperty CSolidColorBrush::ColorProperty(SolidColorBrushProperties::Color, L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged ));
 
 //
 // Property Change Handlers

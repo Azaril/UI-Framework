@@ -5,10 +5,24 @@
 //
 // Properties
 //
-CStaticProperty CStoryboard::ChildrenProperty(L"Children", TypeIndex::AnimationTimeline, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly);
-CStaticProperty CStoryboard::TargetProperty(L"Target", TypeIndex::Object, StaticPropertyFlags::Attached);
-CStaticProperty CStoryboard::TargetNameProperty(L"TargetName", TypeIndex::String, StaticPropertyFlags::Attached);
-CStaticProperty CStoryboard::TargetPropertyProperty(L"TargetProperty", TypeIndex::String, StaticPropertyFlags::Attached);
+namespace StoryboardProperties
+{
+    enum Value
+    {
+        Children,
+        Target,
+        TargetName,
+        TargetProperty
+    };
+}
+
+//
+// Properties
+//
+CStaticProperty CStoryboard::ChildrenProperty(StoryboardProperties::Children, L"Children", TypeIndex::AnimationTimeline, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly);
+CStaticProperty CStoryboard::TargetProperty(StoryboardProperties::Target, L"Target", TypeIndex::Object, StaticPropertyFlags::Attached);
+CStaticProperty CStoryboard::TargetNameProperty(StoryboardProperties::TargetName, L"TargetName", TypeIndex::String, StaticPropertyFlags::Attached);
+CStaticProperty CStoryboard::TargetPropertyProperty(StoryboardProperties::TargetProperty, L"TargetProperty", TypeIndex::String, StaticPropertyFlags::Attached);
 
 CStoryboard::CStoryboard(
     )

@@ -3,6 +3,17 @@
 #include "DelegatingPropertyInformation.h"
 
 //
+// Properties
+//
+namespace DecoratorProperties
+{
+    enum Value
+    {
+        Child
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Child );
@@ -10,7 +21,7 @@ DEFINE_GET_DEFAULT_NULL( Child );
 //
 // Properties
 //
-CStaticProperty CDecorator::ChildProperty( L"Child", TypeIndex::UIElement, StaticPropertyFlags::Content, GET_DEFAULT( Child ), &INSTANCE_CHANGE_CALLBACK( CDecorator, OnChildChanged ) );
+CStaticProperty CDecorator::ChildProperty(DecoratorProperties::Child, L"Child", TypeIndex::UIElement, StaticPropertyFlags::Content, GET_DEFAULT( Child ), &INSTANCE_CHANGE_CALLBACK( CDecorator, OnChildChanged ));
 
 //
 // Property Change Handlers

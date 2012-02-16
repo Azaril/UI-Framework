@@ -7,6 +7,25 @@
 #include <math.h>
 
 //
+// Properties
+//
+namespace TrackProperties
+{
+    enum Value
+    {
+        Thumb,
+        IncreaseButton,
+        DecreaseButton,
+        ViewportSize,
+        Orientation,
+        DirectionReversed,
+        Minimum,
+        Maximum,
+        Value
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Thumb );
@@ -22,15 +41,15 @@ DEFINE_GET_DEFAULT( TrackValue, FLOAT, 0.0f );
 //
 // Properties
 //
-CStaticProperty CTrack::ThumbProperty( L"Thumb", TypeIndex::Thumb, StaticPropertyFlags::None, &GET_DEFAULT( Thumb ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnThumbChanged ) );
-CStaticProperty CTrack::IncreaseButtonProperty( L"IncreaseButton", TypeIndex::Button, StaticPropertyFlags::None, &GET_DEFAULT( IncreaseButton ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnIncreaseButtonChanged ) );
-CStaticProperty CTrack::DecreaseButtonProperty( L"DecreaseButton", TypeIndex::Button, StaticPropertyFlags::None, &GET_DEFAULT( DecreaseButton ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnDecreaseButtonChanged ) );
-CStaticProperty CTrack::ViewportSizeProperty( L"ViewportSize", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( ViewportSize ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnViewportSizeChanged ) );
-CStaticProperty CTrack::OrientationProperty( L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnOrientationChanged ) );
-CStaticProperty CTrack::DirectionReversedProperty( L"DirectionReversed", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( DirectionReversed ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnDirectionReversedChanged ) );
-CStaticProperty CTrack::MinimumProperty( L"Minimum", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Minimum ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnMinimumChanged ) );
-CStaticProperty CTrack::MaximumProperty( L"Maximum", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Maximum ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnMaximumChanged ) );
-CStaticProperty CTrack::ValueProperty( L"Value", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( TrackValue ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnTrackValueChanged ) );
+CStaticProperty CTrack::ThumbProperty(TrackProperties::Thumb, L"Thumb", TypeIndex::Thumb, StaticPropertyFlags::None, &GET_DEFAULT( Thumb ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnThumbChanged ));
+CStaticProperty CTrack::IncreaseButtonProperty(TrackProperties::IncreaseButton, L"IncreaseButton", TypeIndex::Button, StaticPropertyFlags::None, &GET_DEFAULT( IncreaseButton ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnIncreaseButtonChanged ));
+CStaticProperty CTrack::DecreaseButtonProperty(TrackProperties::DecreaseButton, L"DecreaseButton", TypeIndex::Button, StaticPropertyFlags::None, &GET_DEFAULT( DecreaseButton ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnDecreaseButtonChanged ));
+CStaticProperty CTrack::ViewportSizeProperty(TrackProperties::ViewportSize, L"ViewportSize", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( ViewportSize ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnViewportSizeChanged ));
+CStaticProperty CTrack::OrientationProperty(TrackProperties::Orientation, L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnOrientationChanged ));
+CStaticProperty CTrack::DirectionReversedProperty(TrackProperties::DirectionReversed, L"DirectionReversed", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( DirectionReversed ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnDirectionReversedChanged ));
+CStaticProperty CTrack::MinimumProperty(TrackProperties::Minimum, L"Minimum", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Minimum ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnMinimumChanged ));
+CStaticProperty CTrack::MaximumProperty(TrackProperties::Maximum, L"Maximum", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Maximum ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnMaximumChanged ));
+CStaticProperty CTrack::ValueProperty(TrackProperties::Value, L"Value", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( TrackValue ), &INSTANCE_CHANGE_CALLBACK( CTrack, OnTrackValueChanged ));
 
 //
 // Property Change Handlers
@@ -384,7 +403,11 @@ HRESULT CTrack::OnTrackValueChanged(CObjectWithType* pOldValue, CObjectWithType*
     return hr;
 }
 
-HRESULT CTrack::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
+__override __checkReturn HRESULT 
+CTrack::MeasureInternal( 
+    const SizeF& AvailableSize,
+    SizeF& DesiredSize
+    )
 {
     HRESULT hr = S_OK;   
     CThumb* pThumb = NULL;
@@ -606,7 +629,11 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTrack::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
+__override __checkReturn HRESULT 
+CTrack::ArrangeInternal(
+    const SizeF& AvailableSize,
+    SizeF& UsedSize 
+    )
 {
     HRESULT hr = S_OK;   
     CThumb* pThumb = NULL;

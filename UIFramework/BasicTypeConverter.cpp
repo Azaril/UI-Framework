@@ -27,7 +27,8 @@ StaticTypeConverter BasicConverters[] =
     { TypeIndex::String, TypeIndex::Stretch, ConvertStringToStretch },
     { TypeIndex::String, TypeIndex::StretchDirection, ConvertStringToStretchDirection },
     { TypeIndex::String, TypeIndex::Orientation, ConvertStringToOrientation },
-    { TypeIndex::String, TypeIndex::Duration, ConvertStringToDuration }
+    { TypeIndex::String, TypeIndex::Duration, ConvertStringToDuration },
+    { TypeIndex::String, TypeIndex::GraphicsGeometry, ConvertStringToGraphicsGeometry }
 };
 
 StaticTypeConverterInformation BasicConverterInfo =
@@ -1516,5 +1517,29 @@ ConvertStringToDuration(
 Cleanup:
     ReleaseObject(pDurationValue);
 
+    return hr;
+}
+
+__checkReturn HRESULT 
+ConvertStringToGraphicsGeometry(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    )
+{
+    HRESULT hr = S_OK;
+    CStringValue* pStringValue = NULL;
+
+    IFCPTR(pValue);
+    IFCPTR(ppConvertedValue);
+
+    IFCEXPECT(pValue->GetType() == TypeIndex::String);
+
+    pStringValue = (CStringValue*)pValue;
+
+    ASSERT(FALSE);
+    IFC(E_FAIL);
+    
+Cleanup:
     return hr;
 }

@@ -7,8 +7,20 @@
 //
 // Properties
 //
-CStaticProperty CEventTrigger::RoutedEventProperty(L"RoutedEvent", TypeIndex::RoutedEvent, StaticPropertyFlags::None);
-CStaticProperty CEventTrigger::ActionsProperty(L"Actions", TypeIndex::TriggerAction, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
+namespace EventTriggerProperties
+{
+    enum Value
+    {
+        RoutedEvent,
+        Actions
+    };
+}
+
+//
+// Properties
+//
+CStaticProperty CEventTrigger::RoutedEventProperty(EventTriggerProperties::RoutedEvent, L"RoutedEvent", TypeIndex::RoutedEvent, StaticPropertyFlags::None);
+CStaticProperty CEventTrigger::ActionsProperty(EventTriggerProperties::Actions, L"Actions", TypeIndex::TriggerAction, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
 
 CEventTrigger::CEventTrigger(
     ) 

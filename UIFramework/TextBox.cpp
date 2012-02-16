@@ -4,6 +4,18 @@
 #include "AssertUtil.h"
 
 //
+// Properties
+//
+namespace TextBoxProperties
+{
+    enum Value
+    {
+        Text,
+        AcceptsReturn
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Text );
@@ -12,8 +24,8 @@ DEFINE_GET_DEFAULT( AcceptsReturn, bool, TRUE );
 //
 // Properties
 //
-CStaticProperty CTextBox::TextProperty( L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT(Text), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnTextChanged ) );
-CStaticProperty CTextBox::AcceptsReturnProperty( L"AcceptsReturn", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT(AcceptsReturn), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnAcceptsReturnChanged ) );
+CStaticProperty CTextBox::TextProperty(TextBoxProperties::Text, L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT(Text), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnTextChanged ));
+CStaticProperty CTextBox::AcceptsReturnProperty(TextBoxProperties::AcceptsReturn, L"AcceptsReturn", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT(AcceptsReturn), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnAcceptsReturnChanged ));
 
 //
 // Property Change Handlers
@@ -174,50 +186,6 @@ HRESULT CTextBox::PreTemplateRevoked()
 Cleanup:
     return hr;
 }
-
-//HRESULT CTextBox::MeasureInternal(SizeF AvailableSize, SizeF& DesiredSize)
-//{
-//    HRESULT hr = S_OK;
-//    CTextLayoutMetrics* pTextLayoutMetrics = NULL;
-//    
-//    RectF TextBounds = { 0 };
-//    SizeF SizeWithText = { 0 };
-//
-//    IFC(m_TextLayout->SetMaxSize(AvailableSize));
-//
-//    IFC(m_TextLayout->GetMetrics(&pTextLayoutMetrics));
-//
-//    IFC(pTextLayoutMetrics->GetBounds(&TextBounds));
-//
-//    DesiredSize.width = TextBounds.right - TextBounds.left;
-//    DesiredSize.height = TextBounds.bottom - TextBounds.top;
-//
-//Cleanup:
-//    ReleaseObject(pTextLayoutMetrics);
-//
-//    return hr;
-//}
-
-//HRESULT CTextBox::ArrangeInternal(SizeF AvailableSize, SizeF& UsedSize)
-//{
-//    HRESULT hr = S_OK;
-//    CTextLayoutMetrics* pMetrics = NULL;
-//    RectF TextBounds = { 0 };
-//
-//    IFC(m_TextLayout->SetMaxSize(AvailableSize));
-//
-//    IFC(m_TextLayout->GetMetrics(&pMetrics));
-//
-//    IFC(pMetrics->GetBounds(&TextBounds));
-//
-//    UsedSize.width = TextBounds.right - TextBounds.left;
-//    UsedSize.height = TextBounds.bottom - TextBounds.top;
-//
-//Cleanup:
-//    ReleaseObject(pMetrics);
-//
-//    return hr;
-//}
 
 HRESULT CTextBox::CreatePropertyInformation(CPropertyInformation** ppInformation)
 {

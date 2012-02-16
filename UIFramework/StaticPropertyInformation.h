@@ -24,6 +24,7 @@ class UIFRAMEWORK_API CStaticProperty : public CProperty
 {
     public:
         CStaticProperty( 
+            UINT32 LocalIndex,
             __in_z const WCHAR* Name,
             const TypeIndex::Value Type, 
             UINT32 Flags, 
@@ -61,7 +62,11 @@ class UIFRAMEWORK_API CStaticProperty : public CProperty
         __override virtual __out_opt OnValueChangeFunc GetOnValueChangedCallback(
             );
 
+        UINT32 GetLocalIndex(
+            );
+
     protected:
+        UINT32 m_LocalIndex;
         const WCHAR* m_Name;
         TypeIndex::Value m_Type;
         UINT32 m_Flags;

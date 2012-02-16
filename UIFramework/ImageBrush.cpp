@@ -7,7 +7,18 @@
 //
 // Properties
 //
-CStaticProperty CImageBrush::SourceProperty(L"Source", TypeIndex::Object, StaticPropertyFlags::None);
+namespace ImageBrushProperties
+{
+    enum Value
+    {
+        Source
+    };
+}
+
+//
+// Properties
+//
+CStaticProperty CImageBrush::SourceProperty(ImageBrushProperties::Source, L"Source", TypeIndex::Object, StaticPropertyFlags::None);
 
 CImageBrush::CImageBrush(
     ) 

@@ -4,7 +4,18 @@
 //
 // Properties
 //
-CStaticProperty CTypeMarkupExtension::TypeNameProperty(L"TypeName", TypeIndex::String, StaticPropertyFlags::None);
+namespace TypeMarkupExtensionProperties
+{
+    enum Value
+    {
+        TypeName
+    };
+}
+
+//
+// Properties
+//
+CStaticProperty CTypeMarkupExtension::TypeNameProperty(TypeMarkupExtensionProperties::TypeName, L"TypeName", TypeIndex::String, StaticPropertyFlags::None);
 
 CTypeMarkupExtension::CTypeMarkupExtension(
 	) 

@@ -273,11 +273,19 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         bool IsAttached();
         bool IsLoaded();
 
-        virtual HRESULT Measure( SizeF Size );
-        virtual SizeF GetDesiredSize();
+        virtual __checkReturn HRESULT Measure(
+            const SizeF& Size
+            );
 
-        virtual HRESULT Arrange( RectF Bounds );
-        SizeF GetFinalSize();
+        const SizeF& GetDesiredSize(
+            );
+
+        virtual HRESULT Arrange( 
+            const RectF& Bounds 
+            );
+
+        const SizeF& GetFinalSize(
+            );
 
         HRESULT EnsureLayout();
 
@@ -393,8 +401,15 @@ class UIFRAMEWORK_API CUIElement : public CVisual
 
         HRESULT RequiresLayer( bool* pRequiresLayer );
 
-        virtual HRESULT MeasureInternal( SizeF AvailableSize, SizeF& DesiredSize );
-        virtual HRESULT ArrangeInternal( SizeF AvailableSize, SizeF& UsedSize );
+        __override virtual __checkReturn HRESULT MeasureInternal( 
+            const SizeF& AvailableSize,
+            SizeF& DesiredSize
+            );
+
+        __override virtual __checkReturn HRESULT ArrangeInternal(
+            const SizeF& AvailableSize,
+            SizeF& UsedSize 
+            );
 
         virtual HRESULT NotifyParent( CUINotification* pNotification );
 

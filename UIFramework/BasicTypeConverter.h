@@ -107,3 +107,9 @@ __checkReturn HRESULT ConvertStringToDuration(
     __in CObjectWithType* pValue, 
     __deref_out CObjectWithType** ppConvertedValue 
     );
+
+__checkReturn HRESULT ConvertStringToGraphicsGeometry(
+    __in CConversionContext* pContext, 
+    __in CObjectWithType* pValue, 
+    __deref_out CObjectWithType** ppConvertedValue 
+    );

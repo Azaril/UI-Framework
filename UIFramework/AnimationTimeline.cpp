@@ -1,6 +1,17 @@
 #include "AnimationTimeline.h"
 
 //
+// Properties
+//
+namespace AnimationTimelineProperties
+{
+    enum Value
+    {
+        Duration
+    };
+}
+
+//
 // Property Defaults
 //
 DEFINE_GET_DEFAULT_NULL( Duration );
@@ -8,7 +19,7 @@ DEFINE_GET_DEFAULT_NULL( Duration );
 //
 // Properties
 //
-CStaticProperty CAnimationTimeline::DurationProperty(L"Duration", TypeIndex::Duration, StaticPropertyFlags::None, &GET_DEFAULT( Duration ), NULL);
+CStaticProperty CAnimationTimeline::DurationProperty(AnimationTimelineProperties::Duration, L"Duration", TypeIndex::Duration, StaticPropertyFlags::None, &GET_DEFAULT( Duration ), NULL);
 
 CAnimationTimeline::CAnimationTimeline(
     ) 
