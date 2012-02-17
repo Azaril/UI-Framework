@@ -27,8 +27,8 @@ DEFINE_GET_DEFAULT( EndPoint, Point2F, DefaultEndPoint );
 //
 // Properties
 //
-CStaticProperty CLinearGradientBrush::StartPointProperty(LinearGradientBrushProperties::StartPoint, L"StartPoint", TypeIndex::Point2F, StaticPropertyFlags::None, &GET_DEFAULT( StartPoint ), &INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnStartPointChanged ));
-CStaticProperty CLinearGradientBrush::EndPointProperty(LinearGradientBrushProperties::EndPoint, L"EndPoint", TypeIndex::Point2F, StaticPropertyFlags::None, &GET_DEFAULT( EndPoint ), &INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnStartPointChanged ));
+CStaticProperty CLinearGradientBrush::StartPointProperty(TypeIndex::LinearGradientBrush, LinearGradientBrushProperties::StartPoint, L"StartPoint", TypeIndex::Point2F, StaticPropertyFlags::None, &GET_DEFAULT( StartPoint ), &INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnStartPointChanged ));
+CStaticProperty CLinearGradientBrush::EndPointProperty(TypeIndex::LinearGradientBrush, LinearGradientBrushProperties::EndPoint, L"EndPoint", TypeIndex::Point2F, StaticPropertyFlags::None, &GET_DEFAULT( EndPoint ), &INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnStartPointChanged ));
 
 //
 // Property Change Handlers

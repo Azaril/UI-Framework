@@ -22,8 +22,8 @@ DEFINE_GET_DEFAULT( CanScrollHorizontally, bool, FALSE );
 //
 // Properties
 //
-CStaticProperty CScrollContentPresenter::CanScrollVerticallyProperty(ScrollContentPresenterProperties::CanScrollVertically, L"CanScrollVertically", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( CanScrollVertically ), &INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollVerticallyChanged ));
-CStaticProperty CScrollContentPresenter::CanScrollHorizontallyProperty(ScrollContentPresenterProperties::CanScrollHorizontally, L"CanScrollHorizontally", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( CanScrollHorizontally ), &INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollHorizontallyChanged ));
+CStaticProperty CScrollContentPresenter::CanScrollVerticallyProperty(TypeIndex::ScrollContentPresenter, ScrollContentPresenterProperties::CanScrollVertically, L"CanScrollVertically", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( CanScrollVertically ), &INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollVerticallyChanged ));
+CStaticProperty CScrollContentPresenter::CanScrollHorizontallyProperty(TypeIndex::ScrollContentPresenter, ScrollContentPresenterProperties::CanScrollHorizontally, L"CanScrollHorizontally", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( CanScrollHorizontally ), &INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollHorizontallyChanged ));
 
 //
 // Property Change Handlers

@@ -21,7 +21,7 @@ DEFINE_GET_DEFAULT_NULL( Property );
 //
 // Properties
 //
-CStaticProperty CTemplateBinding::PropertyProperty(TemplateBindingProperties::Property, L"Property", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Property ));
+CStaticProperty CTemplateBinding::PropertyProperty(TypeIndex::TemplateBinding, TemplateBindingProperties::Property, L"Property", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Property ));
 
 CTemplateBinding::CTemplateBinding(
     ) 

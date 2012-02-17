@@ -18,7 +18,7 @@ namespace ImageBrushProperties
 //
 // Properties
 //
-CStaticProperty CImageBrush::SourceProperty(ImageBrushProperties::Source, L"Source", TypeIndex::Object, StaticPropertyFlags::None);
+CStaticProperty CImageBrush::SourceProperty(TypeIndex::ImageBrush, ImageBrushProperties::Source, L"Source", TypeIndex::Object, StaticPropertyFlags::None);
 
 CImageBrush::CImageBrush(
     ) 

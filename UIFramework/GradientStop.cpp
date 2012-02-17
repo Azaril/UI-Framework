@@ -24,8 +24,8 @@ DEFINE_GET_DEFAULT( Offset, FLOAT, 0 );
 //
 // Properties
 //
-CStaticProperty CGradientStop::ColorProperty(GradientStopProperties::Color, L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnColorChanged ));
-CStaticProperty CGradientStop::OffsetProperty(GradientStopProperties::Offset, L"Offset", TypeIndex::Float, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnOffsetChanged ));
+CStaticProperty CGradientStop::ColorProperty(TypeIndex::GradientStop, GradientStopProperties::Color, L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnColorChanged ));
+CStaticProperty CGradientStop::OffsetProperty(TypeIndex::GradientStop, GradientStopProperties::Offset, L"Offset", TypeIndex::Float, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CGradientStop, OnOffsetChanged ));
 
 //
 // Property Change Handlers

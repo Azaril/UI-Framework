@@ -24,6 +24,7 @@ class UIFRAMEWORK_API CStaticProperty : public CProperty
 {
     public:
         CStaticProperty( 
+            const TypeIndex::Value OwningType,
             UINT32 LocalIndex,
             __in_z const WCHAR* Name,
             const TypeIndex::Value Type, 
@@ -33,6 +34,9 @@ class UIFRAMEWORK_API CStaticProperty : public CProperty
             );
 
         STATIC_REFCOUNTING();
+
+        __override virtual TypeIndex::Value GetOwningType(
+            );
 
         __override virtual TypeIndex::Value GetType(
             );
@@ -66,6 +70,7 @@ class UIFRAMEWORK_API CStaticProperty : public CProperty
             );
 
     protected:
+        TypeIndex::Value m_OwningType;
         UINT32 m_LocalIndex;
         const WCHAR* m_Name;
         TypeIndex::Value m_Type;

@@ -18,8 +18,8 @@ namespace SetterProperties
 //
 // Properties
 //
-CStaticProperty CSetter::PropertyProperty(SetterProperties::Property, L"Property", TypeIndex::String, StaticPropertyFlags::None);
-CStaticProperty CSetter::ValueProperty(SetterProperties::Value, L"Value", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
+CStaticProperty CSetter::PropertyProperty(TypeIndex::Setter, SetterProperties::Property, L"Property", TypeIndex::String, StaticPropertyFlags::None);
+CStaticProperty CSetter::ValueProperty(TypeIndex::Setter, SetterProperties::Value, L"Value", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
 
 CSetter::CSetter(
     ) 

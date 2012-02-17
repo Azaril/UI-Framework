@@ -16,7 +16,7 @@ namespace BeginStoryboardProperties
 //
 // Properties
 //
-CStaticProperty CBeginStoryboard::StoryboardProperty(BeginStoryboardProperties::Storyboard, L"Storyboard", TypeIndex::Storyboard, StaticPropertyFlags::Content);
+CStaticProperty CBeginStoryboard::StoryboardProperty(TypeIndex::BeginStoryboard, BeginStoryboardProperties::Storyboard, L"Storyboard", TypeIndex::Storyboard, StaticPropertyFlags::Content);
 
 CBeginStoryboard::CBeginStoryboard(
     )

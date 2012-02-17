@@ -22,7 +22,7 @@ DEFINE_GET_DEFAULT_NULL( Content );
 //
 // Properties
 // 
-CStaticProperty CContentPresenter::ContentProperty(ContentPresenterProperties::Content, L"Content", TypeIndex::Object, StaticPropertyFlags::Content, &GET_DEFAULT( Content ), &INSTANCE_CHANGE_CALLBACK( CContentPresenter, OnContentChanged ));
+CStaticProperty CContentPresenter::ContentProperty(TypeIndex::ContentPresenter, ContentPresenterProperties::Content, L"Content", TypeIndex::Object, StaticPropertyFlags::Content, &GET_DEFAULT( Content ), &INSTANCE_CHANGE_CALLBACK( CContentPresenter, OnContentChanged ));
 
 //
 // Property Change Handlers

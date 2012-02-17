@@ -19,8 +19,8 @@ namespace EventTriggerProperties
 //
 // Properties
 //
-CStaticProperty CEventTrigger::RoutedEventProperty(EventTriggerProperties::RoutedEvent, L"RoutedEvent", TypeIndex::RoutedEvent, StaticPropertyFlags::None);
-CStaticProperty CEventTrigger::ActionsProperty(EventTriggerProperties::Actions, L"Actions", TypeIndex::TriggerAction, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
+CStaticProperty CEventTrigger::RoutedEventProperty(TypeIndex::EventTrigger, EventTriggerProperties::RoutedEvent, L"RoutedEvent", TypeIndex::RoutedEvent, StaticPropertyFlags::None);
+CStaticProperty CEventTrigger::ActionsProperty(TypeIndex::EventTrigger, EventTriggerProperties::Actions, L"Actions", TypeIndex::TriggerAction, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
 
 CEventTrigger::CEventTrigger(
     ) 

@@ -21,7 +21,7 @@ DEFINE_GET_DEFAULT_NULL( Children );
 //
 // Properties
 //
-CStaticProperty CPanel::ChildrenProperty(PanelProperties::Children, L"Children", TypeIndex::UIElement, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( Children ));
+CStaticProperty CPanel::ChildrenProperty(TypeIndex::Panel, PanelProperties::Children, L"Children", TypeIndex::UIElement, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( Children ));
 
 CPanel::CPanel() : m_Children(this, &CPanel::ChildrenProperty)
 {

@@ -25,8 +25,8 @@ DEFINE_GET_DEFAULT_NULL( Foreground );
 //
 // Properties
 // 
-CStaticProperty CTextBlock::TextProperty(TextBlockProperties::Text, L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT( Text ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnTextChanged ));
-CStaticProperty CTextBlock::ForegroundProperty(TextBlockProperties::Foreground, L"Foreground", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Foreground ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnForegroundChanged ));
+CStaticProperty CTextBlock::TextProperty(TypeIndex::TextBlock, TextBlockProperties::Text, L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT( Text ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnTextChanged ));
+CStaticProperty CTextBlock::ForegroundProperty(TypeIndex::TextBlock, TextBlockProperties::Foreground, L"Foreground", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Foreground ), &INSTANCE_CHANGE_CALLBACK( CTextBlock, OnForegroundChanged ));
 
 //
 // Property Change Handlers

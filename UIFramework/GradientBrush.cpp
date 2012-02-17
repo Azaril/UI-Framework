@@ -22,7 +22,7 @@ DEFINE_GET_DEFAULT_NULL( GradientStops );
 //
 // Properties
 //
-CStaticProperty CGradientBrush::GradientStopsProperty(GradientBrushProperties::GradientStops, L"GradientStops", TypeIndex::GradientStop, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( GradientStops ), &INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged ));
+CStaticProperty CGradientBrush::GradientStopsProperty(TypeIndex::GradientBrush, GradientBrushProperties::GradientStops, L"GradientStops", TypeIndex::GradientStop, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( GradientStops ), &INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged ));
 
 //
 // Property Change Handlers

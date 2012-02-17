@@ -23,7 +23,7 @@ DEFINE_GET_DEFAULT_NULL( Command );
 //
 // Properties
 //
-CStaticProperty CButtonBase::CommandProperty(ButtonBaseProperties::Command, L"Command", TypeIndex::Command, StaticPropertyFlags::None, &GET_DEFAULT( Command ), &INSTANCE_CHANGE_CALLBACK( CButtonBase, OnCommandChanged ) );
+CStaticProperty CButtonBase::CommandProperty(TypeIndex::ButtonBase, ButtonBaseProperties::Command, L"Command", TypeIndex::Command, StaticPropertyFlags::None, &GET_DEFAULT( Command ), &INSTANCE_CHANGE_CALLBACK( CButtonBase, OnCommandChanged ) );
 
 //
 // Property Change Handlers
@@ -195,7 +195,7 @@ CButtonBase::GetLayeredValue(
     IFCPTR(pProperty);
     IFCPTR(ppLayeredValue);
 
-    if (pProperty->GetType() == TypeIndex::ButtonBase)
+    if (pProperty->GetOwningType() == TypeIndex::ButtonBase)
     {
         CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 

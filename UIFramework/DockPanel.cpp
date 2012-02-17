@@ -23,8 +23,8 @@ DEFINE_GET_DEFAULT( LastChildFill, bool, TRUE );
 //
 // Properties
 //
-CStaticProperty CDockPanel::DockProperty(DockPanelProperties::Dock, L"Dock", TypeIndex::RectangleEdge, StaticPropertyFlags::Attached );
-CStaticProperty CDockPanel::LastChildFillProperty(DockPanelProperties::LastChildFill, L"LastChildFill", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( LastChildFill ), &INSTANCE_CHANGE_CALLBACK( CDockPanel, OnLastChildFillChanged ) );
+CStaticProperty CDockPanel::DockProperty(TypeIndex::DockPanel, DockPanelProperties::Dock, L"Dock", TypeIndex::RectangleEdge, StaticPropertyFlags::Attached );
+CStaticProperty CDockPanel::LastChildFillProperty(TypeIndex::DockPanel, DockPanelProperties::LastChildFill, L"LastChildFill", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( LastChildFill ), &INSTANCE_CHANGE_CALLBACK( CDockPanel, OnLastChildFillChanged ) );
 
 //
 // Property Change Handlers

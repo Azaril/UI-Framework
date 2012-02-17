@@ -19,7 +19,7 @@ DEFINE_GET_DEFAULT_NULL( Duration );
 //
 // Properties
 //
-CStaticProperty CAnimationTimeline::DurationProperty(AnimationTimelineProperties::Duration, L"Duration", TypeIndex::Duration, StaticPropertyFlags::None, &GET_DEFAULT( Duration ), NULL);
+CStaticProperty CAnimationTimeline::DurationProperty(TypeIndex::AnimationTimeline, AnimationTimelineProperties::Duration, L"Duration", TypeIndex::Duration, StaticPropertyFlags::None, &GET_DEFAULT( Duration ), NULL);
 
 CAnimationTimeline::CAnimationTimeline(
     ) 

@@ -21,7 +21,7 @@ DEFINE_GET_DEFAULT( BindingDirection, BindingDirection::Value, BindingDirection:
 //
 // Properties
 //
-CStaticProperty CSourcedBinding::BindingDirectionProperty(SourcedBindingProperties::BindingDirection, L"BindingDirection", TypeIndex::BindingDirection, StaticPropertyFlags::None, &GET_DEFAULT( BindingDirection ), &INSTANCE_CHANGE_CALLBACK( CSourcedBinding, OnBindingDirectionChanged ));
+CStaticProperty CSourcedBinding::BindingDirectionProperty(TypeIndex::SourcedBinding, SourcedBindingProperties::BindingDirection, L"BindingDirection", TypeIndex::BindingDirection, StaticPropertyFlags::None, &GET_DEFAULT( BindingDirection ), &INSTANCE_CHANGE_CALLBACK( CSourcedBinding, OnBindingDirectionChanged ));
 
 //
 // Property Change Handlers

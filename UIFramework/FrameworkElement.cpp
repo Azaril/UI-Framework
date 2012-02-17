@@ -27,9 +27,9 @@ DEFINE_GET_DEFAULT_NULL( Style );
 //
 // Properties
 //
-CStaticProperty CFrameworkElement::NameProperty(FrameworkElementProperties::Name, L"Name", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Name ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnNameChanged ) );
-CStaticProperty CFrameworkElement::ResourcesProperty(FrameworkElementProperties::Resources, L"Resources", TypeIndex::Object, StaticPropertyFlags::Dictionary | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( Resources ) );
-CStaticProperty CFrameworkElement::StyleProperty(FrameworkElementProperties::Style, L"Style", TypeIndex::Style, StaticPropertyFlags::None, &GET_DEFAULT( Style ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnStyleChanged ) );
+CStaticProperty CFrameworkElement::NameProperty(TypeIndex::FrameworkElement, FrameworkElementProperties::Name, L"Name", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Name ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnNameChanged ) );
+CStaticProperty CFrameworkElement::ResourcesProperty(TypeIndex::FrameworkElement, FrameworkElementProperties::Resources, L"Resources", TypeIndex::Object, StaticPropertyFlags::Dictionary | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( Resources ) );
+CStaticProperty CFrameworkElement::StyleProperty(TypeIndex::FrameworkElement, FrameworkElementProperties::Style, L"Style", TypeIndex::Style, StaticPropertyFlags::None, &GET_DEFAULT( Style ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnStyleChanged ) );
 
 //
 // Property Change Handlers

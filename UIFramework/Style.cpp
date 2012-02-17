@@ -18,8 +18,8 @@ namespace StyleProperties
 //
 // Properties
 //
-CStaticProperty CStyle::SettersProperty(StyleProperties::Setters, L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
-CStaticProperty CStyle::TriggersProperty(StyleProperties::Triggers, L"Triggers", TypeIndex::Trigger, StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly);
+CStaticProperty CStyle::SettersProperty(TypeIndex::Style, StyleProperties::Setters, L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
+CStaticProperty CStyle::TriggersProperty(TypeIndex::Style, StyleProperties::Triggers, L"Triggers", TypeIndex::Trigger, StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly);
 
 CStyle::CStyle(
     ) 

@@ -21,7 +21,7 @@ DEFINE_GET_DEFAULT( Orientation, Orientation::Value, Orientation::Vertical );
 //
 // Properties
 //
-CStaticProperty CStackPanel::OrientationProperty(StackPanelproperties::Orientation, L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CStackPanel, OnOrientationChanged ));
+CStaticProperty CStackPanel::OrientationProperty(TypeIndex::StackPanel, StackPanelproperties::Orientation, L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CStackPanel, OnOrientationChanged ));
 
 //
 // Property Change Handlers

@@ -34,6 +34,9 @@ class UIFRAMEWORK_API CProperty
         __out virtual const WCHAR* GetName(
             ) = 0;
 
+        virtual TypeIndex::Value GetOwningType(
+            ) = 0;
+
         virtual TypeIndex::Value GetType(
             ) = 0;
 

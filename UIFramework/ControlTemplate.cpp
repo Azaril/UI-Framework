@@ -15,7 +15,7 @@ namespace ControlTemplateProperties
 //
 // Properties
 //
-CStaticProperty CControlTemplate::TemplateProperty(ControlTemplateProperties::Template, L"Template", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
+CStaticProperty CControlTemplate::TemplateProperty(TypeIndex::ControlTemplate, ControlTemplateProperties::Template, L"Template", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
 
 CControlTemplate::CControlTemplate(
     ) 

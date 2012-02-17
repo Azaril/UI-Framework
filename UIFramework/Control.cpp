@@ -32,12 +32,12 @@ DEFINE_GET_DEFAULT( VerticalContentAlignment, VerticalAlignment::Value, Vertical
 //
 // Properties
 //
-CStaticProperty CControl::TemplateProperty(ControlProperties::Template, L"Template", TypeIndex::ControlTemplate, StaticPropertyFlags::None, &GET_DEFAULT( Template ), &INSTANCE_CHANGE_CALLBACK( CControl, OnTemplateChanged ) );
-CStaticProperty CControl::BackgroundProperty(ControlProperties::Background, L"Background", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Background ) );
-CStaticProperty CControl::BorderBrushProperty(ControlProperties::BorderBrush, L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( BorderBrush ) );
-CStaticProperty CControl::BorderThicknessProperty(ControlProperties::BorderThickness, L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(BorderThickness) );
-CStaticProperty CControl::HorizontalContentAlignmentProperty(ControlProperties::HorizontalContentAlignment, L"HorizontalContentAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(HorizontalContentAlignment) );
-CStaticProperty CControl::VerticalContentAlignmentProperty(ControlProperties::VerticalContentAlignment, L"VerticalContentAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(VerticalContentAlignment) );
+CStaticProperty CControl::TemplateProperty(TypeIndex::Control, ControlProperties::Template, L"Template", TypeIndex::ControlTemplate, StaticPropertyFlags::None, &GET_DEFAULT( Template ), &INSTANCE_CHANGE_CALLBACK( CControl, OnTemplateChanged ) );
+CStaticProperty CControl::BackgroundProperty(TypeIndex::Control, ControlProperties::Background, L"Background", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( Background ) );
+CStaticProperty CControl::BorderBrushProperty(TypeIndex::Control, ControlProperties::BorderBrush, L"BorderBrush", TypeIndex::Brush, StaticPropertyFlags::None, &GET_DEFAULT( BorderBrush ) );
+CStaticProperty CControl::BorderThicknessProperty(TypeIndex::Control, ControlProperties::BorderThickness, L"BorderThickness", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT(BorderThickness) );
+CStaticProperty CControl::HorizontalContentAlignmentProperty(TypeIndex::Control, ControlProperties::HorizontalContentAlignment, L"HorizontalContentAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(HorizontalContentAlignment) );
+CStaticProperty CControl::VerticalContentAlignmentProperty(TypeIndex::Control, ControlProperties::VerticalContentAlignment, L"VerticalContentAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT(VerticalContentAlignment) );
 
 //
 // Property Change Handlers

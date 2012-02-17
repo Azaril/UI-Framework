@@ -17,7 +17,7 @@ namespace DynamicResourceProperties
 //
 // Properties
 //
-CStaticProperty CDynamicResource::ResourceKeyProperty(DynamicResourceProperties::ResourceKey, L"ResourceKey", TypeIndex::Object, StaticPropertyFlags::None);
+CStaticProperty CDynamicResource::ResourceKeyProperty(TypeIndex::DynamicResource, DynamicResourceProperties::ResourceKey, L"ResourceKey", TypeIndex::Object, StaticPropertyFlags::None);
 
 CDynamicResource::CDynamicResource(
     ) 

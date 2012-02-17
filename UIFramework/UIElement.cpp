@@ -55,19 +55,19 @@ DEFINE_GET_DEFAULT( Namescope, bool, FALSE );
 //
 // Properties
 //
-CStaticProperty CUIElement::WidthProperty(UIElementProperties::Width, L"Width", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Width ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnWidthChanged ));
-CStaticProperty CUIElement::HeightProperty(UIElementProperties::Height, L"Height", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Height ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnHeightChanged ));
-CStaticProperty CUIElement::MinimumWidthProperty(UIElementProperties::MinimumWidth, L"MinimumWidth", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MinimumWidth ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMinimumWidthChanged ));
-CStaticProperty CUIElement::MinimumHeightProperty(UIElementProperties::MinimumHeight, L"MinimumHeight", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MinimumHeight ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMinimumHeightChanged ));
-CStaticProperty CUIElement::MaximumWidthProperty(UIElementProperties::MaximumWidth, L"MaximumWidth", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MaximumWidth ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMaximumWidthChanged ));
-CStaticProperty CUIElement::MaximumHeightProperty(UIElementProperties::MaximumHeight, L"MaximumHeight", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MaximumHeight ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMaximumHeightChanged ));
-CStaticProperty CUIElement::VisibilityProperty(UIElementProperties::Visibility, L"Visibility", TypeIndex::Visibility, StaticPropertyFlags::None, &GET_DEFAULT( Visibility ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVisibilityChanged ));
-CStaticProperty CUIElement::HorizontalAlignmentProperty(UIElementProperties::HorizontalAlignment, L"HorizontalAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( HorizontalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged ));
-CStaticProperty CUIElement::VerticalAlignmentProperty(UIElementProperties::VerticalAlignment, L"VerticalAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( VerticalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged ));
-CStaticProperty CUIElement::MarginProperty(UIElementProperties::Margin, L"Margin", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT( Margin ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged ));
-CStaticProperty CUIElement::FocusableProperty(UIElementProperties::Focusable, L"Focusable", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( Focusable ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnFocusableChanged ));
-CStaticProperty CUIElement::OpacityProperty(UIElementProperties::Opacity, L"Opacity", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Opacity ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnOpacityChanged ));
-CStaticProperty CUIElement::NamescopeProperty(UIElementProperties::Namescope, L"Namescope", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( Namescope ));
+CStaticProperty CUIElement::WidthProperty(TypeIndex::UIElement, UIElementProperties::Width, L"Width", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Width ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnWidthChanged ));
+CStaticProperty CUIElement::HeightProperty(TypeIndex::UIElement, UIElementProperties::Height, L"Height", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Height ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnHeightChanged ));
+CStaticProperty CUIElement::MinimumWidthProperty(TypeIndex::UIElement, UIElementProperties::MinimumWidth, L"MinimumWidth", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MinimumWidth ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMinimumWidthChanged ));
+CStaticProperty CUIElement::MinimumHeightProperty(TypeIndex::UIElement, UIElementProperties::MinimumHeight, L"MinimumHeight", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MinimumHeight ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMinimumHeightChanged ));
+CStaticProperty CUIElement::MaximumWidthProperty(TypeIndex::UIElement, UIElementProperties::MaximumWidth, L"MaximumWidth", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MaximumWidth ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMaximumWidthChanged ));
+CStaticProperty CUIElement::MaximumHeightProperty(TypeIndex::UIElement, UIElementProperties::MaximumHeight, L"MaximumHeight", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( MaximumHeight ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMaximumHeightChanged ));
+CStaticProperty CUIElement::VisibilityProperty(TypeIndex::UIElement, UIElementProperties::Visibility, L"Visibility", TypeIndex::Visibility, StaticPropertyFlags::None, &GET_DEFAULT( Visibility ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVisibilityChanged ));
+CStaticProperty CUIElement::HorizontalAlignmentProperty(TypeIndex::UIElement, UIElementProperties::HorizontalAlignment, L"HorizontalAlignment", TypeIndex::HorizontalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( HorizontalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnHorizontalAlignmentChanged ));
+CStaticProperty CUIElement::VerticalAlignmentProperty(TypeIndex::UIElement, UIElementProperties::VerticalAlignment, L"VerticalAlignment", TypeIndex::VerticalAlignment, StaticPropertyFlags::None, &GET_DEFAULT( VerticalAlignment ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnVerticalAlignmentChanged ));
+CStaticProperty CUIElement::MarginProperty(TypeIndex::UIElement, UIElementProperties::Margin, L"Margin", TypeIndex::RectF, StaticPropertyFlags::None, &GET_DEFAULT( Margin ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnMarginChanged ));
+CStaticProperty CUIElement::FocusableProperty(TypeIndex::UIElement, UIElementProperties::Focusable, L"Focusable", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( Focusable ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnFocusableChanged ));
+CStaticProperty CUIElement::OpacityProperty(TypeIndex::UIElement, UIElementProperties::Opacity, L"Opacity", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Opacity ), &INSTANCE_CHANGE_CALLBACK( CUIElement, OnOpacityChanged ));
+CStaticProperty CUIElement::NamescopeProperty(TypeIndex::UIElement, UIElementProperties::Namescope, L"Namescope", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT( Namescope ));
 
 //
 // Property Change Handlers

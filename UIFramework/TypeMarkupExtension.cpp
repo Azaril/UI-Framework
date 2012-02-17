@@ -15,7 +15,7 @@ namespace TypeMarkupExtensionProperties
 //
 // Properties
 //
-CStaticProperty CTypeMarkupExtension::TypeNameProperty(TypeMarkupExtensionProperties::TypeName, L"TypeName", TypeIndex::String, StaticPropertyFlags::None);
+CStaticProperty CTypeMarkupExtension::TypeNameProperty(TypeIndex::TypeMarkupExtension, TypeMarkupExtensionProperties::TypeName, L"TypeName", TypeIndex::String, StaticPropertyFlags::None);
 
 CTypeMarkupExtension::CTypeMarkupExtension(
 	) 

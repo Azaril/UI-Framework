@@ -21,7 +21,7 @@ DEFINE_GET_DEFAULT_NULL( Content );
 //
 // Properties
 //
-CStaticProperty CContentControl::ContentProperty(ContentControlProperties::Content, L"Content", TypeIndex::Object, StaticPropertyFlags::Content, GET_DEFAULT( Content ), &INSTANCE_CHANGE_CALLBACK( CContentControl, OnContentChanged ) );
+CStaticProperty CContentControl::ContentProperty(TypeIndex::ContentControl, ContentControlProperties::Content, L"Content", TypeIndex::Object, StaticPropertyFlags::Content, GET_DEFAULT( Content ), &INSTANCE_CHANGE_CALLBACK( CContentControl, OnContentChanged ) );
 
 //
 // Property Change Handlers
@@ -95,7 +95,7 @@ CContentControl::GetLayeredValue(
     IFCPTR(pProperty);
     IFCPTR(ppLayeredValue);
 
-    if (pProperty->GetType() == TypeIndex::ContentControl)
+    if (pProperty->GetOwningType() == TypeIndex::ContentControl)
     {
         CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 

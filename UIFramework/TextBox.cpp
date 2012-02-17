@@ -24,8 +24,8 @@ DEFINE_GET_DEFAULT( AcceptsReturn, bool, TRUE );
 //
 // Properties
 //
-CStaticProperty CTextBox::TextProperty(TextBoxProperties::Text, L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT(Text), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnTextChanged ));
-CStaticProperty CTextBox::AcceptsReturnProperty(TextBoxProperties::AcceptsReturn, L"AcceptsReturn", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT(AcceptsReturn), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnAcceptsReturnChanged ));
+CStaticProperty CTextBox::TextProperty(TypeIndex::TextBox, TextBoxProperties::Text, L"Text", TypeIndex::String, StaticPropertyFlags::Content, &GET_DEFAULT(Text), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnTextChanged ));
+CStaticProperty CTextBox::AcceptsReturnProperty(TypeIndex::TextBox, TextBoxProperties::AcceptsReturn, L"AcceptsReturn", TypeIndex::Bool, StaticPropertyFlags::None, &GET_DEFAULT(AcceptsReturn), &INSTANCE_CHANGE_CALLBACK( CTextBox, OnAcceptsReturnChanged ));
 
 //
 // Property Change Handlers

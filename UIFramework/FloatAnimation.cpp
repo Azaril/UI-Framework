@@ -24,9 +24,9 @@ DEFINE_GET_DEFAULT_NULL( Duration );
 //
 // Properties
 //
-CStaticProperty CFloatAnimation::FromProperty(FloatAnimationproperties::From, L"From", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( From ), NULL);
-CStaticProperty CFloatAnimation::ToProperty(FloatAnimationproperties::To, L"To", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( To ), NULL);
-CStaticProperty CFloatAnimation::DurationProperty(FloatAnimationproperties::Duration, L"Duration", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Duration ), NULL);
+CStaticProperty CFloatAnimation::FromProperty(TypeIndex::FloatAnimation, FloatAnimationproperties::From, L"From", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( From ), NULL);
+CStaticProperty CFloatAnimation::ToProperty(TypeIndex::FloatAnimation, FloatAnimationproperties::To, L"To", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( To ), NULL);
+CStaticProperty CFloatAnimation::DurationProperty(TypeIndex::FloatAnimation, FloatAnimationproperties::Duration, L"Duration", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( Duration ), NULL);
 
 CFloatAnimation::CFloatAnimation(
     ) 

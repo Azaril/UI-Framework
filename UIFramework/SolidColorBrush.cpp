@@ -24,7 +24,7 @@ DEFINE_GET_DEFAULT( Color, ColorF, DefaultColor );
 //
 // Properties
 //
-CStaticProperty CSolidColorBrush::ColorProperty(SolidColorBrushProperties::Color, L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged ));
+CStaticProperty CSolidColorBrush::ColorProperty(TypeIndex::SolidColorBrush, SolidColorBrushProperties::Color, L"Color", TypeIndex::ColorF, StaticPropertyFlags::None, NULL, &INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged ));
 
 //
 // Property Change Handlers

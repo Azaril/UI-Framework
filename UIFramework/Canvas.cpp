@@ -28,10 +28,10 @@ DEFINE_GET_DEFAULT_NULL( Bottom );
 //
 // Properties
 // 
-CStaticProperty CCanvas::LeftProperty(CanvasProperties::Left, L"Left", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Left ), &CCanvas::OnLeftChanged);
-CStaticProperty CCanvas::TopProperty(CanvasProperties::Top, L"Top", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Top ), &CCanvas::OnTopChanged);
-CStaticProperty CCanvas::RightProperty(CanvasProperties::Right, L"Right", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Right ), &CCanvas::OnRightChanged);
-CStaticProperty CCanvas::BottomProperty(CanvasProperties::Bottom, L"Bottom", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Bottom ), &CCanvas::OnBottomChanged);
+CStaticProperty CCanvas::LeftProperty(TypeIndex::Canvas, CanvasProperties::Left, L"Left", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Left ), &CCanvas::OnLeftChanged);
+CStaticProperty CCanvas::TopProperty(TypeIndex::Canvas, CanvasProperties::Top, L"Top", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Top ), &CCanvas::OnTopChanged);
+CStaticProperty CCanvas::RightProperty(TypeIndex::Canvas, CanvasProperties::Right, L"Right", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Right ), &CCanvas::OnRightChanged);
+CStaticProperty CCanvas::BottomProperty(TypeIndex::Canvas, CanvasProperties::Bottom, L"Bottom", TypeIndex::Float, StaticPropertyFlags::Attached, &GET_DEFAULT( Bottom ), &CCanvas::OnBottomChanged);
 
 CCanvas::CCanvas()
 {
