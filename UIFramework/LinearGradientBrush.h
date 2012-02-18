@@ -2,6 +2,7 @@
 
 #include "GradientBrush.h"
 #include "Factory.h"
+#include "LayeredValue.h"
 
 class CLinearGradientBrush : public CGradientBrush
 {
@@ -37,15 +38,7 @@ class CLinearGradientBrush : public CGradientBrush
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty,
-            __in CObjectWithType* pValue 
-            );
-
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty, 
-            __deref_out CObjectWithType** ppValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         //
         // Property Change Handlers
@@ -63,8 +56,8 @@ class CLinearGradientBrush : public CGradientBrush
             __in_opt CObjectWithType* pNewValue 
             );
 
-        Point2F m_StartPoint;
-        Point2F m_EndPoint;
+        CLayeredValue m_StartPoint;
+        CLayeredValue m_EndPoint;
 };
 
 template< >

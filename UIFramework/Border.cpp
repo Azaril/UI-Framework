@@ -46,12 +46,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CBorder, OnBorderBrushChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CBorder, OnCornerRadiusChanged );
 
 CBorder::CBorder() : m_BorderVisual(NULL),
-                     m_GeometryDirty(TRUE),
-                     m_Background(this, &CBorder::BackgroundProperty),
-                     m_Padding(this, &CBorder::PaddingProperty),
-                     m_BorderThickness(this, &CBorder::BorderThicknessProperty),
-                     m_BorderBrush(this, &CBorder::BorderBrushProperty),
-                     m_CornerRadius(this, &CBorder::CornerRadiusProperty)
+                     m_GeometryDirty(TRUE)
 {
 }
 
@@ -199,8 +194,8 @@ HRESULT CBorder::RebuildGeometry()
     FLOAT CornerRadius = 0;
     RectF Rectangle;
 
-    IFC(GetEffectiveBorderThickness(&BorderThickness));
-    IFC(GetEffectiveCornerRadius(&CornerRadius));
+    IFC(GetBasicTypeEffectiveValue(&BorderThicknessProperty, &BorderThickness));
+    IFC(GetBasicTypeEffectiveValue(&CornerRadiusProperty, &CornerRadius));
 
     Rectangle.left = BorderThickness / 2;
     Rectangle.top = BorderThickness / 2;
@@ -302,75 +297,6 @@ Cleanup:
     return hr;
 }
 
-HRESULT CBorder::GetEffectiveBackground(CBrush** ppBrush)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppBrush);
-
-    IFC(m_Background.GetTypedEffectiveValue(ppBrush));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CBorder::GetEffectivePadding(RectF* pPadding)
-{
-    HRESULT hr = S_OK;
-    CRectFValue* pEffectiveValue = NULL;
-
-    IFC(m_Padding.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pPadding = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CBorder::GetEffectiveBorderThickness(FLOAT* pBorderThickness)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFC(m_BorderThickness.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pBorderThickness = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CBorder::GetEffectiveBorderBrush(CBrush** ppBrush)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppBrush);
-
-    IFC(m_BorderBrush.GetTypedEffectiveValue(ppBrush));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CBorder::GetEffectiveCornerRadius(FLOAT* pCornerRadius)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFC(m_CornerRadius.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pCornerRadius = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
 HRESULT CBorder::PreRenderInternal(CPreRenderContext& Context)
 {
     HRESULT hr = S_OK;
@@ -401,13 +327,13 @@ CBorder::MeasureInternal(
     FLOAT BorderThickness = 0;
     CUIElement* pChild = NULL;
 
-    IFC(GetEffectiveBorderThickness(&BorderThickness));
-    IFC(GetEffectivePadding(&Padding));
+    IFC(GetBasicTypeEffectiveValue(&BorderThicknessProperty, &BorderThickness));
+    IFC(GetBasicTypeEffectiveValue(&PaddingProperty, &Padding));
 
     InternalSize.width = std::max(AvailableSize.width - (BorderThickness * 2) - (Padding.left + Padding.right), 0.0f);
     InternalSize.height = std::max(AvailableSize.height - (BorderThickness * 2) - (Padding.top + Padding.bottom), 0.0f);
 
-    IFC(GetEffectiveChild(&pChild));
+    IFC(GetTypedEffectiveValue(&ChildProperty, &pChild));
 
     if(pChild != NULL)
     {
@@ -437,10 +363,10 @@ CBorder::ArrangeInternal(
     FLOAT BorderThickness = 0;
     SizeF ChildSize;
 
-    IFC(GetEffectiveBorderThickness(&BorderThickness));
-    IFC(GetEffectivePadding(&Padding));
+    IFC(GetBasicTypeEffectiveValue(&BorderThicknessProperty, &BorderThickness));
+    IFC(GetBasicTypeEffectiveValue(&PaddingProperty, &Padding));
 
-    IFC(GetEffectiveChild(&pChild));
+    IFC(GetTypedEffectiveValue(&ChildProperty, &pChild));
 
     if(pChild != NULL)
     {

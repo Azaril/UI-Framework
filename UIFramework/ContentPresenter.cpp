@@ -29,8 +29,7 @@ CStaticProperty CContentPresenter::ContentProperty(TypeIndex::ContentPresenter, 
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CContentPresenter, OnContentChanged );
 
-CContentPresenter::CContentPresenter() : m_Content(this, &CContentPresenter::ContentProperty),
-                                         m_ContentDirty(TRUE),
+CContentPresenter::CContentPresenter() : m_ContentDirty(TRUE),
                                          m_ContentChild(NULL)
 {
 }
@@ -148,7 +147,7 @@ HRESULT CContentPresenter::GetUIForContent(CUIElement** ppContentUI)
 
     IFCPTR(ppContentUI);
 
-    IFC(m_Content.GetEffectiveValue(&pContent));
+    IFC(GetEffectiveValue(&ContentProperty, &pContent));
 
     if(pContent)
     {

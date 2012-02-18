@@ -86,8 +86,6 @@ class UIFRAMEWORK_API CControl : public CFrameworkElement
         DECLARE_INSTANCE_CHANGE_CALLBACK( OnTemplateChanged );
 
         HRESULT OnTemplateChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
-
-        HRESULT GetEffectiveTemplate( CControlTemplate** ppTemplate );
         
         HRESULT RevokeTemplate();
         HRESULT EnsureTemplate();
@@ -96,12 +94,12 @@ class UIFRAMEWORK_API CControl : public CFrameworkElement
         HRESULT GetTemplateChild( CUIElement** ppChild );
 
     private:
-        CTypedLayeredValue< CControl, CControlTemplate > m_Template;
-        CTypedLayeredValue< CControl, CBrush > m_Background;
-        CTypedLayeredValue< CControl, CBrush > m_BorderBrush;
-        CTypedLayeredValue< CControl, CFloatValue > m_BorderThickness;
-        CTypedLayeredValue< CControl, CHorizontalAlignmentValue > m_HorizontalContentAlignment;
-        CTypedLayeredValue< CControl, CVerticalAlignmentValue > m_VerticalContentAlignment;
+        CLayeredValue m_Template;
+        CLayeredValue m_Background;
+        CLayeredValue m_BorderBrush;
+        CLayeredValue m_BorderThickness;
+        CLayeredValue m_HorizontalContentAlignment;
+        CLayeredValue m_VerticalContentAlignment;
         bool m_TemplateDirty;
         CUIElement* m_TemplateChild;
         CNamescope* m_TemplateNamescope;

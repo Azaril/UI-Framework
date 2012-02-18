@@ -18,22 +18,18 @@ namespace StyleProperties
 //
 // Properties
 //
-CStaticProperty CStyle::SettersProperty(TypeIndex::Style, StyleProperties::Setters, L"Setters", TypeIndex::Setter, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
-CStaticProperty CStyle::TriggersProperty(TypeIndex::Style, StyleProperties::Triggers, L"Triggers", TypeIndex::Trigger, StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly);
+CStaticProperty CStyle::SettersProperty(TypeIndex::Style, StyleProperties::Setters, L"Setters", TypeIndex::SetterCollection, StaticPropertyFlags::Collection | StaticPropertyFlags::Content);
+CStaticProperty CStyle::TriggersProperty(TypeIndex::Style, StyleProperties::Triggers, L"Triggers", TypeIndex::TriggerCollection, StaticPropertyFlags::Collection);
 
 CStyle::CStyle(
     ) 
-    : m_Setters(NULL)
-    , m_Triggers(NULL)
-    , m_Providers(NULL)
+    : m_Providers(NULL)
 {
 }
 
 CStyle::~CStyle(
     )
 {
-    ReleaseObject(m_Setters);
-    ReleaseObject(m_Triggers);
     ReleaseObject(m_Providers);
 }
 
@@ -48,9 +44,6 @@ CStyle::Initialize(
 
     m_Providers = pProviders;
     AddRefObject(pProviders);
-
-    IFC(CSetterCollection::Create(&m_Setters));
-    IFC(CTriggerCollection::Create(&m_Triggers));
 
 Cleanup:
     return hr;
@@ -94,15 +87,18 @@ CStyle::ResolveSetters(
 {
     HRESULT hr = S_OK;
     CResolvedTriggerActions* pResolvedSetters = NULL;
+    CSetterCollection* pSetters = NULL;
 
     IFCPTR(pObject);
     IFCPTR(ppResolvedActions);
 
     IFC(CResolvedTriggerActions::Create(pObject, m_Providers, pCallback, &pResolvedSetters));
 
-    for(UINT32 i = 0; i < m_Setters->GetCount(); i++)
+    IFC(GetTypedEffectiveValue(&SettersProperty, &pSetters));
+
+    for(UINT32 i = 0; i < pSetters->GetCount(); i++)
     {
-        CSetter* pSetter = m_Setters->GetAtIndex(i);
+        CSetter* pSetter = pSetters->GetAtIndex(i);
 
         IFC(pResolvedSetters->AddAction(pSetter));
     }
@@ -112,6 +108,7 @@ CStyle::ResolveSetters(
 
 Cleanup:
     ReleaseObject(pResolvedSetters);
+    ReleaseObject(pSetters);
 
     return hr;
 }
@@ -124,6 +121,7 @@ CStyle::ResolveTriggers(
     )
 {
     HRESULT hr = S_OK;
+    CTriggerCollection* pTriggers = NULL;
     CResolvedTriggers* pResolvedTriggers = NULL;
 
     IFCPTR(pObject);
@@ -131,9 +129,11 @@ CStyle::ResolveTriggers(
 
     IFC(CResolvedTriggers::Create(pObject, m_Providers, pCallback, &pResolvedTriggers));
 
-    for(UINT32 i = 0; i < m_Triggers->GetCount(); i++)
+    IFC(GetTypedEffectiveValue(&TriggersProperty, &pTriggers));
+
+    for(UINT32 i = 0; i < pTriggers->GetCount(); i++)
     {
-        CTrigger* pTrigger = m_Triggers->GetAtIndex(i);
+        CTrigger* pTrigger = pTriggers->GetAtIndex(i);
 
         IFC(pResolvedTriggers->AddTrigger(pTrigger));
     }
@@ -143,6 +143,7 @@ CStyle::ResolveTriggers(
 
 Cleanup:
     ReleaseObject(pResolvedTriggers);
+    ReleaseObject(pTriggers);
 
     return hr;
 }
@@ -175,53 +176,43 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CStyle::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    //if(pProperty == &CStyle::SettersProperty)
-    //{
-    //    IFC(E_NOTIMPL);
-    //}
-    //else
-    //{
-        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
-    //}
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CStyle::GetValueInternal(
+CStyle::GetLayeredValue(
     __in CProperty* pProperty,
-    __deref_out CObjectWithType** ppValue
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(ppValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CStyle::SettersProperty)
+    if (pProperty->GetOwningType() == TypeIndex::Style)
     {
-        *ppValue = m_Setters;
-        AddRefObject(m_Setters);
-    }
-    else if(pProperty == &CStyle::TriggersProperty)
-    {
-        *ppValue = m_Triggers;
-        AddRefObject(m_Triggers);
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case StyleProperties::Setters:
+                {
+                    *ppLayeredValue = &m_Setters;
+                    break;
+                }
+
+            case StyleProperties::Triggers:
+                {
+                    *ppLayeredValue = &m_Triggers;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CPropertyObject::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

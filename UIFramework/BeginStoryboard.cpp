@@ -20,14 +20,12 @@ CStaticProperty CBeginStoryboard::StoryboardProperty(TypeIndex::BeginStoryboard,
 
 CBeginStoryboard::CBeginStoryboard(
     )
-    : m_pStoryboard(NULL)
 {
 }
 
 CBeginStoryboard::~CBeginStoryboard(
     )
 {
-    ReleaseObject(m_pStoryboard);
 }
 
 __checkReturn HRESULT 
@@ -75,12 +73,15 @@ CBeginStoryboard::ResolveAction(
 {
     HRESULT hr = S_OK;
     CResolvedBeginStoryboard* pResolvedBeginStoryboard = NULL;
+    CStoryboard* pStoryboard = NULL;
 
     IFC(CResolvedBeginStoryboard::Create(pObject->GetTimeSource(), &pResolvedBeginStoryboard));
 
-    if (m_pStoryboard != NULL)
+    IFC(GetTypedEffectiveValue(&StoryboardProperty, &pStoryboard));
+
+    if (pStoryboard != NULL)
     {
-        IFC(m_pStoryboard->ResolveAnimations(pObject, pResolvedBeginStoryboard));
+        IFC(pStoryboard->ResolveAnimations(pObject, pResolvedBeginStoryboard));
     }
 
     *ppResolvedAction = pResolvedBeginStoryboard;
@@ -88,55 +89,43 @@ CBeginStoryboard::ResolveAction(
 
 Cleanup:
     ReleaseObject(pResolvedBeginStoryboard);
+    ReleaseObject(pStoryboard);
 
     return hr;
 }
 
 __override __checkReturn HRESULT 
-CBeginStoryboard::SetValueInternal(
+CBeginStoryboard::GetLayeredValue(
     __in CProperty* pProperty,
-    __in CObjectWithType* pValue 
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CBeginStoryboard::StoryboardProperty)
+    if (pProperty->GetOwningType() == TypeIndex::BeginStoryboard)
     {
-        IFC(CastType(pValue, &m_pStoryboard));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        AddRefObject(m_pStoryboard);
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case BeginStoryboardProperties::Storyboard:
+                {
+                    *ppLayeredValue = &m_Storyboard;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CBeginStoryboard::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue 
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CBeginStoryboard::StoryboardProperty)
-    {
-        *ppValue = m_pStoryboard;
-        AddRefObject(m_pStoryboard);
-    }
-    else
-    {
-        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CTriggerAction::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

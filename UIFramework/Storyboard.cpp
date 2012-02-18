@@ -19,21 +19,19 @@ namespace StoryboardProperties
 //
 // Properties
 //
-CStaticProperty CStoryboard::ChildrenProperty(TypeIndex::Storyboard, StoryboardProperties::Children, L"Children", TypeIndex::AnimationTimeline, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly);
+CStaticProperty CStoryboard::ChildrenProperty(TypeIndex::Storyboard, StoryboardProperties::Children, L"Children", TypeIndex::AnimationTimelineCollection, StaticPropertyFlags::Content | StaticPropertyFlags::Collection);
 CStaticProperty CStoryboard::TargetProperty(TypeIndex::Storyboard, StoryboardProperties::Target, L"Target", TypeIndex::Object, StaticPropertyFlags::Attached);
 CStaticProperty CStoryboard::TargetNameProperty(TypeIndex::Storyboard, StoryboardProperties::TargetName, L"TargetName", TypeIndex::String, StaticPropertyFlags::Attached);
 CStaticProperty CStoryboard::TargetPropertyProperty(TypeIndex::Storyboard, StoryboardProperties::TargetProperty, L"TargetProperty", TypeIndex::String, StaticPropertyFlags::Attached);
 
 CStoryboard::CStoryboard(
     )
-    : m_pTimelines(NULL)
 {
 }
 
 CStoryboard::~CStoryboard(
     )
 {
-    ReleaseObject(m_pTimelines);
 }
 
 __checkReturn HRESULT
@@ -43,9 +41,6 @@ CStoryboard::Initialize(
 {
     HRESULT hr = S_OK;
 
-    IFC(CAnimationTimelineCollection::Create(&m_pTimelines));
-
-Cleanup:
     return hr;
 }
 
@@ -79,50 +74,55 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CStoryboard::SetValueInternal(
+CStoryboard::GetLayeredValue(
     __in CProperty* pProperty,
-    __in CObjectWithType* pValue 
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CStoryboard::ChildrenProperty)
+    if (pProperty->GetOwningType() == TypeIndex::Storyboard)
     {
-        IFC(CastType(pValue, &m_pTimelines));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        AddRefObject(m_pTimelines);
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case StoryboardProperties::Children:
+                {
+                    *ppLayeredValue = &m_Children;
+                    break;
+                }
+
+            case StoryboardProperties::Target:
+                {
+                    *ppLayeredValue = &m_Target;
+                    break;
+                }
+
+            case StoryboardProperties::TargetName:
+                {
+                    *ppLayeredValue = &m_TargetName;
+                    break;
+                }
+
+            case StoryboardProperties::TargetProperty:
+                {
+                    *ppLayeredValue = &m_TargetProperty;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CStoryboard::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue 
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CStoryboard::ChildrenProperty)
-    {
-        *ppValue = m_pTimelines;
-        AddRefObject(m_pTimelines);
-    }
-    else
-    {
-        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CPropertyObject::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
@@ -144,15 +144,18 @@ CStoryboard::ResolveAnimations(
     CStringValue* pTargetPropertyString = NULL;
     CObjectWithType* pAnimationTarget = NULL;
     CProperty* pTargetProperty = NULL;
+    CAnimationTimelineCollection* pTimelines = NULL;
 
     pClassResolver = pElement->GetProviders()->GetClassResolver();
     IFCPTR(pClassResolver);
 
-    if (m_pTimelines != NULL)
+    IFC(GetTypedEffectiveValue(&ChildrenProperty, &pTimelines));
+
+    if (pTimelines != NULL)
     {
-        for (UINT32 i = 0; i < m_pTimelines->GetCount(); ++i)
+        for (UINT32 i = 0; i < pTimelines->GetCount(); ++i)
         {
-            CAnimationTimeline* pTimeline = m_pTimelines->GetAtIndex(i);
+            CAnimationTimeline* pTimeline = pTimelines->GetAtIndex(i);
 
             if (pAnimationTarget == NULL)
             {
@@ -219,6 +222,7 @@ Cleanup:
     ReleaseObject(pTargetPropertyValue);
     ReleaseObject(pAnimationTarget);
     ReleaseObject(pTargetProperty);
+    ReleaseObject(pTimelines);
 
     return hr;
 }

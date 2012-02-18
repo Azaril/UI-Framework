@@ -55,9 +55,6 @@ class CScrollViewer : public CContentControl,
 
         virtual void OnCommandExecuted( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
-        HRESULT GetEffectiveVerticalScrollBarVisibility( ScrollBarVisibility::Value* pVisibility );
-        HRESULT GetEffectiveHorizontalScrollBarVisibility( ScrollBarVisibility::Value* pVisibility );
-
         HRESULT SetComputedVerticalScrollBarVisibility( Visibility::Value ScrollVisibility );
         HRESULT SetComputedHorizontalScrollBarVisibility( Visibility::Value ScrollVisibility );
 
@@ -80,16 +77,16 @@ class CScrollViewer : public CContentControl,
 
         CScrollContentPresenter* m_ScrollPresenter;
 
-        CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_ExtentHeight;
-        CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_ExtentWidth;
-        CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_ViewportWidth;
-        CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_ViewportHeight;
-        CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_HorizontalOffset;
-        CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_VerticalOffset;
-        CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_ScrollableWidth;
-        CTypedLocalLayeredValue< CScrollViewer, CFloatValue > m_ScrollableHeight;
-        CTypedLocalLayeredValue< CScrollViewer, CVisibilityValue > m_ComputedHorizontalScrollBarVisibility;
-        CTypedLocalLayeredValue< CScrollViewer, CVisibilityValue > m_ComputedVerticalScrollBarVisibility;
+        CLayeredValue m_ExtentHeight;
+        CLayeredValue m_ExtentWidth;
+        CLayeredValue m_ViewportWidth;
+        CLayeredValue m_ViewportHeight;
+        CLayeredValue m_HorizontalOffset;
+        CLayeredValue m_VerticalOffset;
+        CLayeredValue m_ScrollableWidth;
+        CLayeredValue m_ScrollableHeight;
+        CLayeredValue m_ComputedHorizontalScrollBarVisibility;
+        CLayeredValue m_ComputedVerticalScrollBarVisibility;
 
     private:
         bool m_InMeasure;

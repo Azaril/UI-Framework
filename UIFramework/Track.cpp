@@ -64,17 +64,10 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CTrack, OnMinimumChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CTrack, OnMaximumChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CTrack, OnTrackValueChanged );
 
-CTrack::CTrack() : m_Thumb(this, &CTrack::ThumbProperty),
-                   m_IncreaseButton(this, &CTrack::IncreaseButtonProperty),
-                   m_DecreaseButton(this, &CTrack::DecreaseButtonProperty),
-                   m_ViewportSize(this, &CTrack::ViewportSizeProperty),
-                   m_Orientation(this, &CTrack::OrientationProperty),
-                   m_DirectionReversed(this, &CTrack::DirectionReversedProperty),
-                   m_Minimum(this, &CTrack::MinimumProperty),
-                   m_Maximum(this, &CTrack::MaximumProperty),
-                   m_TrackValue(this, &CTrack::ValueProperty),
-                   m_ThumbCenterOffset(std::numeric_limits< FLOAT >::quiet_NaN()),
-                   m_Density(std::numeric_limits< FLOAT >::quiet_NaN())                   
+CTrack::CTrack(
+    ) 
+    : m_ThumbCenterOffset(std::numeric_limits< FLOAT >::quiet_NaN())
+    , m_Density(std::numeric_limits< FLOAT >::quiet_NaN())                   
 {
 }
 
@@ -105,9 +98,9 @@ void CTrack::OnThumbDragDelta(CObjectWithType* pSender, CRoutedEventArgs* pRoute
     
     IFC(CastType(pRoutedEventArgs, &pDragEventArgs));
 
-    IFC(GetEffectiveOrientation(&Orient));
-    IFC(GetEffectiveDirectionReversed(&DirectionReversed));
-    IFC(GetEffectiveTrackValue(&TrackValue));
+    IFC(GetBasicTypeEffectiveValue(&OrientationProperty, &Orient));
+    IFC(GetBasicTypeEffectiveValue(&DirectionReversedProperty, &DirectionReversed));
+    IFC(GetBasicTypeEffectiveValue(&ValueProperty, &TrackValue));
 
     if(Orient == Orientation::Vertical)
     {
@@ -135,8 +128,8 @@ HRESULT CTrack::SetTrackValue(FLOAT Value)
     FLOAT Maximum = 0;
     CFloatValue* pValue = NULL;
 
-    IFC(GetEffectiveMaximum(&Maximum));
-    IFC(GetEffectiveMinimum(&Minimum));
+    IFC(GetBasicTypeEffectiveValue(&MaximumProperty, &Maximum));
+    IFC(GetBasicTypeEffectiveValue(&MinimumProperty, &Minimum));
 
     Value = std::min(std::max(Value, Minimum), Maximum);
 
@@ -417,15 +410,15 @@ CTrack::MeasureInternal(
     Orientation::Value TrackOrientation;
     FLOAT ViewportSize = 0;
 
-    IFC(GetEffectiveThumb(&pThumb));
+    IFC(GetTypedEffectiveValue(&ThumbProperty, &pThumb));
 
-    IFC(GetEffectiveIncreaseButton(&pIncreaseButton));
+    IFC(GetTypedEffectiveValue(&IncreaseButtonProperty, &pIncreaseButton));
 
-    IFC(GetEffectiveDecreaseButton(&pDecreaseButton));
+    IFC(GetTypedEffectiveValue(&DecreaseButtonProperty, &pDecreaseButton));
 
-    IFC(GetEffectiveViewportSize(&ViewportSize));
+    IFC(GetBasicTypeEffectiveValue(&ViewportSizeProperty, &ViewportSize));
 
-    IFC(GetEffectiveOrientation(&TrackOrientation));
+    IFC(GetBasicTypeEffectiveValue(&OrientationProperty, &TrackOrientation));
 
     if (pThumb != NULL)
     {
@@ -476,11 +469,11 @@ HRESULT CTrack::ComputeSliderLengths(SizeF AvailableSize, Orientation::Value Ori
     FLOAT Value = 0;
     CThumb* pThumb = NULL;
 
-    IFC(GetEffectiveMinimum(&Minimum));
-    IFC(GetEffectiveMaximum(&Maximum));
-    IFC(GetEffectiveTrackValue(&Value));
+    IFC(GetBasicTypeEffectiveValue(&MinimumProperty, &Minimum));
+    IFC(GetBasicTypeEffectiveValue(&MaximumProperty, &Maximum));
+    IFC(GetBasicTypeEffectiveValue(&ValueProperty, &Value));
 
-    IFC(GetEffectiveThumb(&pThumb));
+    IFC(GetTypedEffectiveValue(&ThumbProperty, &pThumb));
 
     {
         FLOAT Range = std::max(0.0f, Maximum - Minimum);
@@ -535,13 +528,13 @@ HRESULT CTrack::ComputeScrollBarLengths(SizeF AvailableSize, FLOAT ViewportSize,
     CThumb* pThumb = NULL;
     Visibility::Value Vis = Visibility::Visible;
 
-    IFC(GetEffectiveMinimum(&Minimum));
-    IFC(GetEffectiveMaximum(&Maximum));
-    IFC(GetEffectiveTrackValue(&Value));
+    IFC(GetBasicTypeEffectiveValue(&MinimumProperty, &Minimum));
+    IFC(GetBasicTypeEffectiveValue(&MaximumProperty, &Maximum));
+    IFC(GetBasicTypeEffectiveValue(&ValueProperty, &Value));
 
-    IFC(GetEffectiveVisibility(&Vis));
+    IFC(GetBasicTypeEffectiveValue(&VisibilityProperty, &Vis));
 
-    IFC(GetEffectiveThumb(&pThumb));
+    IFC(GetTypedEffectiveValue(&ThumbProperty, &pThumb));
 
     {
         FLOAT Range = std::max(0.0f, Maximum - Minimum);
@@ -645,15 +638,14 @@ CTrack::ArrangeInternal(
     FLOAT ThumbLength = 0;
     FLOAT IncreaseButtonLength = 0;
 
-    IFC(GetEffectiveThumb(&pThumb));
+    IFC(GetTypedEffectiveValue(&ThumbProperty, &pThumb));
 
-    IFC(GetEffectiveIncreaseButton(&pIncreaseButton));
+    IFC(GetTypedEffectiveValue(&IncreaseButtonProperty, &pIncreaseButton));
+    IFC(GetTypedEffectiveValue(&DecreaseButtonProperty, &pDecreaseButton));
 
-    IFC(GetEffectiveDecreaseButton(&pDecreaseButton));
+    IFC(GetBasicTypeEffectiveValue(&ViewportSizeProperty, &ViewportSize));
 
-    IFC(GetEffectiveViewportSize(&ViewportSize));
-
-    IFC(GetEffectiveOrientation(&TrackOrientation));
+    IFC(GetBasicTypeEffectiveValue(&OrientationProperty, &TrackOrientation));
 
     if(_isnan(ViewportSize))
     {
@@ -680,7 +672,7 @@ CTrack::ArrangeInternal(
 		SizeF PieceSize = AvailableSize;
 		bool IsDirectionReversed = FALSE;
 
-		IFC(GetEffectiveDirectionReversed(&IsDirectionReversed));
+		IFC(GetBasicTypeEffectiveValue(&DirectionReversedProperty, &IsDirectionReversed));
 
 		if(TrackOrientation == Orientation::Vertical)
 		{
@@ -754,138 +746,6 @@ Cleanup:
     ReleaseObject(pThumb);
     ReleaseObject(pIncreaseButton);
     ReleaseObject(pDecreaseButton);
-
-    return hr;
-}
-
-HRESULT CTrack::GetEffectiveThumb(CThumb** ppThumb)
-{
-    HRESULT hr = S_OK;
-
-    IFC(m_Thumb.GetTypedEffectiveValue(ppThumb));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CTrack::GetEffectiveIncreaseButton(CButton** ppIncreaseButton)
-{
-    HRESULT hr = S_OK;
-
-    IFC(m_IncreaseButton.GetTypedEffectiveValue(ppIncreaseButton));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CTrack::GetEffectiveDecreaseButton(CButton** ppDecreaseButton)
-{
-    HRESULT hr = S_OK;
-
-    IFC(m_DecreaseButton.GetTypedEffectiveValue(ppDecreaseButton));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CTrack::GetEffectiveOrientation(Orientation::Value* pOrientation)
-{
-    HRESULT hr = S_OK;
-    COrientationValue* pEffectiveValue = NULL;
-
-    IFCPTR(pOrientation);
-
-    IFC(m_Orientation.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pOrientation = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CTrack::GetEffectiveViewportSize(FLOAT* pViewportSize)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pViewportSize);
-
-    IFC(m_ViewportSize.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pViewportSize = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CTrack::GetEffectiveDirectionReversed(bool* pDirectionReversed)
-{
-    HRESULT hr = S_OK;
-    CBoolValue* pEffectiveValue = NULL;
-
-    IFCPTR(pDirectionReversed);
-
-    IFC(m_DirectionReversed.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pDirectionReversed = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CTrack::GetEffectiveMaximum(FLOAT* pMaximum)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pMaximum);
-
-    IFC(m_Maximum.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pMaximum = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CTrack::GetEffectiveMinimum(FLOAT* pMinimum)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pMinimum);
-
-    IFC(m_Minimum.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pMinimum = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CTrack::GetEffectiveTrackValue(FLOAT* pValue)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pValue);
-
-    IFC(m_TrackValue.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pValue = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
 
     return hr;
 }

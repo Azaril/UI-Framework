@@ -1,5 +1,6 @@
 #include "ControlTemplate.h"
 #include "FrameworkElement.h"
+#include "LayeredValue.h"
 
 //
 // Properties
@@ -18,15 +19,13 @@ namespace ControlTemplateProperties
 CStaticProperty CControlTemplate::TemplateProperty(TypeIndex::ControlTemplate, ControlTemplateProperties::Template, L"Template", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
 
 CControlTemplate::CControlTemplate(
-    ) 
-    : m_TemplateCommandList(NULL)
+    )
 {
 }
 
 CControlTemplate::~CControlTemplate(
     )
 {
-    ReleaseObject(m_TemplateCommandList);
 }
 
 __checkReturn HRESULT 
@@ -46,12 +45,15 @@ CControlTemplate::LoadContent(
     )
 {
     HRESULT hr = S_OK;
+    CParserCommandList* pCommandList = NULL;
 
     CControlTemplateParseCallback Callback(pNamescope);
 
-    IFCPTR(m_TemplateCommandList);
+    IFC(GetTypedEffectiveValue(&TemplateProperty, &pCommandList));
 
-    IFC(m_TemplateCommandList->Execute(&Callback, ppObject));
+    IFCPTR(pCommandList);
+
+    IFC(pCommandList->Execute(&Callback, ppObject));
 
 Cleanup:
     return hr;
@@ -84,54 +86,37 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CControlTemplate::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    if(pProperty == &CControlTemplate::TemplateProperty)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::ParserCommandList));
-
-        ReleaseObject(m_TemplateCommandList);
-
-        m_TemplateCommandList = (CParserCommandList*)pValue;
-
-        AddRefObject(m_TemplateCommandList);
-    }
-    else
-    {
-        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CControlTemplate::GetValueInternal(
+CControlTemplate::GetLayeredValue(
     __in CProperty* pProperty,
-    __deref_out_opt CObjectWithType** ppValue
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(ppValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CControlTemplate::TemplateProperty)
+    if (pProperty->GetOwningType() == TypeIndex::ControlTemplate)
     {
-        *ppValue = m_TemplateCommandList;
-        AddRefObject(m_TemplateCommandList);
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case ControlTemplateProperties::Template:
+                {
+                    *ppLayeredValue = &m_TemplateCommandList;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CPropertyObject::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

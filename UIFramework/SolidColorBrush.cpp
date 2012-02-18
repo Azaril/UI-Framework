@@ -34,10 +34,6 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CSolidColorBrush, OnColorChanged );
 CSolidColorBrush::CSolidColorBrush(
     )
 {
-    m_Color.a = 0;
-    m_Color.r = 0;
-    m_Color.g = 0;
-    m_Color.b = 0;
 }
 
 CSolidColorBrush::~CSolidColorBrush(
@@ -55,21 +51,6 @@ CSolidColorBrush::Initialize(
     return hr;
 }
 
-__checkReturn HRESULT
-CSolidColorBrush::InternalSetColor(
-    ColorF Color
-    )
-{
-    HRESULT hr = S_OK;
-
-    m_Color = Color;
-
-    IFC(InvalidateVisualResource());
-
-Cleanup:
-    return hr;
-}
-
 __override __checkReturn HRESULT
 CSolidColorBrush::GetGraphicsBrush(
     __in CGraphicsDevice* pDevice,
@@ -78,13 +59,16 @@ CSolidColorBrush::GetGraphicsBrush(
     )
 {
     HRESULT hr = S_OK;
+    ColorF brushColor;
 
     IFCPTR(pDevice);
     IFCPTR(pRenderTarget);
     IFCPTR(ppGraphicsBrush);
 
+    IFC(GetBasicTypeEffectiveValue(&ColorProperty, &brushColor));
+
     //TODO: Cache per-render target?
-    IFC(pRenderTarget->CreateSolidBrush(m_Color, ppGraphicsBrush));
+    IFC(pRenderTarget->CreateSolidBrush(brushColor, ppGraphicsBrush));
 
 Cleanup:
     return hr;
@@ -123,58 +107,40 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CSolidColorBrush::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    if(pProperty == &CSolidColorBrush::ColorProperty)
-    {
-        CColorFValue* pColorValue = (CColorFValue*)pValue;
-
-        IFC(InternalSetColor(pColorValue->GetValue()));
-    }
-    else
-    {
-        IFC(CBrush::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CSolidColorBrush::GetValueInternal(
+CSolidColorBrush::GetLayeredValue(
     __in CProperty* pProperty,
-    __deref_out CObjectWithType** ppValue
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
-    CColorFValue* pColorValue = NULL;
 
     IFCPTR(pProperty);
-    IFCPTR(ppValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty  == &CSolidColorBrush::ColorProperty)
+    if (pProperty->GetOwningType() == TypeIndex::SolidColorBrush)
     {
-        IFC(CColorFValue::Create(m_Color, &pColorValue));
-        
-        *ppValue = pColorValue;
-        pColorValue = NULL;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case SolidColorBrushProperties::Color:
+                {
+                    *ppLayeredValue = &m_Color;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CBrush::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CBrush::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
-    ReleaseObject(pColorValue);
-    
     return hr;
 }
 

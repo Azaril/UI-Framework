@@ -223,14 +223,26 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
             __deref_out_opt CObjectWithType** ppValue 
             );
 
-        virtual __checkReturn HRESULT SetEffectiveValue( 
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pValue 
-            );
-
         __checkReturn HRESULT AddPropertyChangeListener(
             const PropertyChangedHandler& Handler, 
             __out events::signals::connection* pConnection 
+            );
+
+        __checkReturn HRESULT RaisePropertyChanged( 
+            __in CProperty* pProperty 
+            );
+
+        virtual __checkReturn HRESULT SetBinding( 
+            __in CProperty* pProperty, 
+            __in CBindingBase* pBinding 
+            );
+
+        __checkReturn HRESULT SetBindingContext( 
+            __in_opt CBindingContext* pContext 
+            );
+
+        __checkReturn HRESULT GetBindingContext( 
+            __deref_out_opt CBindingContext** ppContext 
             );
 
         template< typename T >
@@ -262,22 +274,55 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
             return hr;
         }
 
-        __checkReturn HRESULT RaisePropertyChanged( 
-            __in CProperty* pProperty 
-            );
+        template< typename T >
+        __checkReturn HRESULT GetTypedEffectiveValue( 
+            __in CProperty* pProperty,
+            __deref_out_opt T** ppValue 
+            )
+        {
+            HRESULT hr = S_OK;
+            CObjectWithType* pVal = NULL;
 
-        virtual __checkReturn HRESULT SetBinding( 
-            __in CProperty* pProperty, 
-            __in CBindingBase* pBinding 
-            );
+            IFC(GetEffectiveValue(pProperty, &pVal));
 
-        __checkReturn HRESULT SetBindingContext( 
-            __in_opt CBindingContext* pContext 
-            );
+            if(pVal != NULL)
+            {
+                IFCEXPECT(pVal->IsTypeOf(ObjectTypeTraits< T >::Type));
 
-        __checkReturn HRESULT GetBindingContext( 
-            __deref_out_opt CBindingContext** ppContext 
-            );
+                *ppValue = (T*)pVal;
+                pVal = NULL;
+            }
+            else
+            {
+                *ppValue = NULL;
+            }
+
+        Cleanup:
+            ReleaseObject(pVal);
+
+            return hr;
+        }
+
+        template< typename T >
+        __checkReturn HRESULT GetBasicTypeEffectiveValue(
+            __in CProperty* pProperty,
+            __deref_out_opt T* pValue
+            )
+        {
+            HRESULT hr = S_OK;
+            CBasicValue< T >* pTypedValue = NULL;
+
+            IFC(GetTypedEffectiveValue(pProperty, &pTypedValue));
+
+            IFCPTR(pTypedValue);
+
+            *pValue = pTypedValue->GetValue();
+
+        Cleanup:
+            ReleaseObject(pTypedValue);
+
+            return hr;
+        }
 
     protected:
         CPropertyObject(
@@ -289,16 +334,6 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
         virtual __checkReturn HRESULT SetValueReadOnly(
             __in CProperty* pProperty, 
             __in CObjectWithType* pValue 
-            );
-
-        virtual __checkReturn HRESULT SetValueInternal( 
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pValue 
-            );
-
-        virtual __checkReturn HRESULT GetValueInternal( 
-            __in CProperty* pProperty, 
-            __deref_out_opt CObjectWithType** ppValue 
             );
 
         virtual __checkReturn HRESULT GetLayeredValue(
@@ -323,10 +358,10 @@ struct ObjectTypeTraits< CPropertyObject >
     static const TypeIndex::Value Type = TypeIndex::PropertyObject;
 };
 
-class UIFRAMEWORK_API CObjectCollection : public CObjectWithType
+class UIFRAMEWORK_API CObjectCollection : public CPropertyObject
 {
     public:
-        DECLARE_TYPE_WITH_BASE( TypeIndex::Collection, CObjectWithType );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Collection, CPropertyObject );
 
         virtual __checkReturn HRESULT AddObject( 
             __in CObjectWithType* pObject 
@@ -343,10 +378,10 @@ struct ObjectTypeTraits< CObjectCollection >
     static const TypeIndex::Value Type = TypeIndex::Collection;
 };
 
-class UIFRAMEWORK_API CObjectDictionary : public CObjectWithType
+class UIFRAMEWORK_API CObjectDictionary : public CPropertyObject
 {
     public:
-        DECLARE_TYPE_WITH_BASE( TypeIndex::Dictionary, CObjectWithType );
+        DECLARE_TYPE_WITH_BASE( TypeIndex::Dictionary, CPropertyObject );
 
         virtual __checkReturn HRESULT AddObject( 
             __in CObjectWithType* pKey, 

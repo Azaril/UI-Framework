@@ -65,13 +65,9 @@ class UIFRAMEWORK_API CImage : public CFrameworkElement
         HRESULT OnStretchChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnStretchDirectionChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        HRESULT GetEffectiveSource( CObjectWithType** ppSource );
-        HRESULT GetEffectiveStretch( Stretch::Value* pStretch );
-        HRESULT GetEffectiveStretchDirection( StretchDirection::Value* pStretchDirection );
-
-        CTypedLayeredValue< CImage, CObjectWithType > m_Source;
-        CTypedLayeredValue< CImage, CStretchValue > m_Stretch;
-        CTypedLayeredValue< CImage, CStretchDirectionValue > m_StretchDirection;
+        CLayeredValue m_Source;
+        CLayeredValue m_Stretch;
+        CLayeredValue m_StretchDirection;
         CImageBrush* m_ImageBrush;
         CGeometryVisual* m_ImageVisual;
         bool m_GeometryDirty;

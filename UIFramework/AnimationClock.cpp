@@ -115,7 +115,7 @@ CAnimationClock::OnTimeUpdate(
             {
                 m_RunningDuration += TimeDelta;
 
-                IFC(m_Timeline->GetDuration(&pDuration));
+                IFC(m_Timeline->GetTypedEffectiveValue(&CAnimationTimeline::DurationProperty, &pDuration));
 
                 if(pDuration != NULL && pDuration->HasTimeSpan())
                 {

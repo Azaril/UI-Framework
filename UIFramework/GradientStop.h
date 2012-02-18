@@ -4,6 +4,7 @@
 #include "Factory.h"
 #include "StaticPropertyInformation.h"
 #include "Providers.h"
+#include "LayeredValue.h"
 
 class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
 {
@@ -14,12 +15,6 @@ class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
 
         static __checkReturn HRESULT CreatePropertyInformation( 
             __deref_out CPropertyInformation** ppInformation 
-            );
-
-        ColorF GetColor(
-            );
-
-        FLOAT GetOffset(
             );
 
         //
@@ -39,15 +34,7 @@ class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
             CProviders* pProviders 
             );
 
-        virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pValue 
-            );
-
-        virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty,
-            __deref_out CObjectWithType** ppValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         //
         // Property Change Handlers
@@ -65,8 +52,8 @@ class CGradientStop : public CRefCountedObjectBase< CPropertyObject >
             __in_opt CObjectWithType* pNewValue 
             );
 
-        ColorF m_Color;
-        FLOAT m_Offset;
+        CLayeredValue m_Color;
+        CLayeredValue m_Offset;
 };
 
 template< >

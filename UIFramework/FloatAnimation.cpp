@@ -30,17 +30,12 @@ CStaticProperty CFloatAnimation::DurationProperty(TypeIndex::FloatAnimation, Flo
 
 CFloatAnimation::CFloatAnimation(
     ) 
-    : m_From(NULL)
-    , m_To(NULL)
 {
 }
 
 CFloatAnimation::~CFloatAnimation(
     )
 {
-    ReleaseObject(m_From);
-    ReleaseObject(m_To);
-    ReleaseObject(m_Duration);
 }
 
 __checkReturn HRESULT
@@ -61,12 +56,17 @@ CFloatAnimation::Initialize(
     )
 {
     HRESULT hr = S_OK;
+    CDurationValue* pDuration = NULL;
 
-    IFC(CFloatValue::Create(From, &m_From));
-    IFC(CFloatValue::Create(To, &m_To));
-    IFC(CDurationValue::Create(Duration, &m_Duration));
+    IFC(CDurationValue::Create(Duration, &pDuration));
+
+    IFC(SetValue(&FromProperty, From));
+    IFC(SetValue(&FromProperty, To));
+    IFC(SetValue(&FromProperty, pDuration));
 
 Cleanup:
+    ReleaseObject(pDuration);
+
     return hr;
 }
 
@@ -104,63 +104,49 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CFloatAnimation::SetValueInternal(
+CFloatAnimation::GetLayeredValue(
     __in CProperty* pProperty,
-    __in CObjectWithType* pValue 
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CFloatAnimation::FromProperty)
+    if (pProperty->GetOwningType() == TypeIndex::FloatAnimation)
     {
-        CFloatValue* pFrom = NULL;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        IFC(CastType(pValue, &pFrom));
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case FloatAnimationproperties::From:
+                {
+                    *ppLayeredValue = &m_From;
+                    break;
+                }
 
-        ReplaceObject(m_From, pFrom);
-    }
-    else if(pProperty == &CFloatAnimation::ToProperty)
-    {
-        CFloatValue* pTo = NULL;
+            case FloatAnimationproperties::To:
+                {
+                    *ppLayeredValue = &m_To;
+                    break;
+                }
 
-        IFC(CastType(pValue, &pTo));
+            case FloatAnimationproperties::Duration:
+                {
+                    *ppLayeredValue = &m_Duration;
+                    break;
+                }
 
-        ReplaceObject(m_To, pTo);
-    }
-    else
-    {
-        IFC(CFloatAnimationBase::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CFloatAnimation::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue 
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CFloatAnimation::FromProperty)
-    {
-        SetObject(*ppValue, m_From);
-    }
-    else if(pProperty == &CFloatAnimation::ToProperty)
-    {
-        SetObject(*ppValue, m_To);
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CFloatAnimationBase::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CFloatAnimationBase::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
@@ -182,17 +168,19 @@ CFloatAnimation::GetCurrentValue(
     CFloatValue* pFrom = NULL;
     CFloatValue* pTo = NULL;
 
-    pFrom = m_From;
-    pTo = m_To;
+    IFC(GetTypedEffectiveValue(&FromProperty, &pFrom));
+    IFC(GetTypedEffectiveValue(&ToProperty, &pTo));
     
     if (pFrom == NULL)
     {
         IFC(CastType(pDefaultInitialValue, &pFrom));
+        AddRefObject(pFrom);
     }
     
     if (pTo == NULL)
     {
         IFC(CastType(pDefaultFinalValue, &pTo));
+        AddRefObject(pTo);
     }
 
     if (pFrom != NULL && pTo != NULL)
@@ -214,6 +202,8 @@ CFloatAnimation::GetCurrentValue(
 
 Cleanup:
     ReleaseObject(pOutVal);
+    ReleaseObject(pFrom);
+    ReleaseObject(pTo);
 
     return hr;
 }

@@ -28,7 +28,7 @@ CStaticProperty CStackPanel::OrientationProperty(TypeIndex::StackPanel, StackPan
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CStackPanel, OnOrientationChanged );
 
-CStackPanel::CStackPanel() : m_Orientation(this, &CStackPanel::OrientationProperty)
+CStackPanel::CStackPanel()
 {
 }
 
@@ -61,7 +61,7 @@ CStackPanel::MeasureInternal(
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
 
-    IFC(GetEffectiveOrientation(&Orient));
+    IFC(GetBasicTypeEffectiveValue(&OrientationProperty, &Orient));
 
     if(Orient == Orientation::Horizontal)
     {
@@ -113,7 +113,7 @@ CStackPanel::ArrangeInternal(
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
 
-    IFC(GetEffectiveOrientation(&Orient));
+    IFC(GetBasicTypeEffectiveValue(&OrientationProperty, &Orient));
 
     for(UINT32 i = 0; i < pChildCollection->GetCount(); i++)
     {
@@ -198,23 +198,6 @@ HRESULT CStackPanel::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLay
     }
 
 Cleanup:
-    return hr;
-}
-
-HRESULT CStackPanel::GetEffectiveOrientation(Orientation::Value* pOrientation)
-{
-    HRESULT hr = S_OK;
-    COrientationValue* pEffectiveValue = NULL;
-
-    IFCPTR(pOrientation);
-
-    IFC(m_Orientation.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pOrientation = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
     return hr;
 }
 

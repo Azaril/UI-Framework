@@ -39,11 +39,6 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CLinearGradientBrush, OnEndPointChanged );
 CLinearGradientBrush::CLinearGradientBrush(
     )
 {
-    m_StartPoint.x = 0;
-    m_StartPoint.y = 0;
-
-    m_EndPoint.x = 1;
-    m_EndPoint.y = 1;
 }
 
 CLinearGradientBrush::~CLinearGradientBrush(
@@ -98,76 +93,43 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CLinearGradientBrush::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
+CLinearGradientBrush::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CLinearGradientBrush::StartPointProperty)
+    if (pProperty->GetOwningType() == TypeIndex::LinearGradientBrush)
     {
-        CPoint2FValue* pPoint = NULL;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        IFC(CastType(pValue, &pPoint));
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case LinearGradientBrushProperties::StartPoint:
+                {
+                    *ppLayeredValue = &m_StartPoint;
+                    break;
+                }
 
-        m_StartPoint = pPoint->GetValue();
+            case LinearGradientBrushProperties::EndPoint:
+                {
+                    *ppLayeredValue = &m_EndPoint;
+                    break;
+                }
 
-        //TODO: Move this to property change handler...
-        IFC(InvalidateVisualResource());
-    }
-    else if(pProperty == &CLinearGradientBrush::EndPointProperty)
-    {
-        CPoint2FValue* pPoint = NULL;
-
-        IFC(CastType(pValue, &pPoint));
-
-        m_EndPoint = pPoint->GetValue();
-
-        //TODO: Move this to property change handler...
-        IFC(InvalidateVisualResource());
-    }
-    else
-    {
-        IFC(CGradientBrush::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CLinearGradientBrush::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue
-    )
-{
-    HRESULT hr = S_OK;
-    CPoint2FValue* pPoint = NULL;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CLinearGradientBrush::StartPointProperty)
-    {
-        IFC(CPoint2FValue::Create(m_StartPoint, &pPoint));
-
-        *ppValue = pPoint;
-        pPoint = NULL;
-    }
-    else if(pProperty == &CLinearGradientBrush::EndPointProperty)
-    {
-        IFC(CPoint2FValue::Create(m_EndPoint, &pPoint));
-
-        *ppValue = pPoint;
-        pPoint = NULL;
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CGradientBrush::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CGradientBrush::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
@@ -182,30 +144,44 @@ CLinearGradientBrush::GetGraphicsBrush(
     )
 {
     HRESULT hr = S_OK;
+    CGradientStopCollection* pGradientStopCollection = NULL;
     GradientStop* pGradientStops = NULL;
+    Point2F startPoint;
+    Point2F endPoint;
 
     IFCPTR(pGraphicsDevice);
     IFCPTR(pRenderTarget);
     IFCPTR(ppGraphicsBrush);
 
-    IFCPTR(m_GradientStops);
-    IFCEXPECT(m_GradientStops->GetCount() > 0);
+    IFC(GetTypedEffectiveValue(&GradientStopsProperty, &pGradientStopCollection));
 
-    pGradientStops = new GradientStop[m_GradientStops->GetCount()];
+    IFCPTR(pGradientStopCollection);
 
-    for(UINT32 i = 0; i < m_GradientStops->GetCount(); i++)
-    {
-        CGradientStop* pGradientStop = m_GradientStops->GetAtIndex(i);
+    UINT32 gradientStopCount = pGradientStopCollection->GetCount();
 
-        pGradientStops[i].color = pGradientStop->GetColor();
-        pGradientStops[i].position = pGradientStop->GetOffset();
+    {        
+        IFCEXPECT(gradientStopCount > 0);
+
+        pGradientStops = new GradientStop[gradientStopCount];
+
+        for(UINT32 i = 0; i < gradientStopCount; i++)
+        {
+            CGradientStop* pGradientStop = pGradientStopCollection->GetAtIndex(i);
+
+            IFC(pGradientStop->GetBasicTypeEffectiveValue(&CGradientStop::ColorProperty, &pGradientStops[i].color));
+            IFC(pGradientStop->GetBasicTypeEffectiveValue(&CGradientStop::OffsetProperty, &pGradientStops[i].position));
+        }
+
+        IFC(GetBasicTypeEffectiveValue(&StartPointProperty, &startPoint));
+        IFC(GetBasicTypeEffectiveValue(&EndPointProperty, &endPoint));
+
+        //TODO: Cache per-render target?
+        IFC(pRenderTarget->CreateLinearGradientBrush(startPoint, endPoint, pGradientStops, gradientStopCount, ppGraphicsBrush));
     }
-
-    //TODO: Cache per-render target?
-    IFC(pRenderTarget->CreateLinearGradientBrush(m_StartPoint, m_EndPoint, pGradientStops, m_GradientStops->GetCount(), ppGraphicsBrush));
 
 Cleanup:
     delete [] pGradientStops;
+    ReleaseObject(pGradientStopCollection);
 
     return hr;
 }

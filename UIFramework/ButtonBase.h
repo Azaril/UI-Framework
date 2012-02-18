@@ -32,8 +32,6 @@ class CButtonBase : public CContentControl
         virtual void OnMouseLeftButtonDown( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
         virtual void OnMouseLeftButtonUp( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
-        HRESULT GetEffectiveCommand( CCommand** ppCommand );
-
         //
         // Property Change Handlers
         //
@@ -41,7 +39,7 @@ class CButtonBase : public CContentControl
 
         HRESULT OnCommandChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        CTypedLayeredValue< CButtonBase, CCommand > m_Command;
+        CLayeredValue m_Command;
 };
 
 template< >

@@ -22,15 +22,13 @@ DEFINE_GET_DEFAULT_NULL( Duration );
 CStaticProperty CAnimationTimeline::DurationProperty(TypeIndex::AnimationTimeline, AnimationTimelineProperties::Duration, L"Duration", TypeIndex::Duration, StaticPropertyFlags::None, &GET_DEFAULT( Duration ), NULL);
 
 CAnimationTimeline::CAnimationTimeline(
-    ) 
-    : m_Duration(NULL)
+    )
 {
 }
 
 CAnimationTimeline::~CAnimationTimeline(
     )
 {
-    ReleaseObject(m_Duration);
 }
 
 __checkReturn HRESULT 
@@ -82,22 +80,6 @@ Cleanup:
     return hr;
 }
 
-__checkReturn HRESULT 
-CAnimationTimeline::GetDuration(
-    __deref_out CDurationValue** ppDuration
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppDuration);
-
-    *ppDuration = m_Duration;
-    AddRefObject(m_Duration);
-
-Cleanup:
-    return hr;
-}
-
 void 
 CAnimationTimeline::OnClockCompleted(
     __in CAnimationClock* pClock
@@ -123,50 +105,37 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CAnimationTimeline::SetValueInternal(
+CAnimationTimeline::GetLayeredValue(
     __in CProperty* pProperty,
-    __in CObjectWithType* pValue 
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CAnimationTimeline::DurationProperty)
+    if (pProperty->GetOwningType() == TypeIndex::AnimationTimeline)
     {
-        IFC(CastType(pValue, &m_Duration));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        AddRefObject(m_Duration);
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case AnimationTimelineProperties::Duration:
+                {
+                    *ppLayeredValue = &m_Duration;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CAnimationTimeline::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue 
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CAnimationTimeline::DurationProperty)
-    {
-        *ppValue = m_Duration;
-        AddRefObject(m_Duration);
-    }
-    else
-    {
-        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CPropertyObject::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

@@ -74,9 +74,6 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
 
         HRESULT SetScrollOffsets( FLOAT XOffset, FLOAT YOffset );
 
-        HRESULT GetEffectiveCanScrollVertically( bool* pCanScroll );
-        HRESULT GetEffectiveCanScrollHorizontally( bool* pCanScroll );
-
         //
         // Property Change Handlers
         //
@@ -95,8 +92,8 @@ class UIFRAMEWORK_API CScrollContentPresenter : public CContentPresenter
         SizeF m_Viewport;
         IScrollOwner* m_ScrollOwner;
 
-        CTypedLayeredValue< CScrollContentPresenter, CBoolValue > m_CanScrollVertically;
-        CTypedLayeredValue< CScrollContentPresenter, CBoolValue > m_CanScrollHorizontally;
+        CLayeredValue m_CanScrollVertically;
+        CLayeredValue m_CanScrollHorizontally;
 };
 
 template< >

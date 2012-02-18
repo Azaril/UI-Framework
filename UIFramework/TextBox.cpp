@@ -37,8 +37,7 @@ CTextBox::CTextBox() : m_TextEditor(NULL),
                        m_TextLayout(NULL),
                        m_TextHostControl(NULL),
                        m_TextHost(NULL),
-                       m_TextFormat(NULL),
-                       m_AcceptsReturn(this, &CTextBox::AcceptsReturnProperty)
+                       m_TextFormat(NULL)
 {
 }
 
@@ -217,27 +216,46 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextBox::GetLayeredValue(CProperty* pProperty, CLayeredValue** ppLayeredValue)
+__override __checkReturn HRESULT 
+CTextBox::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
+    )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
     IFCPTR(ppLayeredValue);
 
-    //TODO: Make this a lookup table rather than requiring a comparison per property.
-    if(pProperty == &CTextBox::AcceptsReturnProperty)
+    if (pProperty->GetOwningType() == TypeIndex::TextBox)
     {
-        *ppLayeredValue = &m_AcceptsReturn;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case TextBoxProperties::AcceptsReturn:
+                {
+                    *ppLayeredValue = &m_AcceptsReturn;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        hr = CControl::GetLayeredValue(pProperty, ppLayeredValue);
+        IFC_NOTRACE(CControl::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
     return hr;
 }
 
+//TODO: Fix property handling.
+/*
 HRESULT CTextBox::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
@@ -287,6 +305,7 @@ HRESULT CTextBox::GetValueInternal(CProperty* pProperty, CObjectWithType** ppVal
 Cleanup:
     return hr;
 }
+*/
 
 HRESULT CTextBox::OnTextChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {

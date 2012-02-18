@@ -16,16 +16,20 @@ namespace SetterProperties
 }
 
 //
+// Property Defaults
+//
+DEFINE_GET_DEFAULT_NULL( Value );
+DEFINE_INSTANCE_CHANGE_CALLBACK( CSetter, OnValueChanged );
+
+//
 // Properties
 //
 CStaticProperty CSetter::PropertyProperty(TypeIndex::Setter, SetterProperties::Property, L"Property", TypeIndex::String, StaticPropertyFlags::None);
-CStaticProperty CSetter::ValueProperty(TypeIndex::Setter, SetterProperties::Value, L"Value", TypeIndex::ParserCommandList, StaticPropertyFlags::Content);
+CStaticProperty CSetter::ValueProperty(TypeIndex::Setter, SetterProperties::Value, L"Value", TypeIndex::ParserCommandList, StaticPropertyFlags::Content, &GET_DEFAULT( Value ), &INSTANCE_CHANGE_CALLBACK( CSetter, OnValueChanged ));
 
 CSetter::CSetter(
     ) 
-    : m_Property(NULL)
-    , m_Value(NULL)
-    , m_Providers(NULL)
+    : m_Providers(NULL)
     , m_CachedValue(NULL)
 {
 }
@@ -33,8 +37,6 @@ CSetter::CSetter(
 CSetter::~CSetter(
     )
 {
-    ReleaseObject(m_Property);
-    ReleaseObject(m_Value);
     ReleaseObject(m_CachedValue);
     ReleaseObject(m_Providers);
 }
@@ -55,52 +57,6 @@ Cleanup:
     return hr;
 }
 
-__out_opt const WCHAR* 
-CSetter::GetPropertyName(
-    )
-{
-    return (m_Property != NULL) ? m_Property->GetValue() : NULL;
-}
-
-__out_opt CObjectWithType* 
-CSetter::GetPropertyValue(
-    )
-{
-    return m_Value;
-}
-
-__checkReturn HRESULT 
-CSetter::SetPropertyInternal(
-    __in CStringValue* pProperty
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-
-    ReplaceObject(m_Property, pProperty);
-
-Cleanup:
-    return hr;
-}
-
-__checkReturn HRESULT
-CSetter::SetPropertyValueInternal(
-    __in CParserCommandList* pValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pValue);
-
-    ReleaseObject(m_CachedValue);
-
-    ReplaceObject(m_Value, pValue);
-
-Cleanup:
-    return hr;
-}
-
 __checkReturn HRESULT 
 CSetter::ResolveAction(
     __in CUIElement* pObject, 
@@ -113,6 +69,8 @@ CSetter::ResolveAction(
     CProperty* pProperty = NULL;
     CObjectWithType* pValue = NULL;
     CResolvedSetter* pResolvedSetter = NULL;
+    CStringValue* pPropertyAsString = NULL;
+    CParserCommandList* pCurrentValue = NULL;
 
     IFCPTR(pObject);
     IFCPTR(ppResolvedAction);
@@ -120,11 +78,17 @@ CSetter::ResolveAction(
     pClassResolver = m_Providers->GetClassResolver();
     IFCPTR(pClassResolver);
 
-    IFC(pClassResolver->ResolveProperty(GetPropertyName(), pObject->GetType(), &pProperty));
+    IFC(GetTypedEffectiveValue(&PropertyProperty, &pPropertyAsString));
+
+    IFC(pClassResolver->ResolveProperty(pPropertyAsString->GetValue(), pObject->GetType(), &pProperty));
 
     if(m_CachedValue == NULL)
     {
-        IFC(m_Value->Execute(NULL, &pValue));
+        IFC(GetTypedEffectiveValue(&ValueProperty, &pCurrentValue));
+
+        IFCPTR(pCurrentValue);
+
+        IFC(pCurrentValue->Execute(NULL, &pValue));
 
         if(pValue->IsShareable())
         {
@@ -147,6 +111,8 @@ Cleanup:
     ReleaseObject(pProperty);
     ReleaseObject(pValue);
     ReleaseObject(pResolvedSetter);
+    ReleaseObject(pPropertyAsString);
+    ReleaseObject(pCurrentValue);
 
     return hr;
 }
@@ -178,69 +144,60 @@ Cleanup:
     return hr;
 }
 
-__override __checkReturn HRESULT
-CSetter::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
+__override __checkReturn HRESULT 
+CSetter::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CSetter::PropertyProperty)
+    if (pProperty->GetOwningType() == TypeIndex::Setter)
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        CStringValue* pStringValue = (CStringValue*)pValue;
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case SetterProperties::Property:
+                {
+                    *ppLayeredValue = &m_Property;
+                    break;
+                }
 
-        IFC(SetPropertyInternal(pStringValue));
-    }
-    else if(pProperty == &CSetter::ValueProperty)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::ParserCommandList));
+            case SetterProperties::Value:
+                {
+                    *ppLayeredValue = &m_Value;
+                    break;
+                }
 
-        CParserCommandList* pCommandList = (CParserCommandList*)pValue;
-
-        IFC(SetPropertyValueInternal(pCommandList));
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
+        IFC_NOTRACE(CPropertyObject::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
     return hr;
 }
 
-__override __checkReturn HRESULT 
-CSetter::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue
+__checkReturn HRESULT
+CSetter::OnValueChanged(
+    __in_opt CObjectWithType* pOldValue, 
+    __in_opt CObjectWithType* pNewValue
     )
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CSetter::PropertyProperty)
-    {
-        *ppValue = m_Property;
-        AddRefObject(m_Property);
-    }
-    else if(pProperty == &CSetter::ValueProperty)
-    {
-        *ppValue = m_Value;
-        AddRefObject(m_Value);
-    }
-    else
-    {
-        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
-    }
-
-Cleanup:
+    ReleaseObject(m_CachedValue);
+    
     return hr;
 }
 

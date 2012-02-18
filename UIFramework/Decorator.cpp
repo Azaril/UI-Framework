@@ -28,7 +28,7 @@ CStaticProperty CDecorator::ChildProperty(TypeIndex::Decorator, DecoratorPropert
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CDecorator, OnChildChanged );
 
-CDecorator::CDecorator() : m_Child(this, &CDecorator::ChildProperty)
+CDecorator::CDecorator()
 {
 }
 
@@ -41,18 +41,6 @@ HRESULT CDecorator::SetChild(CUIElement* pChild)
     HRESULT hr = S_OK;
 
     IFC(SetValue(&CDecorator::ChildProperty, pChild));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CDecorator::GetEffectiveChild(CUIElement** ppChild)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppChild);
-
-    IFC(m_Child.GetTypedEffectiveValue(ppChild));
 
 Cleanup:
     return hr;

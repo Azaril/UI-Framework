@@ -424,18 +424,6 @@ class UIFRAMEWORK_API CUIElement : public CVisual
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        HRESULT GetEffectiveVisibility( Visibility::Value* pVisibility );
-        HRESULT GetEffectiveMinimumWidth( FLOAT* pMinimumWidth );
-        HRESULT GetEffectiveMinimumHeight( FLOAT* pMinimumHeight );
-        HRESULT GetEffectiveMaximumWidth( FLOAT* pMaximumWidth );
-        HRESULT GetEffectiveMaximumHeight( FLOAT* pMaximumHeight );
-        HRESULT GetEffectiveHorizontalAlignment( HorizontalAlignment::Value* pAlignment );
-        HRESULT GetEffectiveVerticalAlignment( VerticalAlignment::Value* pAlignment );
-        HRESULT GetEffectiveMargin( RectF* pMargin );
-        HRESULT GetEffectiveFocusable( bool* pFocusable );
-        HRESULT GetEffectiveOpacity( FLOAT* pOpacity );
-        HRESULT GetEffectiveNamescope( bool* pNamescope );
-
         virtual void OnMouseButton( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
 
         virtual void OnMouseDown( CObjectWithType* pSender, CRoutedEventArgs* pRoutedEventArgs );
@@ -494,19 +482,19 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         HRESULT OnFocusableChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnOpacityChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
    
-        CTypedLayeredValue< CUIElement, CFloatValue > m_Width;
-        CTypedLayeredValue< CUIElement, CFloatValue > m_Height;
-        CTypedLayeredValue< CUIElement, CFloatValue > m_MinimumWidth;
-        CTypedLayeredValue< CUIElement, CFloatValue > m_MinimumHeight;
-        CTypedLayeredValue< CUIElement, CFloatValue > m_MaximumWidth;
-        CTypedLayeredValue< CUIElement, CFloatValue > m_MaximumHeight;
-        CTypedLayeredValue< CUIElement, CVisibilityValue > m_Visibility;
-        CTypedLayeredValue< CUIElement, CVerticalAlignmentValue > m_VerticalAlignment;
-        CTypedLayeredValue< CUIElement, CHorizontalAlignmentValue > m_HorizontalAlignment;
-        CTypedLayeredValue< CUIElement, CRectFValue > m_Margin;
-        CTypedLayeredValue< CUIElement, CBoolValue > m_Focusable;
-        CTypedLayeredValue< CUIElement, CFloatValue > m_Opacity;
-        CTypedLayeredValue< CUIElement, CBoolValue > m_Namescope;
+        CLayeredValue m_Width;
+        CLayeredValue m_Height;
+        CLayeredValue m_MinimumWidth;
+        CLayeredValue m_MinimumHeight;
+        CLayeredValue m_MaximumWidth;
+        CLayeredValue m_MaximumHeight;
+        CLayeredValue m_Visibility;
+        CLayeredValue m_VerticalAlignment;
+        CLayeredValue m_HorizontalAlignment;
+        CLayeredValue m_Margin;
+        CLayeredValue m_Focusable;
+        CLayeredValue m_Opacity;
+        CLayeredValue m_Namescope;
 
         bool m_MeasureDirty;
         bool m_ArrangeDirty;

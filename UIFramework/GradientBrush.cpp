@@ -22,7 +22,7 @@ DEFINE_GET_DEFAULT_NULL( GradientStops );
 //
 // Properties
 //
-CStaticProperty CGradientBrush::GradientStopsProperty(TypeIndex::GradientBrush, GradientBrushProperties::GradientStops, L"GradientStops", TypeIndex::GradientStop, StaticPropertyFlags::Content | StaticPropertyFlags::Collection | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( GradientStops ), &INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged ));
+CStaticProperty CGradientBrush::GradientStopsProperty(TypeIndex::GradientBrush, GradientBrushProperties::GradientStops, L"GradientStops", TypeIndex::GradientStopCollection, StaticPropertyFlags::Content | StaticPropertyFlags::Collection, &GET_DEFAULT( GradientStops ), &INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged ));
 
 //
 // Property Change Handlers
@@ -30,15 +30,13 @@ CStaticProperty CGradientBrush::GradientStopsProperty(TypeIndex::GradientBrush, 
 DEFINE_INSTANCE_CHANGE_CALLBACK( CGradientBrush, OnGradientStopsChanged );
 
 CGradientBrush::CGradientBrush(
-    ) 
-    : m_GradientStops(NULL)
+    )
 {
 }
 
 CGradientBrush::~CGradientBrush(
     )
 {
-    ReleaseObject(m_GradientStops);
 }
 
 __checkReturn HRESULT 
@@ -48,9 +46,6 @@ CGradientBrush::Initialize(
 {
     HRESULT hr = S_OK;
 
-    IFC(CGradientStopCollection::Create(&m_GradientStops));
-
-Cleanup:
     return hr;
 }
 
@@ -103,47 +98,37 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CGradientBrush::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    //if(pProperty == &CGradientBrush::GradientStopsProperty)
-    //{
-    //}
-    //else
-    //{
-        IFC(CBrush::SetValueInternal(pProperty, pValue));
-    //}
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CGradientBrush::GetValueInternal(
+CGradientBrush::GetLayeredValue(
     __in CProperty* pProperty,
-    __deref_out_opt CObjectWithType** ppValue
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(ppValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty  == &CGradientBrush::GradientStopsProperty)
+    if (pProperty->GetOwningType() == TypeIndex::GradientBrush)
     {
-        *ppValue = m_GradientStops;
-        AddRefObject(m_GradientStops);
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case GradientBrushProperties::GradientStops:
+                {
+                    *ppLayeredValue = &m_GradientStops;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CBrush::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CPropertyObject::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

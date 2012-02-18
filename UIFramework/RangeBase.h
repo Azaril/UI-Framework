@@ -32,10 +32,6 @@ class CRangeBase : public CControl
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        HRESULT GetEffectiveMaximum( FLOAT* pMaximum );
-        HRESULT GetEffectiveMinimum( FLOAT* pMinimum );
-        HRESULT GetEffectiveRangeValue( FLOAT* pValue );
-
         //
         // Property Change Handlers
         //
@@ -47,9 +43,9 @@ class CRangeBase : public CControl
         HRESULT OnMinimumChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnValueChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        CTypedLayeredValue< CRangeBase, CFloatValue > m_Maximum;
-        CTypedLayeredValue< CRangeBase, CFloatValue > m_Minimum;
-        CTypedLayeredValue< CRangeBase, CFloatValue > m_Value;
+        CLayeredValue m_Maximum;
+        CLayeredValue m_Minimum;
+        CLayeredValue m_Value;
 };
 
 template< >

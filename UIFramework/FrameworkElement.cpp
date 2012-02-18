@@ -28,7 +28,7 @@ DEFINE_GET_DEFAULT_NULL( Style );
 // Properties
 //
 CStaticProperty CFrameworkElement::NameProperty(TypeIndex::FrameworkElement, FrameworkElementProperties::Name, L"Name", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Name ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnNameChanged ) );
-CStaticProperty CFrameworkElement::ResourcesProperty(TypeIndex::FrameworkElement, FrameworkElementProperties::Resources, L"Resources", TypeIndex::Object, StaticPropertyFlags::Dictionary | StaticPropertyFlags::ReadOnly, &GET_DEFAULT( Resources ) );
+CStaticProperty CFrameworkElement::ResourcesProperty(TypeIndex::FrameworkElement, FrameworkElementProperties::Resources, L"Resources", TypeIndex::ResourceDictionary, StaticPropertyFlags::Dictionary, &GET_DEFAULT( Resources ) );
 CStaticProperty CFrameworkElement::StyleProperty(TypeIndex::FrameworkElement, FrameworkElementProperties::Style, L"Style", TypeIndex::Style, StaticPropertyFlags::None, &GET_DEFAULT( Style ), &INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnStyleChanged ) );
 
 //
@@ -41,9 +41,6 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CFrameworkElement, OnStyleChanged );
 CFrameworkElement::CFrameworkElement() : m_ChildrenSubscriber(*this),
                                          m_StyleCallback(*this),
                                          m_StyleDirty(FALSE),
-                                         m_Name(this, &CFrameworkElement::NameProperty),
-                                         m_Resources(this, &CFrameworkElement::ResourcesProperty),
-                                         m_Style(this, &CFrameworkElement::StyleProperty),
                                          m_Children(NULL),
                                          m_RegisteredName(NULL),
                                          m_ResolvedStyle(NULL),
@@ -65,10 +62,6 @@ HRESULT CFrameworkElement::Initialize(CProviders* pProviders)
     CResourceDictionary* pResources = NULL;
 
     IFC(CUIElement::Initialize(pProviders));
-
-    IFC(CResourceDictionary::Create(&pResources));
-
-    IFC(m_Resources.SetLocalValue(pResources));
 
     IFC(CUIElementCollection::Create(&m_Children));
 
@@ -210,42 +203,6 @@ CFrameworkElement::EnsureLoaded(
 Cleanup:
     ReleaseObject(pLoadedEventArgs);
 
-    return hr;
-}
-
-HRESULT CFrameworkElement::GetEffectiveName(CStringValue** ppName)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppName);
-
-    IFC(m_Name.GetTypedEffectiveValue(ppName));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CFrameworkElement::GetEffectiveStyle(CStyle** ppStyle)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppStyle);
-
-    IFC(m_Style.GetTypedEffectiveValue(ppStyle));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CFrameworkElement::GetEffectiveResources(CResourceDictionary** ppResources)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppResources);
-
-    IFC(m_Resources.GetTypedEffectiveValue(ppResources));
-
-Cleanup:
     return hr;
 }
 
@@ -437,7 +394,7 @@ HRESULT CFrameworkElement::EnsureStyle()
         {
             IFC(RevokeStyle());
 
-            IFC(GetEffectiveStyle(&pStyle));
+            IFC(GetTypedEffectiveValue(&StyleProperty, &pStyle));
 
             if(pStyle == NULL)
             {
@@ -565,7 +522,7 @@ HRESULT CFrameworkElement::RegisterInNamescope(CNamescope* pNamescope, CStringVa
 
     IFCPTR(pNamescope);
 
-    IFC(GetEffectiveName(&pName));
+    IFC(GetTypedEffectiveValue(&NameProperty, &pName));
 
     if(pName)
     {
@@ -607,7 +564,7 @@ HRESULT CFrameworkElement::FindResource(CObjectWithType* pKey, CObjectWithType**
     HRESULT hr = S_OK;
     CResourceDictionary* pResources = NULL;
 
-    IFC(GetEffectiveResources(&pResources));
+    IFC(GetTypedEffectiveValue(&ResourcesProperty, &pResources));
 
     if(pResources)
     {

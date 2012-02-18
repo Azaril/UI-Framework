@@ -168,15 +168,11 @@ class UIFRAMEWORK_API CFrameworkElement : public CUIElement
         HRESULT OnStyleChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnResourcesChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        HRESULT GetEffectiveName( CStringValue** ppName );
-        HRESULT GetEffectiveStyle( CStyle** ppStyle );
-        HRESULT GetEffectiveResources( CResourceDictionary** ppResources );
-
         CUIElementCollection* GetChildCollection();
 
-        CTypedLocalLayeredValue< CFrameworkElement, CStringValue > m_Name;
-        CTypedLocalLayeredValue< CFrameworkElement, CResourceDictionary > m_Resources;
-        CTypedLocalLayeredValue< CFrameworkElement, CStyle > m_Style;
+        CLayeredValue m_Name;
+        CLayeredValue m_Resources;
+        CLayeredValue m_Style;
 
         bool m_AutomaticNamescopeParticipation;
         CStringValue* m_RegisteredName;

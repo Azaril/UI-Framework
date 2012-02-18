@@ -157,37 +157,17 @@ CPropertyObject::SetValuePrivate(
 
             IFC(RaisePropertyChanged(pProperty));
         }
-        else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)) && pLayeredValue != NULL)
-        {
-            IFC(pLayeredValue->SetLocalValue(pValue));
-        }
         else
         {
-            IFC(SetValueInternal(pProperty, pValue));
+            IFC(GetLayeredValue(pProperty, &pLayeredValue));
 
-            IFC(pProperty->OnValueChanged(this, pOldValue, pValue));
-
-            IFC(RaisePropertyChanged(pProperty));
+            IFC(pLayeredValue->SetLocalValue(pValue));
         }
     }
 
 Cleanup:
     ReleaseObject(pOldValue);
 
-    return hr;
-}
-
-__checkReturn HRESULT
-CPropertyObject::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFC(E_FAIL);
-
-Cleanup:
     return hr;
 }
 
@@ -217,13 +197,11 @@ CPropertyObject::GetValue(
 
         *ppValue = NULL;
     }
-    else if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)) && pLayeredValue != NULL)
-    {
-        IFC(pLayeredValue->GetLocalValue(ppValue));
-    }
     else
     {
-        IFC(GetValueInternal(pProperty, ppValue));
+        IFC(GetLayeredValue(pProperty, &pLayeredValue));
+
+        IFC(pLayeredValue->GetLocalValue(ppValue));
     }
 
 Cleanup:
@@ -245,20 +223,6 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CPropertyObject::GetValueInternal(
-    __in CProperty* pProperty,
-    __deref_out_opt CObjectWithType** ppValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFC(E_FAIL);
-
-Cleanup:
-    return hr;
-}
-
-__checkReturn HRESULT 
 CPropertyObject::GetEffectiveValue(
     __in CProperty* pProperty, 
     __deref_out_opt CObjectWithType** ppValue
@@ -270,41 +234,9 @@ CPropertyObject::GetEffectiveValue(
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)) && pLayeredValue != NULL)
-    {
-        IFC(pLayeredValue->GetEffectiveValue(ppValue));
-    }
-    else
-    {
-        //TODO: This will trigger yet another layered property lookup, needs optimization.
-        IFC(GetValue(pProperty, ppValue));
-    }
+    IFC(GetLayeredValue(pProperty, &pLayeredValue));
 
-Cleanup:
-    return hr;
-}
-
-__checkReturn HRESULT 
-CPropertyObject::SetEffectiveValue(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
-    )
-{
-    HRESULT hr = S_OK;
-    CLayeredValue* pLayeredValue = NULL;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    if(SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)) && pLayeredValue != NULL)
-    {
-        IFC(pLayeredValue->SetEffectiveValue(pValue));
-    }
-    else
-    {
-        //TODO: This will trigger yet another layered property lookup, needs optimization.
-        IFC(SetValue(pProperty, pValue));
-    }
+    IFC(pLayeredValue->GetEffectiveValue(pProperty, ppValue));
 
 Cleanup:
     return hr;

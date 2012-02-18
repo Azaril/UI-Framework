@@ -42,9 +42,7 @@ class UIFRAMEWORK_API CDockPanel : public CPanel
 
         HRESULT OnLastChildFillChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        HRESULT GetEffectiveLastChildFill( bool* pLastChildFill );
-
-        CTypedLayeredValue< CDockPanel, CBoolValue > m_LastChildFill;
+        CLayeredValue m_LastChildFill;
 };
 
 template< >

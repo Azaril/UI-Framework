@@ -20,21 +20,17 @@ namespace EventTriggerProperties
 // Properties
 //
 CStaticProperty CEventTrigger::RoutedEventProperty(TypeIndex::EventTrigger, EventTriggerProperties::RoutedEvent, L"RoutedEvent", TypeIndex::RoutedEvent, StaticPropertyFlags::None);
-CStaticProperty CEventTrigger::ActionsProperty(TypeIndex::EventTrigger, EventTriggerProperties::Actions, L"Actions", TypeIndex::TriggerAction, StaticPropertyFlags::Collection | StaticPropertyFlags::Content | StaticPropertyFlags::ReadOnly);
+CStaticProperty CEventTrigger::ActionsProperty(TypeIndex::EventTrigger, EventTriggerProperties::Actions, L"Actions", TypeIndex::TriggerActionCollection, StaticPropertyFlags::Collection | StaticPropertyFlags::Content);
 
 CEventTrigger::CEventTrigger(
     ) 
-    : m_RoutedEvent(NULL)
-    , m_Actions(NULL)
-    , m_Providers(NULL)
+    : m_Providers(NULL)
 {
 }
 
 CEventTrigger::~CEventTrigger(
     )
 {
-    ReleaseObject(m_RoutedEvent);
-    ReleaseObject(m_Actions);
     ReleaseObject(m_Providers);
 }
 
@@ -50,8 +46,6 @@ CEventTrigger::Initialize(
     m_Providers = pProviders;
     AddRefObject(m_Providers);
 
-    IFC(CTriggerActionCollection::Create(&m_Actions));
-
 Cleanup:
     return hr;
 }
@@ -65,15 +59,21 @@ CEventTrigger::ResolveTrigger(
 {
     HRESULT hr = S_OK;
     CResolvedEventTrigger* pResolvedEventTrigger = NULL;
+    CTriggerActionCollection* pActions = NULL;
+    CRoutedEvent* pRoutedEvent = NULL;
 
     IFCPTR(pObject);
     IFCPTR(ppResolvedTrigger);
 
-    IFC(CResolvedEventTrigger::Create(pObject, m_RoutedEvent, m_Providers, pCallback, &pResolvedEventTrigger));
+    IFC(GetTypedEffectiveValue(&RoutedEventProperty, &pRoutedEvent));
 
-    for(UINT32 i = 0; i < m_Actions->GetCount(); i++)
+    IFC(CResolvedEventTrigger::Create(pObject, pRoutedEvent, m_Providers, pCallback, &pResolvedEventTrigger));
+
+    IFC(GetTypedEffectiveValue(&ActionsProperty, &pActions));
+
+    for(UINT32 i = 0; i < pActions->GetCount(); i++)
     {
-        CTriggerAction* pAction = m_Actions->GetAtIndex(i);
+        CTriggerAction* pAction = pActions->GetAtIndex(i);
 
         IFC(pResolvedEventTrigger->AddAction(pAction));
     }
@@ -83,6 +83,8 @@ CEventTrigger::ResolveTrigger(
 
 Cleanup:
     ReleaseObject(pResolvedEventTrigger);
+    ReleaseObject(pActions);
+    ReleaseObject(pRoutedEvent);
 
     return hr;
 }
@@ -114,62 +116,44 @@ Cleanup:
     return hr;
 }
 
-__checkReturn HRESULT
-CEventTrigger::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
+__override __checkReturn HRESULT 
+CEventTrigger::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CEventTrigger::RoutedEventProperty)
+    if (pProperty->GetOwningType() == TypeIndex::EventTrigger)
     {
-        CRoutedEvent* pRoutedEvent = NULL;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        IFC(CastType(pValue, &pRoutedEvent));
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case EventTriggerProperties::RoutedEvent:
+                {
+                    *ppLayeredValue = &m_RoutedEvent;
+                    break;
+                }
 
-        ReleaseObject(m_RoutedEvent);
+            case EventTriggerProperties::Actions:
+                {
+                    *ppLayeredValue = &m_Actions;
+                    break;
+                }
 
-        m_RoutedEvent = pRoutedEvent;
-
-        AddRefObject(m_RoutedEvent);
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CEventTrigger::GetValue(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CEventTrigger::RoutedEventProperty)
-    {
-        *ppValue = m_RoutedEvent;
-        AddRefObject(m_RoutedEvent);
-    }
-    else if(pProperty == &CEventTrigger::ActionsProperty)
-    {
-        *ppValue = m_Actions;
-        AddRefObject(m_Actions);
-    }
-    else
-    {
-        IFC(CPropertyObject::GetValue(pProperty, ppValue));
+        IFC_NOTRACE(CTrigger::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

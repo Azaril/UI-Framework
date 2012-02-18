@@ -2,6 +2,7 @@
 #include "DelegatingPropertyInformation.h"
 #include "StaticCommandInformation.h"
 #include "DelegatingCommandInformation.h"
+#include "Binding.h"
 
 //
 // Properties
@@ -38,9 +39,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollBar, OnOrientationChanged );
 CStaticRoutedCommand CScrollBar::LineUpCommand( L"LineUp" );
 CStaticRoutedCommand CScrollBar::LineDownCommand( L"LineDown" );
 
-CScrollBar::CScrollBar() : m_Orientation(this, &CScrollBar::OrientationProperty),
-                           m_ViewportSize(this, &CScrollBar::ViewportSizeProperty),
-                           m_Track(NULL)
+CScrollBar::CScrollBar() : m_Track(NULL)
 {
 }
 
@@ -64,7 +63,7 @@ Cleanup:
 HRESULT CScrollBar::PostTemplateApplied()
 {
     HRESULT hr = S_OK;
-    CBinding* pBinding = NULL;
+    //CBinding* pBinding = NULL;
 
     IFC(CControl::PostTemplateApplied());
 
@@ -72,12 +71,13 @@ HRESULT CScrollBar::PostTemplateApplied()
 
     IFCPTR(m_Track);
 
+    //TODO: Does this need a binding?
     //IFC(CBinding::Create(GetProviders(), &pBinding));
 
     //IFC(m_Track->SetBinding(&CTrack::ValueProperty, pBinding));
 
 Cleanup:
-    ReleaseObject(pBinding);
+    //ReleaseObject(pBinding);
 
     return hr;
 }
@@ -189,23 +189,6 @@ HRESULT CScrollBar::OnOrientationChanged(CObjectWithType* pOldValue, CObjectWith
     IFC(InvalidateArrange());
 
 Cleanup:
-    return hr;
-}
-
-HRESULT CScrollBar::GetEffectiveOrientation(Orientation::Value* pOrientation)
-{
-    HRESULT hr = S_OK;
-    COrientationValue* pEffectiveValue = NULL;
-
-    IFCPTR(pOrientation);
-
-    IFC(m_Orientation.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pOrientation = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
     return hr;
 }
 

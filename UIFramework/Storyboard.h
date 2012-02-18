@@ -52,17 +52,12 @@ class CStoryboard : public CRefCountedObjectBase< CPropertyObject >
             __in CProviders* pProviders
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty,
-            __in CObjectWithType* pValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty, 
-            __deref_out_opt CObjectWithType** ppValue 
-            );
-
-        CAnimationTimelineCollection* m_pTimelines;
+        CLayeredValue m_Children;
+        CLayeredValue m_Target;
+        CLayeredValue m_TargetName;
+        CLayeredValue m_TargetProperty;
 };
 
 template< >

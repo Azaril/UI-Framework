@@ -10,6 +10,7 @@
 #include "StyleCallback.h"
 #include "ParserCommandList.h"
 #include "TriggerAction.h"
+#include "LayeredValue.h"
 
 class CResolvedSetter;
 class CUIElement;
@@ -23,12 +24,6 @@ class CSetter : public CRefCountedObjectBase< CTriggerAction >
 
         static __checkReturn HRESULT CreatePropertyInformation( 
             __deref_out CPropertyInformation** ppInformation
-            );
-
-        __out_opt const WCHAR* GetPropertyName(
-            );
-
-        __out_opt CObjectWithType* GetPropertyValue(
             );
 
         virtual __checkReturn HRESULT ResolveAction(
@@ -54,27 +49,21 @@ class CSetter : public CRefCountedObjectBase< CTriggerAction >
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty,
-            __in CObjectWithType* pValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty, 
-            __deref_out_opt CObjectWithType** ppValue 
-            );
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnValueChanged );
 
-        __checkReturn HRESULT SetPropertyInternal( 
-            __in  CStringValue* pProperty 
-            );
-
-        __checkReturn HRESULT SetPropertyValueInternal( 
-            __in CParserCommandList* pValue 
+        __checkReturn HRESULT OnValueChanged(
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue 
             );
 
         CProviders* m_Providers;
-        CStringValue* m_Property;
-        CParserCommandList* m_Value;
+        CLayeredValue m_Property;
+        CLayeredValue m_Value;
         CObjectWithType* m_CachedValue;
 };
 

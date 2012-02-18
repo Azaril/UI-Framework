@@ -37,9 +37,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CTextBlock, OnForegroundChanged );
 CTextBlock::CTextBlock() : m_TextLayout(NULL),
                            m_TextFormat(NULL),
                            m_TextVisual(NULL),
-                           m_TextLayoutDirty(TRUE),
-                           m_Text(this, &CTextBlock::TextProperty),
-                           m_Foreground(this, &CTextBlock::ForegroundProperty)
+                           m_TextLayoutDirty(TRUE)
 {
 }
 
@@ -105,7 +103,7 @@ HRESULT CTextBlock::GetTextLayout(CTextLayout** ppLayout)
 
     if(m_TextLayoutDirty)
     {
-        IFC(GetEffectiveText(&pText));
+        IFC(GetTypedEffectiveValue(&TextProperty, &pText));
 
         IFC(m_VisualContext.GetGraphicsDevice()->GetTextProvider(&pTextProvider));
 
@@ -277,18 +275,6 @@ Cleanup:
     return hr;
 }
 
-HRESULT CTextBlock::GetEffectiveText(CStringValue** ppText)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppText);
-
-    IFC(m_Text.GetTypedEffectiveValue(ppText));
-
-Cleanup:
-    return hr;
-}
-
 HRESULT CTextBlock::OnForegroundChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;
@@ -297,18 +283,6 @@ HRESULT CTextBlock::OnForegroundChanged(CObjectWithType* pOldValue, CObjectWithT
     IFC(CastType(pNewValue, &pBrush));
 
     IFC(m_TextVisual->SetForegroundBrush(pBrush));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CTextBlock::GetEffectiveForeground(CBrush** ppBrush)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppBrush);
-
-    IFC(m_Foreground.GetTypedEffectiveValue(ppBrush));
 
 Cleanup:
     return hr;

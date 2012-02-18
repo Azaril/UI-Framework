@@ -55,7 +55,7 @@ class UIFRAMEWORK_API CContentPresenter : public CFrameworkElement
 
         HRESULT GetContentChild( CUIElement** ppChild );
 
-        CTypedLayeredValue< CContentPresenter, CObjectWithType > m_Content;
+        CLayeredValue m_Content;
         bool m_ContentDirty;
         CUIElement* m_ContentChild;
 };

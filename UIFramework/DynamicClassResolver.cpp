@@ -57,6 +57,32 @@ class StaticClassFactory
         }
 };
 
+template< typename FromType >
+class StaticClassFactoryNoProviders
+{
+    public:
+        static HRESULT Create(
+			__in CProviders* pProviders,
+			__deref_out CPropertyObject** ppObject
+			)
+        {
+            HRESULT hr = S_OK;
+            FromType* pNewObject = NULL;
+
+            IFCPTR(ppObject);
+
+            IFC(FromType::Create(&pNewObject));
+
+            *ppObject = pNewObject;
+            pNewObject = NULL;
+
+        Cleanup:
+            ReleaseObject(pNewObject);
+
+            return hr;
+        }
+};
+
 ClassInformation Classes[] =
 {
     ClassInformation(
@@ -276,6 +302,30 @@ ClassInformation Classes[] =
         NULL),
 
     ClassInformation(
+        L"SetterCollection",
+        TypeIndex::SetterCollection,
+        &StaticClassFactoryNoProviders< CSetterCollection >::Create,
+        NULL,
+        NULL,
+        NULL),
+
+    ClassInformation(
+        L"TriggerCollection",
+        TypeIndex::TriggerCollection,
+        &StaticClassFactoryNoProviders< CTriggerCollection >::Create,
+        NULL,
+        NULL,
+        NULL),
+
+    ClassInformation(
+        L"TriggerActionCollection",
+        TypeIndex::TriggerActionCollection,
+        &StaticClassFactoryNoProviders< CTriggerActionCollection >::Create,
+        NULL,
+        NULL,
+        NULL),
+
+    ClassInformation(
         L"BeginStoryboard",
         TypeIndex::BeginStoryboard,
         &StaticClassFactory< CBeginStoryboard >::Create,
@@ -300,10 +350,26 @@ ClassInformation Classes[] =
         NULL),
 
     ClassInformation(
+        L"GradientStopCollection",
+        TypeIndex::GradientStopCollection,
+        &StaticClassFactoryNoProviders< CGradientStopCollection >::Create,
+        NULL,
+        NULL,
+        NULL),
+
+    ClassInformation(
         L"EventTrigger",
         TypeIndex::EventTrigger,
         &StaticClassFactory< CEventTrigger >::Create,
         &CEventTrigger::CreatePropertyInformation,
+        NULL,
+        NULL),
+
+    ClassInformation(
+        L"TriggerCollection",
+        TypeIndex::TriggerCollection,
+        &StaticClassFactoryNoProviders< CTriggerCollection >::Create,
+        NULL,
         NULL,
         NULL),
 
@@ -340,6 +406,14 @@ ClassInformation Classes[] =
         NULL),
 
     ClassInformation(
+        L"AnimationTimelineCollection",
+        TypeIndex::AnimationTimelineCollection,
+        &StaticClassFactoryNoProviders< CAnimationTimelineCollection >::Create,
+        NULL,
+        NULL,
+        NULL),
+
+    ClassInformation(
         L"FloatAnimation",
         TypeIndex::FloatAnimation,
         &StaticClassFactory< CFloatAnimation >::Create,
@@ -352,6 +426,14 @@ ClassInformation Classes[] =
         TypeIndex::Storyboard,
         &StaticClassFactory< CStoryboard >::Create,
         &CStoryboard::CreatePropertyInformation,
+        NULL,
+        NULL),
+
+    ClassInformation(
+        L"ResourceDictionary",
+        TypeIndex::ResourceDictionary,
+        &StaticClassFactoryNoProviders< CResourceDictionary >::Create,
+        NULL,
         NULL,
         NULL)
 };

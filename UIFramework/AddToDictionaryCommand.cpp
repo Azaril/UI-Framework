@@ -39,6 +39,8 @@ CAddToDictionaryCommand::Execute(
     CPropertyObject* pDictionaryParent = NULL;
     CObjectWithType* pDictionaryObject = NULL;
     CObjectDictionary* pDictionary = NULL;
+    CResolvedClass* pResolvedCollectionType = NULL;
+    CPropertyObject* pNewDictionary = NULL;
 
     IFC(Context.GetObject(&pKey));
 
@@ -52,7 +54,17 @@ CAddToDictionaryCommand::Execute(
 
     IFC(pDictionaryParent->GetValue(m_Property, &pDictionaryObject));
 
-    IFCPTR(pDictionaryObject);
+    if (pDictionaryObject == NULL)
+    {
+        IFC(Context.GetProviders()->GetClassResolver()->ResolveType(m_Property->GetType(), &pResolvedCollectionType));
+
+        IFC(pResolvedCollectionType->CreateInstance(Context.GetProviders(), &pNewDictionary));
+
+        IFC(pDictionaryParent->SetValue(m_Property, pNewDictionary));
+
+        pDictionaryObject = pNewDictionary;
+        pNewDictionary = NULL;
+    }
 
     IFC(CastType(pDictionaryObject, &pDictionary));
 
@@ -63,6 +75,8 @@ Cleanup:
     ReleaseObject(pValue);
     ReleaseObject(pDictionaryParent);
     ReleaseObject(pDictionaryObject);
+    ReleaseObject(pNewDictionary);
+    ReleaseObject(pResolvedCollectionType);
 
     return hr;
 }

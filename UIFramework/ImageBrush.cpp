@@ -16,20 +16,28 @@ namespace ImageBrushProperties
 }
 
 //
+// Property Defaults
+//
+DEFINE_GET_DEFAULT_NULL( Source );
+
+//
 // Properties
 //
-CStaticProperty CImageBrush::SourceProperty(TypeIndex::ImageBrush, ImageBrushProperties::Source, L"Source", TypeIndex::Object, StaticPropertyFlags::None);
+CStaticProperty CImageBrush::SourceProperty(TypeIndex::ImageBrush, ImageBrushProperties::Source, L"Source", TypeIndex::Object, StaticPropertyFlags::None, &GET_DEFAULT( Source ), &INSTANCE_CHANGE_CALLBACK( CImageBrush, OnSourceChanged ));
+
+//
+// Property Change Handlers
+//
+DEFINE_INSTANCE_CHANGE_CALLBACK( CImageBrush, OnSourceChanged );
 
 CImageBrush::CImageBrush(
-    ) 
-    : m_Source(NULL)
+    )
 {
 }
 
 CImageBrush::~CImageBrush(
     )
 {
-    ReleaseObject(m_Source);
     ReleaseObject(m_pProviders);
 }
 
@@ -77,21 +85,38 @@ Cleanup:
     return hr;
 }
 
-__checkReturn HRESULT 
-CImageBrush::SetSource(
-    __in_opt CObjectWithType* pSource
+__override __checkReturn HRESULT 
+CImageBrush::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
-    if (pSource != NULL)
+    IFCPTR(pProperty);
+    IFCPTR(ppLayeredValue);
+
+    if (pProperty->GetOwningType() == TypeIndex::ImageBrush)
     {
-        IFC(SetValue(&CImageBrush::SourceProperty, pSource));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case ImageBrushProperties::Source:
+                {
+                    *ppLayeredValue = &m_Source;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        //TODO: HACK: This should be using ClearValue most likely.
-        IFC(InternalSetSource(NULL));
+        IFC_NOTRACE(CBrush::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
@@ -99,27 +124,16 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CImageBrush::InternalSetSource(
-    __in_opt CObjectWithType* pSource
+CImageBrush::OnSourceChanged(
+    __in_opt CObjectWithType* pOldValue, 
+    __in_opt CObjectWithType* pNewValue
     )
 {
     HRESULT hr = S_OK;
 
-    IFCEXPECT(pSource == NULL || pSource->IsTypeOf(TypeIndex::String) || pSource->IsTypeOf(TypeIndex::BitmapSource));
+    IFC(EnsureBitmaps());
 
-    if(pSource != m_Source)
-    {
-        ReleaseObject(m_Source);
-
-        m_Source = pSource;
-
-        AddRefObject(m_Source);
-
-        IFC(ReleaseBitmaps());
-        IFC(EnsureBitmaps());
-
-        IFC(InvalidateVisualResource());
-    }
+    IFC(InvalidateVisualResource());
 
 Cleanup:
     return hr;
@@ -249,16 +263,19 @@ CImageBrush::CreateBitmapFromSource(
     CBitmapSource* pBitmapSource = NULL;
     CImagingProvider* pImagingProvider = NULL;
     IReadStream* pResourceStream = NULL;
+    CObjectWithType* pSource = NULL;
 
     IFCPTR(ppBitmapSource);
 
-    if(m_Source == NULL)
+    IFC(GetEffectiveValue(&SourceProperty, &pSource));
+
+    if(pSource == NULL)
     {
         pBitmapSource = NULL;
     }
-    else if(m_Source->IsTypeOf(TypeIndex::String))
+    else if(pSource->IsTypeOf(TypeIndex::String))
     {
-        CStringValue* pStringValue = (CStringValue*)m_Source;
+        CStringValue* pStringValue = (CStringValue*)pSource;
         IResourceProvider* pResourceProvider = m_pProviders->GetResourceProvider();
 
         IFC(pResourceProvider->ReadResource(pStringValue->GetValue(), pStringValue->GetLength(), &pResourceStream));
@@ -267,10 +284,10 @@ CImageBrush::CreateBitmapFromSource(
 
         IFC(pImagingProvider->LoadBitmapFromStream(pResourceStream, &pBitmapSource));
     }
-    else if(m_Source->IsTypeOf(TypeIndex::BitmapSource))
+    else if(pSource->IsTypeOf(TypeIndex::BitmapSource))
     {
-        pBitmapSource = (CBitmapSource*)m_Source;
-        AddRefObject(m_Source);
+        pBitmapSource = (CBitmapSource*)pSource;
+        AddRefObject(pBitmapSource);
     }
     else
     {
@@ -284,6 +301,7 @@ Cleanup:
     ReleaseObject(pBitmapSource);
     ReleaseObject(pImagingProvider);
     ReleaseObject(pResourceStream);
+    ReleaseObject(pSource);
 
     return hr;
 }
@@ -304,6 +322,9 @@ CImageBrush::GetGraphicsBrush(
     IFCPTR(pGraphicsDevice);
     IFCPTR(pRenderTarget);
     IFCPTR(ppGraphicsBrush);
+
+    //TODO: Fix this to only load the bitmap for the current graphics device.
+    IFC(EnsureBitmaps());
 
     for(ContextCollection::iterator It = m_Contexts.begin(); It != m_Contexts.end(); ++It)
     {
@@ -352,55 +373,6 @@ Cleanup:
     ReleaseObject(pBitmapSource);
     ReleaseObject(pImagingProvider);
 
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CImageBrush::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    if(pProperty == &CImageBrush::SourceProperty)
-    {
-        IFC(InternalSetSource(pValue));
-    }
-    else
-    {
-        IFC(CBrush::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CImageBrush::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CImageBrush::SourceProperty)
-    {
-        *ppValue = m_Source;
-        AddRefObject(m_Source);
-    }
-    else
-    {
-        IFC(CBrush::GetValue(pProperty, ppValue));
-    }
-
-Cleanup:
     return hr;
 }
 

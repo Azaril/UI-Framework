@@ -24,8 +24,7 @@ DEFINE_GET_DEFAULT_NULL( Property );
 CStaticProperty CTemplateBinding::PropertyProperty(TypeIndex::TemplateBinding, TemplateBindingProperties::Property, L"Property", TypeIndex::String, StaticPropertyFlags::None, &GET_DEFAULT( Property ));
 
 CTemplateBinding::CTemplateBinding(
-    ) 
-    : m_Property(NULL)
+    )
 {
 }
 
@@ -34,8 +33,6 @@ CTemplateBinding::~CTemplateBinding(
 {
     m_TargetAttachedConnection.disconnect();
     m_TargetDetachedConnection.disconnect();
-
-    ReleaseObject(m_Property);
 }
 
 __checkReturn HRESULT 
@@ -84,54 +81,37 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CTemplateBinding::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
+CTemplateBinding::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CTemplateBinding::PropertyProperty)
+    if (pProperty->GetOwningType() == TypeIndex::TemplateBinding)
     {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        ReleaseObject(m_Property);
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case TemplateBindingProperties::Property:
+                {
+                    *ppLayeredValue = &m_Property;
+                    break;
+                }
 
-        m_Property = (CStringValue*)pValue;
-
-        AddRefObject(m_Property);
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CSourcedBinding::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CTemplateBinding::GetValue(
-    __in CProperty* pProperty, 
-    __deref_out CObjectWithType** ppValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CTemplateBinding::PropertyProperty)
-    {
-        *ppValue = m_Property;
-        AddRefObject(m_Property);
-    }
-    else
-    {
-        IFC(CSourcedBinding::GetValue(pProperty, ppValue));
+        IFC_NOTRACE(CSourcedBinding::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
@@ -190,6 +170,7 @@ CTemplateBinding::OnTargetAttached(
     CUIElement* pTemplateParent = NULL;
     CClassResolver* pClassResolver = NULL;
     CProperty* pResolvedProperty = NULL;
+    CStringValue* pProperty = NULL;
 
     IFCPTR(pSender);
     IFCPTR(pRoutedEventArgs);
@@ -202,19 +183,22 @@ CTemplateBinding::OnTargetAttached(
     IFCPTR(pTargetElement);
 
     pTemplateParent = pTargetElement->GetTemplateParent();
-
-    IFCPTR(m_Property);
     IFCPTR(pTemplateParent);
 
     pClassResolver = m_Providers->GetClassResolver();
     IFCPTR(pClassResolver);
 
-    IFC(pClassResolver->ResolveProperty(m_Property->GetValue(), pTemplateParent->GetType(), &pResolvedProperty));
+    IFC(GetTypedEffectiveValue(&PropertyProperty, &pProperty));
+
+    IFCPTR(pProperty);
+
+    IFC(pClassResolver->ResolveProperty(pProperty->GetValue(), pTemplateParent->GetType(), &pResolvedProperty));
 
     IFC(SetSource(pTemplateParent, pResolvedProperty));
 
 Cleanup:
     ReleaseObject(pResolvedProperty);
+    ReleaseObject(pProperty);
 }
 
 void 

@@ -2,6 +2,7 @@
 
 #include "Brush.h"
 #include "Providers.h"
+#include "LayeredValue.h"
 
 class CSolidColorBrush : public CBrush
 {
@@ -36,19 +37,7 @@ class CSolidColorBrush : public CBrush
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pValue 
-            );
-
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty, 
-            __deref_out CObjectWithType** ppValue 
-            );
-
-        __checkReturn HRESULT InternalSetColor( 
-            ColorF Color 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         //
         // Property Change Handlers
@@ -60,7 +49,7 @@ class CSolidColorBrush : public CBrush
             __in_opt CObjectWithType* pNewValue 
             );
 
-        ColorF m_Color;
+        CLayeredValue m_Color;
 };
 
 template< >

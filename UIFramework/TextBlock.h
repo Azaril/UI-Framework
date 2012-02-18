@@ -50,14 +50,11 @@ class UIFRAMEWORK_API CTextBlock : public CFrameworkElement
         HRESULT OnTextChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnForegroundChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        HRESULT GetEffectiveText( CStringValue** ppText );
-        HRESULT GetEffectiveForeground( CBrush** ppBrush );
-
         HRESULT GetTextLayout( CTextLayout** ppTextLayout );
         HRESULT InvalidateTextLayout();
 
-        CTypedLayeredValue< CTextBlock, CStringValue > m_Text;
-        CTypedLayeredValue< CTextBlock, CBrush > m_Foreground;
+        CLayeredValue m_Text;
+        CLayeredValue m_Foreground;
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;
         CTextVisual* m_TextVisual;

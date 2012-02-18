@@ -44,15 +44,7 @@ class CDynamicResource : public CBindingBase
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty,
-            __in CObjectWithType* pValue 
-            );
-
-        __override virtual __checkReturn HRESULT GetValueInternal( 
-            __in CProperty* pProperty,
-            __deref_out_opt CObjectWithType** ppValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         void OnTargetAttached( 
             __in CObjectWithType* pSender, 
@@ -66,7 +58,7 @@ class CDynamicResource : public CBindingBase
 
         events::signals::connection m_TargetAttachedConnection;
         events::signals::connection m_TargetDetachedConnection;
-        CObjectWithType* m_ResourceKey;
+        CLayeredValue m_ResourceKey;
 };
 
 template< >

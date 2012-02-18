@@ -43,9 +43,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CRangeBase, OnValueChanged );
 //
 CStaticRoutedEvent CRangeBase::ValueChangedEvent(L"ValueChanged", RoutingStrategy::Bubbling);
 
-CRangeBase::CRangeBase() : m_Maximum(this, &CRangeBase::MaximumProperty),
-                           m_Minimum(this, &CRangeBase::MinimumProperty),
-                           m_Value(this, &CRangeBase::ValueProperty)
+CRangeBase::CRangeBase()
 {
 }
 
@@ -179,57 +177,6 @@ HRESULT CRangeBase::OnValueChanged(CObjectWithType* pOldValue, CObjectWithType* 
 
 Cleanup:
     ReleaseObject(pValueChangedEventArgs);
-
-    return hr;
-}
-
-HRESULT CRangeBase::GetEffectiveMaximum(FLOAT* pMaximum)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pMaximum);
-
-    IFC(m_Maximum.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pMaximum = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CRangeBase::GetEffectiveMinimum(FLOAT* pMinimum)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pMinimum);
-
-    IFC(m_Minimum.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pMinimum = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CRangeBase::GetEffectiveRangeValue(FLOAT* pValue)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pValue);
-
-    IFC(m_Value.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pValue = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
 
     return hr;
 }

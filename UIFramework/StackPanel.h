@@ -34,8 +34,6 @@ class UIFRAMEWORK_API CStackPanel : public CPanel
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        HRESULT GetEffectiveOrientation( Orientation::Value* pOrientation );
-
         //
         // Property Change Handlers
         //
@@ -43,7 +41,7 @@ class UIFRAMEWORK_API CStackPanel : public CPanel
 
         HRESULT OnOrientationChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        CTypedLayeredValue< CStackPanel, COrientationValue > m_Orientation;
+        CLayeredValue m_Orientation;
 };
 
 template< >

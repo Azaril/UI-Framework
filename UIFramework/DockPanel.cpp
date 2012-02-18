@@ -31,7 +31,7 @@ CStaticProperty CDockPanel::LastChildFillProperty(TypeIndex::DockPanel, DockPane
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CDockPanel, OnLastChildFillChanged );
 
-CDockPanel::CDockPanel() : m_LastChildFill(this, &CDockPanel::LastChildFillProperty)
+CDockPanel::CDockPanel()
 {
 }
 
@@ -46,23 +46,6 @@ HRESULT CDockPanel::Initialize(CProviders* pProviders)
     IFC(CPanel::Initialize(pProviders));
 
 Cleanup:
-    return hr;
-}
-
-HRESULT CDockPanel::GetEffectiveLastChildFill(bool* pLastChildFill)
-{
-    HRESULT hr = S_OK;
-    CBoolValue* pEffectiveValue = NULL;
-
-    IFCPTR(pLastChildFill);
-
-    IFC(m_LastChildFill.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pLastChildFill = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
     return hr;
 }
 
@@ -96,7 +79,7 @@ CDockPanel::MeasureInternal(
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
 
-    IFC(GetEffectiveLastChildFill(&LastChildFill));
+    IFC(GetBasicTypeEffectiveValue(&LastChildFillProperty, &LastChildFill));
 
     ChildCount = pChildCollection->GetCount();
 
@@ -166,7 +149,7 @@ CDockPanel::ArrangeInternal(
     pChildCollection = GetChildCollection();
     IFCPTR(pChildCollection);
 
-    IFC(GetEffectiveLastChildFill(&LastChildFill));
+    IFC(GetBasicTypeEffectiveValue(&LastChildFillProperty, &LastChildFill));
 
     ChildCount = pChildCollection->GetCount();
 

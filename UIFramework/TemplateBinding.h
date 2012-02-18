@@ -18,11 +18,6 @@ class CTemplateBinding : public CSourcedBinding
             __deref_out CPropertyInformation** ppInformation 
             );
 
-        __override virtual __checkReturn HRESULT GetValue( 
-            __in CProperty* pProperty, 
-            __in CObjectWithType** ppValue 
-            );
-
         __override virtual __checkReturn HRESULT SetTarget(
             __in CPropertyObject* pTarget, 
             __in CProperty* pTargetProperty 
@@ -47,10 +42,7 @@ class CTemplateBinding : public CSourcedBinding
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty,
-            __in CObjectWithType* pValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         void OnTargetAttached(
             __in CObjectWithType* pSender, 
@@ -64,7 +56,7 @@ class CTemplateBinding : public CSourcedBinding
 
         events::signals::connection m_TargetAttachedConnection;
         events::signals::connection m_TargetDetachedConnection;
-        CStringValue* m_Property;
+        CLayeredValue m_Property;
 };
 
 template< >

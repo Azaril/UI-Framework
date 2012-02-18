@@ -2,23 +2,8 @@
 
 #include "PropertyObject.h"
 #include "Providers.h"
-#include "Binding.h"
+//#include "Binding.h"
 #include "Signals.h"
-
-class CLayeredValue
-{
-    public:
-        virtual HRESULT SetLocalValue( CObjectWithType* pObject ) = 0;
-        virtual HRESULT GetLocalValue( CObjectWithType** ppValue ) = 0;
-        virtual HRESULT ClearLocalValue( ) = 0;
-
-        virtual HRESULT SetStyleValue( CObjectWithType* pObject ) = 0;
-        
-        virtual HRESULT SetAnimationValue( CObjectWithType* pObject ) = 0;
-
-        virtual HRESULT GetEffectiveValue( CObjectWithType** ppValue ) = 0;
-        virtual HRESULT SetEffectiveValue( CObjectWithType* pValue ) = 0;
-};
 
 namespace EffectiveValue
 {
@@ -34,6 +19,377 @@ namespace EffectiveValue
     };
 }
 
+class UIFRAMEWORK_API CLayeredValue
+{
+    class CLayerBlock
+    {
+        public:
+            CLayerBlock(
+                )
+                : m_pNext(NULL)
+                , m_ValueType(EffectiveValue::None)
+                , m_pValue(NULL)
+            {
+            }
+
+            CLayerBlock(
+                EffectiveValue::Value valueType,
+                CLayerBlock* pNext
+                )
+                : m_pNext(pNext)
+                , m_ValueType(valueType)
+                , m_pValue(NULL)
+            {
+            }
+
+            CLayerBlock(
+                EffectiveValue::Value valueType
+                )
+                : m_pNext(NULL)
+                , m_ValueType(valueType)
+                , m_pValue(NULL)
+            {
+            }
+
+            CLayerBlock(
+                EffectiveValue::Value valueType,
+                __in_opt CObjectWithType* pValue
+                )
+                : m_pNext(NULL)
+                , m_ValueType(valueType)
+                , m_pValue(pValue)
+            {
+                AddRefObject(pValue);
+            }
+
+            ~CLayerBlock(
+                )
+            {
+                ReleaseObject(m_pValue);
+
+                delete m_pNext;
+                m_pNext = NULL;
+            }
+
+            __out_opt CLayerBlock* GetNext(
+                )
+            {
+                return m_pNext;
+            }
+
+            void SetNext(
+                __in_opt CLayerBlock* pNext
+                )
+            {
+                m_pNext = pNext;
+            }
+
+            EffectiveValue::Value GetValueType(
+                )
+            {
+                return m_ValueType;
+            }
+
+            void SetValueType(
+                EffectiveValue::Value valueType
+                )
+            {
+                m_ValueType = valueType;
+            }
+
+            void SetValue(
+                __in CObjectWithType* pValue
+                )
+            {
+                ReplaceObject(m_pValue, pValue);
+            }
+
+            __out_opt CObjectWithType* GetValue(
+                )
+            {
+                return m_pValue;
+            }
+
+        protected:
+            EffectiveValue::Value m_ValueType;
+            CLayerBlock* m_pNext;
+            CObjectWithType* m_pValue;
+    };
+
+    public:
+        CLayeredValue(
+            )
+            : m_pHeadBlock(&m_TailBlock)
+        {
+        }
+
+        ~CLayeredValue(
+            )
+        {
+        }
+
+        __checkReturn HRESULT SetLocalValue( 
+            __in CObjectWithType* pObject 
+            ) 
+        {
+            return SetValueToLayer(EffectiveValue::Local, pObject);
+        }
+
+        __checkReturn HRESULT GetLocalValue( 
+            __deref_out_opt CObjectWithType** ppValue 
+            )
+        {
+            return GetValueFromLayer(EffectiveValue::Local, ppValue);
+        }
+
+        __checkReturn HRESULT ClearLocalValue( 
+            ) 
+        {
+            return ClearValueFromLayer(EffectiveValue::Local);
+        }
+
+        __checkReturn HRESULT SetStyleValue(
+            __in CObjectWithType* pObject 
+            )
+        {
+            return SetValueToLayer(EffectiveValue::Style, pObject);
+        }
+        
+        __checkReturn HRESULT SetAnimationValue( 
+            __in CObjectWithType* pObject 
+            )
+        {
+            return SetValueToLayer(EffectiveValue::Animation, pObject);
+        }
+
+        __checkReturn HRESULT GetEffectiveValue(
+            __in CProperty* pProperty,
+            __deref_out_opt CObjectWithType** ppValue 
+            )
+        {
+            HRESULT hr = S_OK;
+            
+            if (m_pHeadBlock->GetValueType() != EffectiveValue::None)
+            {
+                SetObject(*ppValue, m_pHeadBlock->GetValue());
+            }
+            else
+            {
+                IFC(pProperty->GetDefaultValue(ppValue));
+            }
+
+        Cleanup:
+            return hr;
+        }
+
+    protected:
+        __checkReturn HRESULT SetValueToLayer(
+            EffectiveValue::Value valueType,
+            CObjectWithType* pValue
+            )
+        {
+            HRESULT hr = S_OK;
+            CLayerBlock* pBlock = NULL;
+            CObjectWithType* pOldValue = NULL;
+            CObjectWithType* pNewValue = NULL;
+
+            bool isEffectiveValue = (valueType >= m_pHeadBlock->GetValueType());
+
+            if (isEffectiveValue)
+            {
+                SetObject(pOldValue, m_pHeadBlock->GetValue());
+            }
+
+            IFC(GetOrCreateLayer(valueType, &pBlock));
+
+            {
+                if(pValue)
+                {
+                    if(pValue->IsTypeOf(ObjectTypeTraits< T >::Type))
+                    {
+                        pNewValue = pValue;
+                        pValue = NULL;
+                    }
+                    else 
+                    {
+                        /*
+                        CProviders* pProviders = GetProviders();
+                    
+                        IFCPTR(pProviders);
+
+                        pTypeConverter = pProviders->GetTypeConverter();
+                        IFCPTR(pTypeConverter);
+
+                        CConversionContext Context(m_Owner, m_Property, pProviders);
+
+                        hr = pTypeConverter->Convert(&Context, pValue, &pConvertedType);
+
+                        if(SUCCEEDED(hr))
+                        {
+                            ReplaceObject(Layer.Value, pConvertedType);
+                        }
+                        else
+                        {
+                            IFC(hr);
+                        }
+                        */
+                        //TODO: Implement.
+                        IFC(E_FAIL);
+                    }
+                }
+
+                if(isEffectiveValue)
+                {
+                    IFC(RaiseValueChanged(pOldValue, pNewValue));
+                }  
+            }
+
+        Cleanup:
+            return hr;
+        }
+
+        __checkReturn HRESULT GetValueFromLayer(
+            EffectiveValue::Value valueType,
+            __deref_out_opt CObjectWithType** ppValue
+            )
+        {
+            HRESULT hr = S_OK;
+
+            CLayerBlock* pBlock = GetLayer(valueType);
+
+            if (pBlock != NULL)
+            {
+                SetObject(*ppValue, pBlock->GetValue());
+            }
+            else
+            {
+                *ppValue = NULL;
+            }
+
+            return hr;
+        }
+
+        __checkReturn HRESULT ClearValueFromLayer(
+            EffectiveValue::Value valueType
+            )
+        {
+            HRESULT hr = S_OK;
+
+            CLayerBlock* pBlock = GetLayer(valueType);
+
+            if (pBlock != NULL)
+            {
+                //bool isEffectiveValue = (pBlock == m_pHeadBlock);
+            }
+
+            return hr;
+        }
+
+        __out_opt CLayerBlock* GetLayer(
+            EffectiveValue::Value valueType
+            )
+        {
+            CLayerBlock* pBlock = m_pHeadBlock;
+            CLayerBlock* pMatchingBlock = NULL;
+
+            ASSERT(valueType != EffectiveValue::None);
+
+            while (pBlock != NULL)
+            {
+                if (pBlock->GetValueType() == valueType)
+                {
+                    pMatchingBlock = pBlock;
+                    break;
+                }
+
+                pBlock = pBlock->GetNext();
+            }
+
+            return pMatchingBlock;
+        }
+
+        __checkReturn HRESULT GetOrCreateLayer(
+            EffectiveValue::Value valueType,
+            __deref_out_opt CLayerBlock** ppBlock
+            )
+        {
+            HRESULT hr = S_OK;
+            CLayerBlock* pPreviousBlock = NULL;
+            CLayerBlock* pNextBlock = m_pHeadBlock;
+            CLayerBlock* pMatchingBlock = NULL;
+
+            ASSERT(valueType != EffectiveValue::None);
+
+            //
+            // Find the first block that has a lower priority than the effective value requested.
+            //
+            while (pNextBlock != NULL && pNextBlock->GetValueType() > valueType)
+            {
+                pPreviousBlock = pNextBlock;
+
+                pNextBlock = pNextBlock->GetNext();
+            }
+
+            //
+            // Check if the block found is the priority that should be used.
+            //
+            if (valueType == pNextBlock->GetValueType())
+            {
+                pMatchingBlock = pNextBlock;
+            }
+
+            //
+            // Check if the block found is empty (this should only be the tail block).
+            //
+            if (pNextBlock->GetValueType() == EffectiveValue::None)
+            {
+                ASSERT(pNextBlock == &m_TailBlock);
+
+                pMatchingBlock = pNextBlock;
+
+                //
+                // Update the value type of the block.
+                //
+                pMatchingBlock->SetValueType(valueType);
+            }
+
+            //
+            // If the next block was lower priority and there was no previous highest priority
+            // then we need to add a new head block.
+            //
+            if (pMatchingBlock == NULL && pPreviousBlock == NULL)
+            {
+                pMatchingBlock = new CLayerBlock(valueType, pNextBlock);
+                IFCOOM(pMatchingBlock);
+
+                m_pHeadBlock = pMatchingBlock;
+            }
+            
+            //
+            // If the next block is lower priority and we have a higher priority previous block,
+            // insert a new block in to the chain.
+            //
+            if (pMatchingBlock == NULL)
+            {
+                pMatchingBlock = new CLayerBlock(valueType, pNextBlock);
+                IFCOOM(pMatchingBlock);
+
+                pPreviousBlock->SetNext(pMatchingBlock);
+            }
+
+            ASSERT(pMatchingBlock != NULL);
+
+            *ppBlock = pMatchingBlock;
+
+        Cleanup:
+            return hr;
+        }
+
+        CLayerBlock* m_pHeadBlock;
+        CLayerBlock m_TailBlock;
+};
+
+/*
 struct UIFRAMEWORK_API ValueLayer
 {
     ValueLayer() : Value(NULL)
@@ -503,3 +859,4 @@ class UIFRAMEWORK_API CTypedLayeredValue : public CTypedLocalLayeredValue< Owner
 
         ValueLayer m_StyleLayer;
 };
+*/

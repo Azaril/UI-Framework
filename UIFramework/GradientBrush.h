@@ -4,6 +4,7 @@
 #include "GradientStop.h"
 #include "Collection.h"
 #include "Providers.h"
+#include "LayeredValue.h"
 
 class CGradientStopCollection : public CCollection< CGradientStop >
 {
@@ -44,15 +45,7 @@ class CGradientBrush : public CBrush
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal( 
-            __in CProperty* pProperty,
-            __in CObjectWithType* pValue 
-            );
-
-        __override virtual __checkReturn HRESULT GetValueInternal( 
-            __in CProperty* pProperty,
-            __deref_out_opt CObjectWithType** ppValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         //
         // Property Change Handlers
@@ -64,7 +57,7 @@ class CGradientBrush : public CBrush
             __in_opt CObjectWithType* pNewValue 
             );
 
-        CGradientStopCollection* m_GradientStops;
+        CLayeredValue m_GradientStops;
 };
 
 template< >

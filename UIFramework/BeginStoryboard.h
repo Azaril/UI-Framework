@@ -38,17 +38,9 @@ class CBeginStoryboard : public CRefCountedObjectBase< CTriggerAction >
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty,
-            __in CObjectWithType* pValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty, 
-            __deref_out_opt CObjectWithType** ppValue 
-            );
-
-        CStoryboard* m_pStoryboard;
+        CLayeredValue m_Storyboard;
 };
 
 template< >

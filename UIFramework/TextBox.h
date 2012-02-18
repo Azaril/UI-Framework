@@ -4,6 +4,7 @@
 #include "TextEditor.h"
 #include "TextHost.h"
 #include "ContentPresenter.h"
+#include "LayeredValue.h"
 
 class CTextBox : public CControl
 {
@@ -31,9 +32,6 @@ class CTextBox : public CControl
 
         HRESULT Initialize( CProviders* pProviders );
 
-        virtual HRESULT SetValueInternal( CProperty* pProperty, CObjectWithType* pValue );
-        virtual HRESULT GetValueInternal( CProperty* pProperty, CObjectWithType** ppValue );
-
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         virtual HRESULT PostTemplateApplied();
@@ -60,7 +58,7 @@ class CTextBox : public CControl
         CTextEditor* m_TextEditor;
         CTextHost* m_TextHost;
         CContentPresenter* m_TextHostControl;
-        CTypedLayeredValue< CTextBox, CBoolValue > m_AcceptsReturn;
+        CLayeredValue m_AcceptsReturn;
 };
 
 template< >

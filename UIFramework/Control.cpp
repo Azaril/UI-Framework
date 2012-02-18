@@ -44,13 +44,7 @@ CStaticProperty CControl::VerticalContentAlignmentProperty(TypeIndex::Control, C
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CControl, OnTemplateChanged );
 
-CControl::CControl() : m_Template(this, &CControl::TemplateProperty),
-                       m_Background(this, &CControl::BackgroundProperty),
-                       m_BorderBrush(this, &CControl::BorderBrushProperty),
-                       m_BorderThickness(this, &CControl::BorderThicknessProperty),
-                       m_HorizontalContentAlignment(this, &CControl::HorizontalContentAlignmentProperty),
-                       m_VerticalContentAlignment(this, &CControl::VerticalContentAlignmentProperty),
-                       m_TemplateDirty(TRUE),
+CControl::CControl() : m_TemplateDirty(TRUE),
                        m_TemplateChild(NULL),
                        m_TemplateNamescope(NULL)
 {
@@ -208,7 +202,7 @@ HRESULT CControl::EnsureTemplate()
 
             IFC(RevokeTemplate());
 
-            IFC(GetEffectiveTemplate(&pTemplate));
+            IFC(GetTypedEffectiveValue(&TemplateProperty, &pTemplate));
 
             if(pTemplate)
             {
@@ -262,18 +256,6 @@ HRESULT CControl::ApplyTemplate(CControlTemplate* pTemplate)
 Cleanup:
     ReleaseObject(pRootObject);
 
-    return hr;
-}
-
-HRESULT CControl::GetEffectiveTemplate(CControlTemplate** ppTemplate)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppTemplate);
-
-    IFC(m_Template.GetTypedEffectiveValue(ppTemplate));
-
-Cleanup:
     return hr;
 }
 

@@ -129,19 +129,6 @@ CUIElement::CUIElement() : m_Attached(FALSE),
                            m_NotifiedParentMeasureDirty(FALSE),
                            m_ArrangeDirty(TRUE),
                            m_NotifiedParentArrangeDirty(FALSE),
-                           m_Width(this, &CUIElement::WidthProperty),
-                           m_Height(this, &CUIElement::HeightProperty),
-                           m_MinimumWidth(this, &CUIElement::MinimumWidthProperty),
-                           m_MinimumHeight(this, &CUIElement::MinimumHeightProperty),
-                           m_MaximumWidth(this, &CUIElement::MaximumWidthProperty),
-                           m_MaximumHeight(this, &CUIElement::MaximumHeightProperty),
-                           m_Visibility(this, &CUIElement::VisibilityProperty),
-                           m_VerticalAlignment(this, &CUIElement::VerticalAlignmentProperty),
-                           m_HorizontalAlignment(this, &CUIElement::HorizontalAlignmentProperty),
-                           m_Margin(this, &CUIElement::MarginProperty),
-                           m_Focusable(this, &CUIElement::FocusableProperty),
-                           m_Opacity(this, &CUIElement::OpacityProperty),
-                           m_Namescope(this, &CUIElement::NamescopeProperty),
                            m_Layer(NULL),
                            m_ClipToLayoutBounds(FALSE)
 {
@@ -248,7 +235,7 @@ HRESULT CUIElement::PreRender(CPreRenderContext& Context)
     HRESULT hr = S_OK;
     Visibility::Value EffectiveVisibility = Visibility::Visible;
 
-    IFC(GetEffectiveVisibility(&EffectiveVisibility));
+    IFC(GetBasicTypeEffectiveValue(&VisibilityProperty, &EffectiveVisibility));
 
     if(EffectiveVisibility == Visibility::Visible)
     {
@@ -271,14 +258,14 @@ HRESULT CUIElement::RequiresLayer(bool* pRequiresLayer)
 
     *pRequiresLayer = FALSE;
 
-    IFC(GetEffectiveVisibility(&EffectiveVisibility));
+    IFC(GetBasicTypeEffectiveValue(&VisibilityProperty, &EffectiveVisibility));
 
     if(EffectiveVisibility != Visibility::Visible)
     {
         goto Cleanup;
     }
 
-    IFC(GetEffectiveOpacity(&Opacity));
+    IFC(GetBasicTypeEffectiveValue(&OpacityProperty, &Opacity));
 
     if(Opacity < 1.0f)
     {
@@ -407,13 +394,13 @@ HRESULT CUIElement::Render(CRenderContext& Context)
     pRenderTarget = Context.GetRenderTarget();
     IFCPTR(pRenderTarget);
 
-    IFC(GetEffectiveVisibility(&EffectiveVisibility));
+    IFC(GetBasicTypeEffectiveValue(&VisibilityProperty, &EffectiveVisibility));
 
     if(EffectiveVisibility == Visibility::Visible)
     {
         if(m_Layer != NULL)
         {
-            IFC(GetEffectiveOpacity(&Opacity));
+            IFC(GetBasicTypeEffectiveValue(&OpacityProperty, &Opacity));
 
             IFC(GetClippingRectangle(&ClipRect));
 
@@ -457,7 +444,7 @@ HRESULT CUIElement::OnAttach(CUIAttachContext& Context)
 
     m_Attached = TRUE;
 
-    IFC(GetEffectiveNamescope(&IsNamescope));
+    IFC(GetBasicTypeEffectiveValue(&NamescopeProperty, &IsNamescope));
 
     if(IsNamescope)
     {
@@ -530,10 +517,10 @@ HRESULT CUIElement::GetMinMaxSize(SizeF& MinimumSize, SizeF& MaximumSize)
     FLOAT MaxWidth = 0;
     FLOAT MinWidth = 0;    
 
-    IFC(m_Height.GetTypedEffectiveValue(&pHeight));
+    IFC(GetTypedEffectiveValue(&HeightProperty, &pHeight));
 
-    IFC(GetEffectiveMaximumHeight(&MaxHeight));
-    IFC(GetEffectiveMinimumHeight(&MinHeight));
+    IFC(GetBasicTypeEffectiveValue(&MaximumHeightProperty, &MaxHeight));
+    IFC(GetBasicTypeEffectiveValue(&MinimumHeightProperty, &MinHeight));
 
     Height = (pHeight != NULL) ? pHeight->GetValue() : std::numeric_limits< FLOAT >::max();
     MaxHeight = std::max(std::min(Height, MaxHeight), MinHeight);
@@ -541,10 +528,10 @@ HRESULT CUIElement::GetMinMaxSize(SizeF& MinimumSize, SizeF& MaximumSize)
     Height = (pHeight != NULL) ? pHeight->GetValue() : 0;
     MinHeight = std::max(std::min(MaxHeight, Height), MinHeight);
 
-    IFC(GetEffectiveMaximumWidth(&MaxWidth));
-    IFC(GetEffectiveMinimumWidth(&MinWidth));
+    IFC(GetTypedEffectiveValue(&WidthProperty, &pWidth));
 
-    IFC(m_Width.GetTypedEffectiveValue(&pWidth));
+    IFC(GetBasicTypeEffectiveValue(&MaximumWidthProperty, &MaxWidth));
+    IFC(GetBasicTypeEffectiveValue(&MinimumWidthProperty, &MinWidth));
 
     Width = (pWidth != NULL) ? pWidth->GetValue() : std::numeric_limits< FLOAT >::max();
     MaxWidth = std::max(std::min(Width, MaxWidth), MinWidth);
@@ -590,13 +577,13 @@ CUIElement::Measure(
     {
         Visibility::Value EffectiveVisibility = Visibility::Visible;
 
-        IFC(GetEffectiveVisibility(&EffectiveVisibility));
+        IFC(GetBasicTypeEffectiveValue(&VisibilityProperty, &EffectiveVisibility));
 
         if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
             RectF Margin;
 
-            IFC(GetEffectiveMargin(&Margin));
+            IFC(GetBasicTypeEffectiveValue(&MarginProperty, &Margin));
 
             FLOAT MarginWidth = Margin.left + Margin.right;
             FLOAT MarginHeight = Margin.top + Margin.bottom;
@@ -680,187 +667,6 @@ CUIElement::MeasureInternal(
     return hr;
 }
 
-HRESULT CUIElement::GetEffectiveVisibility(Visibility::Value* pVisibility)
-{
-    HRESULT hr = S_OK;
-    CVisibilityValue* pEffectiveValue = NULL;
-
-    IFCPTR(pVisibility);
-
-    IFC(m_Visibility.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pVisibility = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveMinimumWidth(FLOAT* pMinimumWidth)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pMinimumWidth);
-
-    IFC(m_MinimumWidth.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pMinimumWidth = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveMinimumHeight(FLOAT* pMinimumHeight)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pMinimumHeight);
-
-    IFC(m_MinimumHeight.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pMinimumHeight = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveMaximumWidth(FLOAT* pMaximumWidth)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pMaximumWidth);
-
-    IFC(m_MaximumWidth.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pMaximumWidth = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveMaximumHeight(FLOAT* pMaximumHeight)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pMaximumHeight);
-
-    IFC(m_MaximumHeight.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pMaximumHeight = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveHorizontalAlignment(HorizontalAlignment::Value* pAlignment)
-{
-    HRESULT hr = S_OK;
-    CHorizontalAlignmentValue* pEffectiveValue = NULL;
-
-    IFCPTR(pAlignment);
-
-    IFC(m_HorizontalAlignment.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pAlignment = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveVerticalAlignment(VerticalAlignment::Value* pAlignment)
-{
-    HRESULT hr = S_OK;
-    CVerticalAlignmentValue* pEffectiveValue = NULL;
-
-    IFCPTR(pAlignment);
-
-    IFC(m_VerticalAlignment.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pAlignment = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveMargin(RectF* pMargin)
-{
-    HRESULT hr = S_OK;
-    CRectFValue* pEffectiveValue = NULL;
-
-    IFC(m_Margin.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pMargin = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveFocusable(bool* pFocusable)
-{
-    HRESULT hr = S_OK;
-    CBoolValue* pEffectiveValue = NULL;
-
-    IFC(m_Focusable.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pFocusable = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveOpacity(FLOAT* pOpacity)
-{
-    HRESULT hr = S_OK;
-    CFloatValue* pEffectiveValue = NULL;
-
-    IFCPTR(pOpacity);
-
-    IFC(m_Opacity.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pOpacity = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CUIElement::GetEffectiveNamescope(bool* pNamescope)
-{
-    HRESULT hr = S_OK;
-    CBoolValue* pEffectiveValue = NULL;
-
-    IFC(m_Namescope.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pNamescope = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
 HRESULT CUIElement::SetIsNamescope(bool IsNamescope)
 {
     HRESULT hr = S_OK;
@@ -902,7 +708,7 @@ CUIElement::Arrange(
 
         Visibility::Value EffectiveVisibility = Visibility::Visible;
 
-        IFC(GetEffectiveVisibility(&EffectiveVisibility))
+        IFC(GetBasicTypeEffectiveValue(&VisibilityProperty, &EffectiveVisibility));
 
         if(EffectiveVisibility == Visibility::Visible || EffectiveVisibility == Visibility::Hidden)
         {
@@ -913,7 +719,7 @@ CUIElement::Arrange(
 
             RectF Margin;
             
-            IFC(GetEffectiveMargin(&Margin));
+            IFC(GetBasicTypeEffectiveValue(&MarginProperty, &Margin));
 
             FLOAT MarginWidth = Margin.left + Margin.right;
             FLOAT MarginHeight = Margin.top + Margin.bottom;
@@ -933,8 +739,8 @@ CUIElement::Arrange(
                 ArrangeSize.height = m_UnclippedDesiredSize.height;
             }
 
-            IFC(GetEffectiveHorizontalAlignment(&HorzAlign));
-            IFC(GetEffectiveVerticalAlignment(&VertAlign));
+            IFC(GetBasicTypeEffectiveValue(&HorizontalAlignmentProperty, &HorzAlign));
+            IFC(GetBasicTypeEffectiveValue(&VerticalAlignmentProperty, &VertAlign));
 
             if (HorzAlign != HorizontalAlignment::Stretch)
             {
@@ -1012,8 +818,8 @@ HRESULT CUIElement::ComputeAlignmentOffset(SizeF ClientSize, SizeF RenderSize, S
     HorizontalAlignment::Value HorzAlign;
     VerticalAlignment::Value VertAlign;
 
-    IFC(GetEffectiveHorizontalAlignment(&HorzAlign));
-    IFC(GetEffectiveVerticalAlignment(&VertAlign));
+    IFC(GetBasicTypeEffectiveValue(&HorizontalAlignmentProperty, &HorzAlign));
+    IFC(GetBasicTypeEffectiveValue(&VerticalAlignmentProperty, &VertAlign));
 
     if(HorzAlign == HorizontalAlignment::Stretch && RenderSize.width > ClientSize.width)
     {
@@ -1583,7 +1389,7 @@ bool CUIElement::IsFocusable()
     bool EffectiveFocusable = FALSE;
     Visibility::Value EffectiveVisibility = Visibility::Visible;
 
-    if(SUCCEEDED(GetEffectiveFocusable(&EffectiveFocusable)) && SUCCEEDED(GetEffectiveVisibility(&EffectiveVisibility)))
+    if(SUCCEEDED(GetBasicTypeEffectiveValue(&FocusableProperty, &EffectiveFocusable)) && SUCCEEDED(GetBasicTypeEffectiveValue(&VisibilityProperty, &EffectiveVisibility)))
     {
         Focusable = EffectiveFocusable && (EffectiveVisibility == Visibility::Visible);
     }
@@ -2145,7 +1951,7 @@ HRESULT CUIElement::IsHitTestVisible(bool* pVisible)
     Visibility::Value EffectiveVisibility;
     bool HitTestVisible = TRUE;
 
-    IFC(GetEffectiveVisibility(&EffectiveVisibility));
+    IFC(GetBasicTypeEffectiveValue(&VisibilityProperty, &EffectiveVisibility));
 
     if(HitTestVisible)
     {

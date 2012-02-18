@@ -20,8 +20,7 @@ namespace DynamicResourceProperties
 CStaticProperty CDynamicResource::ResourceKeyProperty(TypeIndex::DynamicResource, DynamicResourceProperties::ResourceKey, L"ResourceKey", TypeIndex::Object, StaticPropertyFlags::None);
 
 CDynamicResource::CDynamicResource(
-    ) 
-    : m_ResourceKey(NULL)
+    )
 {
 }
 
@@ -30,8 +29,6 @@ CDynamicResource::~CDynamicResource(
 {
     m_TargetAttachedConnection.disconnect();
     m_TargetDetachedConnection.disconnect();
-
-    ReleaseObject(m_ResourceKey);
 }
 
 __checkReturn HRESULT 
@@ -54,10 +51,13 @@ CDynamicResource::GetBoundValue(
 {
     HRESULT hr = S_OK;
     CPropertyObject* pTarget = NULL;
+    CObjectWithType* pResourceKey = NULL;
 
     IFCPTR(ppValue);
 
-    IFCPTR(m_ResourceKey);
+    IFC(GetEffectiveValue(&ResourceKeyProperty, &pResourceKey));
+
+    IFCPTR(pResourceKey);
 
     pTarget = GetTarget();
     IFCPTR(pTarget);
@@ -66,7 +66,7 @@ CDynamicResource::GetBoundValue(
     {
         CFrameworkElement* pElement = (CFrameworkElement*)pTarget;
 
-        if(FAILED(pElement->FindResource(m_ResourceKey, ppValue)))
+        if(FAILED(pElement->FindResource(pResourceKey, ppValue)))
         {
             *ppValue = NULL;
         }
@@ -113,50 +113,37 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CDynamicResource::SetValueInternal(
+CDynamicResource::GetLayeredValue(
     __in CProperty* pProperty,
-    __in CObjectWithType* pValue
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CDynamicResource::ResourceKeyProperty)
+    if (pProperty->GetOwningType() == TypeIndex::DynamicResource)
     {
-        ReleaseObject(m_ResourceKey);
-        m_ResourceKey = pValue;
-        AddRefObject(m_ResourceKey);
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case DynamicResourceProperties::ResourceKey:
+                {
+                    *ppLayeredValue = &m_ResourceKey;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CBindingBase::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CDynamicResource::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CDynamicResource::ResourceKeyProperty)
-    {
-        *ppValue = m_ResourceKey;
-        AddRefObject(m_ResourceKey);
-    }
-    else
-    {
-        IFC(CBindingBase::GetValue(pProperty, ppValue));
+        IFC_NOTRACE(CBindingBase::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:

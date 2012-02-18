@@ -33,3 +33,9 @@ class CParserCommandList : public CRefCountedObjectBase< CObjectWithType >
         CProviders* m_Providers;
         vector< CParserCommand* > m_Commands;
 };
+
+template< >
+struct ObjectTypeTraits< CParserCommandList >
+{
+    static const TypeIndex::Value Type = TypeIndex::ParserCommandList;
+};

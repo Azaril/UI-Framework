@@ -15,6 +15,8 @@ class CBasicValue : public CRefCountedObjectBase< CObjectWithType >
 
         DECLARE_TYPE_WITH_BASE( ObjectTypeTraits< CBasicValue< T > >::Type, CObjectWithType );
 
+        typedef T ValueType; 
+
         const T& GetValue(
             )
         {

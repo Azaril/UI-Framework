@@ -37,10 +37,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CImage, OnSourceChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CImage, OnStretchChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CImage, OnStretchDirectionChanged );
 
-CImage::CImage() : m_Source(this, &CImage::SourceProperty),
-                   m_Stretch(this, &CImage::StretchProperty),
-                   m_StretchDirection(this, &CImage::StretchDirectionProperty),
-                   m_ImageVisual(NULL),
+CImage::CImage() : m_ImageVisual(NULL),
                    m_ImageBrush(NULL),
                    m_GeometryDirty(TRUE)
 {
@@ -117,7 +114,7 @@ HRESULT CImage::OnSourceChanged(CObjectWithType* pOldValue, CObjectWithType* pNe
 {
     HRESULT hr = S_OK;
 
-    IFC(m_ImageBrush->SetSource(pNewValue));
+    IFC(m_ImageBrush->SetValue(&CImageBrush::SourceProperty, pNewValue));
 
     m_GeometryDirty = TRUE;
 
@@ -148,52 +145,6 @@ HRESULT CImage::OnStretchDirectionChanged(CObjectWithType* pOldValue, CObjectWit
     IFC(InvalidateMeasure());
 
 Cleanup:
-    return hr;
-}
-
-HRESULT CImage::GetEffectiveSource(CObjectWithType** ppSource)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppSource);
-
-    IFC(m_Source.GetEffectiveValue(ppSource));
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CImage::GetEffectiveStretch(Stretch::Value* pStretch)
-{
-    HRESULT hr = S_OK;
-    CStretchValue* pEffectiveValue = NULL;
-
-    IFCPTR(pStretch);
-
-    IFC(m_Stretch.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pStretch = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CImage::GetEffectiveStretchDirection(StretchDirection::Value* pStretchDirection)
-{
-    HRESULT hr = S_OK;
-    CStretchDirectionValue* pEffectiveValue = NULL;
-
-    IFCPTR(pStretchDirection);
-
-    IFC(m_StretchDirection.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pStretchDirection = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
     return hr;
 }
 
@@ -363,11 +314,11 @@ HRESULT CImage::ComputeSize(SizeF AvailableSize, SizeF& UsedSize)
 {
     HRESULT hr = S_OK;
     SizeU ImageSize;
-    Stretch::Value ImageStretch;
-    StretchDirection::Value ImageStretchDirection;
+    CStretchValue* pImageStretch = NULL;
+    CStretchDirectionValue* pImageStretchDirection = NULL;
 
-    IFC(GetEffectiveStretch(&ImageStretch));
-    IFC(GetEffectiveStretchDirection(&ImageStretchDirection));
+    IFC(GetTypedEffectiveValue(&StretchProperty, &pImageStretch));
+    IFC(GetTypedEffectiveValue(&StretchDirectionProperty, &pImageStretchDirection));
 
     if(m_ImageBrush != NULL)
     {
@@ -375,13 +326,16 @@ HRESULT CImage::ComputeSize(SizeF AvailableSize, SizeF& UsedSize)
     }
 
 	{
-		SizeF ScaleFactor = ComputeScaleFactor(AvailableSize, SizeF((FLOAT)ImageSize.width, (FLOAT)ImageSize.height), ImageStretch, ImageStretchDirection);
+		SizeF ScaleFactor = ComputeScaleFactor(AvailableSize, SizeF((FLOAT)ImageSize.width, (FLOAT)ImageSize.height), pImageStretch->GetValue(), pImageStretchDirection->GetValue());
 
 		UsedSize.width = ScaleFactor.width * ((FLOAT)ImageSize.width);
 		UsedSize.height = ScaleFactor.height * ((FLOAT)ImageSize.height);
 	}
 
 Cleanup:
+    ReleaseObject(pImageStretch);
+    ReleaseObject(pImageStretchDirection);
+
     return hr;
 }
 

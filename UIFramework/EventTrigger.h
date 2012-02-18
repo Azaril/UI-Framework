@@ -7,6 +7,7 @@
 #include "StyleCallback.h"
 #include "Setter.h"
 #include "ResolvedTriggerActions.h"
+#include "LayeredValue.h"
 
 class CEventTrigger : public CTrigger
 {
@@ -17,11 +18,6 @@ class CEventTrigger : public CTrigger
 
         static __checkReturn HRESULT CreatePropertyInformation( 
             __deref_out CPropertyInformation** ppInformation 
-            );
-
-        __override virtual __checkReturn HRESULT GetValue(
-            __in CProperty* pProperty,
-            __deref_out_opt CObjectWithType** ppValue 
             );
 
         __override virtual __checkReturn HRESULT ResolveTrigger( 
@@ -47,14 +43,11 @@ class CEventTrigger : public CTrigger
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in_opt CProperty* pProperty,
-            __in_opt CObjectWithType* pValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         CProviders* m_Providers;
-        CRoutedEvent* m_RoutedEvent;
-        CTriggerActionCollection* m_Actions;
+        CLayeredValue m_RoutedEvent;
+        CLayeredValue m_Actions;
 };
 
 template< >

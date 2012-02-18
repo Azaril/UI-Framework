@@ -31,9 +31,7 @@ CStaticProperty CScrollContentPresenter::CanScrollHorizontallyProperty(TypeIndex
 DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollVerticallyChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollContentPresenter, OnCanScrollHorizontallyChanged );
 
-CScrollContentPresenter::CScrollContentPresenter() : m_CanScrollVertically(this, &CScrollContentPresenter::CanScrollVerticallyProperty),
-                                                     m_CanScrollHorizontally(this, &CScrollContentPresenter::CanScrollHorizontallyProperty),
-                                                     m_HorizontalOffset(0),
+CScrollContentPresenter::CScrollContentPresenter() : m_HorizontalOffset(0),
                                                      m_VerticalOffset(0),
                                                      m_ChildTransformDirty(FALSE),
                                                      m_ScrollOwner(NULL)
@@ -190,8 +188,8 @@ CScrollContentPresenter::MeasureInternal(
     bool CanScrollHorizontally = FALSE;
     bool CanScrollVertically = FALSE;
 
-    IFC(GetEffectiveCanScrollHorizontally(&CanScrollHorizontally));
-    IFC(GetEffectiveCanScrollVertically(&CanScrollVertically));
+    IFC(GetBasicTypeEffectiveValue(&CanScrollHorizontallyProperty, &CanScrollHorizontally));
+    IFC(GetBasicTypeEffectiveValue(&CanScrollVerticallyProperty, &CanScrollVertically));
 
     AvailableContentSize.width = CanScrollHorizontally ? FLT_MAX : AvailableSize.width;
     AvailableContentSize.height = CanScrollVertically ? FLT_MAX : AvailableSize.height;
@@ -238,8 +236,8 @@ CScrollContentPresenter::ArrangeInternal(
     bool CanScrollHorizontally = FALSE;
     bool CanScrollVertically = FALSE;
 
-    IFC(GetEffectiveCanScrollHorizontally(&CanScrollHorizontally));
-    IFC(GetEffectiveCanScrollVertically(&CanScrollVertically));
+    IFC(GetBasicTypeEffectiveValue(&CanScrollHorizontallyProperty, &CanScrollHorizontally));
+    IFC(GetBasicTypeEffectiveValue(&CanScrollVerticallyProperty, &CanScrollVertically));
     
     IFC(GetContentChild(&pContentChild));
 
@@ -375,36 +373,6 @@ HRESULT CScrollContentPresenter::SetCanScrollHorizontally( bool CanScroll )
 
 Cleanup:
     ReleaseObject(pValue);
-
-    return hr;
-}
-
-HRESULT CScrollContentPresenter::GetEffectiveCanScrollVertically(bool* pCanScroll)
-{
-    HRESULT hr = S_OK;
-    CBoolValue* pEffectiveValue = NULL;
-
-    IFC(m_CanScrollVertically.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pCanScroll = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
-
-    return hr;
-}
-
-HRESULT CScrollContentPresenter::GetEffectiveCanScrollHorizontally(bool* pCanScroll)
-{
-    HRESULT hr = S_OK;
-    CBoolValue* pEffectiveValue = NULL;
-
-    IFC(m_CanScrollHorizontally.GetTypedEffectiveValue(&pEffectiveValue));
-
-    *pCanScroll = pEffectiveValue->GetValue();
-
-Cleanup:
-    ReleaseObject(pEffectiveValue);
 
     return hr;
 }

@@ -32,7 +32,6 @@ CSourcedBinding::CSourcedBinding(
     ) 
     : m_Source(NULL)
     , m_SourceProperty(NULL)
-    , m_BindingDirection(BindingDirection::OneWay)
 {
 }
 
@@ -111,10 +110,13 @@ CSourcedBinding::SetTarget(
     )
 {
     HRESULT hr = S_OK;
+    BindingDirection::Value bindingDirection;
 
     IFC(CBindingBase::SetTarget(pTarget, pTargetProperty));
 
-    if(m_BindingDirection == BindingDirection::TwoWay)
+    IFC(GetBasicTypeEffectiveValue(&BindingDirectionProperty, &bindingDirection));
+
+    if(bindingDirection == BindingDirection::TwoWay)
     {
         IFC(pTarget->AddPropertyChangeListener(bind(&CSourcedBinding::OnTargetPropertyChanged, this, _1, _2), &m_TargetPropertyChangedConnection));
     }
@@ -213,7 +215,7 @@ CSourcedBinding::OnTargetPropertyChanged(
 
         IFC(pTarget->GetEffectiveValue(pTargetProperty, &pValue));
 
-        IFC(m_Source->SetEffectiveValue(m_SourceProperty, pValue));
+        IFC(m_Source->SetValue(m_SourceProperty, pValue));
     }
 
 Cleanup:
@@ -252,62 +254,41 @@ Cleanup:
     return hr;
 }
 
-__override __checkReturn HRESULT
-CSourcedBinding::SetValueInternal(
+__override __checkReturn HRESULT 
+CSourcedBinding::GetLayeredValue(
     __in CProperty* pProperty,
-    __in CObjectWithType* pValue
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
-    CBindingDirectionValue* pBindingDirection = NULL;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CSourcedBinding::BindingDirectionProperty)
+    if (pProperty->GetOwningType() == TypeIndex::SourcedBinding)
     {
-        IFCPTR(pValue);
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        IFC(CastType(pValue, &pBindingDirection));
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case SourcedBindingProperties::BindingDirection:
+                {
+                    *ppLayeredValue = &m_BindingDirection;
+                    break;
+                }
 
-        m_BindingDirection = pBindingDirection->GetValue();
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CBindingBase::SetValueInternal(pProperty, pValue));
+        IFC_NOTRACE(CPropertyObject::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CSourcedBinding::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue
-    )
-{
-    HRESULT hr = S_OK;
-    CBindingDirectionValue* pBindingDirection = NULL;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CSourcedBinding::BindingDirectionProperty)
-    {
-        IFC(CBindingDirectionValue::Create(m_BindingDirection, &pBindingDirection));
-
-        *ppValue = pBindingDirection;
-        pBindingDirection = NULL;
-    }
-    else
-    {
-        IFC(CBindingBase::GetValue(pProperty, ppValue));
-    }
-
-Cleanup:
-    ReleaseObject(pBindingDirection);
-
     return hr;
 }
 

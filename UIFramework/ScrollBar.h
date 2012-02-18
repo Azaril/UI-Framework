@@ -39,8 +39,6 @@ class CScrollBar : public CRangeBase
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        HRESULT GetEffectiveOrientation( Orientation::Value* pOrientation );
-
         //
         // Property Change Handlers
         //
@@ -48,8 +46,8 @@ class CScrollBar : public CRangeBase
 
         HRESULT OnOrientationChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        CTypedLayeredValue< CScrollBar, COrientationValue > m_Orientation;
-        CTypedLayeredValue< CScrollBar, CFloatValue > m_ViewportSize;
+        CLayeredValue m_Orientation;
+        CLayeredValue m_ViewportSize;
         CTrack* m_Track;
 };
 

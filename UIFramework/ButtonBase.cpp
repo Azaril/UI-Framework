@@ -35,7 +35,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CButtonBase, OnCommandChanged );
 //
 CStaticRoutedEvent CButtonBase::ClickEvent(L"Click", RoutingStrategy::Bubbling);
 
-CButtonBase::CButtonBase() : m_Command(this, &CButtonBase::CommandProperty)
+CButtonBase::CButtonBase()
 {
 }
 
@@ -78,18 +78,6 @@ Cleanup:
     ;
 }
 
-HRESULT CButtonBase::GetEffectiveCommand(CCommand** ppCommand)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppCommand);
-
-    IFC(m_Command.GetTypedEffectiveValue(ppCommand));
-
-Cleanup:
-    return hr;
-}
-
 HRESULT CButtonBase::RaiseClick()
 {
     HRESULT hr = S_OK;
@@ -102,7 +90,7 @@ HRESULT CButtonBase::RaiseClick()
 
     if(!pClickEventArgs->IsHandled())
     {
-        IFC(GetEffectiveCommand(&pCommand));
+        IFC(GetTypedEffectiveValue(&CommandProperty, &pCommand));
 
         if(pCommand)
         {

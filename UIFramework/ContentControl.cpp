@@ -28,7 +28,7 @@ CStaticProperty CContentControl::ContentProperty(TypeIndex::ContentControl, Cont
 //
 DEFINE_INSTANCE_CHANGE_CALLBACK( CContentControl, OnContentChanged );
 
-CContentControl::CContentControl() : m_Content(this, &CContentControl::ContentProperty)
+CContentControl::CContentControl()
 {
 }
 
@@ -40,18 +40,6 @@ HRESULT CContentControl::OnContentChanged(CObjectWithType* pOldValue, CObjectWit
 {
     HRESULT hr = S_OK;
 
-    return hr;
-}
-
-HRESULT CContentControl::GetEffectiveContent(CObjectWithType** ppContent)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppContent);
-
-    IFC(m_Content.GetEffectiveValue(ppContent));
-
-Cleanup:
     return hr;
 }
 

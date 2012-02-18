@@ -4,6 +4,7 @@
 #include "BasicTypes.h"
 #include "Providers.h"
 #include "StaticPropertyInformation.h"
+#include "LayeredValue.h"
 
 class UIFRAMEWORK_API CFloatAnimation : public CFloatAnimationBase
 {
@@ -48,18 +49,10 @@ class UIFRAMEWORK_API CFloatAnimation : public CFloatAnimationBase
             const CTimeSpan& Duration 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty,
-            __in CObjectWithType* pValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty, 
-            __deref_out_opt CObjectWithType** ppValue 
-            );
-
-        CFloatValue* m_From;
-        CFloatValue* m_To;
+        CLayeredValue m_From;
+        CLayeredValue m_To;
 };
 
 template< >

@@ -5,6 +5,7 @@
 #include "Factory.h"
 #include "StaticPropertyInformation.h"
 #include "BasicTypes.h"
+#include "LayeredValue.h"
 
 class CTypeMarkupExtension : public CMarkupExtension
 {
@@ -15,11 +16,6 @@ class CTypeMarkupExtension : public CMarkupExtension
 
         static __checkReturn HRESULT CreatePropertyInformation( 
 			__deref_out CPropertyInformation** ppInformation 
-			);
-
-        __override virtual __checkReturn HRESULT GetValue( 
-			__in CProperty* pProperty, 
-			__deref_out_opt CObjectWithType** ppValue 
 			);
 
         __override virtual __checkReturn HRESULT ExecuteMarkup(
@@ -42,12 +38,9 @@ class CTypeMarkupExtension : public CMarkupExtension
 			__in CProviders* pProviders 
 			);
 
-        __override virtual HRESULT SetValueInternal( 
-			__in CProperty* pProperty, 
-			__in CObjectWithType* pValue 
-			);
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        CStringValue* m_TypeName;
+        CLayeredValue m_TypeName;
         CProviders* m_Providers;
 };
 

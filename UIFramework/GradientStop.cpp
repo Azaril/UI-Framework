@@ -34,9 +34,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CGradientStop, OnColorChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CGradientStop, OnOffsetChanged );
 
 CGradientStop::CGradientStop(
-    ) 
-    : m_Color(DefaultColor)
-    , m_Offset(0)
+    )
 {
 }
 
@@ -53,20 +51,6 @@ CGradientStop::Initialize(
     HRESULT hr = S_OK;
 
     return hr;
-}
-
-ColorF 
-CGradientStop::GetColor(
-    )
-{
-    return m_Color;
-}
-
-FLOAT 
-CGradientStop::GetOffset(
-    )
-{
-    return m_Offset;
 }
 
 __checkReturn HRESULT 
@@ -123,76 +107,45 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CGradientStop::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
+CGradientStop::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
     )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(pValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty == &CGradientStop::ColorProperty)
+    if (pProperty->GetOwningType() == TypeIndex::GradientStop)
     {
-        CColorFValue* pColorValue = NULL;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        IFC(CastType(pValue, &pColorValue));
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case GradientStopProperties::Color:
+                {
+                    *ppLayeredValue = &m_Color;
+                    break;
+                }
 
-        m_Color = pColorValue->GetValue();
-    }
-    else if(pProperty == &CGradientStop::OffsetProperty)
-    {
-        CFloatValue* pFloatValue = NULL;
+            case GradientStopProperties::Offset:
+                {
+                    *ppLayeredValue = &m_Offset;
+                    break;
+                }
 
-        IFC(CastType(pValue, &pFloatValue));
-
-        m_Offset = pFloatValue->GetValue();
-    }
-    else
-    {
-        IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT 
-CGradientStop::GetValueInternal(
-    __in CProperty* pProperty, 
-    __deref_out_opt CObjectWithType** ppValue
-    )
-{
-    HRESULT hr = S_OK;
-    CColorFValue* pColorValue = NULL;
-    CFloatValue* pFloatValue = NULL;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    if(pProperty == &CGradientStop::ColorProperty)
-    {
-        IFC(CColorFValue::Create(m_Color, &pColorValue));
-
-        *ppValue = pColorValue;
-        pColorValue = NULL;
-    }
-    else if(pProperty == &CGradientStop::OffsetProperty)
-    {
-        IFC(CFloatValue::Create(m_Offset, &pFloatValue));
-
-        *ppValue = pFloatValue;
-        pFloatValue = NULL;
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
+        IFC_NOTRACE(CPropertyObject::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
-    ReleaseObject(pColorValue);
-    ReleaseObject(pFloatValue);
-
     return hr;
 }

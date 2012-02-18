@@ -24,7 +24,7 @@ class UIFRAMEWORK_API CPanel : public CFrameworkElement
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        CTypedLocalLayeredValue< CPanel, CUIElementCollection > m_Children;
+        CLayeredValue m_Children;
 };
 
 template< >

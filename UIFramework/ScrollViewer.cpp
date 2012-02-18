@@ -62,17 +62,7 @@ DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnViewportHeightChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnHorizontalOffsetChanged );
 DEFINE_INSTANCE_CHANGE_CALLBACK( CScrollViewer, OnVerticalOffsetChanged );
 
-CScrollViewer::CScrollViewer() : m_ExtentHeight(this, &CScrollViewer::ExtentHeightProperty),
-                                 m_ExtentWidth(this, &CScrollViewer::ExtentWidthProperty),
-                                 m_ViewportWidth(this, &CScrollViewer::ViewportWidthProperty),
-                                 m_ViewportHeight(this, &CScrollViewer::ViewportHeightProperty),
-                                 m_HorizontalOffset(this, &CScrollViewer::HorizontalOffsetProperty),
-                                 m_VerticalOffset(this, &CScrollViewer::VerticalOffsetProperty),
-                                 m_ScrollableWidth(this, &CScrollViewer::ScrollableWidthProperty),
-                                 m_ScrollableHeight(this, &CScrollViewer::ScrollableHeightProperty),
-                                 m_ComputedHorizontalScrollBarVisibility(this, &CScrollViewer::ComputedHorizontalScrollBarVisibilityProperty),
-                                 m_ComputedVerticalScrollBarVisibility(this, &CScrollViewer::ComputedVerticalScrollBarVisibilityProperty),
-                                 m_ScrollPresenter(NULL),
+CScrollViewer::CScrollViewer() : m_ScrollPresenter(NULL),
                                  m_InMeasure(FALSE)
 {
 }
@@ -106,12 +96,14 @@ CScrollViewer::MeasureInternal(
 {
     HRESULT hr = S_OK;
     CUIElement* pChild = NULL;
-    ScrollBarVisibility::Value ScrollVerticalVisibility;
-    ScrollBarVisibility::Value ScrollHorizontalVisibility;
+    ScrollBarVisibility::Value ScrollVerticalVisibility = ScrollBarVisibility::Auto;
+    ScrollBarVisibility::Value ScrollHorizontalVisibility = ScrollBarVisibility::Auto;
     SizeF ElementDesiredSize;
 
-    IFC(GetEffectiveVerticalScrollBarVisibility(&ScrollVerticalVisibility));
-    IFC(GetEffectiveHorizontalScrollBarVisibility(&ScrollHorizontalVisibility));
+    //TODO: Add scroll bar visibility properties.
+
+    //IFC(GetBasicTypeEffectiveValue(&ScrollProp&ScrollVerticalVisibility));
+    //IFC(GetBasicTypeEffectiveValue(&ScrollHorizontalVisibility));
 
     {
         bool AutoVerticalVisibility = (ScrollVerticalVisibility == ScrollBarVisibility::Auto);
@@ -267,26 +259,6 @@ HRESULT CScrollViewer::PostTemplateApplied()
     IFC(m_ScrollPresenter->SetScrollOwner(this));
 
 Cleanup:
-    return hr;
-}
-
-HRESULT CScrollViewer::GetEffectiveVerticalScrollBarVisibility(ScrollBarVisibility::Value* pVisibility)
-{
-    HRESULT hr = S_OK;
-
-    //TODO: Use property.
-    *pVisibility = ScrollBarVisibility::Auto;
-
-    return hr;
-}
-
-HRESULT CScrollViewer::GetEffectiveHorizontalScrollBarVisibility(ScrollBarVisibility::Value* pVisibility)
-{
-    HRESULT hr = S_OK;
-
-    //TODO: Use property.
-    *pVisibility = ScrollBarVisibility::Auto;
-
     return hr;
 }
 

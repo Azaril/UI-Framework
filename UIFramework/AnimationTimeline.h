@@ -6,6 +6,7 @@
 #include "AnimationClock.h"
 #include "BasicTypes.h"
 #include "StaticPropertyInformation.h"
+#include "LayeredValue.h"
 
 class CAnimationTimeline;
 
@@ -27,10 +28,6 @@ class UIFRAMEWORK_API CAnimationTimeline : public CRefCountedObjectBase< CProper
         __checkReturn __checkReturn HRESULT AddCompletedListener( 
             const TimelineCompletedHandler& Handler, 
             __out events::signals::connection* pConnection 
-            );
-
-        virtual __checkReturn HRESULT GetDuration( 
-            __deref_out CDurationValue** ppDuration 
             );
 
         virtual __checkReturn HRESULT CreateClock( 
@@ -57,22 +54,14 @@ class UIFRAMEWORK_API CAnimationTimeline : public CRefCountedObjectBase< CProper
         virtual ~CAnimationTimeline(
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty,
-            __in CObjectWithType* pValue 
-            );
-
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty, 
-            __deref_out_opt CObjectWithType** ppValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         void OnClockCompleted( 
             __in CAnimationClock* pClock 
             );
 
         TimelineCompletedSignal m_Completed;
-        CDurationValue* m_Duration;
+        CLayeredValue m_Duration;
 };
 
 template< >

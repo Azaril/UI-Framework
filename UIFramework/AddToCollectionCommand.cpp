@@ -38,6 +38,8 @@ CAddToCollectionCommand::Execute(
     CPropertyObject* pCollectionParent = NULL;
     CObjectWithType* pCollectionObject = NULL;
     CObjectCollection* pCollection = NULL;
+    CResolvedClass* pResolvedCollectionType = NULL;
+    CPropertyObject* pNewCollection = NULL;
 
     IFC(Context.GetObject(&pValueObject));
 
@@ -47,7 +49,17 @@ CAddToCollectionCommand::Execute(
 
     IFC(pCollectionParent->GetValue(m_Property, &pCollectionObject));
 
-    IFCPTR(pCollectionObject);
+    if (pCollectionObject == NULL)
+    {
+        IFC(Context.GetProviders()->GetClassResolver()->ResolveType(m_Property->GetType(), &pResolvedCollectionType));
+
+        IFC(pResolvedCollectionType->CreateInstance(Context.GetProviders(), &pNewCollection));
+
+        IFC(pCollectionParent->SetValue(m_Property, pNewCollection));
+
+        pCollectionObject = pNewCollection;
+        pNewCollection = NULL;
+    }
 
     IFC(CastType(pCollectionObject, &pCollection));
 
@@ -57,6 +69,8 @@ Cleanup:
     ReleaseObject(pCollectionParent);
     ReleaseObject(pCollectionObject);
     ReleaseObject(pValueObject);
+    ReleaseObject(pResolvedCollectionType);
+    ReleaseObject(pNewCollection);
 
     return hr;
 }

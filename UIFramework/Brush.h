@@ -46,16 +46,6 @@ class CBrush : public CVisualResource
         virtual ~CBrush(
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pValue 
-            );
-
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty,
-            __deref_out_opt CObjectWithType** ppValue 
-            );
-
         CPropertyInformation* m_PropertyInformation;
 };
 

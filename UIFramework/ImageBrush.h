@@ -97,10 +97,6 @@ class CImageBrush : public CBrush
             CVisualDetachContext& Context 
             );
 
-        __checkReturn HRESULT SetSource( 
-            __in_opt CObjectWithType* pSource 
-            );
-
         __override virtual __checkReturn HRESULT GetGraphicsBrush(
             __in CGraphicsDevice* pDevice, 
             __in CRenderTarget* pRenderTarget, 
@@ -127,19 +123,7 @@ class CImageBrush : public CBrush
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pValue 
-            );
-
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty, 
-            __deref_out CObjectWithType** ppValue 
-            );
-
-        __checkReturn HRESULT InternalSetSource( 
-            __in_opt CObjectWithType* m_Source 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         __checkReturn HRESULT EnsureBitmaps(
             );
@@ -152,7 +136,17 @@ class CImageBrush : public CBrush
             __deref_out CBitmapSource** ppBitmapSource 
             );
 
-        CObjectWithType* m_Source;
+        //
+        // Property Change Handlers
+        //
+        DECLARE_INSTANCE_CHANGE_CALLBACK( OnSourceChanged );
+
+        __checkReturn HRESULT OnSourceChanged(
+            __in_opt CObjectWithType* pOldValue,
+            __in_opt CObjectWithType* pNewValue 
+            );
+
+        CLayeredValue m_Source;
         ContextCollection m_Contexts;
         CProviders* m_pProviders;
 };

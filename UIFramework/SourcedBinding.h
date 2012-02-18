@@ -2,6 +2,7 @@
 
 #include "BindingBase.h"
 #include "StaticPropertyInformation.h"
+#include "LayeredValue.h"
 
 namespace BindingDirection
 {
@@ -57,15 +58,7 @@ class CSourcedBinding : public CBindingBase
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pValue 
-            );
-
-        __override virtual __checkReturn HRESULT GetValueInternal( 
-            __in CProperty* pProperty, 
-            __deref_out_opt CObjectWithType** ppValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         __checkReturn HRESULT SetSource(
             __in CPropertyObject* pSource, 
@@ -98,7 +91,7 @@ class CSourcedBinding : public CBindingBase
     private:
         CPropertyObject* m_Source;
         CProperty* m_SourceProperty;
-        BindingDirection::Value m_BindingDirection;
+        CLayeredValue m_BindingDirection;
         events::signals::connection m_SourcePropertyChangedConnection;
         events::signals::connection m_TargetPropertyChangedConnection;
 };

@@ -30,9 +30,7 @@ class UIFRAMEWORK_API CDecorator : public CFrameworkElement
 
         HRESULT OnChildChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        HRESULT GetEffectiveChild( CUIElement** ppChild );
-
-        CTypedLayeredValue< CDecorator, CUIElement > m_Child;
+        CLayeredValue m_Child;
 };
 
 template< >

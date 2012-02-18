@@ -51,16 +51,6 @@ class CTrack : public CControl
         HRESULT ComputeSliderLengths( SizeF AvailableSize, Orientation::Value Orient, FLOAT* pDecreaseButtonLength, FLOAT* pThumbLength, FLOAT* pIncreaseButtonLength );
         HRESULT ComputeScrollBarLengths( SizeF AvailableSize, FLOAT ViewportSize, Orientation::Value Orient, FLOAT* pDecreaseButtonLength, FLOAT* pThumbLength, FLOAT* pIncreaseButtonLength, bool* pHide );
 
-        HRESULT GetEffectiveThumb( CThumb** ppThumb );
-        HRESULT GetEffectiveIncreaseButton( CButton** ppIncreaseButton );
-        HRESULT GetEffectiveDecreaseButton( CButton** ppDecreaseButton );
-        HRESULT GetEffectiveViewportSize( FLOAT* pViewportSize );
-        HRESULT GetEffectiveOrientation( Orientation::Value* pOrientation );
-        HRESULT GetEffectiveDirectionReversed( bool* pReversed );
-        HRESULT GetEffectiveMinimum( FLOAT* pMinimum );
-        HRESULT GetEffectiveMaximum( FLOAT* pMaximum );
-        HRESULT GetEffectiveTrackValue( FLOAT* pValue );
-
         HRESULT SetTrackValue( FLOAT Value );
 
         //
@@ -86,15 +76,15 @@ class CTrack : public CControl
         HRESULT OnMaximumChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
         HRESULT OnTrackValueChanged( CObjectWithType* pOldValue, CObjectWithType* pNewValue );
 
-        CTypedLayeredValue< CTrack, CThumb > m_Thumb;
-        CTypedLayeredValue< CTrack, CButton > m_IncreaseButton;
-        CTypedLayeredValue< CTrack, CButton > m_DecreaseButton;
-        CTypedLayeredValue< CTrack, CFloatValue > m_ViewportSize;
-        CTypedLayeredValue< CTrack, COrientationValue > m_Orientation;
-        CTypedLayeredValue< CTrack, CBoolValue > m_DirectionReversed;
-        CTypedLayeredValue< CTrack, CFloatValue > m_Minimum;
-        CTypedLayeredValue< CTrack, CFloatValue > m_Maximum;
-        CTypedLayeredValue< CTrack, CFloatValue > m_TrackValue;
+        CLayeredValue m_Thumb;
+        CLayeredValue m_IncreaseButton;
+        CLayeredValue m_DecreaseButton;
+        CLayeredValue m_ViewportSize;
+        CLayeredValue m_Orientation;
+        CLayeredValue m_DirectionReversed;
+        CLayeredValue m_Minimum;
+        CLayeredValue m_Maximum;
+        CLayeredValue m_TrackValue;
         FLOAT m_ThumbCenterOffset;
         FLOAT m_Density;
 

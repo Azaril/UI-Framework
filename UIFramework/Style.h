@@ -10,6 +10,7 @@
 #include "Trigger.h"
 #include "ResolvedTriggers.h"
 #include "ResolvedTriggerActions.h"
+#include "LayeredValue.h"
 
 class CResolvedStyle;
 
@@ -53,15 +54,7 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
             __in CProviders* pProviders 
             );
 
-        __override virtual __checkReturn HRESULT SetValueInternal(
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pValue 
-            );
-
-        __override virtual __checkReturn HRESULT GetValueInternal(
-            __in CProperty* pProperty, 
-            __deref_out_opt CObjectWithType** ppValue 
-            );
+        virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         __checkReturn HRESULT ResolveSetters( 
             __in CUIElement* pObject, 
@@ -76,8 +69,8 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
             );
 
         CProviders* m_Providers;
-        CSetterCollection* m_Setters;
-        CTriggerCollection* m_Triggers;
+        CLayeredValue m_Setters;
+        CLayeredValue m_Triggers;
 };
 
 template< >

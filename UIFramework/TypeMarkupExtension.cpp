@@ -19,15 +19,13 @@ CStaticProperty CTypeMarkupExtension::TypeNameProperty(TypeIndex::TypeMarkupExte
 
 CTypeMarkupExtension::CTypeMarkupExtension(
 	) 
-	: m_TypeName(NULL)
-	, m_Providers(NULL)
+	: m_Providers(NULL)
 {
 }
 
 CTypeMarkupExtension::~CTypeMarkupExtension(
 	)
 {
-    ReleaseObject(m_TypeName);
     ReleaseObject(m_Providers);
 }
 
@@ -73,55 +71,38 @@ Cleanup:
     return hr;
 }
 
-__override __checkReturn HRESULT
-CTypeMarkupExtension::SetValueInternal(
-	CProperty* pProperty,
-	CObjectWithType* pValue
-	)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    if(pProperty == &CTypeMarkupExtension::TypeNameProperty)
-    {
-        IFCEXPECT(pValue->IsTypeOf(TypeIndex::String));
-
-        ReleaseObject(m_TypeName);
-
-        m_TypeName = (CStringValue*)pValue;
-
-        AddRefObject(m_TypeName);
-    }
-    else
-    {
-        IFC(CMarkupExtension::SetValueInternal(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
-}
-
 __override __checkReturn HRESULT 
-CTypeMarkupExtension::GetValue(
-	__in CProperty* pProperty,
-	__deref_out_opt CObjectWithType** ppValue
-	)
+CTypeMarkupExtension::GetLayeredValue(
+    __in CProperty* pProperty,
+    __deref_out CLayeredValue** ppLayeredValue
+    )
 {
     HRESULT hr = S_OK;
 
     IFCPTR(pProperty);
-    IFCPTR(ppValue);
+    IFCPTR(ppLayeredValue);
 
-    if(pProperty  == &CTypeMarkupExtension::TypeNameProperty)
+    if (pProperty->GetOwningType() == TypeIndex::TypeMarkupExtension)
     {
-        *ppValue = m_TypeName;
-        AddRefObject(m_TypeName);
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case TypeMarkupExtensionProperties::TypeName:
+                {
+                    *ppLayeredValue = &m_TypeName;
+                    break;
+                }
+
+            default:
+                {
+                    IFC(E_UNEXPECTED);
+                }
+        }
     }
     else
     {
-        IFC(CMarkupExtension::GetValue(pProperty, ppValue));
+        IFC_NOTRACE(CMarkupExtension::GetLayeredValue(pProperty, ppLayeredValue));
     }
 
 Cleanup:
@@ -137,15 +118,17 @@ CTypeMarkupExtension::ExecuteMarkup(
     CClassResolver* pClassResolver = NULL;
     CResolvedClass* pResolvedClass = NULL;
     CTypeValue* pTypeValue = NULL;
+    CStringValue* pTypeName = NULL;
 
     IFCPTR(ppObject);
 
-    IFCPTR(m_TypeName);
+    IFC(GetTypedEffectiveValue(&TypeNameProperty, &pTypeName));
+    IFCPTR(pTypeName);
 
     pClassResolver = m_Providers->GetClassResolver();
     IFCPTR(pClassResolver);
 
-    IFC(pClassResolver->ResolveType(m_TypeName->GetValue(), &pResolvedClass));
+    IFC(pClassResolver->ResolveType(pTypeName->GetValue(), &pResolvedClass));
 
     IFC(CTypeValue::Create(pResolvedClass->GetType(), &pTypeValue));
 

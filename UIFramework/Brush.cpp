@@ -60,37 +60,3 @@ Cleanup:
 
     return hr;
 }
-
-__override __checkReturn HRESULT 
-CBrush::SetValueInternal(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    IFC(CPropertyObject::SetValueInternal(pProperty, pValue));
-
-Cleanup:
-    return hr;
-}
-
-__override __checkReturn HRESULT
-CBrush::GetValueInternal(
-    __in CProperty* pProperty,
-    __deref_out CObjectWithType** ppValue
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pProperty);
-    IFCPTR(ppValue);
-
-    IFC(CPropertyObject::GetValueInternal(pProperty, ppValue));
-
-Cleanup:
-    return hr;
-}
