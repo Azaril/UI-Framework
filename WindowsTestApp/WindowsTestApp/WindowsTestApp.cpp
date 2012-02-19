@@ -18,9 +18,9 @@
 #include <strsafe.h>
 
 //#define BUILD_D2D
-//#define BUILD_D3D9
+#define BUILD_D3D9
 //#define BUILD_D3D10
-#define BUILD_D3D11
+//#define BUILD_D3D11
 
 #if defined(BUILD_D2D)
 
@@ -258,12 +258,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     //
     {
         const WCHAR fontFile[] = L"Opificio.ttf";
+        //const WCHAR fontFile[] = L"segoeui.ttf";
+        
 
         IFC(pTextProvider->RegisterFont(pFileResourceProvider, fontFile, ARRAYSIZE(fontFile)));
     }
 
     {
-        CFontDescription defaultFont(L"Opificio", 12, L"en-us");
+        CFontDescription defaultFont(L"Opificio", 16, L"en-us");
+        //CFontDescription defaultFont(L"Segoe UI", 12, L"en-us");
 
         IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, pProviders, &defaultFont, &pUIHost));
     }

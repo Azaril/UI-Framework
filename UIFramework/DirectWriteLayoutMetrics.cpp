@@ -33,8 +33,8 @@ CDirectWriteLayoutMetrics::GetBounds(
 
     pBounds->left = m_Metrics.left;
     pBounds->top = m_Metrics.top;
-    pBounds->right = m_Metrics.left + m_Metrics.width;
-    pBounds->bottom = m_Metrics.top + m_Metrics.height;
+    pBounds->right = m_Metrics.widthIncludingTrailingWhitespace;
+    pBounds->bottom = m_Metrics.height;
 
 Cleanup:
     return hr;

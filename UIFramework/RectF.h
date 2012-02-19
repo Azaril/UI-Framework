@@ -4,6 +4,7 @@
 #include "DataTypes.h"
 #include "Point2F.h"
 #include "SizeF.h"
+#include "FloatUtils.h"
 
 #pragma push_macro("min")
 #pragma push_macro("max")
@@ -77,6 +78,19 @@ struct UIFRAMEWORK_API RectF
     {
         return Point2F(left, top);
     }    
+
+    inline Point2F GetBottomRight(
+        ) const
+    {
+        return Point2F(right, bottom);
+    }
+
+    bool IsFullyContained(
+        const RectF& other
+        )
+    {
+        return IsFloatGreaterOrEqualThan(other.left, left) && IsFloatGreaterOrEqualThan(other.top, top) && IsFloatLessOrEqualThan(other.right, right) && IsFloatLessOrEqualThan(other.bottom, bottom);
+    }
     
     FLOAT left;
     FLOAT top;

@@ -41,6 +41,8 @@ class UIFRAMEWORK_API CTextBlock : public CFrameworkElement
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
+        virtual bool ShouldClipToLayout();
+
         //
         // Property Change Handlers
         //

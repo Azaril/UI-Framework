@@ -599,6 +599,12 @@ CUIElement::Measure(
             ElementDesiredSize.width = std::max(ElementDesiredSize.width, MinSize.width);
             ElementDesiredSize.height = std::max(ElementDesiredSize.height, MinSize.height);
 
+            //
+            // Round up layout sizes to nearest larger pixel.
+            //
+            ElementDesiredSize.width = std::ceilf(ElementDesiredSize.width);
+            ElementDesiredSize.height = std::ceilf(ElementDesiredSize.height);
+
             m_UnclippedDesiredSize = ElementDesiredSize;
 
             bool Clipped = FALSE;

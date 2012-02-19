@@ -43,6 +43,29 @@ Cleanup:
     return hr;
 }
 
+bool CTextHost::ShouldClipToLayout()
+{
+    HRESULT hr = S_OK;
+    CTextLayoutMetrics* pTextLayoutMetrics = NULL;   
+    RectF TextBounds;
+
+    bool ClipToBounds = CUIElement::ShouldClipToLayout();
+
+    if(!ClipToBounds && m_TextLayout != NULL)
+    {
+        IFC(m_TextLayout->GetMetrics(&pTextLayoutMetrics));
+
+        IFC(pTextLayoutMetrics->GetBounds(&TextBounds));
+
+        ClipToBounds = !MakeRect(GetFinalSize()).IsFullyContained(TextBounds);
+    }
+
+Cleanup:
+    ReleaseObject(pTextLayoutMetrics);
+
+    return ClipToBounds;
+}
+
 __override __checkReturn HRESULT 
 CTextHost::MeasureInternal( 
     const SizeF& AvailableSize,
@@ -64,8 +87,8 @@ CTextHost::MeasureInternal(
         IFC(pTextLayoutMetrics->GetBounds(&TextBounds));
     }
 
-    DesiredSize.width = TextBounds.right - TextBounds.left;
-    DesiredSize.height = TextBounds.bottom - TextBounds.top;
+    DesiredSize.width = TextBounds.right;
+    DesiredSize.height = TextBounds.bottom;
 
 Cleanup:
     ReleaseObject(pTextLayoutMetrics);
@@ -80,23 +103,16 @@ CTextHost::ArrangeInternal(
     )
 {
     HRESULT hr = S_OK;
-    CTextLayoutMetrics* pMetrics = NULL;
     RectF TextBounds;
 
     if(m_TextLayout)
     {
         IFC(m_TextLayout->SetMaxSize(AvailableSize));
-
-        IFC(m_TextLayout->GetMetrics(&pMetrics));
-
-        IFC(pMetrics->GetBounds(&TextBounds));
     }
 
     UsedSize = AvailableSize;
 
 Cleanup:
-    ReleaseObject(pMetrics);
-
     return hr;
 }
 

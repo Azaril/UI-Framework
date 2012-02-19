@@ -31,6 +31,8 @@ class UIFRAMEWORK_API CTextHost : public CFrameworkElement
             SizeF& UsedSize 
             );
 
+        virtual bool ShouldClipToLayout();
+
         CTextFormat* m_TextFormat;
         CTextLayout* m_TextLayout;
         CTextVisual* m_TextVisual;

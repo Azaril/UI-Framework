@@ -78,7 +78,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)\..\TestResources\*"  "$(OutDir)"</Command>
+      <Command>xcopy /y "$(SolutionDir)\..\TestResources\*"  "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
