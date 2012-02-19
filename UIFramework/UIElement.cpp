@@ -172,8 +172,6 @@ CUIElement::~CUIElement()
     m_EventHandlers.clear();
 
     ReleaseObject(m_Layer);
-
-    ReleaseObject(m_Providers);
 }
 
 HRESULT CUIElement::Initialize(CProviders* pProviders)
@@ -182,10 +180,7 @@ HRESULT CUIElement::Initialize(CProviders* pProviders)
 
     IFCPTR(pProviders);
 
-    m_Providers = pProviders;
-    AddRefObject(m_Providers);
-
-    IFC(CVisual::Initialize());
+    IFC(CVisual::Initialize(pProviders));
 
     IFC(AddHandler(&MouseButtonEvent, boost::bind(&CUIElement::OnMouseButton, this, _1, _2), &m_MouseButtonConnection));
 
@@ -981,11 +976,6 @@ CStaticTreeData* CUIElement::GetStaticTreeData()
     return m_Context.GetStaticTreeData();
 }
 
-CProviders* CUIElement::GetProviders()
-{
-    return m_Providers;
-}
-
 CTypeConverter* CUIElement::GetTypeConverter()
 {
     return GetProviders()->GetTypeConverter();
@@ -1255,13 +1245,10 @@ Cleanup:
 HRESULT CUIElement::ClearValue(CProperty* pProperty)
 {
     HRESULT hr = S_OK;
-    CLayeredValue* pLayeredValue = NULL;
 
     IFCPTR(pProperty);
 
-    IFC(GetLayeredValue(pProperty, &pLayeredValue));
-
-    IFC(pLayeredValue->ClearLocalValue());
+    IFC(ClearValueFromLayer(EffectiveValue::Local, pProperty));
 
 Cleanup:
     return hr;
@@ -1925,24 +1912,6 @@ Cleanup:
 CLayoutManager* CUIElement::GetLayoutManager()
 {
     return m_Context.GetLayoutManager();
-}
-
-HRESULT CUIElement::SetAnimationValue(CProperty* pProperty, CObjectWithType* pValue)
-{
-    HRESULT hr = S_OK;
-    CLayeredValue* pLayeredValue = NULL;
-
-    if (SUCCEEDED(GetLayeredValue(pProperty, &pLayeredValue)))
-    {
-        IFC(pLayeredValue->SetAnimationValue(pValue));
-    }
-    else
-    {
-        IFC(CVisual::SetAnimationValue(pProperty, pValue));
-    }
-
-Cleanup:
-    return hr;
 }
 
 HRESULT CUIElement::IsHitTestVisible(bool* pVisible)

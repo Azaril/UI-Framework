@@ -9,7 +9,7 @@
 class CGradientStopCollection : public CCollection< CGradientStop >
 {
     public:
-        DECLARE_FACTORY( CGradientStopCollection );
+        DECLARE_FACTORY1( CGradientStopCollection, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::GradientStopCollection, CCollection< CGradientStop > );
 };

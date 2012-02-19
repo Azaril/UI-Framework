@@ -7,8 +7,8 @@
 class UIFRAMEWORK_API CTextVisual : public CVisual
 {
     public:
-        DECLARE_FACTORY( CTextVisual );
-        DECLARE_FACTORY1( CTextVisual, CTextLayout* );
+        DECLARE_FACTORY1( CTextVisual, CProviders* );
+        DECLARE_FACTORY2( CTextVisual, CProviders*, CTextLayout* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::TextVisual, CVisual );
 
@@ -37,6 +37,7 @@ class UIFRAMEWORK_API CTextVisual : public CVisual
             );
 
         __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders,
             __in_opt CTextLayout* pTextLayout = NULL 
             );
 

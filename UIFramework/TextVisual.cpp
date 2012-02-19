@@ -25,12 +25,13 @@ CTextVisual::~CTextVisual(
 
 __checkReturn HRESULT 
 CTextVisual::Initialize(
+    __in CProviders* pProviders,
     __in_opt CTextLayout* pTextLayout
     )
 {
     HRESULT hr = S_OK;
 
-    IFC(CVisual::Initialize());
+    IFC(CVisual::Initialize(pProviders));
 
     IFC(SetTextLayout(pTextLayout));
 

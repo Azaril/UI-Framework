@@ -37,8 +37,6 @@ CSetPropertyCommand::Execute(
     HRESULT hr = S_OK;
     CPropertyObject* pParent = NULL;
     CObjectWithType* pValue = NULL;
-    CTypeConverter* pTypeConverter = NULL;
-    CObjectWithType* pConvertedType = NULL;
     CBindingBase* pBinding = NULL;
 
     IFC(Context.GetObject(&pValue));
@@ -51,32 +49,17 @@ CSetPropertyCommand::Execute(
     {
         IFC(CastType(pValue, &pBinding));
 
+        //TODO: Move this to SetValue?
         IFC(pParent->SetBinding(m_Property, pBinding));
     }
     else
     {
-        if(pValue->IsTypeOf(m_Property->GetType()))
-        {
-            pConvertedType = pValue;
-            AddRefObject(pConvertedType);
-        }
-        else
-        {
-            CConversionContext ConversionContext(pParent, m_Property, Context.GetProviders());
-
-            pTypeConverter = Context.GetProviders()->GetTypeConverter();
-            IFCPTR(pTypeConverter);
-
-            IFC(pTypeConverter->Convert(&ConversionContext, pValue, &pConvertedType));
-        }
-
-        IFC(pParent->SetValue(m_Property, pConvertedType));
+        IFC(pParent->SetValue(m_Property, pValue));
     }
 
 Cleanup:
     ReleaseObject(pParent);
     ReleaseObject(pValue);
-    ReleaseObject(pConvertedType);
 
     return hr;
 }

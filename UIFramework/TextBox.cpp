@@ -255,76 +255,107 @@ Cleanup:
 }
 
 //TODO: Fix property handling.
-/*
-HRESULT CTextBox::SetValueInternal(CProperty* pProperty, CObjectWithType* pValue)
+__checkReturn HRESULT
+CTextBox::SetValue(
+    __in CProperty* pProperty, 
+    __in CObjectWithType* pValue
+    )
 {
     HRESULT hr = S_OK;
+    bool setValue = FALSE;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    if(pProperty == &CTextBox::TextProperty)
+    if (pProperty->GetOwningType() == TypeIndex::TextBox)
     {
-        //NOTE: Don't do anything here, the value changed notification will propogate 
-        //      the value to the layout.
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
+
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case TextBoxProperties::Text:
+                {
+                    CStringValue* pText = NULL;
+
+                    IFC(CastType(pValue, &pText));
+
+                    IFC(m_TextEditor->SetText(pText->GetValue(), pText->GetLength()));
+
+                    //HACK: Old value is not needed.
+                    IFC(pProperty->OnValueChanged(this, NULL, pValue));
+
+                    IFC(RaisePropertyChanged(pProperty));
+
+                    setValue = TRUE;
+
+                    break;
+                }
+        }
     }
-    else
+
+    if (!setValue)
     {
-        IFC(CControl::SetValueInternal(pProperty, pValue));
+        IFC(CControl::SetValue(pProperty, pValue));
     }
 
 Cleanup:
     return hr;
 }
 
-HRESULT CTextBox::GetValueInternal(CProperty* pProperty, CObjectWithType** ppValue)
+__checkReturn HRESULT
+CTextBox::GetValue(
+    __in CProperty* pProperty, 
+    __deref_out_opt CObjectWithType** ppValue 
+    )
 {
     HRESULT hr = S_OK;
-    CStringValue* pText = NULL;
+    bool gotValue = FALSE;
+    CStringValue* pTextValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    if(pProperty == &CTextBox::TextProperty)
+    if (pProperty->GetOwningType() == TypeIndex::TextBox)
     {
-        const WCHAR* pContainedText = NULL;
-        UINT32 textLength = 0;
+        CStaticProperty* pStaticProperty = (CStaticProperty*)pProperty;
 
-        IFC(m_TextEditor->GetText(&pContainedText, &textLength));
+        switch(pStaticProperty->GetLocalIndex())
+        {
+            case TextBoxProperties::Text:
+                {
+                    const WCHAR* pText = NULL;
+                    UINT32 textLength = 0;
 
-        IFC(CStringValue::Create(pContainedText, textLength, &pText));
-        
-        *ppValue = pText;
-        pText = NULL;
+                    IFC(m_TextEditor->GetText(&pText, &textLength));
+
+                    IFC(CStringValue::Create(pText, textLength, &pTextValue));
+
+                    *ppValue = pTextValue;
+                    pTextValue = NULL;
+
+                    gotValue = TRUE;
+
+                    break;
+                }
+        }
     }
-    else
+
+    if (!gotValue)
     {
-        IFC(CControl::GetValueInternal(pProperty, ppValue));
+        IFC(CControl::GetValue(pProperty, ppValue));
     }
 
 Cleanup:
+    ReleaseObject(pTextValue);
+
     return hr;
 }
-*/
 
 HRESULT CTextBox::OnTextChanged(CObjectWithType* pOldValue, CObjectWithType* pNewValue)
 {
     HRESULT hr = S_OK;
 
     IFC(InvalidateMeasure());
-
-    if(pNewValue)
-    {
-        CStringValue* pTextValue = NULL;
-
-        IFC(CastType(pNewValue, &pTextValue));
-
-        IFC(m_TextEditor->SetText(pTextValue->GetValue(), pTextValue->GetLength()));
-    }
-    else
-    {
-        IFC(m_TextEditor->SetText(NULL, 0))
-    }
 
     //TODO: Update layout, or query if the value is from the layout?
 

@@ -4,6 +4,8 @@
 
 #ifdef FRAMEWORK_DEBUG
 
+#define FRAMEWORK_LEAK_TRACKING_ENABLED
+
 struct UIFRAMEWORK_API ITrackable
 {
     virtual ~ITrackable(

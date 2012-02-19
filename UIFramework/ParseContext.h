@@ -46,7 +46,7 @@ class CParseContext : public CRefCountedObject
 			__in CProviders* pProviders 
 			);
 
-        CProviders* m_Providers;
+        CProviders* m_pProviders;
         CClassResolver* m_ClassResolver;
         CTypeConverter* m_TypeConverter;
 

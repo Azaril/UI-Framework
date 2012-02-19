@@ -45,7 +45,6 @@ class CEventTrigger : public CTrigger
 
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
-        CProviders* m_Providers;
         CLayeredValue m_RoutedEvent;
         CLayeredValue m_Actions;
 };

@@ -299,7 +299,6 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         virtual CUIElement* GetTemplateParent();
         CFocusManager* GetFocusManager();
         virtual CNamescope* GetNamescope();
-        CProviders* GetProviders();
         CTypeConverter* GetTypeConverter();
         CBindingManager* GetBindingManager();
         CMouseController* GetMouseController();
@@ -451,8 +450,6 @@ class UIFRAMEWORK_API CUIElement : public CVisual
 
         CStaticTreeData* GetStaticTreeData();
 
-        virtual HRESULT SetAnimationValue( CProperty* pProperty, CObjectWithType* pValue );
-
         //
         // Property Change Handlers
         //
@@ -502,7 +499,6 @@ class UIFRAMEWORK_API CUIElement : public CVisual
         bool m_NotifiedParentArrangeDirty;
 
     private:
-        CProviders* m_Providers;
         bool m_Attached;
 
         bool m_Loaded;

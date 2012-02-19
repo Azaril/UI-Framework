@@ -35,11 +35,12 @@ CGeometryVisual::~CGeometryVisual(
 
 __checkReturn HRESULT 
 CGeometryVisual::Initialize(
+    __in CProviders* pProviders
     )
 {
     HRESULT hr = S_OK;
 
-    IFC(CVisual::Initialize());
+    IFC(CVisual::Initialize(pProviders));
 
 Cleanup:
     return hr;

@@ -7,7 +7,7 @@
 class UIFRAMEWORK_API CGeometryVisual : public CVisual
 {
     public:
-        DECLARE_FACTORY( CGeometryVisual );
+        DECLARE_FACTORY1( CGeometryVisual, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::GeometryVisual, CVisual );
 
@@ -48,6 +48,7 @@ class UIFRAMEWORK_API CGeometryVisual : public CVisual
             );
 
         __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders
             );
 
         __checkReturn HRESULT InternalSetGeometry( 

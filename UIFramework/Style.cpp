@@ -16,21 +16,25 @@ namespace StyleProperties
 }
 
 //
+// Property Defaults
+//
+DEFINE_GET_DEFAULT_NULL( Setters );
+DEFINE_GET_DEFAULT_NULL( Triggers );
+
+//
 // Properties
 //
-CStaticProperty CStyle::SettersProperty(TypeIndex::Style, StyleProperties::Setters, L"Setters", TypeIndex::SetterCollection, StaticPropertyFlags::Collection | StaticPropertyFlags::Content);
-CStaticProperty CStyle::TriggersProperty(TypeIndex::Style, StyleProperties::Triggers, L"Triggers", TypeIndex::TriggerCollection, StaticPropertyFlags::Collection);
+CStaticProperty CStyle::SettersProperty(TypeIndex::Style, StyleProperties::Setters, L"Setters", TypeIndex::SetterCollection, StaticPropertyFlags::Collection | StaticPropertyFlags::Content, &GET_DEFAULT( Setters ));
+CStaticProperty CStyle::TriggersProperty(TypeIndex::Style, StyleProperties::Triggers, L"Triggers", TypeIndex::TriggerCollection, StaticPropertyFlags::Collection, &GET_DEFAULT( Triggers ));
 
 CStyle::CStyle(
     ) 
-    : m_Providers(NULL)
 {
 }
 
 CStyle::~CStyle(
     )
 {
-    ReleaseObject(m_Providers);
 }
 
 __checkReturn HRESULT 
@@ -40,10 +44,7 @@ CStyle::Initialize(
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pProviders);
-
-    m_Providers = pProviders;
-    AddRefObject(pProviders);
+    IFC(CPropertyObject::Initialize(pProviders));
 
 Cleanup:
     return hr;
@@ -92,15 +93,18 @@ CStyle::ResolveSetters(
     IFCPTR(pObject);
     IFCPTR(ppResolvedActions);
 
-    IFC(CResolvedTriggerActions::Create(pObject, m_Providers, pCallback, &pResolvedSetters));
+    IFC(CResolvedTriggerActions::Create(pObject, GetProviders(), pCallback, &pResolvedSetters));
 
     IFC(GetTypedEffectiveValue(&SettersProperty, &pSetters));
 
-    for(UINT32 i = 0; i < pSetters->GetCount(); i++)
+    if (pSetters != NULL)
     {
-        CSetter* pSetter = pSetters->GetAtIndex(i);
+        for(UINT32 i = 0; i < pSetters->GetCount(); i++)
+        {
+            CSetter* pSetter = pSetters->GetAtIndex(i);
 
-        IFC(pResolvedSetters->AddAction(pSetter));
+            IFC(pResolvedSetters->AddAction(pSetter));
+        }
     }
 
     *ppResolvedActions = pResolvedSetters;
@@ -127,15 +131,18 @@ CStyle::ResolveTriggers(
     IFCPTR(pObject);
     IFCPTR(ppResolvedTriggers);
 
-    IFC(CResolvedTriggers::Create(pObject, m_Providers, pCallback, &pResolvedTriggers));
+    IFC(CResolvedTriggers::Create(pObject, GetProviders(), pCallback, &pResolvedTriggers));
 
     IFC(GetTypedEffectiveValue(&TriggersProperty, &pTriggers));
 
-    for(UINT32 i = 0; i < pTriggers->GetCount(); i++)
+    if (pTriggers != NULL)
     {
-        CTrigger* pTrigger = pTriggers->GetAtIndex(i);
+        for(UINT32 i = 0; i < pTriggers->GetCount(); i++)
+        {
+            CTrigger* pTrigger = pTriggers->GetAtIndex(i);
 
-        IFC(pResolvedTriggers->AddTrigger(pTrigger));
+            IFC(pResolvedTriggers->AddTrigger(pTrigger));
+        }
     }
 
     *ppResolvedTriggers = pResolvedTriggers;

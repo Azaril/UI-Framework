@@ -6,7 +6,7 @@
 class CAnimationTimelineCollection : public CCollection< CAnimationTimeline >
 {
     public:
-        DECLARE_FACTORY( CAnimationTimelineCollection );
+        DECLARE_FACTORY1( CAnimationTimelineCollection, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::AnimationTimelineCollection, CCollection< CAnimationTimeline > );
 };

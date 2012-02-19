@@ -82,6 +82,7 @@ class UIFRAMEWORK_API CVisual : public CAnimatable
             );
    
         __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders
             );
 
         __checkReturn HRESULT Finalize(

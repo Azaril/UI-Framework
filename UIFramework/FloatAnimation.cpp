@@ -45,11 +45,15 @@ CFloatAnimation::Initialize(
 {
     HRESULT hr = S_OK;
 
+    IFC(CFloatAnimationBase::Initialize(pProviders));
+
+Cleanup:
     return hr;
 }
 
 __checkReturn HRESULT
 CFloatAnimation::Initialize(
+    __in CProviders* pProviders,
     FLOAT From,
     FLOAT To, 
     const CTimeSpan& Duration
@@ -57,6 +61,8 @@ CFloatAnimation::Initialize(
 {
     HRESULT hr = S_OK;
     CDurationValue* pDuration = NULL;
+
+    IFC(Initialize(pProviders));
 
     IFC(CDurationValue::Create(Duration, &pDuration));
 

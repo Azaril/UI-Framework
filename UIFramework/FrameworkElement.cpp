@@ -63,7 +63,7 @@ HRESULT CFrameworkElement::Initialize(CProviders* pProviders)
 
     IFC(CUIElement::Initialize(pProviders));
 
-    IFC(CUIElementCollection::Create(&m_Children));
+    IFC(CUIElementCollection::Create(GetProviders(), &m_Children));
 
     IFC(m_Children->AddSubscriber(&m_ChildrenSubscriber));
 
@@ -398,7 +398,9 @@ HRESULT CFrameworkElement::EnsureStyle()
 
             if(pStyle == NULL)
             {
-                //Find the default template for this type.
+                //
+                // Find the default template for this type.
+                //
                 IFC(CTypeValue::Create(GetType(), &pTypeValue));
 
                 if(FAILED(FindResource(pTypeValue, &pStyle)))
@@ -474,14 +476,8 @@ Cleanup:
 HRESULT CFrameworkElement::SetStyleValueInternal(CProperty* pProperty, CObjectWithType* pValue)
 {
     HRESULT hr = S_OK;
-    CLayeredValue* pLayeredValue = NULL;
 
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    IFC(GetLayeredValue(pProperty, &pLayeredValue));
-
-    IFC(pLayeredValue->SetStyleValue(pValue));
+    IFC(SetValueToLayer(EffectiveValue::Style, pProperty, pValue));
 
 Cleanup:
     return hr;
@@ -580,6 +576,10 @@ HRESULT CFrameworkElement::FindResource(CObjectWithType* pKey, CObjectWithType**
             CFrameworkElement* pParentFrameworkElement = (CFrameworkElement*)pParent;
 
             IFC_NOTRACE(pParentFrameworkElement->FindResource(pKey, ppObject));
+        }
+        else
+        {
+            IFC_NOTRACE(E_FAIL);
         }
     }
 

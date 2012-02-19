@@ -32,6 +32,7 @@ CSourcedBinding::CSourcedBinding(
     ) 
     : m_Source(NULL)
     , m_SourceProperty(NULL)
+    , m_SettingValue(FALSE)
 {
 }
 
@@ -184,7 +185,21 @@ CSourcedBinding::OnSourcePropertyChanged(
 
     if(pProperty == m_SourceProperty)
     {
-        IFC(InvalidateBinding());
+        //
+        // Break notification chain by temporarily blocking change notifications.
+        //
+        // TODO: Validate this works correctly
+        //
+        if (m_SettingValue)
+        {
+            goto Cleanup;
+        }
+
+        m_SettingValue = TRUE;
+
+        hr = InvalidateBinding();
+
+        m_SettingValue = FALSE;
     }
 
 Cleanup:
@@ -204,6 +219,16 @@ CSourcedBinding::OnTargetPropertyChanged(
     IFCPTR(pObject);
     IFCPTR(pProperty);
 
+    //
+    // Break notification chain by temporarily blocking change notifications.
+    //
+    // TODO: Validate this works correctly
+    //
+    if (m_SettingValue)
+    {
+        goto Cleanup;
+    }
+
     if(pTargetProperty != NULL && pProperty == GetTargetProperty())
     {
         CPropertyObject* pTarget = GetTarget();
@@ -215,7 +240,13 @@ CSourcedBinding::OnTargetPropertyChanged(
 
         IFC(pTarget->GetEffectiveValue(pTargetProperty, &pValue));
 
-        IFC(m_Source->SetValue(m_SourceProperty, pValue));
+        m_SettingValue = TRUE;
+
+        hr = m_Source->SetValue(m_SourceProperty, pValue);
+
+        m_SettingValue = FALSE;
+
+        IFC(hr);
     }
 
 Cleanup:

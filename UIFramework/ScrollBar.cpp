@@ -26,7 +26,7 @@ DEFINE_GET_DEFAULT( ViewportSize, FLOAT, 0 );
 // Properties
 //
 CStaticProperty CScrollBar::OrientationProperty(TypeIndex::ScrollBar, ScrollBarProperties::Orientation, L"Orientation", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( Orientation ), &INSTANCE_CHANGE_CALLBACK( CScrollBar, OnOrientationChanged ));
-CStaticProperty CScrollBar::ViewportSizeProperty(TypeIndex::ScrollBar, ScrollBarProperties::ViewportSize, L"ViewportSize", TypeIndex::Orientation, StaticPropertyFlags::None, &GET_DEFAULT( ViewportSize ));
+CStaticProperty CScrollBar::ViewportSizeProperty(TypeIndex::ScrollBar, ScrollBarProperties::ViewportSize, L"ViewportSize", TypeIndex::Float, StaticPropertyFlags::None, &GET_DEFAULT( ViewportSize ));
 
 //
 // Property Change Handlers

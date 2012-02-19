@@ -50,6 +50,9 @@ CGradientStop::Initialize(
 {
     HRESULT hr = S_OK;
 
+    IFC(CPropertyObject::Initialize(pProviders));
+
+Cleanup:
     return hr;
 }
 

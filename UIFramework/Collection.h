@@ -21,7 +21,7 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
         typedef vector< T* > CollectionType;
         typedef vector< SubscriberType* > SubscriberCollectionType;
 
-        DECLARE_FACTORY( CCollection< T > );
+        DECLARE_FACTORY1( CCollection< T >, CProviders* );
 
         __override virtual __checkReturn HRESULT AddObject(
             __in CObjectWithType* pObject 
@@ -161,10 +161,14 @@ class CCollection : public CRefCountedObjectBase< CObjectCollection >
         }
 
         __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders
             )
         {
             HRESULT hr = S_OK;
 
+            IFC(CObjectCollection::Initialize(pProviders));
+
+        Cleanup:
             return hr;
         }
 

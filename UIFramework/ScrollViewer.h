@@ -90,6 +90,7 @@ class CScrollViewer : public CContentControl,
 
     private:
         bool m_InMeasure;
+        bool m_InInvalidate;
         events::signals::connection m_RoutedCommandExecutedConnection;
 };
 

@@ -21,10 +21,14 @@ CVisual::~CVisual(
 
 __checkReturn HRESULT 
 CVisual::Initialize(
+    __in CProviders* pProviders
     )
 {
     HRESULT hr = S_OK;
     
+    IFC(CAnimatable::Initialize(pProviders));
+
+Cleanup:
     return hr;
 }
 
@@ -139,7 +143,7 @@ CVisual::SetAnimationValue(
 {
     HRESULT hr = S_OK;
 
-    IFC(SetValue(pProperty, pValue));
+    IFC(SetValueToLayer(EffectiveValue::Animation, pProperty, pValue));
 
 Cleanup:
     return hr;

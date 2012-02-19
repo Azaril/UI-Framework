@@ -3,6 +3,28 @@
 #include "BasicTypes.h"
 #include "LayeredValue.h"
 #include "BindingContext.h"
+#include "LayeredValue.h"
+
+class CAttachedPropertyHolder
+{
+    public:
+        CAttachedPropertyHolder(
+            __in CProperty* pProperty
+            );
+
+        ~CAttachedPropertyHolder(
+            );
+
+        __out CProperty* GetProperty(
+            );
+
+        __out CLayeredValue* GetLayeredValue(
+            );
+
+    protected:
+        CProperty* m_Property;
+        CLayeredValue m_Value;
+};
 
 __checkReturn HRESULT
 CProperty::OnValueChanged( 
@@ -25,14 +47,46 @@ Cleanup:
 
 CPropertyObject::CPropertyObject(
     ) 
-    : m_BindingContext(NULL)
+    : m_pProviders(NULL)
+    , m_BindingContext(NULL)
+#ifdef FRAMEWORK_DEBUG
+    , m_InitializeCalled(false)
+#endif
 {
 }
 
 CPropertyObject::~CPropertyObject(
     )
 {
+#ifdef FRAMEWORK_DEBUG
+    ASSERT(m_InitializeCalled);
+#endif
+
+    for(vector< CAttachedPropertyHolder* >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
+    {
+        CAttachedPropertyHolder* pPropertyHolder = (*It);
+
+        delete pPropertyHolder;
+    }
+
     ReleaseObject(m_BindingContext);
+    ReleaseObject(m_pProviders);
+}
+
+__checkReturn HRESULT 
+CPropertyObject::Initialize(
+    __in CProviders* pProviders
+    )
+{
+    HRESULT hr = S_OK;
+
+#ifdef FRAMEWORK_DEBUG
+    m_InitializeCalled = true;
+#endif
+
+    SetObject(m_pProviders, pProviders);
+
+    return hr;
 }
 
 __checkReturn HRESULT
@@ -42,18 +96,15 @@ CPropertyObject::SetValue(
     )
 {
     HRESULT hr = S_OK;
-    CObjectWithType* pOldValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
     IFCEXPECT(!pProperty->IsReadOnly());
 
-    IFC(SetValuePrivate(pProperty, pValue));
+    IFC(SetValueToLayer(EffectiveValue::Local, pProperty, pValue));
 
 Cleanup:
-    ReleaseObject(pOldValue);
-
     return hr;
 }
 
@@ -102,71 +153,148 @@ CPropertyObject::SetValueReadOnly(
     )
 {
     HRESULT hr = S_OK;
-    CObjectWithType* pOldValue = NULL;
 
     IFCPTR(pProperty);
     IFCPTR(pValue);
 
-    IFC(SetValuePrivate(pProperty, pValue));
+    IFC(SetValueToLayer(EffectiveValue::Local, pProperty, pValue));
 
 Cleanup:
-    ReleaseObject(pOldValue);
-
     return hr;
 }
 
+__out CProviders*
+CPropertyObject::GetProviders(
+    )
+{
+#ifdef FRAMEWORK_DEBUG
+    ASSERT(m_InitializeCalled);
+#endif
+
+    return m_pProviders;
+}
+
 __checkReturn HRESULT
-CPropertyObject::SetValuePrivate(
-    __in CProperty* pProperty, 
+CPropertyObject::SetValueToLayer(
+    EffectiveValue::Value layer,
+    __in CProperty* pProperty,
     __in CObjectWithType* pValue
     )
 {
     HRESULT hr = S_OK;
     CLayeredValue* pLayeredValue = NULL;
-    CObjectWithType* pOldValue = NULL;
+    bool setEffectiveValue = false;
+    CObjectWithType* pPreviousEffectiveValue = NULL;
+    CObjectWithType* pConvertedType = NULL;
+    CObjectWithType* pNewValue = NULL;
 
-    IFCPTR(pProperty);
-    IFCPTR(pValue);
-
-    IFC(GetValue(pProperty, &pOldValue));
-
-    if(!pOldValue || !pValue->Equals(pOldValue))
+    if (pValue->IsTypeOf(pProperty->GetType()))
     {
-        if(pProperty->IsAttached())
-        {
-            bool SetVal = FALSE;
+        pNewValue = pValue;
+    }
+    else
+    {
+        CProviders* pProviders = GetProviders();
+                    
+        CTypeConverter* pTypeConverter = pProviders->GetTypeConverter();
+        IFCPTR(pTypeConverter);
 
-            for(vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
-            {
-                if(It->GetProperty() == pProperty)
-                {
-                    IFC(It->SetValue(pValue));
+        CConversionContext Context(this, pProperty, pProviders);
 
-                    SetVal = TRUE;
+        IFC(pTypeConverter->Convert(&Context, pValue, &pConvertedType));
 
-                    break;
-                }
-            }
+        pNewValue = pConvertedType;
+    }
 
-            if(!SetVal)
-            {
-                m_AttachedProperties.push_back(CAttachedPropertyHolder(pProperty, pValue));
-            }
+    if (pProperty->IsAttached())
+    {
+        IFC(GetOrCreateAttachedLayeredValue(pProperty, &pLayeredValue));
+    }
+    else
+    {
+        IFC(GetLayeredValue(pProperty, &pLayeredValue));
+    }
 
-            IFC(pProperty->OnValueChanged(this, pOldValue, pValue));
+    IFC(pLayeredValue->SetValueToLayer(layer, pNewValue, &setEffectiveValue, &pPreviousEffectiveValue));
 
-            IFC(RaisePropertyChanged(pProperty));
-        }
-        else
-        {
-            IFC(GetLayeredValue(pProperty, &pLayeredValue));
+    if (setEffectiveValue)
+    {
+        IFC(pProperty->OnValueChanged(this, pPreviousEffectiveValue, pNewValue));
 
-            IFC(pLayeredValue->SetLocalValue(pValue));
-        }
+        IFC(RaisePropertyChanged(pProperty));
     }
 
 Cleanup:
-    ReleaseObject(pOldValue);
+    ReleaseObject(pPreviousEffectiveValue);
+    ReleaseObject(pConvertedType);
+
+    return hr;
+}
+
+__checkReturn HRESULT
+CPropertyObject::GetOrCreateAttachedLayeredValue(
+    __in CProperty* pProperty,
+    __out CLayeredValue** ppLayeredValue
+    )
+{
+    HRESULT hr = S_OK;
+    CAttachedPropertyHolder* pPropertyHolder = NULL;
+
+    for(vector< CAttachedPropertyHolder* >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
+    {
+        if((*It)->GetProperty() == pProperty)
+        {
+            pPropertyHolder = (*It);
+
+            break;
+        }
+    }
+
+    if(pPropertyHolder == NULL)
+    {
+        pPropertyHolder = new CAttachedPropertyHolder(pProperty);
+        IFCOOM(pPropertyHolder);
+
+        m_AttachedProperties.push_back(pPropertyHolder);
+    }
+
+    *ppLayeredValue = pPropertyHolder->GetLayeredValue();
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT
+CPropertyObject::ClearValueFromLayer(
+    EffectiveValue::Value layer,
+    __in CProperty* pProperty
+    )
+{
+    HRESULT hr = S_OK;
+    CLayeredValue* pLayeredValue = NULL;
+    bool setEffectiveValue = false;
+    CObjectWithType* pPreviousEffectiveValue = NULL;
+
+    if (pProperty->IsAttached())
+    {
+        IFC(GetOrCreateAttachedLayeredValue(pProperty, &pLayeredValue));
+    }
+    else
+    {
+        IFC(GetLayeredValue(pProperty, &pLayeredValue));
+    }
+
+    IFC(pLayeredValue->ClearValueFromLayer(layer, &setEffectiveValue, &pPreviousEffectiveValue));
+
+    if (setEffectiveValue)
+    {
+        IFC(pProperty->OnValueChanged(this, pPreviousEffectiveValue, NULL));
+
+        IFC(RaisePropertyChanged(pProperty));
+    }
+
+Cleanup:
+    ReleaseObject(pPreviousEffectiveValue);
 
     return hr;
 }
@@ -178,31 +306,40 @@ CPropertyObject::GetValue(
     )
 {
     HRESULT hr = S_OK;
+
+    IFCPTR(pProperty);
+    IFCPTR(ppValue);
+
+    IFC(GetValueFromLayer(EffectiveValue::Local, pProperty, ppValue));
+
+Cleanup:
+    return hr;
+}
+
+__checkReturn HRESULT
+CPropertyObject::GetValueFromLayer(
+    EffectiveValue::Value layer,
+    __in CProperty* pProperty,
+    __deref_out_opt CObjectWithType** ppValue
+    )
+{
+    HRESULT hr = S_OK;
     CLayeredValue* pLayeredValue;
 
     IFCPTR(pProperty);
     IFCPTR(ppValue);
 
-    if(pProperty->IsAttached())
+    if (pProperty->IsAttached())
     {
-        for(vector< CAttachedPropertyHolder >::iterator It = m_AttachedProperties.begin(); It != m_AttachedProperties.end(); ++It)
-        {
-            if(It->GetProperty() == pProperty)
-            {
-                IFC(It->GetValue(ppValue));
-                
-                goto Cleanup;
-            }
-        }
-
-        *ppValue = NULL;
+        //TODO: Make this not allocate? Return default value?
+        IFC(GetOrCreateAttachedLayeredValue(pProperty, &pLayeredValue));
     }
     else
     {
         IFC(GetLayeredValue(pProperty, &pLayeredValue));
-
-        IFC(pLayeredValue->GetLocalValue(ppValue));
     }
+
+    IFC(pLayeredValue->GetValueFromLayer(layer, ppValue));
 
 Cleanup:
     return hr;
@@ -321,66 +458,17 @@ Cleanup:
 }
 
 CAttachedPropertyHolder::CAttachedPropertyHolder(
-    const CAttachedPropertyHolder& Other
-    ) 
-    : m_Property(Other.m_Property)
-    , m_Value(Other.m_Value)
-{
-    AddRefObject(m_Property);
-    AddRefObject(m_Value);
-}
-
-CAttachedPropertyHolder::CAttachedPropertyHolder(
-    __in CProperty* pProperty, 
-    __in CObjectWithType* pValue
+    __in CProperty* pProperty
     )
     : m_Property(pProperty)
-    , m_Value(pValue)
 {
     AddRefObject(m_Property);
-    AddRefObject(m_Value);
 }
 
 CAttachedPropertyHolder::~CAttachedPropertyHolder(
     )
 {
     ReleaseObject(m_Property);
-    ReleaseObject(m_Value);
-}
-
-__checkReturn HRESULT 
-CAttachedPropertyHolder::SetValue(
-    __in CObjectWithType* pObject
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pObject);
-
-    ReleaseObject(m_Value);
-
-    m_Value = pObject;
-
-    AddRefObject(m_Value);
-
-Cleanup:
-    return hr;
-}
-
-__checkReturn HRESULT 
-CAttachedPropertyHolder::GetValue(
-    __deref_out CObjectWithType** ppObject
-    )
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(ppObject);
-
-    *ppObject = m_Value;
-    AddRefObject(m_Value);
-
-Cleanup:
-    return hr;
 }
 
 __out CProperty* 
@@ -388,6 +476,13 @@ CAttachedPropertyHolder::GetProperty(
     )
 {
     return m_Property;
+}
+
+__out CLayeredValue*
+CAttachedPropertyHolder::GetLayeredValue( 
+    )
+{
+    return &m_Value;
 }
 
 //

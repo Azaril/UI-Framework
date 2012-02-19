@@ -35,6 +35,9 @@ CControlTemplate::Initialize(
 {
     HRESULT hr = S_OK;
 
+    IFC(CPropertyObject::Initialize(pProviders));
+
+Cleanup:
     return hr;
 }
 
@@ -56,6 +59,8 @@ CControlTemplate::LoadContent(
     IFC(pCommandList->Execute(&Callback, ppObject));
 
 Cleanup:
+    ReleaseObject(pCommandList);
+
     return hr;
 }
 

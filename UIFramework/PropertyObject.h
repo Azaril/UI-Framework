@@ -16,6 +16,22 @@ class CLayeredValue;
 class CBindingContext;
 class CBindingBase;
 
+class CProviders;
+
+namespace EffectiveValue
+{
+    enum Value
+    {
+        None        = 0x00,
+        Default     = 0x01,
+        Style       = 0x02,
+        Local       = 0x04,
+        Animation   = 0x08,
+
+        Last        = Animation
+    };
+}
+
 typedef __checkReturn HRESULT (*OnValueChangeFunc)( 
     __in CPropertyObject* pObjectInstance, 
     __in_opt CObjectWithType* pOldValue, 
@@ -159,36 +175,7 @@ struct ObjectTypeTraits< CObjectWithType >
     static const TypeIndex::Value Type = TypeIndex::Object;
 };
 
-class CAttachedPropertyHolder
-{
-    public:
-        CAttachedPropertyHolder( 
-            const CAttachedPropertyHolder& Other 
-            );
-
-        CAttachedPropertyHolder(
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pObject 
-            );
-
-        ~CAttachedPropertyHolder(
-            );
-
-        __checkReturn HRESULT SetValue( 
-            __in CObjectWithType* pObject 
-            );
-
-        __checkReturn HRESULT GetValue(
-            __deref_out CObjectWithType** ppObject 
-            );
-
-        __out CProperty* GetProperty(
-            );
-
-    protected:
-        CProperty* m_Property;
-        CObjectWithType* m_Value;
-};
+class CAttachedPropertyHolder;
 
 typedef events::signal< void ( CPropertyObject*, CProperty* ) > PropertyChangedSignal;
 typedef PropertyChangedSignal::slot_type PropertyChangedHandler;
@@ -331,9 +318,30 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
         virtual ~CPropertyObject(
             );
 
+        __checkReturn HRESULT Initialize(
+            __in CProviders* pProviders
+            );
+
         virtual __checkReturn HRESULT SetValueReadOnly(
             __in CProperty* pProperty, 
             __in CObjectWithType* pValue 
+            );
+
+        __checkReturn HRESULT SetValueToLayer(
+            EffectiveValue::Value layer,
+            __in CProperty* pProperty,
+            __in CObjectWithType* pValue
+            );
+
+        __checkReturn HRESULT ClearValueFromLayer(
+            EffectiveValue::Value layer,
+            __in CProperty* pProperty
+            );
+
+        __checkReturn HRESULT GetValueFromLayer(
+            EffectiveValue::Value layer,
+            __in CProperty* pProperty,
+            __deref_out_opt CObjectWithType** ppValue
             );
 
         virtual __checkReturn HRESULT GetLayeredValue(
@@ -341,15 +349,23 @@ class UIFRAMEWORK_API CPropertyObject : public CObjectWithType
             __deref_out_opt CLayeredValue** ppLayeredValue
             );
 
-        vector< CAttachedPropertyHolder > m_AttachedProperties;
-        PropertyChangedSignal m_PropertyChangedSignal;
-        CBindingContext* m_BindingContext;
+        __out CProviders* GetProviders(
+            );
 
     private:
-        __checkReturn HRESULT SetValuePrivate( 
-            __in CProperty* pProperty, 
-            __in CObjectWithType* pValue 
+        __checkReturn HRESULT GetOrCreateAttachedLayeredValue(
+            __in CProperty* pProperty,
+            __out CLayeredValue** ppLayeredValue
             );
+
+        CBindingContext* m_BindingContext;
+        vector< CAttachedPropertyHolder* > m_AttachedProperties;
+        PropertyChangedSignal m_PropertyChangedSignal;
+        CProviders* m_pProviders;
+
+#ifdef FRAMEWORK_DEBUG
+        bool m_InitializeCalled;
+#endif
 };
 
 template< >

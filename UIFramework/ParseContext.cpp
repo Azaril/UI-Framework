@@ -2,7 +2,7 @@
 
 CParseContext::CParseContext(
 	) 
-	: m_Providers(NULL)
+	: m_pProviders(NULL)
 	, m_ClassResolver(NULL)
 	, m_TypeConverter(NULL)
 {
@@ -13,14 +13,12 @@ CParseContext::~CParseContext(
 {
     ReleaseObject(m_ClassResolver);
     ReleaseObject(m_TypeConverter);
-    ReleaseObject(m_Providers);
+    ReleaseObject(m_pProviders);
 
     for(vector< CParserCommandList* >::iterator It = m_CommandLists.begin(); It != m_CommandLists.end(); ++It)
     {
         (*It)->Release();
     }
-
-    m_CommandLists.clear();
 }
 
 __checkReturn HRESULT 
@@ -32,14 +30,14 @@ CParseContext::Initialize(
 
     IFCPTR(pProviders);
 
-    m_Providers = pProviders;
-    AddRefObject(m_Providers);
+    m_pProviders = pProviders;
+    AddRefObject(m_pProviders);
 
-    m_ClassResolver = m_Providers->GetClassResolver();
+    m_ClassResolver = m_pProviders->GetClassResolver();
     IFCPTR(m_ClassResolver);
     AddRefObject(m_ClassResolver);
 
-    m_TypeConverter = m_Providers->GetTypeConverter();
+    m_TypeConverter = m_pProviders->GetTypeConverter();
     IFCPTR(m_TypeConverter);
     AddRefObject(m_TypeConverter);
 
@@ -51,7 +49,7 @@ __out CProviders*
 CParseContext::GetProviders(
 	)
 {
-    return m_Providers;
+    return m_pProviders;
 }
 
 __out CClassResolver* 

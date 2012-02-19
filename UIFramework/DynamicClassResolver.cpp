@@ -304,7 +304,7 @@ ClassInformation Classes[] =
     ClassInformation(
         L"SetterCollection",
         TypeIndex::SetterCollection,
-        &StaticClassFactoryNoProviders< CSetterCollection >::Create,
+        &StaticClassFactory< CSetterCollection >::Create,
         NULL,
         NULL,
         NULL),
@@ -312,7 +312,7 @@ ClassInformation Classes[] =
     ClassInformation(
         L"TriggerCollection",
         TypeIndex::TriggerCollection,
-        &StaticClassFactoryNoProviders< CTriggerCollection >::Create,
+        &StaticClassFactory< CTriggerCollection >::Create,
         NULL,
         NULL,
         NULL),
@@ -320,7 +320,7 @@ ClassInformation Classes[] =
     ClassInformation(
         L"TriggerActionCollection",
         TypeIndex::TriggerActionCollection,
-        &StaticClassFactoryNoProviders< CTriggerActionCollection >::Create,
+        &StaticClassFactory< CTriggerActionCollection >::Create,
         NULL,
         NULL,
         NULL),
@@ -352,7 +352,7 @@ ClassInformation Classes[] =
     ClassInformation(
         L"GradientStopCollection",
         TypeIndex::GradientStopCollection,
-        &StaticClassFactoryNoProviders< CGradientStopCollection >::Create,
+        &StaticClassFactory< CGradientStopCollection >::Create,
         NULL,
         NULL,
         NULL),
@@ -368,7 +368,7 @@ ClassInformation Classes[] =
     ClassInformation(
         L"TriggerCollection",
         TypeIndex::TriggerCollection,
-        &StaticClassFactoryNoProviders< CTriggerCollection >::Create,
+        &StaticClassFactory< CTriggerCollection >::Create,
         NULL,
         NULL,
         NULL),
@@ -408,7 +408,7 @@ ClassInformation Classes[] =
     ClassInformation(
         L"AnimationTimelineCollection",
         TypeIndex::AnimationTimelineCollection,
-        &StaticClassFactoryNoProviders< CAnimationTimelineCollection >::Create,
+        &StaticClassFactory< CAnimationTimelineCollection >::Create,
         NULL,
         NULL,
         NULL),
@@ -432,7 +432,7 @@ ClassInformation Classes[] =
     ClassInformation(
         L"ResourceDictionary",
         TypeIndex::ResourceDictionary,
-        &StaticClassFactoryNoProviders< CResourceDictionary >::Create,
+        &StaticClassFactory< CResourceDictionary >::Create,
         NULL,
         NULL,
         NULL)

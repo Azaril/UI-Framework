@@ -364,37 +364,85 @@ HRESULT CScrollViewer::InvalidateScrollInformation()
         FLOAT ScrollableWidth = std::max(Extent.width - Viewport.width, 0.0f);
         FLOAT ScrollableHeight = std::max(Extent.height - Viewport.height, 0.0f);
 
-        IFC(CFloatValue::Create(Extent.width, &pValue));
-        IFC(SetValueReadOnly(&ExtentWidthProperty, pValue));
-        ReleaseObject(pValue);
+        FLOAT currentExtentWidth;
+        IFC(GetBasicTypeEffectiveValue(&ExtentWidthProperty, &currentExtentWidth));
 
-        IFC(CFloatValue::Create(Extent.height, &pValue));
-        IFC(SetValueReadOnly(&ExtentHeightProperty, pValue));
-        ReleaseObject(pValue);
+        if (!IsFloatNear(Extent.width, currentExtentWidth))
+        {
+            IFC(CFloatValue::Create(Extent.width, &pValue));
+            IFC(SetValueReadOnly(&ExtentWidthProperty, pValue));
+            ReleaseObject(pValue);
+        }
 
-        IFC(CFloatValue::Create(Viewport.width, &pValue));
-        IFC(SetValueReadOnly(&ViewportWidthProperty, pValue));
-        ReleaseObject(pValue);
+        FLOAT currentExtentHeight;
+        IFC(GetBasicTypeEffectiveValue(&ExtentHeightProperty, &currentExtentHeight));
 
-        IFC(CFloatValue::Create(Viewport.height, &pValue));
-        IFC(SetValueReadOnly(&ViewportHeightProperty, pValue));
-        ReleaseObject(pValue);
+        if (!IsFloatNear(Extent.height, currentExtentHeight))
+        {
+            IFC(CFloatValue::Create(Extent.height, &pValue));
+            IFC(SetValueReadOnly(&ExtentHeightProperty, pValue));
+            ReleaseObject(pValue);
+        }
 
-        IFC(CFloatValue::Create(HorizontalOffset, &pValue));
-        IFC(SetValueReadOnly(&HorizontalOffsetProperty, pValue));
-        ReleaseObject(pValue);
+        FLOAT currentViewportWidth;
+        IFC(GetBasicTypeEffectiveValue(&ViewportWidthProperty, &currentViewportWidth));
 
-        IFC(CFloatValue::Create(VerticalOffset, &pValue));
-        IFC(SetValueReadOnly(&VerticalOffsetProperty, pValue));
-        ReleaseObject(pValue);
+        if (!IsFloatNear(Viewport.width, currentViewportWidth))
+        {
+            IFC(CFloatValue::Create(Viewport.width, &pValue));
+            IFC(SetValueReadOnly(&ViewportWidthProperty, pValue));
+            ReleaseObject(pValue);
+        }
 
-        IFC(CFloatValue::Create(ScrollableWidth, &pValue));
-        IFC(SetValueReadOnly(&ScrollableWidthProperty, pValue));
-        ReleaseObject(pValue);
+        FLOAT currentViewportHeight;
+        IFC(GetBasicTypeEffectiveValue(&ViewportHeightProperty, &currentViewportHeight));
 
-        IFC(CFloatValue::Create(ScrollableHeight, &pValue));
-        IFC(SetValueReadOnly(&ScrollableHeightProperty, pValue));
-        ReleaseObject(pValue);
+        if (!IsFloatNear(Viewport.height, currentViewportHeight))
+        {
+            IFC(CFloatValue::Create(Viewport.height, &pValue));
+            IFC(SetValueReadOnly(&ViewportHeightProperty, pValue));
+            ReleaseObject(pValue);
+        }
+
+        FLOAT currentHorizontalOffset;
+        IFC(GetBasicTypeEffectiveValue(&HorizontalOffsetProperty, &currentHorizontalOffset));
+
+        if (!IsFloatNear(HorizontalOffset, currentHorizontalOffset))
+        {
+            IFC(CFloatValue::Create(HorizontalOffset, &pValue));
+            IFC(SetValueReadOnly(&HorizontalOffsetProperty, pValue));
+            ReleaseObject(pValue);
+        }
+
+        FLOAT currentVerticalOffset;
+        IFC(GetBasicTypeEffectiveValue(&VerticalOffsetProperty, &currentVerticalOffset));
+
+        if (!IsFloatNear(VerticalOffset, currentVerticalOffset))
+        {
+            IFC(CFloatValue::Create(VerticalOffset, &pValue));
+            IFC(SetValueReadOnly(&VerticalOffsetProperty, pValue));
+            ReleaseObject(pValue);
+        }
+
+        FLOAT currentScrollableWidth;
+        IFC(GetBasicTypeEffectiveValue(&ScrollableWidthProperty, &currentScrollableWidth));
+
+        if (!IsFloatNear(ScrollableWidth, currentScrollableWidth))
+        {
+            IFC(CFloatValue::Create(ScrollableWidth, &pValue));
+            IFC(SetValueReadOnly(&ScrollableWidthProperty, pValue));
+            ReleaseObject(pValue);
+        }
+
+        FLOAT currentScrollableHeight;
+        IFC(GetBasicTypeEffectiveValue(&ScrollableHeightProperty, &currentScrollableHeight));
+
+        if (!IsFloatNear(ScrollableHeight, currentScrollableHeight))
+        {
+            IFC(CFloatValue::Create(ScrollableHeight, &pValue));
+            IFC(SetValueReadOnly(&ScrollableHeightProperty, pValue));
+            ReleaseObject(pValue);
+        }
     }
 
 Cleanup:
@@ -452,9 +500,23 @@ HRESULT CScrollViewer::OnHorizontalOffsetChanged( CObjectWithType* pOldValue, CO
 
     if(m_ScrollPresenter != NULL)
     {
+        bool SetValue = true;
+
         IFC(CastType(pNewValue, &pFloatValue));
 
-        IFC(m_ScrollPresenter->SetHorizontalOffset(pFloatValue->GetValue()));
+        if (pOldValue != NULL)
+        {
+            CFloatValue* pOldFloatValue = NULL;
+
+            IFC(CastType(pOldValue, &pOldFloatValue));
+
+            SetValue = !IsFloatNear(pOldFloatValue->GetValue(), pFloatValue->GetValue());
+        }
+
+        if (SetValue)
+        {
+            IFC(m_ScrollPresenter->SetHorizontalOffset(pFloatValue->GetValue()));
+        }
     }
 
 Cleanup:
@@ -470,9 +532,23 @@ HRESULT CScrollViewer::OnVerticalOffsetChanged( CObjectWithType* pOldValue, CObj
 
     if(m_ScrollPresenter != NULL)
     {
+        bool SetValue = true;
+
         IFC(CastType(pNewValue, &pFloatValue));
 
-        IFC(m_ScrollPresenter->SetVerticalOffset(pFloatValue->GetValue()));
+        if (pOldValue != NULL)
+        {
+            CFloatValue* pOldFloatValue = NULL;
+
+            IFC(CastType(pOldValue, &pOldFloatValue));
+
+            SetValue = !IsFloatNear(pOldFloatValue->GetValue(), pFloatValue->GetValue());
+        }
+
+        if (SetValue)
+        {
+            IFC(m_ScrollPresenter->SetVerticalOffset(pFloatValue->GetValue()));
+        }
     }
 
 Cleanup:

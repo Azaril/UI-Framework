@@ -61,7 +61,7 @@ HRESULT CBorder::Initialize(CProviders* pProviders)
 
     IFC(CDecorator::Initialize(pProviders));
 
-    IFC(CGeometryVisual::Create(&m_BorderVisual));
+    IFC(CGeometryVisual::Create(GetProviders(), &m_BorderVisual));
 
     IFC(m_BorderVisual->SetStrokeThickness(0));
 

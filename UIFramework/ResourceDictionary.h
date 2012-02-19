@@ -5,7 +5,7 @@
 class CResourceDictionary : public CDictionary< CObjectWithType >
 {
     public:
-        DECLARE_FACTORY( CResourceDictionary );
+        DECLARE_FACTORY1( CResourceDictionary, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::ResourceDictionary, CDictionary< CObjectWithType > );
 };

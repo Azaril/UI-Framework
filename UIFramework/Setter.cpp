@@ -29,8 +29,7 @@ CStaticProperty CSetter::ValueProperty(TypeIndex::Setter, SetterProperties::Valu
 
 CSetter::CSetter(
     ) 
-    : m_Providers(NULL)
-    , m_CachedValue(NULL)
+    : m_CachedValue(NULL)
 {
 }
 
@@ -38,7 +37,6 @@ CSetter::~CSetter(
     )
 {
     ReleaseObject(m_CachedValue);
-    ReleaseObject(m_Providers);
 }
 
 __checkReturn HRESULT
@@ -48,10 +46,7 @@ CSetter::Initialize(
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pProviders);
-
-    m_Providers = pProviders;
-    AddRefObject(m_Providers);
+    IFC(CPropertyObject::Initialize(pProviders));
 
 Cleanup:
     return hr;
@@ -75,7 +70,7 @@ CSetter::ResolveAction(
     IFCPTR(pObject);
     IFCPTR(ppResolvedAction);
 
-    pClassResolver = m_Providers->GetClassResolver();
+    pClassResolver = GetProviders()->GetClassResolver();
     IFCPTR(pClassResolver);
 
     IFC(GetTypedEffectiveValue(&PropertyProperty, &pPropertyAsString));

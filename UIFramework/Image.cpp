@@ -54,7 +54,7 @@ HRESULT CImage::Initialize(CProviders* pProviders)
 
     IFC(CFrameworkElement::Initialize(pProviders));
 
-    IFC(CGeometryVisual::Create(&m_ImageVisual));
+    IFC(CGeometryVisual::Create(GetProviders(), &m_ImageVisual));
 
     IFC(AddChildVisual(m_ImageVisual));
 

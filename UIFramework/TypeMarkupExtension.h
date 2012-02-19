@@ -41,7 +41,6 @@ class CTypeMarkupExtension : public CMarkupExtension
         virtual HRESULT GetLayeredValue( CProperty* pProperty, CLayeredValue** ppLayeredValue );
 
         CLayeredValue m_TypeName;
-        CProviders* m_Providers;
 };
 
 template< >

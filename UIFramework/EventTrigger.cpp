@@ -24,14 +24,12 @@ CStaticProperty CEventTrigger::ActionsProperty(TypeIndex::EventTrigger, EventTri
 
 CEventTrigger::CEventTrigger(
     ) 
-    : m_Providers(NULL)
 {
 }
 
 CEventTrigger::~CEventTrigger(
     )
 {
-    ReleaseObject(m_Providers);
 }
 
 __checkReturn HRESULT 
@@ -41,10 +39,7 @@ CEventTrigger::Initialize(
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pProviders);
-
-    m_Providers = pProviders;
-    AddRefObject(m_Providers);
+    IFC(CTrigger::Initialize(pProviders));
 
 Cleanup:
     return hr;
@@ -67,7 +62,7 @@ CEventTrigger::ResolveTrigger(
 
     IFC(GetTypedEffectiveValue(&RoutedEventProperty, &pRoutedEvent));
 
-    IFC(CResolvedEventTrigger::Create(pObject, pRoutedEvent, m_Providers, pCallback, &pResolvedEventTrigger));
+    IFC(CResolvedEventTrigger::Create(pObject, pRoutedEvent, GetProviders(), pCallback, &pResolvedEventTrigger));
 
     IFC(GetTypedEffectiveValue(&ActionsProperty, &pActions));
 

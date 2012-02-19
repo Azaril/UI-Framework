@@ -148,7 +148,6 @@ class CImageBrush : public CBrush
 
         CLayeredValue m_Source;
         ContextCollection m_Contexts;
-        CProviders* m_pProviders;
 };
 
 template< >

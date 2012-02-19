@@ -19,14 +19,12 @@ CStaticProperty CTypeMarkupExtension::TypeNameProperty(TypeIndex::TypeMarkupExte
 
 CTypeMarkupExtension::CTypeMarkupExtension(
 	) 
-	: m_Providers(NULL)
 {
 }
 
 CTypeMarkupExtension::~CTypeMarkupExtension(
 	)
 {
-    ReleaseObject(m_Providers);
 }
 
 __checkReturn HRESULT 
@@ -36,10 +34,7 @@ CTypeMarkupExtension::Initialize(
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pProviders);
-
-    m_Providers = pProviders;
-    AddRefObject(m_Providers);
+    IFC(CMarkupExtension::Initialize(pProviders));
 
 Cleanup:
     return hr;
@@ -125,7 +120,7 @@ CTypeMarkupExtension::ExecuteMarkup(
     IFC(GetTypedEffectiveValue(&TypeNameProperty, &pTypeName));
     IFCPTR(pTypeName);
 
-    pClassResolver = m_Providers->GetClassResolver();
+    pClassResolver = GetProviders()->GetClassResolver();
     IFCPTR(pClassResolver);
 
     IFC(pClassResolver->ResolveType(pTypeName->GetValue(), &pResolvedClass));
@@ -138,6 +133,7 @@ CTypeMarkupExtension::ExecuteMarkup(
 Cleanup:
     ReleaseObject(pResolvedClass);
     ReleaseObject(pTypeValue);
+    ReleaseObject(pTypeName);
 
     return hr;
 }

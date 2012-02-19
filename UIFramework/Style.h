@@ -68,7 +68,6 @@ class CStyle : public CRefCountedObjectBase< CPropertyObject >
             __deref_out CResolvedTriggers** ppResolvedTriggers 
             );
 
-        CProviders* m_Providers;
         CLayeredValue m_Setters;
         CLayeredValue m_Triggers;
 };

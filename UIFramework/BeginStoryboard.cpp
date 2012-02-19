@@ -35,6 +35,9 @@ CBeginStoryboard::Initialize(
 {
     HRESULT hr = S_OK;
 
+    IFC(CTriggerAction::Initialize(pProviders));
+
+Cleanup:
     return hr;
 }
 

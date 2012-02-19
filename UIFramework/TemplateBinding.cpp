@@ -185,7 +185,7 @@ CTemplateBinding::OnTargetAttached(
     pTemplateParent = pTargetElement->GetTemplateParent();
     IFCPTR(pTemplateParent);
 
-    pClassResolver = m_Providers->GetClassResolver();
+    pClassResolver = GetProviders()->GetClassResolver();
     IFCPTR(pClassResolver);
 
     IFC(GetTypedEffectiveValue(&PropertyProperty, &pProperty));

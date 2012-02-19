@@ -77,6 +77,8 @@ CDynamicResource::GetBoundValue(
     }
 
 Cleanup:
+    ReleaseObject(pResourceKey);
+
     return hr;
 }
 

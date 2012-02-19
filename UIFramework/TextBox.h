@@ -18,6 +18,16 @@ class CTextBox : public CControl
         virtual HRESULT OnAttach( CUIAttachContext& Context );
         virtual HRESULT OnDetach( CUIDetachContext& Context );
 
+        __override virtual __checkReturn HRESULT SetValue(
+            __in CProperty* pProperty, 
+            __in CObjectWithType* pValue 
+            );
+
+        virtual __checkReturn HRESULT GetValue( 
+            __in CProperty* pProperty, 
+            __deref_out_opt CObjectWithType** ppValue 
+            );
+
         virtual HRESULT HitTest( Point2F LocalPoint, CHitTestResult** ppHitTestResult );
 
         //

@@ -61,7 +61,6 @@ class CSetter : public CRefCountedObjectBase< CTriggerAction >
             __in_opt CObjectWithType* pNewValue 
             );
 
-        CProviders* m_Providers;
         CLayeredValue m_Property;
         CLayeredValue m_Value;
         CObjectWithType* m_CachedValue;
@@ -76,7 +75,7 @@ struct ObjectTypeTraits< CSetter >
 class CSetterCollection : public CCollection< CSetter >
 {
     public:
-        DECLARE_FACTORY( CSetterCollection );
+        DECLARE_FACTORY1( CSetterCollection, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::SetterCollection, CCollection< CSetter > );
 };

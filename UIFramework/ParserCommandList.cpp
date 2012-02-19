@@ -56,10 +56,7 @@ CParserCommandList::Execute(
     //
     // Implicit pop of final object on stack.
     //
-    if(pCallback)
-    {
-        IFC(pCallback->OnPopObject(pObject));
-    }
+    IFC(Context.PopObject());
 
     *ppObject = pObject;
     pObject = NULL;

@@ -28,7 +28,7 @@ struct ObjectTypeTraits< CTriggerAction >
 class CTriggerActionCollection : public CCollection< CTriggerAction >
 {
     public:
-        DECLARE_FACTORY( CTriggerActionCollection );
+        DECLARE_FACTORY1( CTriggerActionCollection, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::TriggerActionCollection, CCollection< CTriggerAction > );
 };

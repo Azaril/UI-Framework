@@ -38,7 +38,6 @@ CImageBrush::CImageBrush(
 CImageBrush::~CImageBrush(
     )
 {
-    ReleaseObject(m_pProviders);
 }
 
 __checkReturn HRESULT 
@@ -48,8 +47,9 @@ CImageBrush::Initialize(
 {
     HRESULT hr = S_OK;
 
-    SetObject(m_pProviders, pProviders);
+    IFC(CBrush::Initialize(pProviders));
 
+Cleanup:
     return hr;
 }
 
@@ -276,7 +276,7 @@ CImageBrush::CreateBitmapFromSource(
     else if(pSource->IsTypeOf(TypeIndex::String))
     {
         CStringValue* pStringValue = (CStringValue*)pSource;
-        IResourceProvider* pResourceProvider = m_pProviders->GetResourceProvider();
+        IResourceProvider* pResourceProvider = GetProviders()->GetResourceProvider();
 
         IFC(pResourceProvider->ReadResource(pStringValue->GetValue(), pStringValue->GetLength(), &pResourceStream));
 

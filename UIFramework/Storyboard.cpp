@@ -41,6 +41,9 @@ CStoryboard::Initialize(
 {
     HRESULT hr = S_OK;
 
+    IFC(CPropertyObject::Initialize(pProviders));
+
+Cleanup:
     return hr;
 }
 
@@ -146,7 +149,7 @@ CStoryboard::ResolveAnimations(
     CProperty* pTargetProperty = NULL;
     CAnimationTimelineCollection* pTimelines = NULL;
 
-    pClassResolver = pElement->GetProviders()->GetClassResolver();
+    pClassResolver = GetProviders()->GetClassResolver();
     IFCPTR(pClassResolver);
 
     IFC(GetTypedEffectiveValue(&ChildrenProperty, &pTimelines));

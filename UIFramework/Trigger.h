@@ -33,7 +33,7 @@ struct ObjectTypeTraits< CTrigger >
 class CTriggerCollection : public CCollection< CTrigger >
 {
     public:
-        DECLARE_FACTORY( CTriggerCollection );
+        DECLARE_FACTORY1( CTriggerCollection, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::TriggerCollection, CCollection< CTrigger > );
 };

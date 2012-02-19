@@ -10,7 +10,7 @@ class UIFRAMEWORK_API CFloatAnimation : public CFloatAnimationBase
 {
     public:
         DECLARE_FACTORY1( CFloatAnimation, CProviders* );
-        DECLARE_FACTORY3( CFloatAnimation, FLOAT, FLOAT, const CTimeSpan& );
+        DECLARE_FACTORY4( CFloatAnimation, CProviders*, FLOAT, FLOAT, const CTimeSpan& );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::FloatAnimation, CFloatAnimationBase );
 
@@ -44,6 +44,7 @@ class UIFRAMEWORK_API CFloatAnimation : public CFloatAnimationBase
             );
 
         __checkReturn HRESULT Initialize( 
+            __in CProviders* pProviders,
             FLOAT From, 
             FLOAT To, 
             const CTimeSpan& Duration 

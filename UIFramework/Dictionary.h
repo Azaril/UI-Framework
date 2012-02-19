@@ -180,13 +180,5 @@ class CDictionary : public CRefCountedObjectBase< CObjectDictionary >
         {
         }
 
-        __checkReturn HRESULT Initialize(
-            )
-        {
-            HRESULT hr = S_OK;
-
-            return hr;
-        }
-
         vector< CDictionaryEntry > m_Collection;
 };

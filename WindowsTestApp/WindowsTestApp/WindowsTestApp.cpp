@@ -343,10 +343,14 @@ Cleanup:
 
 #endif
 
+#ifdef FRAMEWORK_LEAK_TRACKING_ENABLED
     CheckLeaks();
+#endif
 
 	return SUCCEEDED(hr);
 }
+
+#ifdef FRAMEWORK_LEAK_TRACKING_ENABLED
 
 class CLeakChecker : public ITrackableInformationCallback
 {
@@ -365,6 +369,8 @@ void CheckLeaks(
 
     EnumerateTrackableInformation(&callback);
 }
+
+#endif
 
 //
 //  FUNCTION: MyRegisterClass()

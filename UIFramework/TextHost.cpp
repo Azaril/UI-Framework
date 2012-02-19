@@ -19,7 +19,7 @@ HRESULT CTextHost::Initialize(CProviders* pProviders, CTextLayout* pTextLayout)
 
     IFC(CFrameworkElement::Initialize(pProviders));
 
-    IFC(CTextVisual::Create(&m_TextVisual));
+    IFC(CTextVisual::Create(GetProviders(), &m_TextVisual));
 
     IFC(AddChildVisual(m_TextVisual));
 

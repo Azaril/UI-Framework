@@ -5,7 +5,6 @@ CBindingBase::CBindingBase(
     ) 
     : m_Target(NULL)
     , m_TargetProperty(NULL)
-    , m_Providers(NULL)
 {
 }
 
@@ -13,7 +12,6 @@ CBindingBase::~CBindingBase(
     )
 {
     ReleaseObject(m_TargetProperty);
-    ReleaseObject(m_Providers);
 }
 
 __checkReturn HRESULT 
@@ -23,10 +21,7 @@ CBindingBase::Initialize(
 {
     HRESULT hr = S_OK;
 
-    IFCPTR(pProviders);
-
-    m_Providers = pProviders;
-    AddRefObject(m_Providers);
+    IFC(CPropertyObject::Initialize(pProviders));
 
 Cleanup:
     return hr;

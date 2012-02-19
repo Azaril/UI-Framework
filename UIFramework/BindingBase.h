@@ -56,8 +56,6 @@ class CBindingBase : public CRefCountedObjectBase< CPropertyObject >
         __checkReturn HRESULT InvalidateBinding(
             );
 
-        CProviders* m_Providers;
-
     private:
         CPropertyObject* m_Target;
         CProperty* m_TargetProperty;

@@ -10,7 +10,7 @@
 class UIFRAMEWORK_API CUIElementCollection : public CCollection< CUIElement >
 {
     public:
-        DECLARE_FACTORY( CUIElementCollection );
+        DECLARE_FACTORY1( CUIElementCollection, CProviders* );
 
         DECLARE_TYPE_WITH_BASE( TypeIndex::UIElementCollection, CCollection< CUIElement > );
 

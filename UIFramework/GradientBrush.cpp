@@ -46,6 +46,9 @@ CGradientBrush::Initialize(
 {
     HRESULT hr = S_OK;
 
+    IFC(CBrush::Initialize(pProviders));
+
+Cleanup:
     return hr;
 }
 

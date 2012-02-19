@@ -94,6 +94,7 @@ class CSourcedBinding : public CBindingBase
         CLayeredValue m_BindingDirection;
         events::signals::connection m_SourcePropertyChangedConnection;
         events::signals::connection m_TargetPropertyChangedConnection;
+        bool m_SettingValue;
 };
 
 template< >

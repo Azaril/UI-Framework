@@ -34,17 +34,12 @@ CParserCommandContext::GetObject(
 	)
 {
     HRESULT hr = S_OK;
-    CObjectWithType* pObject = NULL;
 
     IFCPTR(ppObject);
 
     IFCEXPECT(!m_ObjectStack.empty());
 
-    pObject = m_ObjectStack.back();
-    AddRefObject(pObject);
-
-    *ppObject = pObject;
-    pObject = NULL;
+    SetObject(*ppObject, m_ObjectStack.back());
 
 Cleanup:
     return hr;
