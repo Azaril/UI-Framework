@@ -157,9 +157,9 @@ CLinearGradientBrush::GetGraphicsBrush(
 
     IFCPTR(pGradientStopCollection);
 
-    UINT32 gradientStopCount = pGradientStopCollection->GetCount();
-
     {        
+        UINT32 gradientStopCount = pGradientStopCollection->GetCount();
+        
         IFCEXPECT(gradientStopCount > 0);
 
         pGradientStops = new GradientStop[gradientStopCount];

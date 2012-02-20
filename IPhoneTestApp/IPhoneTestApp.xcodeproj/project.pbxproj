@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3D1D19C714818DFF001AC24C /* testxml.xml in Resources */ = {isa = PBXBuildFile; fileRef = 3D1D19C614818DFF001AC24C /* testxml.xml */; };
 		3D51F7E8144B8AD0003BD760 /* EAGLContextBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D51F7E7144B8AD0003BD760 /* EAGLContextBridge.mm */; };
+		3D6B52A914F1E63400B3DB24 /* testxml.xml in Resources */ = {isa = PBXBuildFile; fileRef = 3D6B52A814F1E63400B3DB24 /* testxml.xml */; };
 		3D846EEF141A0F7F00AC9C7D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846EEE141A0F7F00AC9C7D /* UIKit.framework */; };
 		3D846EF1141A0F7F00AC9C7D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846EF0141A0F7F00AC9C7D /* Foundation.framework */; };
 		3D846EF3141A0F7F00AC9C7D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D846EF2141A0F7F00AC9C7D /* CoreGraphics.framework */; };
@@ -49,8 +49,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3D1D19C614818DFF001AC24C /* testxml.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = testxml.xml; path = ../../testxml.xml; sourceTree = "<group>"; };
 		3D51F7E7144B8AD0003BD760 /* EAGLContextBridge.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLContextBridge.mm; sourceTree = "<group>"; };
+		3D6B52A814F1E63400B3DB24 /* testxml.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = testxml.xml; path = ../../TestResources/testxml.xml; sourceTree = "<group>"; };
 		3D846EEA141A0F7F00AC9C7D /* IPhoneTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IPhoneTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D846EEE141A0F7F00AC9C7D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3D846EF0141A0F7F00AC9C7D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -160,7 +160,7 @@
 		3D846EF9141A0F7F00AC9C7D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				3D1D19C614818DFF001AC24C /* testxml.xml */,
+				3D6B52A814F1E63400B3DB24 /* testxml.xml */,
 				3D9BADE51453F6B3003CE576 /* Opificio.ttf */,
 				3D9BADE61453F6B3003CE576 /* testimg.png */,
 				3D846EFA141A0F7F00AC9C7D /* IPhoneTestApp-Info.plist */,
@@ -251,7 +251,7 @@
 				3D846F13141A0F7F00AC9C7D /* IPhoneTestAppViewController.xib in Resources */,
 				3D9BADE71453F6B3003CE576 /* Opificio.ttf in Resources */,
 				3D9BADE81453F6B3003CE576 /* testimg.png in Resources */,
-				3D1D19C714818DFF001AC24C /* testxml.xml in Resources */,
+				3D6B52A914F1E63400B3DB24 /* testxml.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

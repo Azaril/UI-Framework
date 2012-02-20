@@ -201,7 +201,8 @@ COpenGLES20RenderTarget::Initialize(
     m_BrushTextureUniform = glGetUniformLocation(m_ShaderProgram, "brushTexture"); 
     m_MaskTextureUniform = glGetUniformLocation(m_ShaderProgram, "maskTexture");
     
-    IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), &pTesselationSink));
+    //TODO: Does OpenGL need a half pixel offset?
+    IFC(CGeometryTesselationSink::Create(this, (IVertexBuffer**)m_pVertexBuffers, ARRAYSIZE(m_pVertexBuffers), NULL, &pTesselationSink));
     
     IFC(pTextureAtlasPool->GetOrCreateFirstTextureAtlas(&pFirstTextureAtlas));
     

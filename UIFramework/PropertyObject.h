@@ -18,6 +18,9 @@ class CBindingBase;
 
 class CProviders;
 
+template< typename T >
+class CBasicValue;
+
 namespace EffectiveValue
 {
     enum Value

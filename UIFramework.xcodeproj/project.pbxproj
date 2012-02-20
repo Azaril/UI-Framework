@@ -434,6 +434,13 @@
 		3D556AB614418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D556AA914418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp */; };
 		3D556AB714418AF80089CCDA /* TextureAtlasWithWhitePixel.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AAA14418AF80089CCDA /* TextureAtlasWithWhitePixel.h */; };
 		3D556AB814418AF80089CCDA /* VertexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D556AAB14418AF80089CCDA /* VertexBuffer.h */; };
+		3D6B52B114F1E9F400B3DB24 /* FloatUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D6B52AA14F1E9F400B3DB24 /* FloatUtils.cpp */; };
+		3D6B52B214F1E9F400B3DB24 /* FloatUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6B52AB14F1E9F400B3DB24 /* FloatUtils.h */; };
+		3D6B52B314F1E9F400B3DB24 /* FreetypeFontSize.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D6B52AC14F1E9F400B3DB24 /* FreetypeFontSize.cpp */; };
+		3D6B52B414F1E9F400B3DB24 /* FreetypeFontSize.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6B52AD14F1E9F400B3DB24 /* FreetypeFontSize.h */; };
+		3D6B52B514F1E9F400B3DB24 /* Noncopyable.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6B52AE14F1E9F400B3DB24 /* Noncopyable.h */; };
+		3D6B52B614F1E9F400B3DB24 /* Shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D6B52AF14F1E9F400B3DB24 /* Shape.cpp */; };
+		3D6B52B714F1E9F400B3DB24 /* Shape.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6B52B014F1E9F400B3DB24 /* Shape.h */; };
 		3D6BC7AD14554EA500FF758D /* AssertUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D6BC7A714554EA500FF758D /* AssertUtil.cpp */; };
 		3D6BC7AE14554EA500FF758D /* AssertUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6BC7A814554EA500FF758D /* AssertUtil.h */; };
 		3D6BC7AF14554EA500FF758D /* ColorUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D6BC7A914554EA500FF758D /* ColorUtilities.cpp */; };
@@ -927,6 +934,13 @@
 		3D556AA914418AF80089CCDA /* TextureAtlasWithWhitePixel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlasWithWhitePixel.cpp; sourceTree = "<group>"; };
 		3D556AAA14418AF80089CCDA /* TextureAtlasWithWhitePixel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasWithWhitePixel.h; sourceTree = "<group>"; };
 		3D556AAB14418AF80089CCDA /* VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexBuffer.h; sourceTree = "<group>"; };
+		3D6B52AA14F1E9F400B3DB24 /* FloatUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FloatUtils.cpp; sourceTree = "<group>"; };
+		3D6B52AB14F1E9F400B3DB24 /* FloatUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FloatUtils.h; sourceTree = "<group>"; };
+		3D6B52AC14F1E9F400B3DB24 /* FreetypeFontSize.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreetypeFontSize.cpp; sourceTree = "<group>"; };
+		3D6B52AD14F1E9F400B3DB24 /* FreetypeFontSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreetypeFontSize.h; sourceTree = "<group>"; };
+		3D6B52AE14F1E9F400B3DB24 /* Noncopyable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Noncopyable.h; sourceTree = "<group>"; };
+		3D6B52AF14F1E9F400B3DB24 /* Shape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shape.cpp; sourceTree = "<group>"; };
+		3D6B52B014F1E9F400B3DB24 /* Shape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shape.h; sourceTree = "<group>"; };
 		3D6BC7A714554EA500FF758D /* AssertUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AssertUtil.cpp; sourceTree = "<group>"; };
 		3D6BC7A814554EA500FF758D /* AssertUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssertUtil.h; sourceTree = "<group>"; };
 		3D6BC7A914554EA500FF758D /* ColorUtilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ColorUtilities.cpp; sourceTree = "<group>"; };
@@ -1016,6 +1030,13 @@
 		3D06B5CD1419D4880097C7D9 /* UIFramework */ = {
 			isa = PBXGroup;
 			children = (
+				3D6B52AA14F1E9F400B3DB24 /* FloatUtils.cpp */,
+				3D6B52AB14F1E9F400B3DB24 /* FloatUtils.h */,
+				3D6B52AC14F1E9F400B3DB24 /* FreetypeFontSize.cpp */,
+				3D6B52AD14F1E9F400B3DB24 /* FreetypeFontSize.h */,
+				3D6B52AE14F1E9F400B3DB24 /* Noncopyable.h */,
+				3D6B52AF14F1E9F400B3DB24 /* Shape.cpp */,
+				3D6B52B014F1E9F400B3DB24 /* Shape.h */,
 				3D6BC7A714554EA500FF758D /* AssertUtil.cpp */,
 				3D6BC7A814554EA500FF758D /* AssertUtil.h */,
 				3D6BC7A914554EA500FF758D /* ColorUtilities.cpp */,
@@ -1749,6 +1770,10 @@
 				3D6BC7AE14554EA500FF758D /* AssertUtil.h in Headers */,
 				3D6BC7B014554EA500FF758D /* ColorUtilities.h in Headers */,
 				3D6BC7B214554EA500FF758D /* EndianUtil.h in Headers */,
+				3D6B52B214F1E9F400B3DB24 /* FloatUtils.h in Headers */,
+				3D6B52B414F1E9F400B3DB24 /* FreetypeFontSize.h in Headers */,
+				3D6B52B514F1E9F400B3DB24 /* Noncopyable.h in Headers */,
+				3D6B52B714F1E9F400B3DB24 /* Shape.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2047,6 +2072,9 @@
 				3D6BC7AD14554EA500FF758D /* AssertUtil.cpp in Sources */,
 				3D6BC7AF14554EA500FF758D /* ColorUtilities.cpp in Sources */,
 				3D6BC7B114554EA500FF758D /* EndianUtil.cpp in Sources */,
+				3D6B52B114F1E9F400B3DB24 /* FloatUtils.cpp in Sources */,
+				3D6B52B314F1E9F400B3DB24 /* FreetypeFontSize.cpp in Sources */,
+				3D6B52B614F1E9F400B3DB24 /* Shape.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

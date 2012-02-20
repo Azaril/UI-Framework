@@ -602,8 +602,8 @@ CUIElement::Measure(
             //
             // Round up layout sizes to nearest larger pixel.
             //
-            ElementDesiredSize.width = std::ceilf(ElementDesiredSize.width);
-            ElementDesiredSize.height = std::ceilf(ElementDesiredSize.height);
+            ElementDesiredSize.width = ceilf(ElementDesiredSize.width);
+            ElementDesiredSize.height = ceilf(ElementDesiredSize.height);
 
             m_UnclippedDesiredSize = ElementDesiredSize;
 

@@ -483,16 +483,18 @@ CFreetypeFontFace::GetKerning(
 
     IFC(pFontSize->Apply());
 
-    //
-    // TODO: Fix this as it requires multiple extra lookups.
-    //
-    UINT32 leftGlyphIndex = FT_Get_Char_Index(m_pFontFace, leftGlyph);
-    UINT32 rightGlyphIndex = FT_Get_Char_Index(m_pFontFace, rightGlyph);
+    {
+        //
+        // TODO: Fix this as it requires multiple extra lookups.
+        //
+        UINT32 leftGlyphIndex = FT_Get_Char_Index(m_pFontFace, leftGlyph);
+        UINT32 rightGlyphIndex = FT_Get_Char_Index(m_pFontFace, rightGlyph);
 
-    IFCEXPECT(FT_Get_Kerning(m_pFontFace, leftGlyphIndex, rightGlyphIndex, FT_KERNING_DEFAULT, &kerning) == FT_Err_Ok);
+        IFCEXPECT(FT_Get_Kerning(m_pFontFace, leftGlyphIndex, rightGlyphIndex, FT_KERNING_DEFAULT, &kerning) == FT_Err_Ok);
 
-    pKerning->x = kerning.x;
-    pKerning->y = kerning.y;
+        pKerning->x = kerning.x;
+        pKerning->y = kerning.y;
+    }
     
 Cleanup:
     return hr;
