@@ -24,7 +24,7 @@
 
       <Style.Setters>
         <Setter Property="BorderThickness" Value="1"/>
-        <!-- <Setter Property="CornerRadius" Value="4"/> -->
+        <!--<Setter Property="CornerRadius" Value="4"/>-->
         <Setter Property="BorderBrush">
           <SolidColorBrush Color="#000000"/>
         </Setter>
@@ -42,7 +42,7 @@
 
     <!-- Default Button Template -->
     <ControlTemplate x:Key="ButtonTemplate">
-      <Border Style="{DynamicResource ResourceKey=ButtonBorderStyle}" Background="{TemplateBinding Property=Background}" BorderBrush="{TemplateBinding Property=BorderBrush}">
+      <Border Name="ButtonBorder" Style="{DynamicResource ResourceKey=ButtonBorderStyle}" Background="{TemplateBinding Property=Background}" BorderBrush="{TemplateBinding Property=BorderBrush}">
         <ContentPresenter Content="{TemplateBinding Property=Content}"/>
       </Border>
     </ControlTemplate>
@@ -57,6 +57,7 @@
       <Style.Triggers>
         <EventTrigger RoutedEvent="UIElement.MouseEnter">
           <Setter Property="Background" Value="{DynamicResource ResourceKey=HoverButtonStateBrush}"/>
+       
         </EventTrigger>
         <EventTrigger RoutedEvent="UIElement.MouseLeave">
           <Setter Property="Background" Value="{DynamicResource ResourceKey=NormalButtonStateBrush}"/>
@@ -72,7 +73,7 @@
     <Style x:Key="TextBoxBorderStyle">
       <Style.Setters>
         <Setter Property="BorderThickness" Value="1"/>
-        <!-- <Setter Property="CornerRadius" Value="2"/> -->
+        <!--<Setter Property="CornerRadius" Value="2"/>-->
         <Setter Property="BorderBrush">
           <SolidColorBrush Color="#000000"/>
         </Setter>
@@ -102,7 +103,7 @@
     <Style x:Key="ThumbBorderStyle">
       <Style.Setters>
         <Setter Property="BorderThickness" Value="1"/>
-        <!-- <Setter Property="CornerRadius" Value="2"/> -->
+        <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="BorderBrush">
           <SolidColorBrush Color="#000000"/>
         </Setter>
@@ -139,7 +140,7 @@
     <Style x:Key="TrackButtonBorderStyle">
       <Style.Setters>
         <Setter Property="BorderThickness" Value="1"/>
-        <!-- <Setter Property="CornerRadius" Value="2"/> -->
+        <!--<Setter Property="CornerRadius" Value="2"/>-->
         <Setter Property="BorderBrush">
           <SolidColorBrush Color="#000000"/>
         </Setter>
@@ -206,19 +207,20 @@
 
     <!-- Default Scroll Viewer Template -->
     <ControlTemplate x:Key="ScrollViewerTemplate">
-      <!--<Border CornerRadius="2" BorderBrush="{TemplateBinding Property=BorderBrush}" BorderThickness="{TemplateBinding Property=BorderThickness}">-->
+      <Border  BorderBrush="{TemplateBinding Property=BorderBrush}" BorderThickness="{TemplateBinding Property=BorderThickness}">
+        <!-- CornerRadius="2"-->
       <DockPanel>
 
         <ScrollBar DockPanel.Dock="Right"
                    ViewportSize="{TemplateBinding Property=ViewportHeight}"
+                   Margin="0,-1,-1,-1"
                    Maximum="{TemplateBinding Property=ScrollableHeight}"
                    Minimum="0"
                    Value="{TemplateBinding Property=VerticalOffset,BindingDirection=TwoWay}"
                    Visibility="{TemplateBinding Property=ComputedVerticalScrollBarVisibility}"
                    />
-        <!-- Margin="0,-1,-1,-1"-->
 
-        <!--<DockPanel DockPanel.Dock="Right" LastChildFill="False">
+        <DockPanel DockPanel.Dock="Right" LastChildFill="False">
             <Button DockPanel.Dock="Top" Command="ScrollBar.LineUp">
               <TextBlock Text="˄" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
             </Button>
@@ -228,14 +230,14 @@
             </Button>
 
             <Thumb/>
-          </DockPanel>-->
+          </DockPanel>
 
         <!-- Content -->
         <ScrollContentPresenter Name="PART_ScrollContentPresenter"
                                 Content="{TemplateBinding Property=Content}"/>
 
       </DockPanel>
-      <!--</Border>-->
+      </Border>
     </ControlTemplate>
 
     <!-- Default Scroll Viewer Style -->
@@ -263,45 +265,58 @@
       </Style.Setters>
     </Style>
 
-
   </Grid.Resources>
 
-<Border xmlns:x="http://internal" VerticalAlignment="Top">
-<!-- Console Border -->
-  <Border BorderBrush="Black" BorderThickness="1" Opacity="0.8" Height="200">
-    <!-- Background="#898989" -->
-    <Border.Background>
-      <LinearGradientBrush StartPoint="0,0" EndPoint="0.5,1">
-        <GradientStop Color="#3B3B3B" Offset="0"/>
-        <GradientStop Color="#3B3B3B" Offset="0.39"/>
-        <GradientStop Color="#000000" Offset="1"/>
-      </LinearGradientBrush>
-    </Border.Background>
+  <Border VerticalAlignment="Top" Margin="000, 0, 0, 0">
 
-    <DockPanel>
+    <!-- Console Border -->
+    <Border Name="ConsoleBorder" BorderBrush="Black" BorderThickness="1" Opacity="0" Height="200">
+      <!-- Background="#898989" -->
+      <Border.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0.5,1">
+          <GradientStop Color="#3B3B3B" Offset="0"/>
+          <GradientStop Color="#3B3B3B" Offset="0.39"/>
+          <GradientStop Color="#000000" Offset="1"/>
+        </LinearGradientBrush>
+      </Border.Background>
+      <Border.Style>
+        <Style>
+          <Style.Triggers>
+            <EventTrigger RoutedEvent="UIElement.Loaded">
+              <BeginStoryboard>
+                <Storyboard>
+                  <FloatAnimation Storyboard.TargetName="ConsoleBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:2"/>
+                </Storyboard>
+              </BeginStoryboard>
+            </EventTrigger>
+          </Style.Triggers>
+        </Style>
+      </Border.Style>
 
-      <!-- Input Area -->
-      <Border DockPanel.Dock="Bottom" Padding="5">
-        <DockPanel>
-          <Button Name="SubmitButton" DockPanel.Dock="Right">
-            <TextBlock Text="Run" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
-          </Button>
-          <TextBox Name="InputTextBox" AcceptsReturn="False" Margin="0,0,5,0"/>
-        </DockPanel>
-      </Border>
+      <DockPanel>
 
-      <!-- History Area -->
-      <Border DockPanel.Dock="Top">
-        <ScrollViewer Name="HistoryScrollViewer" Margin="5,5,5,0">
-          <StackPanel Name="HistoryPanel" DockPanel.Dock="Top"/>
-        </ScrollViewer>
-      </Border>
+        <!-- Input Area -->
+        <Border DockPanel.Dock="Bottom" Padding="5">
+          <DockPanel>
+            <Button Name="SubmitButton" DockPanel.Dock="Right">
+              <TextBlock Text="Run" Style="{DynamicResource ResourceKey=ButtonTextBlockStyle}"/>
+            </Button>
+            <TextBox Name="InputTextBox" AcceptsReturn="False" Margin="0,0,5,0" Text="Foo"/>
+          </DockPanel>
+        </Border>
 
-    </DockPanel>
+        <!-- History Area -->
+        <Border DockPanel.Dock="Top">
+          <!--<Image Source="C:\test.jpg" Height="150" Width="500"/>-->
+          <ScrollViewer Name="HistoryScrollViewer" Margin="5,5,5,0">
+            <StackPanel Name="HistoryPanel" DockPanel.Dock="Top"/>
+          </ScrollViewer>
+        </Border>
+
+      </DockPanel>
+
+    </Border>
 
   </Border>
-
-</Border>
-
 
 </Grid>

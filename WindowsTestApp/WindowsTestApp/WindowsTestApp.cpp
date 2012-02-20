@@ -53,18 +53,8 @@
 
 #define MAX_LOADSTRING 100
 
-// Global Variables:
-HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
-
-// Forward declarations of functions included in this code module:
-ATOM MyRegisterClass( HINSTANCE hInstance );
-HRESULT InitInstance( HINSTANCE hInstance, int nCmdShow, HWND* pWindow );
-LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
-
-void CheckLeaks(
-    );
 
 #if defined(BUILD_D2D)
 
@@ -105,6 +95,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     CKeyboardController* pKeyboardController = NULL;
     CFileResourceProvider* pFileResourceProvider = NULL;
     CTextProvider* pTextProvider = NULL;
+    IReadStream* pXmlStream = NULL;
 
 #if defined(BUILD_D2D) || defined(BUILD_D3D9) || defined(BUILD_D3D10) || defined(BUILD_D3D11)
 
@@ -182,19 +173,28 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     // 
     IFC(CParser::Create(pProviders, &pParser));
 
-    IFC(pParser->LoadFromFile(L"c:\\testxml.xml", &pParsedRoot));
+    {
+        const WCHAR xmlName[] = L"testxml.xml";
+
+        IFC(pFileResourceProvider->ReadResource(xmlName, ARRAYSIZE(xmlName), &pXmlStream));
+    }
+
+    IFC(pParser->LoadFromStream(pXmlStream, &pParsedRoot));
 
 #if defined(BUILD_D2D) || defined(BUILD_D3D9) || defined(BUILD_D3D10) || defined(BUILD_D3D11)
 
-	// Initialize global strings
+	//
+    // Initialize window.
+    //
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_WINDOWSTESTAPP, szWindowClass, MAX_LOADSTRING);
-	MyRegisterClass(hInstance);
+
+	RegisterWindowClass(hInstance);
 
     //
     // Create window
     //
-	IFC(InitInstance (hInstance, nCmdShow, &hWnd));
+	IFC(InitInstance(hInstance, nCmdShow, &hWnd));
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINDOWSTESTAPP));
     IFCEXPECT(hAccelTable != NULL);
@@ -259,7 +259,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     {
         const WCHAR fontFile[] = L"Opificio.ttf";
         //const WCHAR fontFile[] = L"segoeui.ttf";
-        
+        //const WCHAR fontFile[] = L"Hasteristico.ttf";
+        //const WCHAR fontFile[] = L"Altera.ttf";
 
         IFC(pTextProvider->RegisterFont(pFileResourceProvider, fontFile, ARRAYSIZE(fontFile)));
     }
@@ -267,6 +268,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
     {
         CFontDescription defaultFont(L"Opificio", 16, L"en-us");
         //CFontDescription defaultFont(L"Segoe UI", 12, L"en-us");
+        //CFontDescription defaultFont(L"Hasteristico", 14, L"en-us");
+        //CFontDescription defaultFont(L"Altera", 16, L"en-us");
 
         IFC(CUIHost::Create(pGraphicsDevice, pRenderTarget, pProviders, &defaultFont, &pUIHost));
     }
@@ -335,7 +338,7 @@ Cleanup:
     ReleaseObject(pFileResourceProvider);
     ReleaseObject(pTextProvider);
     ReleaseObject(pProviders);
-
+    ReleaseObject(pXmlStream);
     ReleaseObject(pGraphicsDevice);
 
 #if defined(BUILD_D2D)
@@ -375,58 +378,40 @@ void CheckLeaks(
 
 #endif
 
-//
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
-//
-//  COMMENTS:
-//
-//    This function and its usage are only necessary if you want this code
-//    to be compatible with Win32 systems prior to the 'RegisterClassEx'
-//    function that was added to Windows 95. It is important to call this function
-//    so that the application will get 'well formed' small icons associated
-//    with it.
-//
-ATOM MyRegisterClass(HINSTANCE hInstance)
+ATOM 
+RegisterWindowClass(
+    __in HINSTANCE hInstance
+    )
 {
-	WNDCLASSEX wcex;
+    WNDCLASSEX wcex = { };
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
-
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= WndProc;
-	wcex.cbClsExtra		= 0;
-	wcex.cbWndExtra		= 0;
-	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINDOWSTESTAPP));
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= NULL;
-	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc = WndProc;
+	wcex.cbClsExtra	= 0;
+	wcex.cbWndExtra	= 0;
+	wcex.hInstance = hInstance;
+	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINDOWSTESTAPP));
+	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+	wcex.lpszMenuName = NULL;
+	wcex.lpszClassName = szWindowClass;
+	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
 	return RegisterClassEx(&wcex);
 }
 
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
-HRESULT InitInstance(HINSTANCE hInstance, int nCmdShow, HWND* pWindow)
+__checkReturn HRESULT 
+InitInstance(
+    __in HINSTANCE hInstance, 
+    int nCmdShow, 
+    __out HWND* pWindow
+    )
 {
     HRESULT hr = S_OK;
     HWND hWnd = NULL;
 
     IFCPTR(pWindow);
-
-    hInst = hInstance; // Store instance handle in our global variable
 
     hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, 640, 480, NULL, NULL, hInstance, NULL);
     IFCEXPECT(hWnd != NULL);
@@ -440,7 +425,10 @@ Cleanup:
    return hr;
 }
 
-HRESULT UpdateRenderTargetSize(HWND Window)
+__checkReturn HRESULT 
+UpdateRenderTargetSize(
+    __in HWND Window
+    )
 {
     HRESULT hr = S_OK;
     RECT ClientSize = { 0 };
@@ -468,7 +456,13 @@ Cleanup:
 
 BOOL g_Sizing = FALSE;
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK 
+WndProc(
+    HWND hWnd, 
+    UINT message, 
+    WPARAM wParam, 
+    LPARAM lParam
+    )
 {
     HRESULT hr = S_OK;
     LRESULT Result = 0;

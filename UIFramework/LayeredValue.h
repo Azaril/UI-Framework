@@ -2,7 +2,7 @@
 
 #include "PropertyObject.h"
 #include "Providers.h"
-//#include "Binding.h"
+#include "Noncopyable.h"
 #include "Signals.h"
 
 class UIFRAMEWORK_API CLayeredValue
@@ -102,13 +102,7 @@ class UIFRAMEWORK_API CLayeredValue
             }
 
         private:
-            CLayerBlock(
-                const CLayerBlock&
-                );
-
-            CLayerBlock& operator=(
-                const CLayerBlock&
-                );
+            DISABLE_COPY_AND_ASSIGN( CLayerBlock );
 
         protected:
             EffectiveValue::Value m_ValueType;
@@ -451,14 +445,7 @@ class UIFRAMEWORK_API CLayeredValue
         }
 
     private:
-        private:
-            CLayeredValue(
-                const CLayeredValue&
-                );
-
-            CLayeredValue& operator=(
-                const CLayeredValue&
-                );
+        DISABLE_COPY_AND_ASSIGN( CLayeredValue );
 
         CLayerBlock* m_pHeadBlock;
         CLayerBlock m_Blocks[1];

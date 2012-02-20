@@ -1,11 +1,11 @@
 #include "BitmapSourceBase.h"
 
-
-CBitmapSourceBase::CBitmapSourceBase(void)
+CBitmapSourceBase::CBitmapSourceBase(
+    )
 {
 }
 
-
-CBitmapSourceBase::~CBitmapSourceBase(void)
+CBitmapSourceBase::~CBitmapSourceBase(
+    )
 {
 }

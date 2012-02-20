@@ -1811,5 +1811,8 @@
     <ClInclude Include="Shape.h">
       <Filter>Framework\UI\Visuals\Elements\Shapes</Filter>
     </ClInclude>
+    <ClInclude Include="StaticTesselator.h">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

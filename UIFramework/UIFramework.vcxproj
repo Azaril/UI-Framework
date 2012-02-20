@@ -427,6 +427,7 @@
     <ClInclude Include="FreetypeTextLayout.h" />
     <ClInclude Include="Noncopyable.h" />
     <ClInclude Include="Shape.h" />
+    <ClInclude Include="StaticTesselator.h" />
     <ClInclude Include="TextLayoutEngineMetrics.h" />
     <ClInclude Include="FreetypeTextProvider.h" />
     <ClInclude Include="GlyphData.h" />
