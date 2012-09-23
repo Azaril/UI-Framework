@@ -59,7 +59,7 @@ class StackHeapBuffer
         }
 
         size_t GetBufferSize(
-        	)
+        	) const
         {
         	if(m_UseInternalBuffer)
         	{
@@ -72,13 +72,26 @@ class StackHeapBuffer
         }
 
         size_t GetBufferByteSize(
-        	)
+        	) const
         {
         	return GetBufferSize() * sizeof(T);
         }
 
         __out T* GetBuffer(
         	)
+    	{
+    		if (m_UseInternalBuffer)	
+    		{
+    			return m_InternalBuffer;
+    		}
+    		else
+    		{
+    			return m_pHeapBuffer;
+    		}
+    	}
+
+        __out const T* GetBuffer(
+        	) const
     	{
     		if (m_UseInternalBuffer)	
     		{

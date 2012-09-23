@@ -875,53 +875,49 @@ CUIElement::ArrangeInternal(
     return hr;
 }
 
-HRESULT CUIElement::InvalidateMeasure()
+__checkReturn HRESULT 
+CUIElement::InvalidateMeasure(
+    )
 {
     HRESULT hr = S_OK;
-    CChildMeasureInvalidatedNotification* pNotification = NULL;
+    CUIElement* pParent = GetParent();
 
     if(!m_MeasureDirty)
     {
         m_MeasureDirty = TRUE;
     }
 
-    if(!m_NotifiedParentMeasureDirty && GetParent() != NULL)
+    if(!m_NotifiedParentMeasureDirty && pParent != NULL)
     {
         m_NotifiedParentMeasureDirty = TRUE;
 
-        IFC(CChildMeasureInvalidatedNotification::Create(&pNotification));
-
-        IFC(NotifyParent(pNotification));
+        IFC(pParent->NotifyChildMeasureInvalidated(this));
     }
 
 Cleanup:
-    ReleaseObject(pNotification);
-
     return hr;
 }
 
-HRESULT CUIElement::InvalidateArrange()
+__checkReturn HRESULT 
+CUIElement::InvalidateArrange(
+    )
 {
     HRESULT hr = S_OK;
-    CChildArrangeInvalidatedNotification* pNotification = NULL;
+    CUIElement* pParent = GetParent();
 
     if(!m_ArrangeDirty)
     {
         m_ArrangeDirty = TRUE;
     }
 
-    if(!m_NotifiedParentArrangeDirty && GetParent() != NULL)
+    if(!m_NotifiedParentArrangeDirty && pParent != NULL)
     {
         m_NotifiedParentArrangeDirty = TRUE;
 
-        IFC(CChildArrangeInvalidatedNotification::Create(&pNotification));
-
-        IFC(NotifyParent(pNotification));
+        IFC(pParent->NotifyChildArrangeInvalidated(this));
     }
 
 Cleanup:
-    ReleaseObject(pNotification);
-
     return hr;
 }
 
@@ -992,51 +988,6 @@ CBindingManager* CUIElement::GetBindingManager()
     return GetProviders()->GetBindingManager();
 }
 
-HRESULT CUIElement::NotifyParent(CUINotification* pNotification)
-{
-    HRESULT hr = S_OK;
-    CUIElement* pParent = NULL;
-
-    IFCPTR(pNotification);
-
-    pParent = GetParent();
-
-    if(pParent)
-    {
-        IFC(pParent->OnUINotification(pNotification));
-    }
-
-Cleanup:
-    return hr;
-}
-
-HRESULT CUIElement::OnUINotification(CUINotification* pNotification)
-{
-    HRESULT hr = S_OK;
-
-    IFCPTR(pNotification);
-
-    switch(pNotification->GetType())
-    {
-        case UINotification::ChildMeasureInvalidated:
-            {
-                CChildMeasureInvalidatedNotification* pMeasureInvalidationNotification = (CChildMeasureInvalidatedNotification*)pNotification;
-                IFC(OnChildMeasureInvalidated(pMeasureInvalidationNotification));
-                break;
-            }
-
-        case UINotification::ChildArrangeInvalidated:
-            {
-                CChildArrangeInvalidatedNotification* pArrangeInvalidationNotification = (CChildArrangeInvalidatedNotification*)pNotification;
-                IFC(OnChildArrangeInvalidated(pArrangeInvalidationNotification));
-                break;
-            }
-    }
-
-Cleanup:
-    return hr;
-}
-
 HRESULT CUIElement::SetVisibility(Visibility::Value State)
 {
     HRESULT hr = S_OK;
@@ -1052,11 +1003,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::OnChildMeasureInvalidated(CChildMeasureInvalidatedNotification* pNotification)
+__checkReturn HRESULT
+CUIElement::NotifyChildMeasureInvalidated(
+    __in CUIElement* pChild
+    )
 {
     HRESULT hr = S_OK;
-
-    IFCPTR(pNotification);
 
     IFC(InvalidateMeasure());
 
@@ -1064,11 +1016,12 @@ Cleanup:
     return hr;
 }
 
-HRESULT CUIElement::OnChildArrangeInvalidated(CChildArrangeInvalidatedNotification* pNotification)
+__checkReturn HRESULT
+CUIElement::NotifyChildArrangeInvalidated(
+    __in CUIElement* pChild
+    )
 {
     HRESULT hr = S_OK;
-
-    IFCPTR(pNotification);
 
     IFC(InvalidateArrange());
 

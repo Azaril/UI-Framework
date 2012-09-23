@@ -28,29 +28,39 @@ class CLayoutManager;
 class CStaticTreeData
 {
     public:
-        CStaticTreeData( CFocusManager* pFocusManager, CMouseController* pMouseController, CKeyboardController* pKeyboardController, CLayoutManager* pLayoutManager ) : m_FocusManager(pFocusManager),
-                                                                                                                                                                        m_MouseController(pMouseController),
-                                                                                                                                                                        m_KeyboardController(pKeyboardController),
-                                                                                                                                                                        m_LayoutManager(pLayoutManager)
+        CStaticTreeData( 
+            __in CFocusManager* pFocusManager,
+            __in CMouseController* pMouseController, 
+            __in CKeyboardController* pKeyboardController,
+            __in CLayoutManager* pLayoutManager 
+            ) 
+            : m_FocusManager(pFocusManager)
+            , m_MouseController(pMouseController)
+            , m_KeyboardController(pKeyboardController)
+            , m_LayoutManager(pLayoutManager)
         {
         }
 
-        CFocusManager* GetFocusManager()
+        __out CFocusManager* GetFocusManager(
+            )
         {
             return m_FocusManager;
         }
 
-        CMouseController* GetMouseController()
+        __out CMouseController* GetMouseController(
+            )
         {
             return m_MouseController;
         }
 
-        CKeyboardController* GetKeyboardController()
+        __out CKeyboardController* GetKeyboardController(
+            )
         {
             return m_KeyboardController;
         }
 
-        CLayoutManager* GetLayoutManager()
+        __out CLayoutManager* GetLayoutManager(
+            )
         {
             return m_LayoutManager;
         }
@@ -65,75 +75,97 @@ class CStaticTreeData
 class CUIAttachContext
 {
     public:
-        CUIAttachContext() : m_Parent(NULL),
-                             m_TemplateParent(NULL),
-                             m_Namescope(NULL),
-                             m_StaticData(NULL)
+        CUIAttachContext(
+            ) 
+            : m_Parent(NULL)
+            , m_TemplateParent(NULL)
+            , m_Namescope(NULL)
+            , m_StaticData(NULL)
         {
         }
 
-        CUIAttachContext( const CUIAttachContext& Other ) : m_Parent(Other.m_Parent),
-                                                            m_TemplateParent(Other.m_TemplateParent),
-                                                            m_Namescope(Other.m_Namescope),
-                                                            m_StaticData(Other.m_StaticData)
-        {
-            AddRefObject(m_Namescope);
-        }
-
-        CUIAttachContext( CStaticTreeData* pData, CUIElement* pParent, CUIElement* pTemplateParent, CNamescope* pNamescope ) : m_Parent(pParent),
-                                                                                                                               m_TemplateParent(pTemplateParent),
-                                                                                                                               m_Namescope(pNamescope),
-                                                                                                                               m_StaticData(pData)
+        CUIAttachContext( 
+            const CUIAttachContext& Other 
+            ) 
+            : m_Parent(Other.m_Parent)
+            , m_TemplateParent(Other.m_TemplateParent)
+            , m_Namescope(Other.m_Namescope)
+            , m_StaticData(Other.m_StaticData)
         {
             AddRefObject(m_Namescope);
         }
 
-        ~CUIAttachContext()
+        CUIAttachContext( 
+            __in CStaticTreeData* pData,
+            __in_opt CUIElement* pParent,
+            __in CUIElement* pTemplateParent,
+            __in CNamescope* pNamescope 
+            ) 
+            : m_Parent(pParent)
+            , m_TemplateParent(pTemplateParent)
+            , m_Namescope(pNamescope)
+            , m_StaticData(pData)
+        {
+            AddRefObject(m_Namescope);
+        }
+
+        ~CUIAttachContext(
+            )
         {
             ReleaseObject(m_Namescope);
         }
     
-        CUIElement* GetParent()
+        __out_opt CUIElement* GetParent(
+            )
         {
             return m_Parent;
         }
 
-        CUIElement* GetTemplateParent()
+        __out CUIElement* GetTemplateParent(
+            )
         {
             return m_TemplateParent;
         }
 
-        CNamescope* GetNamescope()
+        __out CNamescope* GetNamescope(
+            )
         {
             return m_Namescope;
         }
 
-        CFocusManager* GetFocusManager()
+        __out CFocusManager* GetFocusManager(
+            )
         {
             return (m_StaticData != NULL) ? m_StaticData->GetFocusManager() :  NULL;
         }
 
-        CMouseController* GetMouseController()
+        __out CMouseController* GetMouseController(
+            )
         {
             return (m_StaticData != NULL) ? m_StaticData->GetMouseController() :  NULL;
         }
 
-        CKeyboardController* GetKeyboardController()
+        __out CKeyboardController* GetKeyboardController(
+            )
         {
             return (m_StaticData != NULL) ? m_StaticData->GetKeyboardController() :  NULL;
         }
 
-        CLayoutManager* GetLayoutManager()
+        __out CLayoutManager* GetLayoutManager(
+            )
         {
             return (m_StaticData != NULL) ? m_StaticData->GetLayoutManager() : NULL;
         }
 
-        CStaticTreeData* GetStaticTreeData()
+        __out CStaticTreeData* GetStaticTreeData(
+            )
         {
             return m_StaticData;
         }
 
-        CUIAttachContext& operator=(const CUIAttachContext& Other)
+        CUIAttachContext& operator=(
+            const CUIAttachContext& Other
+            )
         {
             m_StaticData = Other.m_StaticData;
             m_Parent = Other.m_Parent;
@@ -145,11 +177,13 @@ class CUIAttachContext
             return *this;
         }
 
-        void Reset()
+        void Reset(
+            )
         {
             m_StaticData = NULL;
             m_Parent = NULL;
-            m_TemplateParent = NULL;            
+            m_TemplateParent = NULL;       
+
             ReleaseObject(m_Namescope);
         }
     
@@ -163,20 +197,27 @@ class CUIAttachContext
 class CUIDetachContext
 {
     public:
-        CUIDetachContext() : m_Parent(NULL)
+        CUIDetachContext(
+            ) 
+            : m_Parent(NULL)
         {
         }
 
-        CUIDetachContext( CUIElement* pParent ) : m_Parent(pParent)
+        CUIDetachContext( 
+            __in_opt CUIElement* pParent
+            ) 
+            : m_Parent(pParent)
         {
         }
     
-        CUIElement* GetParent()
+        __out_opt CUIElement* GetParent(
+            )
         {
             return m_Parent;
         }
 
-        void Reset()
+        void Reset(
+            )
         {
             m_Parent = NULL;
         }
@@ -184,42 +225,6 @@ class CUIDetachContext
     protected:
         CUIElement* m_Parent;
 };
-
-namespace UINotification
-{
-    enum Value
-    {
-        ChildMeasureInvalidated,
-        ChildArrangeInvalidated
-    };
-}
-
-class CUINotification : public CRefCountedObject
-{
-    public:
-        virtual UINotification::Value GetType() = 0;
-};
-
-template< UINotification::Value Val >
-class CParameterlessUINotification : public CUINotification
-{
-    public: 
-        DECLARE_FACTORY( CParameterlessUINotification< Val > );
-
-        virtual UINotification::Value GetType()
-        {
-            return Val;
-        }
-
-    protected:
-        HRESULT Initialize()
-        {
-            return S_OK;
-        }
-};
-
-typedef CParameterlessUINotification< UINotification::ChildMeasureInvalidated > CChildMeasureInvalidatedNotification;
-typedef CParameterlessUINotification< UINotification::ChildArrangeInvalidated > CChildArrangeInvalidatedNotification;
 
 typedef events::signal< void ( CObjectWithType*, CRoutedEventArgs* ) > RoutedEventSignal;
 typedef RoutedEventSignal::slot_type RoutedEventHandler;
@@ -410,12 +415,13 @@ class UIFRAMEWORK_API CUIElement : public CVisual
             SizeF& UsedSize 
             );
 
-        virtual HRESULT NotifyParent( CUINotification* pNotification );
+        virtual __checkReturn HRESULT NotifyChildMeasureInvalidated(
+            __in CUIElement* pChild
+            );
 
-        virtual HRESULT OnUINotification( CUINotification* pNotification );
-
-        virtual HRESULT OnChildMeasureInvalidated( CChildMeasureInvalidatedNotification* pNotification );
-        virtual HRESULT OnChildArrangeInvalidated( CChildArrangeInvalidatedNotification* pNotification );
+        virtual __checkReturn HRESULT NotifyChildArrangeInvalidated( 
+            __in CUIElement* pChild
+            );
 
         virtual HRESULT InternalRaiseEvent( CRoutedEventArgs* pRoutedEventArgs );
         virtual HRESULT InternalRaiseBubbledEvent( CRoutedEventArgs* pRoutedEventArgs );
