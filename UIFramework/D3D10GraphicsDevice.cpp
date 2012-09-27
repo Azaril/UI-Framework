@@ -352,7 +352,7 @@ CD3D10GraphicsDevice::AllocateTexture(
     HRESULT hr = S_OK;
     CStagingTextureWrapper* pStagingTexture = NULL;
 
-    IFC(CreateTexture(Width, Height, &pStagingTexture));
+    IFC(AllocateTexture(Width, Height, &pStagingTexture));
 
     *ppTexture = pStagingTexture;
     pStagingTexture = NULL;
@@ -373,7 +373,7 @@ CD3D10GraphicsDevice::AllocateTexture(
     HRESULT hr = S_OK;
     CStagingTextureWrapper* pStagingTexture = NULL;
 
-    IFC(CreateTexture(Width, Height, &pStagingTexture));
+    IFC(AllocateTexture(Width, Height, &pStagingTexture));
 
     *ppTexture = pStagingTexture;
     pStagingTexture = NULL;
@@ -385,14 +385,13 @@ Cleanup:
 }
 
 __checkReturn HRESULT 
-CD3D10GraphicsDevice::CreateTexture(
+CD3D10GraphicsDevice::AllocateTexture(
     UINT32 Width,
     UINT32 Height,
     __deref_out CStagingTextureWrapper** ppTexture
     )
 {
     HRESULT hr = S_OK;
-    ID3D10Texture2D* pD3DTexture = NULL;
     CD3D10Texture* pTexture = NULL;
     CStagingTextureWrapper* pStagingTexture = NULL;
 
@@ -414,9 +413,7 @@ CD3D10GraphicsDevice::CreateTexture(
         textureDescription.CPUAccessFlags = 0;
         textureDescription.MiscFlags = 0;
 
-        IFC(m_pDevice->CreateTexture2D(&textureDescription, NULL, &pD3DTexture));
-
-        IFC(CD3D10Texture::Create(pD3DTexture, &pTexture));
+        IFC(AllocateTexture(textureDescription, &pTexture));
     }
 
     //
@@ -429,7 +426,6 @@ CD3D10GraphicsDevice::CreateTexture(
 
 Cleanup:
     ReleaseObject(pTexture);
-    ReleaseObject(pD3DTexture);
 
     return hr;
 }

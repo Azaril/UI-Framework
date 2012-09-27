@@ -1,6 +1,8 @@
 #pragma once
 
-#if defined(FRAMEWORK_DWRITE)
+#include "Types.h"
+
+#if defined(_WINDOWS)
 
 class CAutoLock
 {

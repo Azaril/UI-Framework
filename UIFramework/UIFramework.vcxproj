@@ -81,7 +81,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include;$(ProjectDir)\External\freetype\include;$(ProjectDir)\External\boost;$(ProjectDir)\External\tinyxml2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>FRAMEWORK_D3D9;FRAMEWORK_D3D10;FRAMEWORK_D3D11;FRAMEWORK_TINYXML2;WIN32;_DEBUG;_WINDOWS;NOMINMAX;_CRTDBG_MAP_ALLOC;_CRT_SECURE_NO_WARNINGS;UIFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FRAMEWORK_D3D9;FRAMEWORK_D3D10;FRAMEWORK_D3D11;FRAMEWORK_TINYXML2;FRAMEWORK_WIC;WIN32;_DEBUG;_WINDOWS;NOMINMAX;_CRTDBG_MAP_ALLOC;_CRT_SECURE_NO_WARNINGS;UIFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -127,7 +127,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include;$(ProjectDir)\External\freetype\include;$(ProjectDir)\External\boost;$(ProjectDir)\External\tinyxml2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>FRAMEWORK_D3D9;FRAMEWORK_TINYXML2;WIN32;NDEBUG;_WINDOWS;NOMINMAX;_CRT_SECURE_NO_WARNINGS;UIFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FRAMEWORK_D3D9;FRAMEWORK_D3D10;FRAMEWORK_D3D11;FRAMEWORK_TINYXML2;FRAMEWORK_WIC;FRAMEWORK_D3D9;FRAMEWORK_TINYXML2;WIN32;NDEBUG;_WINDOWS;NOMINMAX;_CRT_SECURE_NO_WARNINGS;UIFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>

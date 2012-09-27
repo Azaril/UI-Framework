@@ -151,6 +151,9 @@
     <Filter Include="Framework\Parser\XML\TinyXML2">
       <UniqueIdentifier>{85855d38-c3dc-4716-936d-4c392b9efb4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Graphics\Core\Geometry">
+      <UniqueIdentifier>{5a15e708-f8ec-44d5-975e-5715dd013bd7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -672,9 +675,6 @@
     <ClCompile Include="D2DGeometryProvider.cpp">
       <Filter>Framework\Graphics\D2D</Filter>
     </ClCompile>
-    <ClCompile Include="CoreGeometryProvider.cpp">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClCompile>
     <ClCompile Include="GeometryBuilder.cpp">
       <Filter>Framework\Graphics\Geometry</Filter>
     </ClCompile>
@@ -696,32 +696,17 @@
     <ClCompile Include="GraphicsGeometryBuilder.cpp">
       <Filter>Framework\Graphics\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="CoreShapeData.cpp">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClCompile>
     <ClCompile Include="ShapeBuilder.cpp">
       <Filter>Framework\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="ShapeData.cpp">
       <Filter>Framework\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="CoreGraphicsShapeBuilder.cpp">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="CorePathGraphicsGeometry.cpp">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClCompile>
     <ClCompile Include="PathGraphicsGeometry.cpp">
       <Filter>Framework\Graphics\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="FigureBuilder.cpp">
       <Filter>Framework\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="CoreFigureBuilder.cpp">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="CoreFigureData.cpp">
-      <Filter>Framework\Graphics\Core</Filter>
     </ClCompile>
     <ClCompile Include="D2DGeometryBuilder.cpp">
       <Filter>Framework\Graphics\D2D</Filter>
@@ -746,15 +731,6 @@
     </ClCompile>
     <ClCompile Include="SolidColorBrush.cpp">
       <Filter>Framework\UI\VisualResources\Brush</Filter>
-    </ClCompile>
-    <ClCompile Include="CoreRectangleGeometry.cpp">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="CoreRoundedRectangleGeometry.cpp">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="StaticTesselator.cpp">
-      <Filter>Framework\Graphics\Core</Filter>
     </ClCompile>
     <ClCompile Include="TriggerAction.cpp">
       <Filter>Framework\UI\Styling</Filter>
@@ -974,6 +950,33 @@
     </ClCompile>
     <ClCompile Include="TinyXML2Reader.cpp">
       <Filter>Framework\Parser\XML\TinyXML2</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreFigureBuilder.cpp">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreFigureData.cpp">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreGeometryProvider.cpp">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreGraphicsShapeBuilder.cpp">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="CorePathGraphicsGeometry.cpp">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreRectangleGeometry.cpp">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreRoundedRectangleGeometry.cpp">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreShapeData.cpp">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticTesselator.cpp">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1505,9 +1508,6 @@
     <ClInclude Include="D2DGeometryProvider.h">
       <Filter>Framework\Graphics\D2D</Filter>
     </ClInclude>
-    <ClInclude Include="CoreGeometryProvider.h">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClInclude>
     <ClInclude Include="GeometrySink.h">
       <Filter>Framework\Graphics\Geometry</Filter>
     </ClInclude>
@@ -1529,32 +1529,17 @@
     <ClInclude Include="GraphicsGeometryBuilder.h">
       <Filter>Framework\Graphics\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="CoreShapeData.h">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClInclude>
     <ClInclude Include="ShapeBuilder.h">
       <Filter>Framework\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="ShapeData.h">
       <Filter>Framework\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="CoreGraphicsShapeBuilder.h">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="CorePathGraphicsGeometry.h">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClInclude>
     <ClInclude Include="PathGraphicsGeometry.h">
       <Filter>Framework\Graphics\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="FigureBuilder.h">
       <Filter>Framework\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreFigureBuilder.h">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreFigureData.h">
-      <Filter>Framework\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="D2DGeometryBuilder.h">
       <Filter>Framework\Graphics\D2D</Filter>
@@ -1579,12 +1564,6 @@
     </ClInclude>
     <ClInclude Include="LinearGradientBrush.h">
       <Filter>Framework\UI\VisualResources\Brush</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreRectangleGeometry.h">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreRoundedRectangleGeometry.h">
-      <Filter>Framework\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="TriggerAction.h">
       <Filter>Framework\UI\Styling</Filter>
@@ -1820,9 +1799,6 @@
     <ClInclude Include="Shape.h">
       <Filter>Framework\UI\Visuals\Elements\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="StaticTesselator.h">
-      <Filter>Framework\Graphics\Core</Filter>
-    </ClInclude>
     <ClInclude Include="LibXMLReader.h">
       <Filter>Framework\Parser\XML\LibXML</Filter>
     </ClInclude>
@@ -1831,6 +1807,33 @@
     </ClInclude>
     <ClInclude Include="StringConversion.h">
       <Filter>Framework\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticTesselator.h">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreFigureBuilder.h">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreFigureData.h">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreGeometryProvider.h">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreGraphicsShapeBuilder.h">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="CorePathGraphicsGeometry.h">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreRectangleGeometry.h">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreRoundedRectangleGeometry.h">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreShapeData.h">
+      <Filter>Framework\Graphics\Core\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #include "D3D9RenderTarget.h"
 #include "D3D9Texture.h"
 #include "TextureAtlasWithWhitePixel.h"
+#include "StagingTextureWrapper.h"
 
 #if defined(FRAMEWORK_D3D9)
 
@@ -234,8 +235,10 @@ CD3D9RenderTarget::BindTexture(
 {
     HRESULT hr = S_OK;
     CD3D9Texture* pD3DTexture = NULL;
+    CStagingTextureWrapper* pTextureWrapper = NULL;
 
-    pD3DTexture = (CD3D9Texture*)pTexture;
+    pTextureWrapper = (CStagingTextureWrapper*)pTexture;
+    pD3DTexture = (CD3D9Texture*)pTextureWrapper->GetTargetTexture();
 
     IFC(m_pDevice->SetTexture(0, pD3DTexture->GetD3DTexture()));
 
@@ -250,8 +253,10 @@ CD3D9RenderTarget::BindMask(
 {
     HRESULT hr = S_OK;
     CD3D9Texture* pD3DTexture = NULL;
+    CStagingTextureWrapper* pTextureWrapper = NULL;
 
-    pD3DTexture = (CD3D9Texture*)pTexture;
+    pTextureWrapper = (CStagingTextureWrapper*)pTexture;
+    pD3DTexture = (CD3D9Texture*)pTextureWrapper->GetTargetTexture();
 
     IFC(m_pDevice->SetTexture(1, pD3DTexture->GetD3DTexture()));
 

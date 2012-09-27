@@ -3,6 +3,7 @@
 #include "WICImagingProvider.h"
 #include "FreetypeTextProvider.h"
 #include "D3D9Texture.h"
+#include "StagingTextureWrapper.h"
 
 #if defined(FRAMEWORK_D3D9)
 
@@ -20,6 +21,7 @@ CD3D9GraphicsDevice::CD3D9GraphicsDevice(
     , m_pDevice(NULL)
     , m_FocusWindow(NULL)
     , m_pTextureAtlasPool(NULL)
+    , m_pStagingTextureAtlasPool(NULL)
 {
 }
 
@@ -31,6 +33,7 @@ CD3D9GraphicsDevice::~CD3D9GraphicsDevice(
     ReleaseObject(m_pGeometryProvider);
 
     ReleaseObject(m_pTextureAtlasPool);
+    ReleaseObject(m_pStagingTextureAtlasPool);
     
     ReleaseObject(m_pD3D);
     ReleaseObject(m_pDevice);
@@ -130,11 +133,22 @@ CD3D9GraphicsDevice::InitializeCommon(
 
     IFC(m_pDevice->GetDeviceCaps(&deviceCapabilites));
 
+    m_StagingTextureAllocator.Initialize(this, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM);
+
+    UINT32 textureWidth = deviceCapabilites.MaxTextureWidth;
+    UINT32 textureHeight = deviceCapabilites.MaxTextureHeight;
+
 #if defined(_XBOX)
-    IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(std::min(deviceCapabilites.MaxTextureWidth, (DWORD)256), std::min(deviceCapabilites.MaxTextureWidth, (DWORD)256), this, &m_pTextureAtlasPool));
-#else
-	IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(deviceCapabilites.MaxTextureWidth, deviceCapabilites.MaxTextureWidth, this, &m_pTextureAtlasPool));
+    textureWidth = std::min(textureWidth, 256);
+    textureHeight = std::min(textureHeight, 256);
 #endif
+
+    //TODO: This need to be changed so that the atlas pool will check if the textures are in use, currently causes pipeline stalls
+    //      as textures that are currently being copied are trying to be mapped.
+    //TODO: Dynamically size this.
+    IFC(CTextureAtlasPool< StagingTextureAtlasType >::Create(textureWidth, textureHeight, &m_StagingTextureAllocator, &m_pStagingTextureAtlasPool));
+
+	IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(textureWidth, textureHeight, this, &m_pTextureAtlasPool));
 
     IFC(CreateTextProvider(&m_pTextProvider));
 
@@ -360,7 +374,7 @@ Cleanup:
     return hr;
 }
 
-__override __checkReturn HRESULT 
+__checkReturn HRESULT 
 CD3D9GraphicsDevice::AllocateTexture(
     UINT32 Width,
     UINT32 Height,
@@ -368,14 +382,90 @@ CD3D9GraphicsDevice::AllocateTexture(
     )
 {
     HRESULT hr = S_OK;
+    CStagingTextureWrapper* pStagingTexture = NULL;
+
+    IFC(AllocateTexture(Width, Height, &pStagingTexture));
+
+    *ppTexture = pStagingTexture;
+    pStagingTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pStagingTexture);
+
+    return hr;
+}
+
+__checkReturn HRESULT 
+CD3D9GraphicsDevice::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out IBatchUpdateTexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    CStagingTextureWrapper* pStagingTexture = NULL;
+
+    IFC(AllocateTexture(Width, Height, &pStagingTexture));
+
+    *ppTexture = pStagingTexture;
+    pStagingTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pStagingTexture);
+
+    return hr;
+}
+
+__checkReturn HRESULT 
+CD3D9GraphicsDevice::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out CStagingTextureWrapper** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    CD3D9Texture* pTexture = NULL;
+    CStagingTextureWrapper* pStagingTexture = NULL;
+
+    //
+    // Create rendering texture.
+    //
+#if defined(_XBOX)
+	IFC(AllocateTexture(Width, Height, 1, D3DUSAGE_CPU_CACHED_MEMORY, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pTexture));	
+#else
+    IFC(AllocateTexture(Width, Height, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pTexture));
+#endif
+
+    //
+    // Create staging buffer texture wrapper.
+    //
+    IFC(CStagingTextureWrapper::Create(m_pStagingTextureAtlasPool, this, pTexture, &pStagingTexture));
+
+    *ppTexture = pStagingTexture;
+    pStagingTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pTexture);
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D9GraphicsDevice::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    UINT32 Levels,
+    DWORD Usage,
+    D3DFORMAT Format,
+    D3DPOOL Pool,
+    __deref_out CD3D9Texture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
     IDirect3DTexture9* pD3DTexture = NULL;
     CD3D9Texture* pTexture = NULL;
-	
-#if defined(_XBOX)
-	IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_CPU_CACHED_MEMORY, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));	
-#else
-    IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));
-#endif
+
+    IFC(m_pDevice->CreateTexture(Width, Height, Levels, Usage, Format, Pool, &pD3DTexture, NULL));
 
     IFC(CD3D9Texture::Create(pD3DTexture, &pTexture));
 
@@ -390,30 +480,115 @@ Cleanup:
 }
 
 __override __checkReturn HRESULT 
-CD3D9GraphicsDevice::AllocateTexture(
+CD3D9GraphicsDevice::AddUpdate(
+    __in ITexture* pSource,
+    const RectU& sourceRect,
+    __in ITexture* pDestination,
+    const Point2U& destOffset
+    )
+{
+    HRESULT hr = S_OK;
+    CTextureAtlasView* pSourceView = NULL;
+    CD3D9Texture* pSourceTexture = NULL;
+    CD3D9Texture* pDestinationTexture = NULL;
+    IDirect3DSurface9* pSourceSurface = NULL;
+    IDirect3DSurface9* pDestinationSurface = NULL;
+
+    pSourceView = (CTextureAtlasView*)pSource;
+
+    pSourceTexture = (CD3D9Texture*)pSourceView->GetTexture();
+    pDestinationTexture = (CD3D9Texture*)pDestination;
+
+    IFC(pSourceTexture->GetD3DTexture()->GetSurfaceLevel(0, &pSourceSurface));
+    IFC(pDestinationTexture->GetD3DTexture()->GetSurfaceLevel(0, &pDestinationSurface));
+
+    {
+        const RectU& viewSourceRect = pSourceView->GetRect();
+
+        RECT region = { sourceRect.left, sourceRect.top, sourceRect.right, sourceRect.bottom };
+
+        region.left = viewSourceRect.left + sourceRect.left;
+        region.top = viewSourceRect.top + sourceRect.top;
+        region.right = viewSourceRect.left + sourceRect.right;
+        region.bottom = viewSourceRect.top + sourceRect.bottom;
+
+        const POINT target = { destOffset.x, destOffset. y };
+
+        //TODO: Batch texture updates.
+        IFC(m_pDevice->UpdateSurface(pSourceSurface, &region, pDestinationSurface, &target));
+    }
+
+Cleanup:
+    ReleaseObject(pSourceSurface);
+    ReleaseObject(pDestinationSurface);
+
+    return hr;
+}
+
+CD3D9GraphicsDevice::CRenderTextureAllocator::CRenderTextureAllocator(
+    )
+    : m_pGraphicsDevice(NULL)
+    , m_levels(0)
+    , m_usage(0)
+    , m_format(D3DFMT_UNKNOWN)
+    , m_pool(D3DPOOL_DEFAULT)
+{
+}
+
+void
+CD3D9GraphicsDevice::CRenderTextureAllocator::Initialize(
+    __in CD3D9GraphicsDevice* pGraphicsDevice,
+    UINT32 Levels,
+    DWORD Usage,
+    D3DFORMAT Format,
+    D3DPOOL Pool
+    )
+{
+    m_pGraphicsDevice = pGraphicsDevice;
+    m_levels = Levels;
+    m_usage = Usage;
+    m_format = Format;
+    m_pool = Pool;
+}
+
+__override __checkReturn HRESULT 
+CD3D9GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
+    UINT32 Width,
+    UINT32 Height,
+    __deref_out ITexture** ppTexture
+    )
+{
+    HRESULT hr = S_OK;
+    CD3D9Texture* pNewTexture = NULL;
+
+    IFC(m_pGraphicsDevice->AllocateTexture(Width, Height, m_levels, m_usage, m_format, m_pool, &pNewTexture));
+
+    *ppTexture = pNewTexture;
+    pNewTexture = NULL;
+
+Cleanup:
+    ReleaseObject(pNewTexture);
+
+    return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D9GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
     UINT32 Width,
     UINT32 Height,
     __deref_out IBatchUpdateTexture** ppTexture
     )
 {
     HRESULT hr = S_OK;
-    IDirect3DTexture9* pD3DTexture = NULL;
-    CD3D9Texture* pTexture = NULL;
+    CD3D9Texture* pNewTexture = NULL;
 
-#if defined(_XBOX)
-	IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_CPU_CACHED_MEMORY, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));	
-#else
-	IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));
-#endif
+    IFC(m_pGraphicsDevice->AllocateTexture(Width, Height, m_levels, m_usage, m_format, m_pool, &pNewTexture));
 
-    IFC(CD3D9Texture::Create(pD3DTexture, &pTexture));
-
-    *ppTexture = pTexture;
-    pTexture = NULL;
+    *ppTexture = pNewTexture;
+    pNewTexture = NULL;
 
 Cleanup:
-    ReleaseObject(pTexture);
-    ReleaseObject(pD3DTexture);
+    ReleaseObject(pNewTexture);
 
     return hr;
 }

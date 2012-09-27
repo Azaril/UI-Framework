@@ -98,7 +98,7 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
             __deref_out IBatchUpdateTexture** ppTexture
             );
 
-        __checkReturn HRESULT CreateTexture(
+        __checkReturn HRESULT AllocateTexture(
             UINT32 Width,
             UINT32 Height,
             __deref_out CStagingTextureWrapper** ppTexture
@@ -137,30 +137,30 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
 
         class UIFRAMEWORK_API CRenderTextureAllocator : public IBatchUpdateTextureAllocator
         {
-        public:
-            CRenderTextureAllocator(
-                );
+            public:
+                CRenderTextureAllocator(
+                    );
 
-            void Initialize(
-                __in CD3D10GraphicsDevice* pGraphicsDevice,
-                const D3D10_TEXTURE2D_DESC& baseDescription
-                );
+                void Initialize(
+                    __in CD3D10GraphicsDevice* pGraphicsDevice,
+                    const D3D10_TEXTURE2D_DESC& baseDescription
+                    );
 
-            __override virtual __checkReturn HRESULT AllocateTexture(
-                UINT32 Width,
-                UINT32 Height,
-                __deref_out ITexture** ppTexture
-                );
+                __override virtual __checkReturn HRESULT AllocateTexture(
+                    UINT32 Width,
+                    UINT32 Height,
+                    __deref_out ITexture** ppTexture
+                    );
 
-            __override virtual __checkReturn HRESULT AllocateTexture(
-                UINT32 Width,
-                UINT32 Height,
-                __deref_out IBatchUpdateTexture** ppTexture
-                );
+                __override virtual __checkReturn HRESULT AllocateTexture(
+                    UINT32 Width,
+                    UINT32 Height,
+                    __deref_out IBatchUpdateTexture** ppTexture
+                    );
 
-        protected:
-            CD3D10GraphicsDevice* m_pGraphicsDevice;
-            D3D10_TEXTURE2D_DESC m_TextureDescription;
+            protected:
+                CD3D10GraphicsDevice* m_pGraphicsDevice;
+                D3D10_TEXTURE2D_DESC m_TextureDescription;
         };
 
         CRenderTextureAllocator m_StagingTextureAllocator;
