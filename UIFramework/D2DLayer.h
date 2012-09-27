@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "Layer.h"
 #include "Factory.h"
 
@@ -26,3 +28,5 @@ class CD2DLayer : public CLayer
 
         ID2D1Layer* m_Layer;
 };
+
+#endif

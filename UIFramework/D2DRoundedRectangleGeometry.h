@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "GraphicsGeometry.h"
 #include "Factory.h"
 #include "RoundedRectangleGraphicsGeometry.h"
@@ -23,3 +25,5 @@ class CD2DRoundedRectangleGeometry : public CD2DGeometryBase< CRefCountedObjectB
 
         ID2D1RoundedRectangleGeometry* m_RoundedRectangleGeometry;
 };
+
+#endif

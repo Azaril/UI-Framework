@@ -1,11 +1,11 @@
 #pragma once
 
-#include <stdlib.h>
-#include <float.h>
-#include <math.h>
-#include <algorithm>
-#include <ostream>
-#include <istream>
+//#include <stdlib.h>
+//#include <float.h>
+//#include <math.h>
+//#include <algorithm>
+//#include <ostream>
+//#include <istream>
 
 #include "Collections.h"
 

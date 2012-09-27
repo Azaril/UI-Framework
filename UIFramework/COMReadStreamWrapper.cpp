@@ -1,6 +1,8 @@
 #include "COMReadStreamWrapper.h"
 #include "AutoLock.h"
 
+#if defined(FRAMEWORK_XMLLITE) || defined(FRAMEWORK_WIC)
+
 CCOMReadStreamWrapper::CCOMReadStreamWrapper( 
     )
     : m_pStream(NULL)
@@ -265,3 +267,5 @@ CCOMReadStreamWrapper::Clone(
 Cleanup:
     return hr;
 }
+
+#endif

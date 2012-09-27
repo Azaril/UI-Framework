@@ -1,6 +1,8 @@
 #include "DirectWriteTextLayout.h"
 #include "DirectWriteLayoutMetrics.h"
 
+#if defined(FRAMEWORK_DWRITE)
+
 CDirectWriteTextLayout::CDirectWriteTextLayout(
 	) 
 	: m_Layout(NULL)
@@ -82,3 +84,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "Factory.h"
 #include "GeometryProvider.h"
 
@@ -39,3 +41,4 @@ class CD2DGeometryProvider : public CGeometryProvider
         ID2D1Factory* m_pFactory;
 };
 
+#endif

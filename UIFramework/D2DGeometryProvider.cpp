@@ -3,6 +3,8 @@
 #include "D2DRoundedRectangleGeometry.h"
 #include "D2DGeometryBuilder.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DGeometryProvider::CD2DGeometryProvider(
     )
     : m_pFactory(NULL)
@@ -100,3 +102,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

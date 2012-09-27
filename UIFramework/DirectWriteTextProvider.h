@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_DWRITE)
+
 #include "TextProvider.h"
 #include "D2DGraphicsDevice.h"
 #include "DirectWriteTextFormat.h"
@@ -56,3 +58,5 @@ class CDirectWriteTextProvider : public CTextProvider
         CDirectWriteFontFileLoader* m_pFontFileLoader;
         vector< IDWriteFontCollection* > m_FontCollections;
 };
+
+#endif

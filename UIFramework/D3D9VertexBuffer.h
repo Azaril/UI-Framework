@@ -1,5 +1,8 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D9)
+
+#include "Types.h"
 #include <d3d9.h>
 
 #include "Factory.h"
@@ -40,3 +43,4 @@ class CD3D9VertexBuffer : public CRefCountedObjectBase< IVertexBuffer >
         UINT32 m_StoredVertices;
 };
 
+#endif

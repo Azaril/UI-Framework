@@ -1,5 +1,7 @@
 #include "WICBitmapSource.h"
 
+#if defined(FRAMEWORK_WIC)
+
 CWICBitmapSource::CWICBitmapSource(
 	) 
     : m_pSource(NULL)
@@ -175,3 +177,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

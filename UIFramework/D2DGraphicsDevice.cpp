@@ -8,6 +8,8 @@
 #include "D2DRoundedRectangleGeometry.h"
 #include "D2DGeometryProvider.h"
 
+#if defined(FRAMEWORK_D2D)
+
 typedef HRESULT (WINAPI *D2D1CreateFactoryFunc)( 
 	__in D2D1_FACTORY_TYPE factoryType, 
 	__in REFIID riid, 
@@ -246,3 +248,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

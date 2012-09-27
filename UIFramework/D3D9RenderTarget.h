@@ -1,5 +1,8 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D9)
+
+#include "Types.h"
 #include <d3d9.h>
 
 #include "RenderTarget.h"
@@ -128,8 +131,10 @@ class UIFRAMEWORK_API CD3D9RenderTarget : public CRenderTargetBase
             );
 
         IDirect3DDevice9* m_pDevice;
-        CD3D9VertexBuffer* m_pVertexBuffers[2];
+        CD3D9VertexBuffer* m_pVertexBuffers[4];
         IDirect3DVertexDeclaration9* m_pVertexDeclaration;
         IDirect3DPixelShader9* m_pPixelShader;
         IDirect3DVertexShader9* m_pVertexShader;
 };
+
+#endif

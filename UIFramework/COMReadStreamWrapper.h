@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_XMLLITE) || defined(FRAMEWORK_WIC)
+
 #include "ReadStream.h"
 #include "Factory.h"
 #include "COMRefCounted.h"
@@ -94,3 +96,5 @@ class CCOMReadStreamWrapper : public CCOMRefCountedObjectBase< IStream >
         IReadStream* m_pStream;
         CRITICAL_SECTION m_Lock;
 };
+
+#endif

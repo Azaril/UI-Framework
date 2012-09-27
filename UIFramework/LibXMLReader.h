@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_LIBXML)
+
 #include <libxml/xmlreader.h>
 
 #include "XMLReader.h"
@@ -179,3 +181,5 @@ class CLibXMLReader : public CXMLReader
             void* pContext
             );
 };
+
+#endif

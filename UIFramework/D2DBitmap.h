@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "Bitmap.h"
 #include "Factory.h"
 
@@ -31,3 +33,5 @@ class CD2DBitmap : public CBitmap
         ID2D1Bitmap* m_Bitmap;
         SizeU m_Size;
 };
+
+#endif

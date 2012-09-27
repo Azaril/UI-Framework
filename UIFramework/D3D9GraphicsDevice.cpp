@@ -4,6 +4,8 @@
 #include "FreetypeTextProvider.h"
 #include "D3D9Texture.h"
 
+#if defined(FRAMEWORK_D3D9)
+
 typedef IDirect3D9* (WINAPI *Direct3DCreate9Func)(
     UINT SDKVersion
     );
@@ -61,6 +63,8 @@ Cleanup:
     return hr;
 }
 
+#if !defined(_XBOX)
+
 __checkReturn HRESULT
 CD3D9GraphicsDevice::Initialize(
     HWND focusWindow
@@ -71,7 +75,7 @@ CD3D9GraphicsDevice::Initialize(
 
     m_FocusWindow = focusWindow;
 
-    m_D3D9Module = LoadLibrary(L"D3D9.dll");
+    m_D3D9Module = LoadLibraryA("D3D9.dll");
     IFCEXPECT(m_D3D9Module != NULL);
 
     CreateFunc = (Direct3DCreate9Func)GetProcAddress(m_D3D9Module, "Direct3DCreate9");
@@ -115,6 +119,8 @@ Cleanup:
     return hr;
 }
 
+#endif
+
 __checkReturn HRESULT
 CD3D9GraphicsDevice::InitializeCommon(
     )
@@ -124,7 +130,11 @@ CD3D9GraphicsDevice::InitializeCommon(
 
     IFC(m_pDevice->GetDeviceCaps(&deviceCapabilites));
 
-    IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(deviceCapabilites.MaxTextureWidth, deviceCapabilites.MaxTextureWidth, this, &m_pTextureAtlasPool));
+#if defined(_XBOX)
+    IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(std::min(deviceCapabilites.MaxTextureWidth, (DWORD)256), std::min(deviceCapabilites.MaxTextureWidth, (DWORD)256), this, &m_pTextureAtlasPool));
+#else
+	IFC(CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >::Create(deviceCapabilites.MaxTextureWidth, deviceCapabilites.MaxTextureWidth, this, &m_pTextureAtlasPool));
+#endif
 
     IFC(CreateTextProvider(&m_pTextProvider));
 
@@ -135,6 +145,8 @@ CD3D9GraphicsDevice::InitializeCommon(
 Cleanup:
     return hr;
 }
+
+#if !defined(_XBOX)
 
 __checkReturn HRESULT
 CD3D9GraphicsDevice::CreateHWNDRenderTarget(
@@ -190,6 +202,8 @@ Cleanup:
 
     return hr;
 }
+
+#endif
 
 __checkReturn HRESULT
 CD3D9GraphicsDevice::CreateSurfaceRenderTarget(
@@ -293,6 +307,9 @@ CD3D9GraphicsDevice::CreateImagingProvider(
     )
 {
     HRESULT hr = S_OK;
+
+#if defined(FRAMEWORK_WIC)
+
     CWICImagingProvider* pWICImagingProvider = NULL;
 
     IFCPTR(ppImagingProvider);
@@ -304,10 +321,16 @@ CD3D9GraphicsDevice::CreateImagingProvider(
         goto Cleanup;
     }
 
-    IFC(E_FAIL);
+#endif
 
-Cleanup:
+	//TODO: wiarchbe: Enable imaging component...
+    //IFC(E_FAIL);
+
+//Cleanup:
+
+#if defined(FRAMEWORK_WIC)
     ReleaseObject(pWICImagingProvider);
+#endif
 
     return hr;
 }
@@ -347,8 +370,12 @@ CD3D9GraphicsDevice::AllocateTexture(
     HRESULT hr = S_OK;
     IDirect3DTexture9* pD3DTexture = NULL;
     CD3D9Texture* pTexture = NULL;
-
+	
+#if defined(_XBOX)
+	IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_CPU_CACHED_MEMORY, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));	
+#else
     IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));
+#endif
 
     IFC(CD3D9Texture::Create(pD3DTexture, &pTexture));
 
@@ -373,7 +400,11 @@ CD3D9GraphicsDevice::AllocateTexture(
     IDirect3DTexture9* pD3DTexture = NULL;
     CD3D9Texture* pTexture = NULL;
 
-    IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));
+#if defined(_XBOX)
+	IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_CPU_CACHED_MEMORY, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));	
+#else
+	IFC(m_pDevice->CreateTexture(Width, Height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &pD3DTexture, NULL));
+#endif
 
     IFC(CD3D9Texture::Create(pD3DTexture, &pTexture));
 
@@ -386,3 +417,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

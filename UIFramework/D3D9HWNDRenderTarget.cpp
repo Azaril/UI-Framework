@@ -1,5 +1,9 @@
 #include "D3D9HWNDRenderTarget.h"
 
+#if defined(FRAMEWORK_D3D9)
+
+#if !defined(_XBOX)
+
 CD3D9HWNDRenderTarget::CD3D9HWNDRenderTarget(
     )
     : m_Width(0)
@@ -85,3 +89,7 @@ CD3D9HWNDRenderTarget::EndRendering(
 Cleanup:
     return hr;
 }
+
+#endif
+
+#endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D11)
+
 #include <d3d11.h>
 
 #include "Texture.h"
@@ -70,3 +72,4 @@ class CD3D11Texture : public CRefCountedObjectBase< IBatchUpdateTexture >
         PixelFormat::Value m_Format;
 };
 
+#endif

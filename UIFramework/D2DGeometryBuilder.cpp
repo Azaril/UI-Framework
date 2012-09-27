@@ -2,6 +2,8 @@
 #include "D2DPathGeometry.h"
 #include "D2DUtilities.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DGeometryBuilder::CD2DGeometryBuilder(
     )
     : m_pPathGeometry(NULL)
@@ -142,3 +144,5 @@ CD2DGeometryBuilder::AddBeziers(
 Cleanup:
     return hr;
 }
+
+#endif

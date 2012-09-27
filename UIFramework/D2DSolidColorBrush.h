@@ -3,6 +3,8 @@
 #include "D2DBrush.h"
 #include "Factory.h"
 
+#if defined(FRAMEWORK_D2D)
+
 class CD2DSolidColorBrush : public CD2DBrush
 {
     public:
@@ -21,3 +23,5 @@ class CD2DSolidColorBrush : public CD2DBrush
 
         ID2D1SolidColorBrush* m_SolidBrush;
 };
+
+#endif

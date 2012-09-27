@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_DWRITE)
+
 #include "TextLayout.h"
 #include "Factory.h"
 
@@ -35,3 +37,5 @@ class CDirectWriteTextLayout : public CTextLayout
 
         IDWriteTextLayout* m_Layout;
 };
+
+#endif

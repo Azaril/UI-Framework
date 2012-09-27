@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_DWRITE)
+
 #include "EditableTextLayout.h"
 #include "Factory.h"
 #include "TextProvider.h"
@@ -79,3 +81,5 @@ class CDirectWriteEditableTextLayout : public CEditableTextLayout
         CTextFormat* m_TextFormat;
         SizeF m_MaxSize;
 };
+
+#endif

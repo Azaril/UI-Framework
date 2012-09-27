@@ -1,5 +1,7 @@
 #include "D3D9Texture.h"
 
+#if defined(FRAMEWORK_D3D9)
+
 PixelFormat::Value 
 D3DFormatToPixelFormat(
     D3DFORMAT format
@@ -97,7 +99,11 @@ CD3D9Texture::SetData(
     HRESULT hr = S_OK;
     D3DLOCKED_RECT lockedRect = { };
 
+#if defined(_XBOX)
+	IFC(m_pTexture->LockRect(0, &lockedRect, NULL, 0));
+#else
     IFC(m_pTexture->LockRect(0, &lockedRect, NULL, D3DLOCK_DISCARD));
+#endif
 
     {
         BYTE* pSourceData = pData;
@@ -173,3 +179,5 @@ CD3D9Texture::SetMultipleSubData(
 Cleanup:
     return hr;
 }
+
+#endif

@@ -3,6 +3,8 @@
 #include "StringConversion.h"
 #include "ReadStream.h"
 
+#if defined(FRAMEWORK_LIBXML)
+
 typedef StackHeapBuffer< CHAR, 2048 > StackCharBuffer;
 typedef StackHeapBuffer< WCHAR, 2048 > StackWCharBuffer;
 
@@ -570,3 +572,5 @@ CLibXMLAttribute::GetNamespaceUri(
 Cleanup:
     return hr;
 }
+
+#endif

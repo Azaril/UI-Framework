@@ -2,7 +2,7 @@
 
 #include "EndianUtil.h"
 
-#if WIN32
+#if defined(_WINDOWS)
 
 #include <windows.h>
 
@@ -14,6 +14,45 @@ isfinite(
 	)
 {
     return _finite(Val);
+}
+
+#elif defined(_XBOX)
+
+#include <wchar.h>
+#include <float.h>
+
+#define NOD3D
+#include <xtl.h>
+
+typedef int INT32;
+typedef short INT16;
+typedef unsigned int UINT32;
+typedef unsigned short UINT16;
+typedef float FLOAT;
+typedef wchar_t WCHAR;
+typedef char CHAR;
+typedef unsigned char BYTE;
+typedef long long LONGLONG;
+typedef unsigned long ULONG;
+typedef unsigned long long ULONGLONG;
+typedef signed __int64 INT64;
+typedef unsigned __int64 UINT64;
+typedef ULONG DWORD;
+
+#ifndef TRUE
+#define TRUE (1)
+#endif
+
+#ifndef FALSE
+#define FALSE (0)
+#endif  
+
+inline int 
+isfinite(
+	double Val
+	)
+{
+	return _finite(Val);
 }
 
 #else
@@ -29,8 +68,8 @@ typedef unsigned char BYTE;
 typedef long long LONGLONG;
 typedef unsigned long long ULONGLONG;
 typedef INT32 HRESULT;
-typedef long int INT64;
-typedef unsigned long int UINT64;
+typedef signed __int64 INT64;
+typedef unsigned __int64 UINT64;
 
 #ifndef NULL
 #define NULL (0)

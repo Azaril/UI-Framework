@@ -1,5 +1,7 @@
 #include "D3D10SurfaceRenderTarget.h"
 
+#if defined(FRAMEWORK_D3D10)
+
 CD3D10SurfaceRenderTarget::CD3D10SurfaceRenderTarget(
     )
     : m_pTexture(NULL)
@@ -71,3 +73,5 @@ CD3D10SurfaceRenderTarget::EndRendering(
 Cleanup:
     return hr;
 }
+
+#endif

@@ -1,6 +1,10 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D9)
+
 #include "D3D9RenderTarget.h"
+
+#if !defined(_XBOX)
 
 class UIFRAMEWORK_API CD3D9HWNDRenderTarget : public CD3D9RenderTarget
 {
@@ -34,3 +38,6 @@ class UIFRAMEWORK_API CD3D9HWNDRenderTarget : public CD3D9RenderTarget
         IDirect3DSwapChain9* m_pSwapChain;
 };
 
+#endif
+
+#endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "GraphicsGeometry.h"
 #include "Factory.h"
 
@@ -95,3 +97,5 @@ class CD2DGeometryBase : public T
 
         ID2D1Geometry* m_Geometry;
 };
+
+#endif

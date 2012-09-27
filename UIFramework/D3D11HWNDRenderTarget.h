@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D11)
+
 #include "D3D11RenderTarget.h"
 
 class UIFRAMEWORK_API CD3D11HWNDRenderTarget : public CD3D11RenderTarget
@@ -35,3 +37,5 @@ class UIFRAMEWORK_API CD3D11HWNDRenderTarget : public CD3D11RenderTarget
         ID3D11Texture2D* m_pBackBuffer;
         ID3D11RenderTargetView* m_pBackBufferView;
 };
+
+#endif

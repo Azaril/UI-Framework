@@ -1,5 +1,7 @@
 #include "DirectWriteFontFileEnumerator.h"
 
+#if defined(FRAMEWORK_DWRITE)
+
 CDirectWriteFontFileEnumerator::CDirectWriteFontFileEnumerator(
     )
     : m_Current(-1)
@@ -113,3 +115,5 @@ CDirectWriteFontFileEnumerator::GetCurrentFontFile(
 Cleanup:
     return hr;
 }
+
+#endif

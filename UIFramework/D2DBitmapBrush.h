@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "D2DBrush.h"
 #include "Factory.h"
 
@@ -27,3 +29,5 @@ class CD2DBitmapBrush : public CD2DBrush
         ID2D1BitmapBrush* m_BitmapBrush;
         RectF m_Bounds;
 };
+
+#endif

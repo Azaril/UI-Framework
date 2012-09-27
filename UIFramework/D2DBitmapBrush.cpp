@@ -1,5 +1,7 @@
 #include "D2DBitmapBrush.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DBitmapBrush::CD2DBitmapBrush(
 	) 
 	: m_BitmapBrush(NULL)
@@ -44,3 +46,5 @@ CD2DBitmapBrush::GetBounds(
 
     return hr;
 }
+
+#endif

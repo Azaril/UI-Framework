@@ -1,5 +1,7 @@
 #include "D3D9VertexBuffer.h"
 
+#if defined(FRAMEWORK_D3D9)
+
 CD3D9VertexBuffer::CD3D9VertexBuffer(
     )
     : m_pVertexBuffer(NULL)
@@ -50,7 +52,11 @@ CD3D9VertexBuffer::SetVertices(
 
     UINT32 copySize = VertexCount * sizeof(RenderVertex);
 
+#if defined(_XBOX)
+	IFC(m_pVertexBuffer->Lock(0, copySize, &pData, 0));
+#else
     IFC(m_pVertexBuffer->Lock(0, copySize, &pData, D3DLOCK_DISCARD));
+#endif
 
     memcpy(pData, pVertices, copySize);
 
@@ -75,3 +81,5 @@ CD3D9VertexBuffer::GetMaximumVertices(
 {
     return m_MaximumVertexCount;
 }
+
+#endif

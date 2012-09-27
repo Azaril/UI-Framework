@@ -1,6 +1,8 @@
 #include "DirectWriteFontFileStream.h"
 #include "AutoLock.h"
 
+#if defined(FRAMEWORK_DWRITE)
+
 CDirectWriteFontFileStream::CDirectWriteFontFileStream(
     )
     : m_pStream(NULL)
@@ -143,3 +145,5 @@ CDirectWriteFontFileStream::GetLastWriteTime(
 Cleanup:
     return hr;
 }
+
+#endif

@@ -2,6 +2,8 @@
 #include "ErrorChecking.h"
 #include "D2DUtilities.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DBrush::CD2DBrush(
 	) 
 	: m_Brush(NULL)
@@ -68,3 +70,5 @@ CD2DBrush::GetTransform(
 {
     return m_Brush->GetTransform(Matrix3X2FToD2DMatrix3X2F(&Transform));
 }
+
+#endif

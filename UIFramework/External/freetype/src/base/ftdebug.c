@@ -144,7 +144,11 @@
   FT_BASE_DEF( void )
   ft_debug_init( void )
   {
+#if defined(_XBOX)
+	  const char*  ft2_debug = NULL;
+#else
     const char*  ft2_debug = getenv( "FT2_DEBUG" );
+#endif
 
 
     if ( ft2_debug )

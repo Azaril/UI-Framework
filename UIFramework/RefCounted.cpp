@@ -3,7 +3,8 @@
 
 #ifdef FRAMEWORK_DEBUG
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(XBOX)
+
 #else
 
 #include <libkern/OSAtomic.h>
@@ -18,7 +19,7 @@ struct TrackableBlock : public TrackableInformation
 
 TrackableBlock* g_HeadBlock = NULL;
 TrackableBlock* g_TailBlock = NULL;
-UINT32 g_AllocationID = 0;
+volatile long g_AllocationID = 0;
 
 void ValidateTrackableBlock(
     __in TrackableBlock* pTrackableBlock

@@ -1,6 +1,6 @@
 #include "Types.h"
 
-#ifdef _WINDOWS
+#if defined(_WINDLL)
 
 #include <Windows.h>
 

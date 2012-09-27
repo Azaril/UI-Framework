@@ -1,5 +1,8 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D9)
+
+#include "Types.h"
 #include <d3d9.h>
 
 #include "Factory.h"
@@ -13,12 +16,15 @@ class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
 {
     public:
         DECLARE_FACTORY1( CD3D9GraphicsDevice, IDirect3DDevice9* );
+
+#if !defined(_XBOX)
         DECLARE_FACTORY1( CD3D9GraphicsDevice, HWND );      
 
         __checkReturn HRESULT CreateHWNDRenderTarget(
             HWND Window,
             __deref_out CD3D9HWNDRenderTarget** ppRenderTarget
             );
+#endif
 
         __checkReturn HRESULT CreateSurfaceRenderTarget(
             __in IDirect3DSurface9* pSurface,
@@ -48,9 +54,11 @@ class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
             IDirect3DDevice9* pDevice
             );
 
+#if !defined(_XBOX)
         __checkReturn HRESULT Initialize(
             HWND focusWindow
             );
+#endif
 
         __checkReturn HRESULT InitializeCommon(
             );
@@ -89,3 +97,5 @@ class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
         CGeometryProvider* m_pGeometryProvider;
         CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* m_pTextureAtlasPool;
 };
+
+#endif

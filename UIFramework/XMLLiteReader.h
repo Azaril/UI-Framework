@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_XMLLITE)
+
 #include "XMLReader.h"
 #include "Factory.h"
 
@@ -174,3 +176,5 @@ class CXMLLiteReader : public CXMLReader
         SHCreateStreamOnFileWFunc m_SHCreateStreamOnFileW;
         SHCreateMemStreamFunc m_SHCreateMemStream;
 };
+
+#endif

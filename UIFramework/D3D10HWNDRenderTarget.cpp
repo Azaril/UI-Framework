@@ -1,5 +1,7 @@
 #include "D3D10HWNDRenderTarget.h"
 
+#if defined(FRAMEWORK_D3D10)
+
 CD3D10HWNDRenderTarget::CD3D10HWNDRenderTarget(
     )
     : m_Width(0)
@@ -83,3 +85,5 @@ CD3D10HWNDRenderTarget::EndRendering(
 Cleanup:
     return hr;
 }
+
+#endif

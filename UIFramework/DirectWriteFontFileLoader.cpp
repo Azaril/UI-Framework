@@ -1,6 +1,8 @@
 #include "DirectWriteFontFileLoader.h"
 #include "DirectWriteFontFileStream.h"
 
+#if defined(FRAMEWORK_DWRITE)
+
 CDirectWriteFontFileLoader::CDirectWriteFontFileLoader(
     )
     : m_pFontCollection(NULL)
@@ -83,3 +85,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

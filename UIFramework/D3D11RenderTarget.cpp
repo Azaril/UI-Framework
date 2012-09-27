@@ -3,9 +3,21 @@
 #include "TextureAtlasWithWhitePixel.h"
 #include "StagingTextureWrapper.h"
 
-#include "Shaders/Direct3DHLSL/headers/ps_4_0.h"
+#if defined(FRAMEWORK_D3D11)
 
-#include "Shaders/Direct3DHLSL/headers/vs_4_0.h"
+#if defined(_XBOX)
+
+#include "Shaders/Direct3DHLSL/headers/d3dx/ps_4_0.h"
+
+#include "Shaders/Direct3DHLSL/headers/d3dx/vs_4_0.h"
+
+#else
+
+#include "Shaders/Direct3DHLSL/headers/d3d/ps_4_0.h"
+
+#include "Shaders/Direct3DHLSL/headers/d3d/vs_4_0.h"
+
+#endif
 
 CD3D11RenderTarget::CD3D11RenderTarget(
     )
@@ -456,3 +468,5 @@ CD3D11RenderTarget::Clear(
 
     return hr;
 }
+
+#endif

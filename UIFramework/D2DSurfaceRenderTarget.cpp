@@ -1,5 +1,7 @@
 #include "D2DSurfaceRenderTarget.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DSurfaceRenderTarget::CD2DSurfaceRenderTarget(
 	) 
 	: m_Surface(NULL)
@@ -30,3 +32,5 @@ CD2DSurfaceRenderTarget::Initialize(
 Cleanup:
     return hr;
 }
+
+#endif

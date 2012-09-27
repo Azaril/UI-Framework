@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D11)
+
 #include <d3d11.h>
 
 #include "Factory.h"
@@ -42,3 +44,4 @@ class CD3D11VertexBuffer : public CRefCountedObjectBase< IVertexBuffer >
         UINT32 m_StoredVertices;
 };
 
+#endif

@@ -19,6 +19,9 @@ class UIFRAMEWORK_API CUIHost : public CRefCountedObject
             __deref_out CRootUIElement** ppElement 
             );
 
+		__checkReturn HRESULT Update(
+			);
+
         __checkReturn HRESULT Render(
             );
 

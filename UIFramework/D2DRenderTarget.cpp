@@ -11,6 +11,8 @@
 #include "DirectWriteEditableTextLayout.h"
 #include "WICBitmapSource.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DRenderTarget::CD2DRenderTarget(
 	) 
 	: m_RenderTarget(NULL)
@@ -522,3 +524,5 @@ CD2DRenderTarget::PopLayer(
 
     return hr;
 }
+
+#endif

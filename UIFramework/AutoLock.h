@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_DWRITE)
+
 class CAutoLock
 {
     public:
@@ -20,3 +22,5 @@ class CAutoLock
     protected:
         CRITICAL_SECTION* m_pLock;
 };
+
+#endif

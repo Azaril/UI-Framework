@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "GraphicsBrush.h"
 
 #include <d2d1.h>
@@ -35,3 +37,5 @@ class CD2DBrush : public CGraphicsBrush
 
         ID2D1Brush* m_Brush;
 };
+
+#endif

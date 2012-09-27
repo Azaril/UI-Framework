@@ -1,5 +1,8 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D9)
+
+#include "Types.h"
 #include <d3d9.h>
 
 #include "Texture.h"
@@ -60,3 +63,4 @@ class CD3D9Texture : public CRefCountedObjectBase< IBatchUpdateTexture >
         PixelFormat::Value m_Format;
 };
 
+#endif

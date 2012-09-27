@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UIFramework", "..\UIFramewo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "..\UIFramework\External\freetype\builds\win32\vc2010\freetype.vcxproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml2", "..\UIFramework\External\tinyxml2\tinyxml2.vcxproj", "{C3661F5D-9472-4F8E-9ABA-6256479F89FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Multithreaded|Win32 = Debug Multithreaded|Win32
@@ -59,6 +61,18 @@ Global
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release Singlethreaded|Win32.Build.0 = Release Singlethreaded|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release|Win32.ActiveCfg = Release|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release|Win32.Build.0 = Release|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Debug Multithreaded|Win32.ActiveCfg = Debug|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Debug Multithreaded|Win32.Build.0 = Debug|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Debug Singlethreaded|Win32.ActiveCfg = Debug|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Debug|Win32.Build.0 = Debug|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Release Multithreaded|Win32.ActiveCfg = Release|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Release Multithreaded|Win32.Build.0 = Release|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Release Singlethreaded|Win32.ActiveCfg = Release|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Release Singlethreaded|Win32.Build.0 = Release|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Release|Win32.ActiveCfg = Release|Win32
+		{C3661F5D-9472-4F8E-9ABA-6256479F89FA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

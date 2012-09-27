@@ -1,5 +1,7 @@
 #include "D3D11Texture.h"
 
+#if defined(FRAMEWORK_D3D11)
+
 namespace
 {
 
@@ -224,3 +226,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

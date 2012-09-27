@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_WIC)
+
 #include "ImagingProvider.h"
 #include "Factory.h"
 #include "WICBitmapSource.h"
@@ -58,3 +60,5 @@ class CWICImagingProvider : public CImagingProvider
         HMODULE m_ShlwapiModule;
         SHCreateMemStreamFunc m_SHCreateMemStream;
 };
+
+#endif

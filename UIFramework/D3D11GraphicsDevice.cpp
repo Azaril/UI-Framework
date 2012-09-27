@@ -5,6 +5,8 @@
 #include "StagingTextureWrapper.h"
 #include "FreetypeTextProvider.h"
 
+#if defined(FRAMEWORK_D3D11)
+
 CD3D11GraphicsDevice::CD3D11GraphicsDevice(
     )
     : m_pTextProvider(NULL)
@@ -309,21 +311,28 @@ CD3D11GraphicsDevice::CreateImagingProvider(
     )
 {
     HRESULT hr = S_OK;
+
+#if defined(FRAMEWORK_WIC)
     CWICImagingProvider* pWICImagingProvider = NULL;
+#endif
 
     IFCPTR(ppImagingProvider);
 
+#if defined(FRAMEWORK_WIC)
     if(SUCCEEDED(CWICImagingProvider::Create(&pWICImagingProvider)))
     {
         *ppImagingProvider = pWICImagingProvider;
         pWICImagingProvider = NULL;
         goto Cleanup;
     }
+#endif
 
     IFC(E_FAIL);
 
 Cleanup:
+#if defined(FRAMEWORK_WIC)
     ReleaseObject(pWICImagingProvider);
+#endif
 
     return hr;
 }
@@ -572,3 +581,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

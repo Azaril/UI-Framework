@@ -1,5 +1,7 @@
 #include "DirectWriteLayoutMetrics.h"
 
+#if defined(FRAMEWORK_DWRITE)
+
 CDirectWriteLayoutMetrics::CDirectWriteLayoutMetrics(
 	)
 {
@@ -39,3 +41,5 @@ CDirectWriteLayoutMetrics::GetBounds(
 Cleanup:
     return hr;
 }
+
+#endif

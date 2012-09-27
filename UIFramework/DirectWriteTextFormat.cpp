@@ -1,6 +1,8 @@
 #include "DirectWriteTextFormat.h"
 #include "ErrorChecking.h"
 
+#if defined(FRAMEWORK_DWRITE)
+
 CDirectWriteTextFormat::CDirectWriteTextFormat(
 	) 
 	: m_Format(NULL)
@@ -35,3 +37,5 @@ CDirectWriteTextFormat::GetDirectWriteTextFormat(
 {
     return m_Format;
 }
+
+#endif

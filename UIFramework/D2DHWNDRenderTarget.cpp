@@ -1,5 +1,7 @@
 #include "D2DHWNDRenderTarget.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DHWNDRenderTarget::CD2DHWNDRenderTarget(
 	) 
 	: m_HWNDRenderTarget(NULL)
@@ -36,3 +38,5 @@ CD2DHWNDRenderTarget::GetD2DHWNDRenderTarget(
 {
     return m_HWNDRenderTarget;
 }
+
+#endif

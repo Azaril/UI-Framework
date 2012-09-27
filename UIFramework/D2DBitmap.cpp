@@ -1,5 +1,7 @@
 #include "D2DBitmap.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DBitmap::CD2DBitmap(
 	) 
 	: m_Bitmap(NULL)
@@ -40,3 +42,5 @@ CD2DBitmap::GetSize(
 {
     return m_Size;
 }
+
+#endif

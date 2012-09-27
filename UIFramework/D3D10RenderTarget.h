@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D10)
+
 #include <d3d10.h>
 
 #include "RenderTarget.h"
@@ -143,3 +145,5 @@ class UIFRAMEWORK_API CD3D10RenderTarget : public CRenderTargetBase
     private:
         ID3D10RenderTargetView* m_pRenderTargetView;
 };
+
+#endif

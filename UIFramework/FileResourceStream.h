@@ -42,6 +42,6 @@ class UIFRAMEWORK_API CFileResourceStream : public CRefCountedObjectBase< IReadS
             );
 
         FILE* m_pFile;
-        UINT64 m_FileSize;
+        INT64 m_FileSize;
 };
 

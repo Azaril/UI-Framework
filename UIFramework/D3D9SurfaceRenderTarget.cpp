@@ -1,5 +1,7 @@
 #include "D3D9SurfaceRenderTarget.h"
 
+#if defined(FRAMEWORK_D3D9)
+
 CD3D9SurfaceRenderTarget::CD3D9SurfaceRenderTarget(
     )
     : m_pSurface(NULL)
@@ -67,3 +69,5 @@ CD3D9SurfaceRenderTarget::EndRendering(
 Cleanup:
     return hr;
 }
+
+#endif

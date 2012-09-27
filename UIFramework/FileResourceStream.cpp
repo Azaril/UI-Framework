@@ -3,6 +3,7 @@
 #include "StringConversion.h"
 
 #include <stdio.h>
+#include <share.h>
 
 CFileResourceStream::CFileResourceStream(
     )
@@ -29,7 +30,7 @@ CFileResourceStream::Initialize(
 
     m_pFile = pFile;
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(_XBOX)
     IFCEXPECT(_fseeki64(m_pFile, 0, SEEK_END) == 0);
 
     m_FileSize = _ftelli64(m_pFile);
@@ -97,7 +98,7 @@ CFileResourceStream::Seek(
 
     if (!(seekType == SeekType::Current && position == 0))
     {
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(_XBOX)
         IFCEXPECT(_fseeki64(m_pFile, position, seekParam) == 0);
 #else
         IFCEXPECT(fseeko(m_pFile, position, seekParam) == 0);
@@ -106,7 +107,7 @@ CFileResourceStream::Seek(
 
     if (pNewPosition != NULL)
     {
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(_XBOX)
         *pNewPosition = _ftelli64(m_pFile);
 #else
         *pNewPosition = ftello(m_pFile);
@@ -147,7 +148,7 @@ CFileResourceStream::CreateOnPath(
     FILE* pFile = NULL;
     CFileResourceStream* pFileStream = NULL;
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(_XBOX)
     pFile = _wfsopen(pPath, L"rb", _SH_DENYWR);
 #else
     {

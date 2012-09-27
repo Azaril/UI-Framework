@@ -1,5 +1,7 @@
 #include "D3D10VertexBuffer.h"
 
+#if defined(FRAMEWORK_D3D10)
+
 CD3D10VertexBuffer::CD3D10VertexBuffer(
     )
     : m_pBuffer(NULL)
@@ -77,3 +79,5 @@ CD3D10VertexBuffer::GetMaximumVertices(
 {
     return m_MaximumVertexCount;
 }
+
+#endif

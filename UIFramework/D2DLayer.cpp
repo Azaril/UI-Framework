@@ -1,5 +1,7 @@
 #include "D2DLayer.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DLayer::CD2DLayer(
 	) 
 	: m_Layer(NULL)
@@ -34,3 +36,5 @@ CD2DLayer::GetLayer(
 {
     return m_Layer;
 }
+
+#endif

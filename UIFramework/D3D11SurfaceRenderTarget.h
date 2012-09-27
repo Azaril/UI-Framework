@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D11)
+
 #include "D3D11RenderTarget.h"
 
 class CD3D11SurfaceRenderTarget : public CD3D11RenderTarget
@@ -35,3 +37,4 @@ class CD3D11SurfaceRenderTarget : public CD3D11RenderTarget
         ID3D11RenderTargetView* m_pTextureView;
 };
 
+#endif

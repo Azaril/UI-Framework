@@ -1,5 +1,7 @@
 #include "D2DRectangleGeometry.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DRectangleGeometry::CD2DRectangleGeometry(
     ) 
     : m_RectangleGeometry(NULL)
@@ -29,3 +31,5 @@ CD2DRectangleGeometry::Initialize(
 Cleanup:
     return hr;
 }
+
+#endif

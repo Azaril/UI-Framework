@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "Factory.h"
 #include "D2DRenderTarget.h"
 
@@ -22,3 +24,5 @@ class UIFRAMEWORK_API CD2DSurfaceRenderTarget : public CD2DRenderTarget
 
         IDXGISurface* m_Surface;
 };
+
+#endif

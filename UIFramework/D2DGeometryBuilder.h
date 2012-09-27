@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "GraphicsGeometryBuilder.h"
 #include "Factory.h"
 
@@ -57,3 +59,4 @@ class CD2DGeometryBuilder : public CGraphicsGeometryBuilder
         ID2D1GeometrySink* m_pGeometrySink;
 };
 
+#endif

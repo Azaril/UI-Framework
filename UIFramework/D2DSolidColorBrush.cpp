@@ -1,5 +1,7 @@
 #include "D2DSolidColorBrush.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DSolidColorBrush::CD2DSolidColorBrush(
 	) 
 	: m_SolidBrush(NULL)
@@ -29,3 +31,5 @@ CD2DSolidColorBrush::Initialize(
 Cleanup:
     return hr;
 }
+
+#endif

@@ -1,5 +1,7 @@
 #include "D3D10Texture.h"
 
+#if defined(FRAMEWORK_D3D10)
+
 namespace
 {
 
@@ -220,3 +222,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

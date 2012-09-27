@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_DWRITE)
+
 #include "Factory.h"
 #include "COMRefCounted.h"
 #include "DirectWriteRegisteredFontCollection.h"
@@ -44,3 +46,4 @@ class CDirectWriteFontCollectionLoader : public CCOMRefCountedObjectBase< IDWrit
         CDirectWriteFontFileLoader* m_pFontFileLoader;
 };
 
+#endif

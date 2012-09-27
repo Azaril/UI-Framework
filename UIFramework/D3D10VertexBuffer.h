@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D10)
+
 #include <d3d10.h>
 
 #include "Factory.h"
@@ -40,3 +42,4 @@ class CD3D10VertexBuffer : public CRefCountedObjectBase< IVertexBuffer >
         UINT32 m_StoredVertices;
 };
 
+#endif

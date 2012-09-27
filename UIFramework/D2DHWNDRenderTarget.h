@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "Factory.h"
 #include "D2DRenderTarget.h"
 
@@ -24,3 +26,5 @@ class UIFRAMEWORK_API CD2DHWNDRenderTarget : public CD2DRenderTarget
 
         ID2D1HwndRenderTarget* m_HWNDRenderTarget;
 };
+
+#endif

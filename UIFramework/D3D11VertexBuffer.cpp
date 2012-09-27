@@ -1,5 +1,7 @@
 #include "D3D11VertexBuffer.h"
 
+#if defined(FRAMEWORK_D3D11)
+
 CD3D11VertexBuffer::CD3D11VertexBuffer(
     )
     : m_pBuffer(NULL)
@@ -81,3 +83,5 @@ CD3D11VertexBuffer::GetMaximumVertices(
 {
     return m_MaximumVertexCount;
 }
+
+#endif

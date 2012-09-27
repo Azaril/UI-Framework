@@ -55,7 +55,16 @@ CFileResourceProvider::ReadResource(
 
         if (!combinedPath.empty())
         {
-            combinedPath.append(L"/");
+#if defined(_WINDOWS) || defined(_XBOX)
+			const WCHAR separator = L'\\';
+#else
+            const WCHAR separator = L'/';
+#endif
+
+			if (combinedPath[combinedPath.length() - 1] != separator)
+			{
+				combinedPath.append(&separator, 1);
+			}
         }
 
         combinedPath.append(pIdentifier, identifierLength);

@@ -1,6 +1,8 @@
 #include "DirectWriteEditableTextLayout.h"
 #include "DirectWriteTextLayout.h"
 
+#if defined(FRAMEWORK_DWRITE)
+
 CDirectWriteEditableTextLayout::CDirectWriteEditableTextLayout(
 	)
 	: m_TextProvider(NULL)
@@ -224,3 +226,5 @@ CDirectWriteEditableTextLayout::GetText(
 
     return hr;
 }
+
+#endif

@@ -1,6 +1,14 @@
 #include "TimeValue.h"
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS)
+
+#include <WinBase.h>
+
+#elif defined(_XBOX)
+
+DWORD
+GetTickCount(
+	);
 
 #else
 
@@ -26,7 +34,8 @@ CTime
 CTime::Now(
     )
 {
-#ifdef _WINDOWS
+#if defined(_WINDOWS)
+
     LARGE_INTEGER Frequency;
     LARGE_INTEGER Time;
     
@@ -35,7 +44,13 @@ CTime::Now(
     QueryPerformanceCounter(&Time);
     
     return CTime((Time.QuadPart * 1000) / Frequency.QuadPart);    
+
+#elif defined(_XBOX)
+
+	return CTime(GetTickCount());
+
 #else
+
     mach_timebase_info_data_t TimeInfo;
     
     mach_timebase_info(&TimeInfo);
@@ -45,6 +60,7 @@ CTime::Now(
     double ToMilliseconds = 1e-6 * ((double)TimeInfo.numer / ((double)TimeInfo.denom));
     
     return CTime(ToMilliseconds * (double)CurrentTime);
+
 #endif
 }
 
@@ -124,4 +140,3 @@ CTimeSpan::operator==(
 {
     return (m_Duration == Other.m_Duration);
 }
-

@@ -1,5 +1,7 @@
 #include "D3D11SurfaceRenderTarget.h"
 
+#if defined(FRAMEWORK_D3D11)
+
 CD3D11SurfaceRenderTarget::CD3D11SurfaceRenderTarget(
     )
     : m_pTexture(NULL)
@@ -71,3 +73,5 @@ CD3D11SurfaceRenderTarget::EndRendering(
 Cleanup:
     return hr;
 }
+
+#endif

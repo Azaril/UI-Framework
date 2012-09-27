@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D9)
+
 #include "D3D9RenderTarget.h"
 
 class CD3D9SurfaceRenderTarget : public CD3D9RenderTarget
@@ -34,3 +36,4 @@ class CD3D9SurfaceRenderTarget : public CD3D9RenderTarget
         UINT32 m_Height;
 };
 
+#endif

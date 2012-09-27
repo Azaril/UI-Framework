@@ -145,6 +145,12 @@
     <Filter Include="Framework\UI\Visuals\Elements\Shapes">
       <UniqueIdentifier>{ec31f30d-6db3-4268-b93d-0198b9d22d6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Parser\XML\LibXML">
+      <UniqueIdentifier>{9b269eaa-b946-496c-b984-b7c94a98ec92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Parser\XML\TinyXML2">
+      <UniqueIdentifier>{85855d38-c3dc-4716-936d-4c392b9efb4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collections.cpp">
@@ -921,9 +927,6 @@
     <ClCompile Include="D3D9SurfaceRenderTarget.cpp">
       <Filter>Framework\Graphics\D3D9</Filter>
     </ClCompile>
-    <ClCompile Include="COMRefCounted.cpp">
-      <Filter>Framework\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="DirectWriteRegisteredFontCollection.cpp">
       <Filter>Framework\Text\DirectWrite</Filter>
     </ClCompile>
@@ -965,6 +968,12 @@
     </ClCompile>
     <ClCompile Include="Shape.cpp">
       <Filter>Framework\UI\Visuals\Elements\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="LibXMLReader.cpp">
+      <Filter>Framework\Parser\XML\LibXML</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyXML2Reader.cpp">
+      <Filter>Framework\Parser\XML\TinyXML2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1813,6 +1822,15 @@
     </ClInclude>
     <ClInclude Include="StaticTesselator.h">
       <Filter>Framework\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="LibXMLReader.h">
+      <Filter>Framework\Parser\XML\LibXML</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyXML2Reader.h">
+      <Filter>Framework\Parser\XML\TinyXML2</Filter>
+    </ClInclude>
+    <ClInclude Include="StringConversion.h">
+      <Filter>Framework\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

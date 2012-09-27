@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "GraphicsGeometry.h"
 #include "Factory.h"
 #include "PathGraphicsGeometry.h"
@@ -23,3 +25,5 @@ class CD2DPathGeometry : public CD2DGeometryBase< CRefCountedObjectBase< CPathGr
 
         ID2D1PathGeometry* m_PathGeometry;
 };
+
+#endif

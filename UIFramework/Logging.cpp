@@ -5,6 +5,7 @@
 #else
 #include <stdio.h>
 #include <wchar.h>
+#include <varargs.h>
 #endif
 
 namespace logging

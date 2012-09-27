@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include <d2d1.h>
 
 #include "DataTypes.h"
@@ -248,3 +250,5 @@ inline D2D1_GRADIENT_STOP&
 {
     return *(D2D1_GRADIENT_STOP*)&gradientStop;
 }
+
+#endif

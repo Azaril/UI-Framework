@@ -2,13 +2,29 @@
 #include "D3D9Texture.h"
 #include "TextureAtlasWithWhitePixel.h"
 
-#include "Shaders/Direct3DHLSL/headers/ps_2_0.h"
-#include "Shaders/Direct3DHLSL/headers/ps_3_0.h"
-#include "Shaders/Direct3DHLSL/headers/ps_4_0.h"
+#if defined(FRAMEWORK_D3D9)
 
-#include "Shaders/Direct3DHLSL/headers/vs_2_0.h"
-#include "Shaders/Direct3DHLSL/headers/vs_3_0.h"
-#include "Shaders/Direct3DHLSL/headers/vs_4_0.h"
+#if defined(_XBOX)
+
+#include "Shaders/Direct3DHLSL/headers/d3dx/ps_2_0.h"
+#include "Shaders/Direct3DHLSL/headers/d3dx/ps_3_0.h"
+#include "Shaders/Direct3DHLSL/headers/d3dx/ps_4_0.h"
+
+#include "Shaders/Direct3DHLSL/headers/d3dx/vs_2_0.h"
+#include "Shaders/Direct3DHLSL/headers/d3dx/vs_3_0.h"
+#include "Shaders/Direct3DHLSL/headers/d3dx/vs_4_0.h"
+
+#else
+
+#include "Shaders/Direct3DHLSL/headers/d3d/ps_2_0.h"
+#include "Shaders/Direct3DHLSL/headers/d3d/ps_3_0.h"
+#include "Shaders/Direct3DHLSL/headers/d3d/ps_4_0.h"
+
+#include "Shaders/Direct3DHLSL/headers/d3d/vs_2_0.h"
+#include "Shaders/Direct3DHLSL/headers/d3d/vs_3_0.h"
+#include "Shaders/Direct3DHLSL/headers/d3d/vs_4_0.h"
+
+#endif
 
 CD3D9RenderTarget::CD3D9RenderTarget(
     )
@@ -55,7 +71,11 @@ CD3D9RenderTarget::Initialize(
 
     for (UINT32 i = 0; i < ARRAYSIZE(m_pVertexBuffers); ++i)
     {
+#if defined(_XBOX)
+		IFC(m_pDevice->CreateVertexBuffer(32768, D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &pD3DVertexBuffer, NULL));
+#else
         IFC(m_pDevice->CreateVertexBuffer(32768, D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC, 0, D3DPOOL_DEFAULT, &pD3DVertexBuffer, NULL));
+#endif
 
         IFC(CD3D9VertexBuffer::Create(pD3DVertexBuffer, &m_pVertexBuffers[i]));     
 
@@ -100,7 +120,7 @@ CD3D9RenderTarget::Initialize(
     }
     else if(deviceCapabilites.PixelShaderVersion >= D3DPS_VERSION(2, 0))
     {
-        IFC(m_pDevice->CreatePixelShader((DWORD*)g_ps_3_0, &m_pPixelShader));
+        IFC(m_pDevice->CreatePixelShader((DWORD*)g_ps_2_0, &m_pPixelShader));
     }
     else
     {
@@ -115,9 +135,9 @@ CD3D9RenderTarget::Initialize(
     {
         IFC(m_pDevice->CreateVertexShader((DWORD*)g_vs_3_0, &m_pVertexShader));
     }
-    else if(deviceCapabilites.VertexShaderVersion >= D3DVS_VERSION(2, 0))
+	else if(deviceCapabilites.VertexShaderVersion >= D3DVS_VERSION(2, 0))
     {
-        IFC(m_pDevice->CreateVertexShader((DWORD*)g_vs_3_0, &m_pVertexShader));
+        IFC(m_pDevice->CreateVertexShader((DWORD*)g_vs_2_0, &m_pVertexShader));
     }
     else
     {
@@ -181,6 +201,9 @@ CD3D9RenderTarget::BeginRendering(
     }
 
     IFC(m_pDevice->SetVertexShaderConstantF(0, projectionMatrix, 4));
+	
+	IFC(m_pDevice->SetRenderState(D3DRS_ZENABLE, FALSE));
+	IFC(m_pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE));
 
     IFC(m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE));
 
@@ -266,3 +289,5 @@ CD3D9RenderTarget::Clear(
 Cleanup:
     return hr;
 }
+
+#endif

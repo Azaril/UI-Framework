@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_WIC)
+
 #include "BitmapSource.h"
 #include "Factory.h"
 #include "BitmapSourceBase.h"
@@ -47,3 +49,5 @@ class CWICBitmapSource : public CBitmapSourceBase
         IWICBitmapSource* m_pSource;
         IStream* m_pStream;
 };
+
+#endif

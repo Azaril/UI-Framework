@@ -1,5 +1,8 @@
 #include "XMLLiteReader.h"
 #include "COMReadStreamWrapper.h"
+
+#if defined(FRAMEWORK_XMLLITE)
+
 #include <Shlwapi.h>
 #include <strsafe.h>
 
@@ -467,3 +470,5 @@ CXMLLiteXMLAttribute::GetNamespaceUri(
 Cleanup:
     return hr;
 }
+
+#endif

@@ -1,5 +1,7 @@
 #include "D2DPathGeometry.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DPathGeometry::CD2DPathGeometry(
     ) 
     : m_PathGeometry(NULL)
@@ -28,3 +30,5 @@ CD2DPathGeometry::Initialize(
 Cleanup:
     return hr;
 }
+
+#endif

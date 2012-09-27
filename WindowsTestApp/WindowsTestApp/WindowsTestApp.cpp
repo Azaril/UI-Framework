@@ -302,6 +302,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
         }
         else
         {
+            IFC(pUIHost->Update());
+
             IFC(pUIHost->Render());
         }
     } while(msg.message != WM_QUIT);

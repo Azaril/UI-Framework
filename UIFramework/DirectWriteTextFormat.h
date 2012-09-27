@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_DWRITE)
+
 #include "TextFormat.h"
 #include "Factory.h"
 #include <dwrite.h>
@@ -25,3 +27,5 @@ class CDirectWriteTextFormat : public CTextFormat
 
         IDWriteTextFormat* m_Format;
 };
+
+#endif

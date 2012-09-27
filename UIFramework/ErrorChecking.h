@@ -9,9 +9,13 @@
 #define __WFILE__ WIDEN(__FILE__)
 
 
-#if _WINDOWS
+#if defined(_WINDOWS)
 
 #include <windows.h>
+
+#elif defined(_XBOX)
+
+#include <winerror.h>
 
 #else
 

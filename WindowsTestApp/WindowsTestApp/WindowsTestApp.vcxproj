@@ -50,7 +50,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;FRAMEWORK_D3D9;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)\..\UIFramework;$(SolutionDir)\..\UIFramework\External\boost\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -68,7 +68,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;FRAMEWORK_D3D9;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)\..\UIFramework;$(SolutionDir)\..\UIFramework\External\boost\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -102,6 +102,12 @@
     <ResourceCompile Include="WindowsTestApp.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\UIFramework\External\freetype\builds\win32\vc2010\freetype.vcxproj">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\UIFramework\External\tinyxml2\tinyxml2.vcxproj">
+      <Project>{c3661f5d-9472-4f8e-9aba-6256479f89fa}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\UIFramework\UIFramework.vcxproj">
       <Project>{fdda5d3c-5fff-477e-8d61-40357a1332fd}</Project>
     </ProjectReference>

@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "D2DBrush.h"
 #include "Factory.h"
 
@@ -21,3 +23,5 @@ class CD2DLinearGradientBrush : public CD2DBrush
 
         ID2D1LinearGradientBrush* m_LinearGradientBrush;
 };
+
+#endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_DWRITE)
+
 #include "TextLayoutMetrics.h"
 #include "Factory.h"
 
@@ -27,3 +29,5 @@ class CDirectWriteLayoutMetrics : public CTextLayoutMetrics
 
         DWRITE_TEXT_METRICS m_Metrics;
 };
+
+#endif

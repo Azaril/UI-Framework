@@ -4,6 +4,8 @@
 #include "DirectWriteEditableTextLayout.h"
 #include "StackHeapBuffer.h"
 
+#if defined(FRAMEWORK_DWRITE)
+
 typedef HRESULT (WINAPI *DWriteCreateFactoryFunc)(
 	__in DWRITE_FACTORY_TYPE factoryType, 
 	__in REFIID iid, 
@@ -271,3 +273,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif

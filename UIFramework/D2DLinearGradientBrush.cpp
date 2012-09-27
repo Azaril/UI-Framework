@@ -1,5 +1,7 @@
 #include "D2DLinearGradientBrush.h"
 
+#if defined(FRAMEWORK_D2D)
+
 CD2DLinearGradientBrush::CD2DLinearGradientBrush(
 	) 
 	: m_LinearGradientBrush(NULL)
@@ -29,3 +31,5 @@ CD2DLinearGradientBrush::Initialize(
 Cleanup:
     return hr;
 }
+
+#endif

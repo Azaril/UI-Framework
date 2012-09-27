@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_DWRITE)
+
 #include "ReadStream.h"
 #include "COMRefCounted.h"
 #include "Factory.h"
@@ -57,3 +59,4 @@ class CDirectWriteFontFileStream : public CCOMRefCountedObjectBase< IDWriteFontF
         CRITICAL_SECTION m_Lock;
 };
 
+#endif

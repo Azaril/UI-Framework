@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D3D10)
+
 #include <d3d10.h>
 
 #include "Factory.h"
@@ -163,3 +165,5 @@ class UIFRAMEWORK_API CD3D10GraphicsDevice : public CGraphicsDevice,
 
         CRenderTextureAllocator m_StagingTextureAllocator;
 };
+
+#endif

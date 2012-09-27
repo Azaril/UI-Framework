@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(FRAMEWORK_D2D)
+
 #include "Factory.h"
 #include "GraphicsDevice.h"
 
@@ -63,3 +65,5 @@ class UIFRAMEWORK_API CD2DGraphicsDevice : public CGraphicsDevice
         CImagingProvider* m_ImagingProvider;
         CGeometryProvider* m_GeometryProvider;
 };
+
+#endif

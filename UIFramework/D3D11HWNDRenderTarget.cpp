@@ -1,5 +1,7 @@
 #include "D3D11HWNDRenderTarget.h"
 
+#if defined(FRAMEWORK_D3D11)
+
 CD3D11HWNDRenderTarget::CD3D11HWNDRenderTarget(
     )
     : m_Width(0)
@@ -83,3 +85,5 @@ CD3D11HWNDRenderTarget::EndRendering(
 Cleanup:
     return hr;
 }
+
+#endif

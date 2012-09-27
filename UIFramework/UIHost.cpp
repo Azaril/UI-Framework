@@ -150,7 +150,7 @@ Cleanup:
 }
 
 __checkReturn HRESULT
-CUIHost::Render(
+CUIHost::Update(
     )
 {
     HRESULT hr = S_OK;
@@ -172,16 +172,24 @@ CUIHost::Render(
 
     IFC(m_LayoutManager->EnsureLayout());
 
+Cleanup:
+	return hr;
+}
+
+__checkReturn HRESULT
+CUIHost::Render( 
+	)	 
+{
+	HRESULT hr = S_OK;
+
+    CPreRenderContext PreRenderContext(m_RenderTarget);
+
+    IFC(m_RootElement->PreRender(PreRenderContext));
+
     {
-        CPreRenderContext PreRenderContext(m_RenderTarget);
+        CRenderContext RenderContext(m_RenderTarget);
 
-        IFC(m_RootElement->PreRender(PreRenderContext));
-
-        {
-            CRenderContext RenderContext(m_RenderTarget);
-
-            IFC(PreRenderContext.RenderRoots(RenderContext));
-        }
+        IFC(PreRenderContext.RenderRoots(RenderContext));
     }
 
 Cleanup:

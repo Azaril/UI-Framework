@@ -3,7 +3,7 @@
 #include "Types.h"
 #include "StackHeapBuffer.h"
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(_XBOX)
 
 template< unsigned int V >
 __checkReturn HRESULT
@@ -84,10 +84,10 @@ ConvertUTF16BEToWCHAR(
 
         for (UINT32 i = 0; i < stringLength; ++i)
         {
-#ifdef PLATFORM_LITTLE_ENDIAN
+#if defined(PLATFORM_LITTLE_ENDIAN)
             WCHAR val = *pReadBuffer;
             *pWriteBuffer = ((val & 0xFF00) >> 8) | ((val & 0x00FF) << 8);
-#elif PLATFORM_BIG_ENDIAN
+#elif defined(PLATFORM_BIG_ENDIAN)
             *pWriteBuffer = *pReadBuffer;
 #else
 #error Unknown endianness!
@@ -107,6 +107,82 @@ ConvertUTF16BEToWCHAR(
    
 Cleanup:    
     return hr;
+}
+
+template< unsigned int V >
+__checkReturn HRESULT
+ConvertUTF16LEToWCHAR(
+    __in_ecount(stringLength) const UINT16* pSourceString,
+    UINT32 stringLength,
+    __out StackHeapBuffer< WCHAR, V >* pBuffer,
+    __out_opt UINT32* pStringLength
+    )
+{
+    HRESULT hr = S_OK;
+
+    STATIC_ASSERT(sizeof(UINT16) == sizeof(WCHAR));
+
+    IFC(pBuffer->EnsureBufferSize(stringLength + 1));
+
+    {
+        const WCHAR* pReadBuffer = (const WCHAR*)pSourceString;
+        WCHAR* pWriteBuffer = pBuffer->GetBuffer();
+
+        for (UINT32 i = 0; i < stringLength; ++i)
+        {
+#if defined(PLATFORM_LITTLE_ENDIAN)
+            *pWriteBuffer = *pReadBuffer;
+#elif defined(PLATFORM_BIG_ENDIAN)
+			WCHAR val = *pReadBuffer;
+			*pWriteBuffer = ((val & 0xFF00) >> 8) | ((val & 0x00FF) << 8);
+#else
+#error Unknown endianness!
+#endif
+
+            ++pReadBuffer;
+            ++pWriteBuffer;
+        }
+    }
+
+    pBuffer->GetBuffer()[stringLength] = L'\0';
+
+    if (pStringLength != NULL)
+    {
+        *pStringLength = stringLength + 1;
+    }
+   
+Cleanup:    
+    return hr;
+}
+
+template< unsigned int V >
+__checkReturn HRESULT
+ConvertWCHARToUTF8(
+	__in_ecount(stringLength) const WCHAR* pSourceString,
+	UINT32 stringLength,
+	__out StackHeapBuffer< CHAR, V >* pBuffer,
+	__out_opt UINT32* pStringLength
+	)
+{
+	HRESULT hr = S_OK;
+	INT32 outputCharCount = 0;
+
+	outputCharCount = WideCharToMultiByte(CP_UTF8, 0, pSourceString, stringLength, NULL, 0, NULL, NULL);
+
+	IFC(pBuffer->EnsureBufferSize(outputCharCount + 1));
+
+	outputCharCount = WideCharToMultiByte(CP_UTF8, 0, pSourceString, stringLength, pBuffer->GetBuffer(), pBuffer->GetBufferSize(), NULL, NULL);
+	IFCEXPECT(outputCharCount > 0);
+
+	pBuffer->GetBuffer()[outputCharCount] = L'\0';
+
+	if (pStringLength != NULL)
+	{
+		*pStringLength = outputCharCount + 1;
+	}
+
+Cleanup:    
+	return hr;
 }
 
 #else

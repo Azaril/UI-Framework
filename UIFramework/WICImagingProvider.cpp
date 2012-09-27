@@ -1,4 +1,7 @@
 #include "WICImagingProvider.h"
+
+#if defined(FRAMEWORK_WIC)
+
 #include "COMReadStreamWrapper.h"
 
 EXTERN_C const GUID DECLSPEC_SELECTANY CLSID_WICImagingFactory = { 0xcacaf262, 0x9370, 0x4615, { 0xa1, 0x3b,  0x9f,  0x55,  0x39,  0xda,  0x4c,  0xa } };
@@ -172,3 +175,5 @@ Cleanup:
 
     return hr;
 }
+
+#endif
