@@ -343,7 +343,7 @@ Cleanup:
 
 __override __checkReturn HRESULT 
 CD3D11RenderTarget::BindTexture(
-    __in ITexture* pTexture
+    __in_opt ITexture* pTexture
     )
 {
     HRESULT hr = S_OK;
@@ -352,32 +352,35 @@ CD3D11RenderTarget::BindTexture(
     CStagingTextureWrapper* pTextureWrapper = NULL;
     CD3D11Texture* pD3DTexture = NULL;
 
-    pTextureWrapper = (CStagingTextureWrapper*)pTexture;
-    pD3DTexture = (CD3D11Texture*)pTextureWrapper->GetTargetTexture();
+	if (pTexture != NULL)
+	{
+		pTextureWrapper = (CStagingTextureWrapper*)pTexture;
+		pD3DTexture = (CD3D11Texture*)pTextureWrapper->GetTargetTexture();
 
-    pShaderResourceView = pD3DTexture->GetResourceView();
+		pShaderResourceView = pD3DTexture->GetResourceView();
 
-    if (pShaderResourceView == NULL)
-    {
-        D3D11_TEXTURE2D_DESC textureDescription = { };
+		if (pShaderResourceView == NULL)
+		{
+			D3D11_TEXTURE2D_DESC textureDescription = { };
 
-        ID3D11Texture2D* pTexture2D = pD3DTexture->GetD3DTexture();
+			ID3D11Texture2D* pTexture2D = pD3DTexture->GetD3DTexture();
 
-        pTexture2D->GetDesc(&textureDescription);
+			pTexture2D->GetDesc(&textureDescription);
 
-        D3D11_SHADER_RESOURCE_VIEW_DESC resourceViewDescription = { };
+			D3D11_SHADER_RESOURCE_VIEW_DESC resourceViewDescription = { };
 
-        resourceViewDescription.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        resourceViewDescription.Format = textureDescription.Format;
-        resourceViewDescription.Texture2D.MipLevels = textureDescription.MipLevels;
-        resourceViewDescription.Texture2D.MostDetailedMip = textureDescription.MipLevels - 1;
+			resourceViewDescription.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			resourceViewDescription.Format = textureDescription.Format;
+			resourceViewDescription.Texture2D.MipLevels = textureDescription.MipLevels;
+			resourceViewDescription.Texture2D.MostDetailedMip = textureDescription.MipLevels - 1;
 
-        IFC(m_pDevice->CreateShaderResourceView(pTexture2D, &resourceViewDescription, &pNewResourceView));
+			IFC(m_pDevice->CreateShaderResourceView(pTexture2D, &resourceViewDescription, &pNewResourceView));
 
-        pD3DTexture->SetResourceView(pNewResourceView);
+			pD3DTexture->SetResourceView(pNewResourceView);
 
-        pShaderResourceView = pNewResourceView;
-    }
+			pShaderResourceView = pNewResourceView;
+		}
+	}
 
     m_pImmediateContext->PSSetShaderResources(0, 1, &pShaderResourceView);
 
@@ -389,7 +392,7 @@ Cleanup:
 
 __override __checkReturn HRESULT 
 CD3D11RenderTarget::BindMask(
-    __in ITexture* pTexture
+    __in_opt ITexture* pTexture
     )
 {
     HRESULT hr = S_OK;
@@ -398,32 +401,35 @@ CD3D11RenderTarget::BindMask(
     CStagingTextureWrapper* pTextureWrapper = NULL;
     CD3D11Texture* pD3DTexture = NULL;
 
-    pTextureWrapper = (CStagingTextureWrapper*)pTexture;
-    pD3DTexture = (CD3D11Texture*)pTextureWrapper->GetTargetTexture();
+	if (pTexture != NULL)
+	{
+		pTextureWrapper = (CStagingTextureWrapper*)pTexture;
+		pD3DTexture = (CD3D11Texture*)pTextureWrapper->GetTargetTexture();
 
-    pShaderResourceView = pD3DTexture->GetResourceView();
+		pShaderResourceView = pD3DTexture->GetResourceView();
 
-    if (pShaderResourceView == NULL)
-    {
-        D3D11_TEXTURE2D_DESC textureDescription = { };
+		if (pShaderResourceView == NULL)
+		{
+			D3D11_TEXTURE2D_DESC textureDescription = { };
 
-        ID3D11Texture2D* pTexture2D = pD3DTexture->GetD3DTexture();
+			ID3D11Texture2D* pTexture2D = pD3DTexture->GetD3DTexture();
 
-        pTexture2D->GetDesc(&textureDescription);
+			pTexture2D->GetDesc(&textureDescription);
 
-        D3D11_SHADER_RESOURCE_VIEW_DESC resourceViewDescription = { };
+			D3D11_SHADER_RESOURCE_VIEW_DESC resourceViewDescription = { };
 
-        resourceViewDescription.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        resourceViewDescription.Format = textureDescription.Format;
-        resourceViewDescription.Texture2D.MipLevels = textureDescription.MipLevels;
-        resourceViewDescription.Texture2D.MostDetailedMip = textureDescription.MipLevels - 1;
+			resourceViewDescription.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			resourceViewDescription.Format = textureDescription.Format;
+			resourceViewDescription.Texture2D.MipLevels = textureDescription.MipLevels;
+			resourceViewDescription.Texture2D.MostDetailedMip = textureDescription.MipLevels - 1;
 
-        IFC(m_pDevice->CreateShaderResourceView(pTexture2D, &resourceViewDescription, &pNewResourceView));
+			IFC(m_pDevice->CreateShaderResourceView(pTexture2D, &resourceViewDescription, &pNewResourceView));
 
-        pD3DTexture->SetResourceView(pNewResourceView);
+			pD3DTexture->SetResourceView(pNewResourceView);
 
-        pShaderResourceView = pNewResourceView;
-    }
+			pShaderResourceView = pNewResourceView;
+		}
+	}
 
     m_pImmediateContext->PSSetShaderResources(1, 1, &pShaderResourceView);
 

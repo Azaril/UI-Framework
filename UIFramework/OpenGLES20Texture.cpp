@@ -76,7 +76,7 @@ COpenGLES20Texture::GetPixelFormat(
 
 __override __checkReturn HRESULT 
 COpenGLES20Texture::SetData(
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
@@ -95,7 +95,7 @@ COpenGLES20Texture::SetData(
 __override __checkReturn HRESULT 
 COpenGLES20Texture::SetSubData(
     const RectU& Region,
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
@@ -114,9 +114,9 @@ COpenGLES20Texture::SetSubData(
 __override __checkReturn HRESULT 
 COpenGLES20Texture::SetMultipleSubData(
     __in_ecount(RegionCount) const RectU* pRegions,
-    __in_ecount(RegionCount) BYTE** ppData,
-    __in_ecount(RegionCount) UINT32* pDataSizes,
-    __in_ecount(RegionCount) INT32* pStrides,
+    __in_ecount(RegionCount) const BYTE** ppData,
+    __in_ecount(RegionCount) const UINT32* pDataSizes,
+    __in_ecount(RegionCount) const INT32* pStrides,
     UINT32 RegionCount
     )
 {

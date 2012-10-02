@@ -4,6 +4,7 @@
 #include "FreetypeTextProvider.h"
 #include "D3D9Texture.h"
 #include "StagingTextureWrapper.h"
+#include "MemoryTexture.h"
 
 #if defined(FRAMEWORK_D3D9)
 
@@ -22,6 +23,9 @@ CD3D9GraphicsDevice::CD3D9GraphicsDevice(
     , m_FocusWindow(NULL)
     , m_pTextureAtlasPool(NULL)
     , m_pStagingTextureAtlasPool(NULL)
+#if defined(_XBOX) && defined(FRAMEWORK_DEBUG)
+	, m_allocatedTextureCount(0)
+#endif
 {
 }
 
@@ -133,14 +137,18 @@ CD3D9GraphicsDevice::InitializeCommon(
 
     IFC(m_pDevice->GetDeviceCaps(&deviceCapabilites));
 
+#if defined(_XBOX)
+	m_StagingTextureAllocator.Initialize(PixelFormat::A8R8G8B8);
+#else
     m_StagingTextureAllocator.Initialize(this, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM);
+#endif
 
     UINT32 textureWidth = deviceCapabilites.MaxTextureWidth;
     UINT32 textureHeight = deviceCapabilites.MaxTextureHeight;
 
 #if defined(_XBOX)
-    textureWidth = std::min(textureWidth, 256);
-    textureHeight = std::min(textureHeight, 256);
+    textureWidth = std::min(textureWidth, (UINT32)256);
+    textureHeight = std::min(textureHeight, (UINT32)256);
 #endif
 
     //TODO: This need to be changed so that the atlas pool will check if the textures are in use, currently causes pipeline stalls
@@ -467,6 +475,18 @@ CD3D9GraphicsDevice::AllocateTexture(
 
     IFC(m_pDevice->CreateTexture(Width, Height, Levels, Usage, Format, Pool, &pD3DTexture, NULL));
 
+#if defined(_XBOX) && defined(FRAMEWORK_DEBUG)
+	{
+		CHAR textureName[128] = { 0 };
+
+		sprintf(textureName, "UI Texture %u", m_allocatedTextureCount);
+
+		IFC(m_pDevice->PixSetTextureName(pD3DTexture, textureName));
+
+		++m_allocatedTextureCount;
+	}
+#endif
+
     IFC(CD3D9Texture::Create(pD3DTexture, &pTexture));
 
     *ppTexture = pTexture;
@@ -489,41 +509,121 @@ CD3D9GraphicsDevice::AddUpdate(
 {
     HRESULT hr = S_OK;
     CTextureAtlasView* pSourceView = NULL;
-    CD3D9Texture* pSourceTexture = NULL;
     CD3D9Texture* pDestinationTexture = NULL;
-    IDirect3DSurface9* pSourceSurface = NULL;
     IDirect3DSurface9* pDestinationSurface = NULL;
+
+#if defined(_XBOX)
+	CMemoryTexture* pSourceTexture = NULL;
+#else
+	CD3D9Texture* pSourceTexture = NULL;
+	IDirect3DSurface9* pSourceSurface = NULL;
+#endif
 
     pSourceView = (CTextureAtlasView*)pSource;
 
+#if defined(_XBOX)
+	pSourceTexture = (CMemoryTexture*)pSourceView->GetTexture();
+#else
     pSourceTexture = (CD3D9Texture*)pSourceView->GetTexture();
-    pDestinationTexture = (CD3D9Texture*)pDestination;
-
     IFC(pSourceTexture->GetD3DTexture()->GetSurfaceLevel(0, &pSourceSurface));
+#endif
+
+    pDestinationTexture = (CD3D9Texture*)pDestination;
     IFC(pDestinationTexture->GetD3DTexture()->GetSurfaceLevel(0, &pDestinationSurface));
 
+	if (sourceRect.GetWidth() > 0 && sourceRect.GetHeight() > 0)
     {
+        //TODO: Batch texture updates.
+#if defined(_XBOX)
+		RectU targetRect(destOffset.x, destOffset.y, destOffset.x + sourceRect.GetWidth(), destOffset.y + sourceRect.GetHeight());
+
+		UINT32 lineSize = PixelFormat::GetLineSize(pSourceTexture->GetPixelFormat(), pSourceTexture->GetWidth());
+
+		IFC(pDestinationTexture->SetSubData(targetRect, pSourceTexture->GetData(), sourceRect.GetHeight() * lineSize, lineSize));
+#else
         const RectU& viewSourceRect = pSourceView->GetRect();
 
-        RECT region = { sourceRect.left, sourceRect.top, sourceRect.right, sourceRect.bottom };
+		RECT region = { sourceRect.left, sourceRect.top, sourceRect.right, sourceRect.bottom };
 
-        region.left = viewSourceRect.left + sourceRect.left;
-        region.top = viewSourceRect.top + sourceRect.top;
-        region.right = viewSourceRect.left + sourceRect.right;
-        region.bottom = viewSourceRect.top + sourceRect.bottom;
+		region.left = viewSourceRect.left + sourceRect.left;
+		region.top = viewSourceRect.top + sourceRect.top;
+		region.right = viewSourceRect.left + sourceRect.right;
+		region.bottom = viewSourceRect.top + sourceRect.bottom;
 
-        const POINT target = { destOffset.x, destOffset. y };
+		const POINT target = { destOffset.x, destOffset. y };
 
-        //TODO: Batch texture updates.
-        IFC(m_pDevice->UpdateSurface(pSourceSurface, &region, pDestinationSurface, &target));
+		IFC(m_pDevice->UpdateSurface(pSourceSurface, &region, pDestinationSurface, &target));
+#endif
     }
 
 Cleanup:
+#if !defined(_XBOX)
     ReleaseObject(pSourceSurface);
+#endif
     ReleaseObject(pDestinationSurface);
 
     return hr;
 }
+
+#if defined(_XBOX)
+
+CD3D9GraphicsDevice::CRenderTextureAllocator::CRenderTextureAllocator(
+	)
+	: m_format(PixelFormat::Unknown)
+{
+}
+
+void
+CD3D9GraphicsDevice::CRenderTextureAllocator::Initialize(
+	PixelFormat::Value format
+	)
+{
+	m_format = format;
+}
+
+__override __checkReturn HRESULT 
+CD3D9GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
+	UINT32 Width,
+	UINT32 Height,
+	__deref_out ITexture** ppTexture
+	)
+{
+	HRESULT hr = S_OK;
+	CMemoryTexture* pMemoryTexture = NULL;
+
+	IFC(CMemoryTexture::Create(m_format, Width, Height, &pMemoryTexture));
+
+	*ppTexture = pMemoryTexture;
+	pMemoryTexture = NULL;
+
+Cleanup:
+	ReleaseObject(pMemoryTexture);
+
+	return hr;
+}
+
+__override __checkReturn HRESULT 
+CD3D9GraphicsDevice::CRenderTextureAllocator::AllocateTexture(
+	UINT32 Width,
+	UINT32 Height,
+	__deref_out IBatchUpdateTexture** ppTexture
+	)
+{
+	HRESULT hr = S_OK;
+	CMemoryTexture* pMemoryTexture = NULL;
+
+	IFC(CMemoryTexture::Create(m_format, Width, Height, &pMemoryTexture));
+
+	*ppTexture = pMemoryTexture;
+	pMemoryTexture = NULL;
+
+Cleanup:
+	ReleaseObject(pMemoryTexture);
+
+	return hr;
+}
+
+#else
 
 CD3D9GraphicsDevice::CRenderTextureAllocator::CRenderTextureAllocator(
     )
@@ -592,5 +692,7 @@ Cleanup:
 
     return hr;
 }
+
+#endif
 
 #endif

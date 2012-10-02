@@ -116,7 +116,7 @@ CD3D11Texture::GetPixelFormat(
 
 __override __checkReturn HRESULT 
 CD3D11Texture::SetData(
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
@@ -152,7 +152,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CD3D11Texture::SetSubData(
     const RectU& Region,
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
@@ -190,9 +190,9 @@ Cleanup:
 __override __checkReturn HRESULT 
 CD3D11Texture::SetMultipleSubData(
     __in_ecount(RegionCount) const RectU* pRegions,
-    __in_ecount(RegionCount) BYTE** ppData,
-    __in_ecount(RegionCount) UINT32* pDataSizes,
-    __in_ecount(RegionCount) INT32* pStrides,
+    __in_ecount(RegionCount) const BYTE** ppData,
+    __in_ecount(RegionCount) const UINT32* pDataSizes,
+    __in_ecount(RegionCount) const INT32* pStrides,
     UINT32 RegionCount
     )
 {

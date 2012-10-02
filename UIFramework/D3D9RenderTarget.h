@@ -119,11 +119,11 @@ class UIFRAMEWORK_API CD3D9RenderTarget : public CRenderTargetBase
 			);
 
         __override virtual __checkReturn HRESULT BindTexture(
-            __in ITexture* pTexture
+            __in_opt ITexture* pTexture
             );
 
         __override virtual __checkReturn HRESULT BindMask(
-            __in ITexture* pTexture
+            __in_opt ITexture* pTexture
             );
 
         __override virtual __checkReturn HRESULT OnTesselatedGeometryBatch(

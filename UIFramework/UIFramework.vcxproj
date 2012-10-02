@@ -230,6 +230,7 @@
     <ClCompile Include="FreeTypeTextFormat.cpp" />
     <ClCompile Include="FreetypeTextLayout.cpp" />
     <ClCompile Include="LibXMLReader.cpp" />
+    <ClCompile Include="MemoryTexture.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="TextLayoutEngineMetrics.cpp" />
     <ClCompile Include="FreetypeTextProvider.cpp" />
@@ -508,6 +509,7 @@
     <ClInclude Include="FreeTypeTextFormat.h" />
     <ClInclude Include="FreetypeTextLayout.h" />
     <ClInclude Include="LibXMLReader.h" />
+    <ClInclude Include="MemoryTexture.h" />
     <ClInclude Include="Noncopyable.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="StaticTesselator.h" />

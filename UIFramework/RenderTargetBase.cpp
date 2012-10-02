@@ -88,6 +88,9 @@ CRenderTargetBase::EndRendering(
     ReplaceObject(m_pLastRenderedTextureAtlas, (ITextureAtlasWithWhitePixel*)NULL);
     ReplaceObject(m_pLastRenderedMaskAtlas, (ITextureAtlasWithWhitePixel*)NULL);
 
+	IFC(BindTexture(NULL));
+	IFC(BindMask(NULL));
+
 Cleanup:
     return hr;
 }
@@ -143,7 +146,7 @@ CRenderTargetBase::CreateLinearGradientBrush(
     UINT32 colorBufferSize = 0;    
     PixelFormat::Value format = PixelFormat::Unknown;
     //TODO: Dynamically figure out how large this should be.
-    UINT32 textureLength = 256 - 2;
+    UINT32 textureLength = 128 - 2;
     Matrix3X2F textureToBrushTransform;
     Point2F directionPoint;
     
@@ -275,6 +278,40 @@ CRenderTargetBase::CreateLinearGradientBrush(
 
                         break;
                     }
+
+				case PixelFormat::A8R8G8B8:
+					{
+						*pWriteOffset = (BYTE)(texelColor.a * 255.0f);
+						++pWriteOffset;
+
+						*pWriteOffset = (BYTE)(texelColor.r * 255.0f);
+						++pWriteOffset;
+
+						*pWriteOffset = (BYTE)(texelColor.g * 255.0f);
+						++pWriteOffset;
+
+						*pWriteOffset = (BYTE)(texelColor.b * 255.0f);
+						++pWriteOffset;
+
+						break;
+					}
+
+				case PixelFormat::A8B8G8R8:
+					{
+						*pWriteOffset = (BYTE)(texelColor.a * 255.0f);
+						++pWriteOffset;
+
+						*pWriteOffset = (BYTE)(texelColor.b * 255.0f);
+						++pWriteOffset;
+
+						*pWriteOffset = (BYTE)(texelColor.g * 255.0f);
+						++pWriteOffset;
+
+						*pWriteOffset = (BYTE)(texelColor.r * 255.0f);
+						++pWriteOffset;
+
+						break;
+					}
                     
                 default:
                     {

@@ -84,7 +84,7 @@ CTextureAtlasView::GetPixelFormat(
 
 __override __checkReturn HRESULT 
 CTextureAtlasView::SetData(
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
@@ -100,7 +100,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CTextureAtlasView::SetSubData(
     const RectU& Region,
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )

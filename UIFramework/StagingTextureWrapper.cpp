@@ -60,7 +60,7 @@ CStagingTextureWrapper::GetPixelFormat(
 
 __override __checkReturn HRESULT 
 CStagingTextureWrapper::SetData(
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
@@ -85,7 +85,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CStagingTextureWrapper::SetSubData(
     const RectU& Region,
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
@@ -109,11 +109,11 @@ Cleanup:
 
 __override __checkReturn HRESULT 
 CStagingTextureWrapper::SetMultipleSubData(
-    const RectU* pRegions,
-    __in_ecount(RegionCount) BYTE** ppData,
-    UINT32* pDataSizes,
-    INT32* pStrides,
-    UINT32 RegionCount
+	__in_ecount(RegionCount) const RectU* pRegions,
+	__in_ecount(RegionCount) const BYTE** ppData,
+	__in_ecount(RegionCount) const UINT32* pDataSizes,
+	__in_ecount(RegionCount) const INT32* pStrides,
+	UINT32 RegionCount
     )
 {
     HRESULT hr = S_OK;

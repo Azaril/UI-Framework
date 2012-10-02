@@ -138,7 +138,10 @@ CFreetypeFontFace::LoadIntoTexture(
             switch(pOutputTexture->GetPixelFormat())
             {
                 case PixelFormat::B8G8R8A8:
+				case PixelFormat::R8G8B8A8:
                     {
+						ASSERT(PixelFormat::GetLineSize(PixelFormat::B8G8R8A8, width) == PixelFormat::GetLineSize(PixelFormat::R8G8B8A8, width));
+
                         UINT32 textureStride = PixelFormat::GetLineSize(PixelFormat::B8G8R8A8, width);
                         UINT32 outputDataSize = textureStride * height;
 
@@ -174,9 +177,12 @@ CFreetypeFontFace::LoadIntoTexture(
                         break;
                     }
 
-                case PixelFormat::R8G8B8A8:
+                case PixelFormat::A8B8G8R8:
+				case PixelFormat::A8R8G8B8:
                     {
-                        UINT32 textureStride = PixelFormat::GetLineSize(PixelFormat::R8G8B8A8, width);
+						ASSERT(PixelFormat::GetLineSize(PixelFormat::A8B8G8R8, width) == PixelFormat::GetLineSize(PixelFormat::A8R8G8B8, width));
+
+                        UINT32 textureStride = PixelFormat::GetLineSize(PixelFormat::A8B8G8R8, width);
                         UINT32 outputDataSize = textureStride * height;
                         
                         IFC(bitmapBuffer.EnsureBufferSize(outputDataSize));
@@ -193,10 +199,10 @@ CFreetypeFontFace::LoadIntoTexture(
                             {
                                 BYTE val = *pSource;
 
-                                pDestination[0] = 255;
+                                pDestination[0] = val;
                                 pDestination[1] = 255;
                                 pDestination[2] = 255;
-                                pDestination[3] = val;
+                                pDestination[3] = 255;
 
                                 pSource += 1;
                                 pDestination += 4;

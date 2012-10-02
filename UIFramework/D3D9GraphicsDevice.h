@@ -130,6 +130,33 @@ class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
         CTextureAtlasPool< CTextureAtlasWithWhitePixel< 1 > >* m_pTextureAtlasPool;
         CTextureAtlasPool< CTextureAtlas< ITextureAtlas, 0 > >* m_pStagingTextureAtlasPool;
 
+#if defined(_XBOX)
+        class UIFRAMEWORK_API CRenderTextureAllocator : public IBatchUpdateTextureAllocator
+        {
+            public:
+                CRenderTextureAllocator(
+                    );
+
+                void Initialize(
+                    PixelFormat::Value format
+                    );
+
+                __override virtual __checkReturn HRESULT AllocateTexture(
+                    UINT32 Width,
+                    UINT32 Height,
+                    __deref_out ITexture** ppTexture
+                    );
+
+                __override virtual __checkReturn HRESULT AllocateTexture(
+                    UINT32 Width,
+                    UINT32 Height,
+                    __deref_out IBatchUpdateTexture** ppTexture
+                    );
+
+            protected:
+                PixelFormat::Value m_format;
+        };
+#else
         class UIFRAMEWORK_API CRenderTextureAllocator : public IBatchUpdateTextureAllocator
         {
             public:
@@ -163,8 +190,13 @@ class UIFRAMEWORK_API CD3D9GraphicsDevice : public CGraphicsDevice,
                 D3DFORMAT m_format;
                 D3DPOOL m_pool;
         };
+#endif
 
         CRenderTextureAllocator m_StagingTextureAllocator;
+
+#if defined(_XBOX) && defined(FRAMEWORK_DEBUG)
+		UINT32 m_allocatedTextureCount;
+#endif
 };
 
 #endif

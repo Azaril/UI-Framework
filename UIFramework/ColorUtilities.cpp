@@ -27,12 +27,21 @@ FillBufferWithColor(
     {
         case PixelFormat::B8G8R8A8:
             {
-                UINT32 blue = BYTE(color.b * 255) << 0;
-                UINT32 green = BYTE(color.g * 255) << 8;
-                UINT32 red = BYTE(color.r * 255) << 16;
-                UINT32 alpha = BYTE(color.a * 255) << 24;
+#if defined(PLATFORM_LITTLE_ENDIAN)
+				UINT32 blue = BYTE(color.b * 255) << 0;
+				UINT32 green = BYTE(color.g * 255) << 8;
+				UINT32 red = BYTE(color.r * 255) << 16;
+				UINT32 alpha = BYTE(color.a * 255) << 24;
 
                 UINT32 bufferColor = blue | green | red | alpha;
+#else
+				UINT32 alpha = BYTE(color.a * 255) << 0;
+				UINT32 red = BYTE(color.r * 255) << 8;
+				UINT32 green = BYTE(color.g * 255) << 16;
+				UINT32 blue = BYTE(color.b * 255) << 24;
+
+				UINT32 bufferColor = blue | green | red | alpha;
+#endif
 
                 BYTE* pDestinationLine = buffer.GetBuffer();
 
@@ -55,12 +64,95 @@ FillBufferWithColor(
 
         case PixelFormat::R8G8B8A8:
             {
+#if defined(PLATFORM_LITTLE_ENDIAN)
                 UINT32 red = BYTE(color.r * 255) << 0;
                 UINT32 green = BYTE(color.g * 255) << 8;
                 UINT32 blue = BYTE(color.b * 255) << 16;
                 UINT32 alpha = BYTE(color.a * 255) << 24;
 
                 UINT32 bufferColor = red | green | blue | alpha;
+#else
+				UINT32 alpha = BYTE(color.a * 255) << 0;
+				UINT32 blue = BYTE(color.b * 255) << 8;
+				UINT32 green = BYTE(color.g * 255) << 16;
+				UINT32 red = BYTE(color.r * 255) << 24;
+
+				UINT32 bufferColor = red | green | blue | alpha;
+#endif
+
+                BYTE* pDestinationLine = buffer.GetBuffer();
+
+                for (UINT32 i = 0; i < height; ++i)
+                {
+                    UINT32* pDestination = (UINT32*)pDestinationLine;
+
+                    for (UINT32 j = 0; j < width; ++j)
+                    {
+                        *pDestination = bufferColor;
+
+                        ++pDestination;
+                    }
+
+                    pDestinationLine += lineSize;
+                }
+
+                break;
+            }
+
+		case PixelFormat::A8R8G8B8:
+            {
+#if defined(PLATFORM_LITTLE_ENDIAN)
+				UINT32 alpha = BYTE(color.a * 255) << 0;
+				UINT32 red = BYTE(color.r * 255) << 8;
+				UINT32 green = BYTE(color.g * 255) << 16;
+				UINT32 blue = BYTE(color.b * 255) << 24;
+
+				UINT32 bufferColor = blue | green | red | alpha;
+#else
+				UINT32 blue = BYTE(color.b * 255) << 0;
+				UINT32 green = BYTE(color.g * 255) << 8;
+				UINT32 red = BYTE(color.r * 255) << 16;
+				UINT32 alpha = BYTE(color.a * 255) << 24;
+
+				UINT32 bufferColor = blue | green | red | alpha;
+#endif
+
+                BYTE* pDestinationLine = buffer.GetBuffer();
+
+                for (UINT32 i = 0; i < height; ++i)
+                {
+                    UINT32* pDestination = (UINT32*)pDestinationLine;
+
+                    for (UINT32 j = 0; j < width; ++j)
+                    {
+                        *pDestination = bufferColor;
+
+                        ++pDestination;
+                    }
+
+                    pDestinationLine += lineSize;
+                }
+
+                break;
+            }
+
+		case PixelFormat::A8B8G8R8:
+            {
+#if defined(PLATFORM_LITTLE_ENDIAN)
+                UINT32 red = BYTE(color.r * 255) << 0;
+                UINT32 green = BYTE(color.g * 255) << 8;
+                UINT32 blue = BYTE(color.b * 255) << 16;
+                UINT32 alpha = BYTE(color.a * 255) << 24;
+
+                UINT32 bufferColor = red | green | blue | alpha;
+#else
+				UINT32 alpha = BYTE(color.a * 255) << 0;
+				UINT32 blue = BYTE(color.b * 255) << 8;
+				UINT32 green = BYTE(color.g * 255) << 16;
+				UINT32 red = BYTE(color.r * 255) << 24;
+
+				UINT32 bufferColor = red | green | blue | alpha;
+#endif
 
                 BYTE* pDestinationLine = buffer.GetBuffer();
 
@@ -104,7 +196,7 @@ Cleanup:
 __checkReturn HRESULT 
 FillTextureWithColor(
     __in ITexture* pTexture,
-    ColorF& color
+    const ColorF& color
     )
 {
     HRESULT hr = S_OK;
@@ -128,7 +220,7 @@ FillTextureWithColor(
     __in IBatchUpdateTexture* pTexture,
     __in_ecount(RegionCount) const RectU* pRegions,
     UINT32 RegionCount,
-    ColorF& color
+    const ColorF& color
     )
 {
     HRESULT hr = S_OK;
@@ -174,7 +266,7 @@ FillTextureWithColor(
         buffers.GetBuffer()[i] = colorBuffer.GetBuffer();
     }
 
-    IFC(pTexture->SetMultipleSubData(pRegions, buffers.GetBuffer(), bufferSizes.GetBuffer(), strides.GetBuffer(), RegionCount)); 
+    IFC(pTexture->SetMultipleSubData(pRegions, (const BYTE**)buffers.GetBuffer(), bufferSizes.GetBuffer(), strides.GetBuffer(), RegionCount)); 
 
 Cleanup:
     return hr;

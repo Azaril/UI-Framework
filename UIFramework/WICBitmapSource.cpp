@@ -90,6 +90,20 @@ PixelFormatToWICFormat(
                 break;
             }
 
+		case PixelFormat::A8R8G8B8:
+			{
+				*pTargetFormat = GUID_WICPixelFormat32bppARGB;
+
+				break;
+			}
+
+		case PixelFormat::A8B8G8R8:
+			{
+				*pTargetFormat = GUID_WICPixelFormat32bppABGR;
+
+				break;
+			}
+
         default:
             {
                 IFC(E_FAIL);

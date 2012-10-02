@@ -53,7 +53,7 @@ CD3D9VertexBuffer::SetVertices(
     UINT32 copySize = VertexCount * sizeof(RenderVertex);
 
 #if defined(_XBOX)
-	IFC(m_pVertexBuffer->Lock(0, copySize, &pData, 0));
+	IFC(m_pVertexBuffer->Lock(0, 0, &pData, 0));
 #else
     IFC(m_pVertexBuffer->Lock(0, copySize, &pData, D3DLOCK_DISCARD));
 #endif

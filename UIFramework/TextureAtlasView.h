@@ -31,14 +31,14 @@ class CTextureAtlasView : public CRefCountedObjectBase< ITexture >
             );
 
         __override virtual __checkReturn HRESULT SetData(
-            __in_ecount(DataSize) BYTE* pData,
+            __in_ecount(DataSize) const BYTE* pData,
             UINT32 DataSize,
             INT32 Stride
             );
 
         __override virtual __checkReturn HRESULT SetSubData(
             const RectU& Region,
-            __in_ecount(DataSize) BYTE* pData,
+            __in_ecount(DataSize) const BYTE* pData,
             UINT32 DataSize,
             INT32 Stride
             );

@@ -32,23 +32,23 @@ class CD3D11Texture : public CRefCountedObjectBase< IBatchUpdateTexture >
             );    
 
         __override virtual __checkReturn HRESULT SetData(
-            __in_ecount(DataSize) BYTE* pData,
+            __in_ecount(DataSize) const BYTE* pData,
             UINT32 DataSize,
             INT32 Stride
             );
 
         __override virtual __checkReturn HRESULT SetSubData(
             const RectU& Region,
-            __in_ecount(DataSize) BYTE* pData,
+            __in_ecount(DataSize) const BYTE* pData,
             UINT32 DataSize,
             INT32 Stride
             );  
 
         __override virtual __checkReturn HRESULT SetMultipleSubData(
             __in_ecount(RegionCount) const RectU* pRegions,
-            __in_ecount(RegionCount) BYTE** ppData,
-            __in_ecount(RegionCount) UINT32* pDataSizes,
-            __in_ecount(RegionCount) INT32* pStrides,
+            __in_ecount(RegionCount) const BYTE** ppData,
+            __in_ecount(RegionCount) const UINT32* pDataSizes,
+            __in_ecount(RegionCount) const INT32* pStrides,
             UINT32 RegionCount
             );
 

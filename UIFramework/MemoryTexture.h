@@ -1,20 +1,12 @@
 #pragma once
 
-#if defined(FRAMEWORK_D3D9)
-
-#include "Types.h"
-#include <d3d9.h>
-
 #include "Texture.h"
 #include "Factory.h"
 
-class CD3D9Texture : public CRefCountedObjectBase< IBatchUpdateTexture >
+class CMemoryTexture : public CRefCountedObjectBase< IBatchUpdateTexture >
 {
     public:
-        DECLARE_FACTORY1( CD3D9Texture, IDirect3DTexture9* );
-
-        __out IDirect3DTexture9* GetD3DTexture(
-            );
+        DECLARE_FACTORY3( CMemoryTexture, PixelFormat::Value, UINT32, UINT32 );
 
         __override virtual UINT32 GetWidth(
             );
@@ -46,21 +38,24 @@ class CD3D9Texture : public CRefCountedObjectBase< IBatchUpdateTexture >
             UINT32 RegionCount
             );
 
+		__out const BYTE* GetData(
+			);
+
     protected:
-        CD3D9Texture(
+        CMemoryTexture(
             );
 
-        virtual ~CD3D9Texture(
+        virtual ~CMemoryTexture(
             );
 
         __checkReturn HRESULT Initialize(
-            __in IDirect3DTexture9* pTexture
+            PixelFormat::Value format,
+			UINT32 width,
+			UINT32 height
             );
 
-        IDirect3DTexture9* m_pTexture;
+        PixelFormat::Value m_Format;
         UINT32 m_Width;
         UINT32 m_Height;
-        PixelFormat::Value m_Format;
+		BYTE* m_pData;
 };
-
-#endif

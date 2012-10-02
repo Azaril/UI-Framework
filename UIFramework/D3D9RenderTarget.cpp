@@ -230,17 +230,23 @@ Cleanup:
 
 __override __checkReturn HRESULT 
 CD3D9RenderTarget::BindTexture(
-    __in ITexture* pTexture
+    __in_opt ITexture* pTexture
     )
 {
     HRESULT hr = S_OK;
     CD3D9Texture* pD3DTexture = NULL;
     CStagingTextureWrapper* pTextureWrapper = NULL;
+	IDirect3DTexture9* pDirect3DTexture = NULL;
 
-    pTextureWrapper = (CStagingTextureWrapper*)pTexture;
-    pD3DTexture = (CD3D9Texture*)pTextureWrapper->GetTargetTexture();
+	if (pTexture != NULL)
+	{
+		pTextureWrapper = (CStagingTextureWrapper*)pTexture;
+		pD3DTexture = (CD3D9Texture*)pTextureWrapper->GetTargetTexture();
 
-    IFC(m_pDevice->SetTexture(0, pD3DTexture->GetD3DTexture()));
+		pDirect3DTexture = pD3DTexture->GetD3DTexture();
+	}
+
+    IFC(m_pDevice->SetTexture(0, pDirect3DTexture));
 
 Cleanup:
     return hr;
@@ -251,17 +257,23 @@ CD3D9RenderTarget::BindMask(
     __in ITexture* pTexture
     )
 {
-    HRESULT hr = S_OK;
-    CD3D9Texture* pD3DTexture = NULL;
-    CStagingTextureWrapper* pTextureWrapper = NULL;
+	HRESULT hr = S_OK;
+	CD3D9Texture* pD3DTexture = NULL;
+	CStagingTextureWrapper* pTextureWrapper = NULL;
+	IDirect3DTexture9* pDirect3DTexture = NULL;
 
-    pTextureWrapper = (CStagingTextureWrapper*)pTexture;
-    pD3DTexture = (CD3D9Texture*)pTextureWrapper->GetTargetTexture();
+	if (pTexture != NULL)
+	{
+		pTextureWrapper = (CStagingTextureWrapper*)pTexture;
+		pD3DTexture = (CD3D9Texture*)pTextureWrapper->GetTargetTexture();
 
-    IFC(m_pDevice->SetTexture(1, pD3DTexture->GetD3DTexture()));
+		pDirect3DTexture = pD3DTexture->GetD3DTexture();
+	}
+
+	IFC(m_pDevice->SetTexture(1, pDirect3DTexture));
 
 Cleanup:
-    return hr;
+	return hr;
 }
 
 __override __checkReturn HRESULT 

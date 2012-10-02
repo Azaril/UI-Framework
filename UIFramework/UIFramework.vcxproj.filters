@@ -978,6 +978,9 @@
     <ClCompile Include="StaticTesselator.cpp">
       <Filter>Framework\Graphics\Core\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="MemoryTexture.cpp">
+      <Filter>Framework\Graphics\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collections.h">
@@ -1834,6 +1837,9 @@
     </ClInclude>
     <ClInclude Include="CoreShapeData.h">
       <Filter>Framework\Graphics\Core\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryTexture.h">
+      <Filter>Framework\Graphics\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
