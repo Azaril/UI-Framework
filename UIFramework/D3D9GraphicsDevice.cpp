@@ -345,11 +345,9 @@ CD3D9GraphicsDevice::CreateImagingProvider(
 
 #endif
 
-	//TODO: wiarchbe: Enable imaging component...
-    //IFC(E_FAIL);
+    IFC(E_FAIL);
 
-//Cleanup:
-
+Cleanup:
 #if defined(FRAMEWORK_WIC)
     ReleaseObject(pWICImagingProvider);
 #endif

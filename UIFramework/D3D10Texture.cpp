@@ -112,7 +112,7 @@ CD3D10Texture::GetPixelFormat(
 
 __override __checkReturn HRESULT 
 CD3D10Texture::SetData(
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
@@ -123,7 +123,7 @@ CD3D10Texture::SetData(
     IFC(m_pTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTexture));
 
     {
-        BYTE* pSourceData = pData;
+        const BYTE* pSourceData = pData;
         BYTE* pDestinationData = (BYTE*)mappedTexture.pData;
         UINT32 lineSize = PixelFormat::GetLineSize(m_Format, m_Width);
 
@@ -148,7 +148,7 @@ Cleanup:
 __override __checkReturn HRESULT 
 CD3D10Texture::SetSubData(
     const RectU& Region,
-    __in_ecount(DataSize) BYTE* pData,
+    __in_ecount(DataSize) const BYTE* pData,
     UINT32 DataSize,
     INT32 Stride
     )
@@ -161,7 +161,7 @@ CD3D10Texture::SetSubData(
     IFC(m_pTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE, 0, &mappedTexture));
 
     {
-        BYTE* pSourceData = pData;
+        const BYTE* pSourceData = pData;
         BYTE* pDestinationData = ((BYTE*)mappedTexture.pData) + (mappedTexture.RowPitch * Region.top) + PixelFormat::GetLineSize(m_Format, Region.left);
         UINT32 regionLineSize = PixelFormat::GetLineSize(m_Format, Region.GetWidth());
 
@@ -186,9 +186,9 @@ Cleanup:
 __override __checkReturn HRESULT 
 CD3D10Texture::SetMultipleSubData(
     __in_ecount(RegionCount) const RectU* pRegions,
-    __in_ecount(RegionCount) BYTE** ppData,
-    __in_ecount(RegionCount) UINT32* pDataSizes,
-    __in_ecount(RegionCount) INT32* pStrides,
+    __in_ecount(RegionCount) const BYTE** ppData,
+    __in_ecount(RegionCount) const UINT32* pDataSizes,
+    __in_ecount(RegionCount) const INT32* pStrides,
     UINT32 RegionCount
     )
 {
@@ -201,7 +201,7 @@ CD3D10Texture::SetMultipleSubData(
 
     for (UINT32 i = 0; i < RegionCount; ++i)
     {
-        BYTE* pSourceData = ppData[i];
+        const BYTE* pSourceData = ppData[i];
         BYTE* pDestinationData = ((BYTE*)mappedTexture.pData) + (mappedTexture.RowPitch * pRegions[i].top) + PixelFormat::GetLineSize(m_Format, pRegions[i].left);
         UINT32 regionLineSize = PixelFormat::GetLineSize(m_Format, pRegions[i].GetWidth());
 

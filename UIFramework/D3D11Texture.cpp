@@ -127,7 +127,7 @@ CD3D11Texture::SetData(
     IFC(m_pContext->Map(m_pTexture, D3D11CalcSubresource(0, 0, 1), D3D11_MAP_WRITE_DISCARD, 0, &mappedTexture));
 
     {
-        BYTE* pSourceData = pData;
+        const BYTE* pSourceData = pData;
         BYTE* pDestinationData = (BYTE*)mappedTexture.pData;
         UINT32 lineSize = PixelFormat::GetLineSize(m_Format, m_Width);
 
@@ -165,7 +165,7 @@ CD3D11Texture::SetSubData(
     IFC(m_pContext->Map(m_pTexture, D3D11CalcSubresource(0, 0, 1), D3D11_MAP_WRITE, 0, &mappedTexture));
 
     {
-        BYTE* pSourceData = pData;
+        const BYTE* pSourceData = pData;
         BYTE* pDestinationData = ((BYTE*)mappedTexture.pData) + (mappedTexture.RowPitch * Region.top) + PixelFormat::GetLineSize(m_Format, Region.left);
         UINT32 regionLineSize = PixelFormat::GetLineSize(m_Format, Region.GetWidth());
 
@@ -205,7 +205,7 @@ CD3D11Texture::SetMultipleSubData(
 
     for (UINT32 i = 0; i < RegionCount; ++i)
     {
-        BYTE* pSourceData = ppData[i];
+        const BYTE* pSourceData = ppData[i];
         BYTE* pDestinationData = ((BYTE*)mappedTexture.pData) + (mappedTexture.RowPitch * pRegions[i].top) + PixelFormat::GetLineSize(m_Format, pRegions[i].left);
         UINT32 regionLineSize = PixelFormat::GetLineSize(m_Format, pRegions[i].GetWidth());
 

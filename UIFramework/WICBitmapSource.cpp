@@ -67,9 +67,10 @@ CWICBitmapSource::AssociateStream(
 }
 
 __checkReturn HRESULT
-PixelFormatToWICFormat(
+PixelFormatToBestWICFormat(
     PixelFormat::Value source,
-    __out WICPixelFormatGUID* pTargetFormat
+    __out WICPixelFormatGUID* pTargetWICFormat,
+    __out PixelFormat::Value* pTargetPixelFormat
     )
 {
     HRESULT hr = S_OK;
@@ -77,32 +78,22 @@ PixelFormatToWICFormat(
     switch(source)
     {
         case PixelFormat::B8G8R8A8:
+        case PixelFormat::A8R8G8B8:
             {
-                *pTargetFormat = GUID_WICPixelFormat32bppBGRA;
+                *pTargetWICFormat = GUID_WICPixelFormat32bppBGRA;
+                *pTargetPixelFormat = PixelFormat::B8G8R8A8;
 
                 break;
             }
 
         case PixelFormat::R8G8B8A8:
+		case PixelFormat::A8B8G8R8:
             {
-                *pTargetFormat = GUID_WICPixelFormat32bppRGBA;
+                *pTargetWICFormat = GUID_WICPixelFormat32bppRGBA;
+                *pTargetPixelFormat = PixelFormat::R8G8B8A8;
 
                 break;
             }
-
-		case PixelFormat::A8R8G8B8:
-			{
-				*pTargetFormat = GUID_WICPixelFormat32bppARGB;
-
-				break;
-			}
-
-		case PixelFormat::A8B8G8R8:
-			{
-				*pTargetFormat = GUID_WICPixelFormat32bppABGR;
-
-				break;
-			}
 
         default:
             {
@@ -123,11 +114,9 @@ CWICBitmapSource::LoadIntoTexture(
     WICPixelFormatGUID targetFormat;
     BYTE* pDecodedPixels = NULL;
     IWICBitmapSource* pDecodedSource = NULL;
-    PixelFormat::Value pixelFormat = PixelFormat::Unknown;
+    PixelFormat::Value targetPixelFormat = PixelFormat::Unknown;
 
-    pixelFormat = pTexture->GetPixelFormat();
-
-    IFC(PixelFormatToWICFormat(pixelFormat, &targetFormat));
+    IFC(PixelFormatToBestWICFormat(pTexture->GetPixelFormat(), &targetFormat, &targetPixelFormat));
 
     IFC(GetSourceAsFormat(targetFormat, &pDecodedSource));
 
@@ -139,16 +128,22 @@ CWICBitmapSource::LoadIntoTexture(
         IFCEXPECT(sourceSize.width <= pTexture->GetWidth());
         IFCEXPECT(sourceSize.height <= pTexture->GetHeight());
 
+        UINT32 lineSize = PixelFormat::GetLineSize(targetPixelFormat, sourceSize.width);
+        UINT32 bufferSize = lineSize * pTexture->GetHeight();
+
+        pDecodedPixels = new BYTE[bufferSize];
+        IFCOOM(pDecodedPixels);
+
+        IFC(pDecodedSource->CopyPixels(NULL, lineSize, bufferSize, pDecodedPixels));
+
+        if (pTexture->GetPixelFormat() == targetPixelFormat)
         {
-            UINT32 lineSize = PixelFormat::GetLineSize(pixelFormat, sourceSize.width);
-            UINT32 bufferSize = lineSize * pTexture->GetHeight();
-
-            pDecodedPixels = new BYTE[bufferSize];
-            IFCOOM(pDecodedPixels);
-
-            IFC(pDecodedSource->CopyPixels(NULL, lineSize, bufferSize, pDecodedPixels));
-
             IFC(pTexture->SetSubData(MakeRect(sourceSize), pDecodedPixels, bufferSize, lineSize));
+        }
+        else
+        {
+            //TODO: wiarchbe: Change bytes to match endianness etc.
+            ASSERT(false);
         }
     }    
 
